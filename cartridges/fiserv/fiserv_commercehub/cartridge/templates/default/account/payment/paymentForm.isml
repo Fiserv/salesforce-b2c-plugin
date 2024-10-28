@@ -1,0 +1,43 @@
+<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
+<isset name="canTokenize" value="${pdict.FiservHelper.canTokenize()}" scope="pdict" />
+<isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+    assets.addJs('/js/fiserv_account/commercehub_tokenize_form.js');
+    assets.addJs('/js/fiserv_account/tokenize.js');
+    assets.addJs(pdict.chSdkUrl);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+<div id="fiserv-commercehub-card-form-container" data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}">
+    <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
+        <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
+    </div>
+</div>
+
+
+<form
+    action="${URLUtils.url('PaymentInstruments-SavePayment', 'UUID', pdict.UUID)}"
+    class="payment-form"
+    method="POST"
+    name="payment-form" ${pdict.paymentForm.attributes}>
+
+    <!--- Hidden input for credit card type --->
+    <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+    <input type="hidden" id="commercehubSessionIdInput" name="${pdict.paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+    <input type="hidden" class="form-control" id="cardType" name="${pdict.paymentForm.cardType.htmlName}" value="" />
+    
+    <!-- Cancel and Save Buttons -->
+    <div class="row">
+        <div class="col">
+            <a href="${URLUtils.url('PaymentInstruments-List')}" class="btn btn-block btn-outline-primary">${Resource.msg('button.cancel','account',null)}</a>
+        </div>
+        <div class="col">
+            <button type="submit" name="save" class="btn btn-save btn-block btn-primary">${Resource.msg('button.save','account',null)}</button>
+        </div>
+    </div>
+
+</form>

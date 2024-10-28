@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="CommerceHubMerchantID">
+                <display-name xml:lang="x-default">CommerceHub Merchant ID</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <regex>^\d{15}$</regex>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTerminalID">
+                <display-name xml:lang="x-default">CommerceHub Terminal ID</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <regex>^\d{8}$</regex>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAPIKey">
+                <display-name xml:lang="x-default">CommerceHub API Key</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <regex>^[a-zA-Z0-9]{32}$</regex>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAPISecret">
+                <display-name xml:lang="x-default">CommerceHub API Secret</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <regex>^[a-zA-Z0-9]{43}$</regex>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAPIEnvironment">
+                <display-name xml:lang="x-default">CommerceHub API Environment</display-name>
+                <description xml:lang="x-default">LIVE for production; CERT for testing</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <value>CERT</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>LIVE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentType">
+                <display-name xml:lang="x-default">CommerceHub Payment Type</display-name>
+                <description xml:lang="x-default">AUTH for authorization-only; SALE for auth and capture</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenization">
+                <display-name xml:lang="x-default">Tokenization</display-name>
+                <description xml:lang="x-default">Allow customers to tokenize payment information for later use</description>
+                <type>boolean</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubStandaloneSPA">
+                <display-name xml:lang="x-default">Standalone Tokenization</display-name>
+                <description xml:lang="x-default">Allow customers to tokenize payment information without a transaction</description>
+                <type>boolean</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Settings</display-name>
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubPaymentType"/>
+                <attribute attribute-id="CommerceHubTokenization"/>
+                <attribute attribute-id="CommerceHubStandaloneSPA"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="OrderPaymentInstrument">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="maskedCardNumber">
+                <display-name xml:lang="x-default">maskedCardNumber</display-name>
+                <description xml:lang="x-default">Masked card number associated with payment card</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubTokenSource">
+                <display-name xml:lang="x-default">tokenSource</display-name>
+                <description xml:lang="x-default">Source from which payment token was created</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="expireMonth">
+                <display-name xml:lang="x-default">expirationMonth</display-name>
+                <description xml:lang="x-default">Expiration month of stored payment card</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="expireYear">
+                <display-name xml:lang="x-default">expirationYear</display-name>
+                <description xml:lang="x-default">Expiration year of stored payment card</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="maskedCardNumber"/>
+                <attribute attribute-id="commercehubTokenSource"/>
+                <attribute attribute-id="expireMonth"/>
+                <attribute attribute-id="expireYear"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="CustomerPaymentInstrument">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubTokenSource">
+                <display-name xml:lang="x-default">tokenSource</display-name>
+                <description xml:lang="x-default">Source from which payment token was created</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubTokenResponseCode">
+                <display-name xml:lang="x-default">tokenResponseCode</display-name>
+                <description xml:lang="x-default">Response returned by Commerce Hub during token creation</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubTokenResponseDescription">
+                <display-name xml:lang="x-default">tokenResponseDescription</display-name>
+                <description xml:lang="x-default">Human-readable response returned by Commerce Hub during token creation</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubTokenSource"/>
+                <attribute attribute-id="commercehubTokenResponseCode"/>
+                <attribute attribute-id="commercehubTokenResponseDescription"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="PaymentTransaction">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubSessionId">
+                <display-name xml:lang="x-default">commercehubSessionId</display-name>
+                <description xml:lang="x-default">CommerceHub Session ID used as payment source</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="tokenizeCard">
+                <display-name xml:lang="x-default">tokenizeCard</display-name>
+                <description xml:lang="x-default">Whether to tokenize payment card for later use</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="paymentAction">
+                <display-name xml:lang="x-default">paymentAction</display-name>
+                <description xml:lang="x-default">Payment action for CommerceHub transaction</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="tokenizeCard"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+</metadata>

@@ -1,0 +1,22 @@
+.inner-fatal-notice {
+    padding: 1em;
+    border: 2px solid red;
+}
+
+.inner-fatal-notice > span {
+    color: red;
+    font-weight: 500;
+}
+
+.initialized-scc-container {
+    height: 320px;
+}
+
+#fiserv-scc-fatal-notice {
+    display: none;
+}
+
+.cc-type-image {
+    margin-top: 0.5em;
+    width: 100%;
+}

@@ -1,0 +1,7 @@
+<h1>test</h1>
+
+<h2>invoices: ${pdict.param1}</h2>
+
+<h2>captured amt: ${pdict.param2}</h2>
+
+<h2>status: ${pdict.param3}</h2>

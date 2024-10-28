@@ -1,0 +1,12 @@
+{
+	"hooks": [
+		{
+			"name": "app.payment.processor.fiserv_commercehub",
+			"script": "./hooks/payment/processor/fiserv_commercehub"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub",
+			"script": "./hooks/payment/processor/fiserv_commercehub_form_processor"
+		}
+	]
+}

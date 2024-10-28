@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-processors xmlns="http://www.demandware.com/xml/impex/paymentprocessor/2007-03-31">
+    <payment-processor processor-id="FISERV_COMMERCEHUB">
+        <description>Fiserv CommerceHub payment processor</description>
+        <preferences>
+            <all-instances>
+                <preference preference-id="CommerceHubMerchantID">
+                    <value>000000000000000</value>
+                </preference>
+                <preference preference-id="CommerceHubTerminalID">
+                    <value>00000000</value>
+                </preference>
+                <preference preference-id="CommerceHubAPIKey"> 
+                    <value>00000000000000000000000000000000</value>
+                </preference>
+                <preference preference-id="CommerceHubAPISecret"> 
+                    <value>0000000000000000000000000000000000000000000</value>
+                </preference>
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentType">
+                    <value>SALE</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenization">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubStandaloneSPA">
+                    <value>false</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+</payment-processors>

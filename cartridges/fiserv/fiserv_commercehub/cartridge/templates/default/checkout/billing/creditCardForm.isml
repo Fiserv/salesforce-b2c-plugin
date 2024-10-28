@@ -1,0 +1,37 @@
+<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
+<isset name="canTokenize" value="${pdict.FiservHelper.canTokenize()}" scope="pdict" />
+<isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+    assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
+    assets.addJs('/js/fiserv_checkout/checkout.js');
+    assets.addJs(pdict.chSdkUrl);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+<div id="fiserv-commercehub-card-form-container" data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}">
+    <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
+        <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
+    </div>
+</div>
+
+
+<isif condition="${pdict.canTokenize && pdict.customer.registeredUser}">
+    <div class="save-credit-card custom-control custom-checkbox">
+        <input type="checkbox" id="saveCreditCard" class="custom-control-input" name="${creditFields.saveCard.htmlName}" value="true" checked>
+        <label class="custom-control-label" for="saveCreditCard">
+            ${creditFields.saveCard.label}
+        </label>
+    </div>
+</isif>
+
+<!--- Hidden input for credit card type --->
+<input id="commercehubSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+<input type="hidden" class="form-control" id="cardType"
+    name="${creditFields.cardType.htmlName}"
+    value="" />
+<input type="hidden" class="form-control cardNumber" id="cardNumber"
+    value="" <isprint value=${creditFields.cardNumber.attributes} encoding="off"/>/>
