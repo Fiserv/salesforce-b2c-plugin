@@ -4,6 +4,7 @@ let FiservServices = require('*/cartridge/scripts/utils/commercehubServices');
 let FiservLogs = require('*/cartridge/scripts/utils/commercehubLogs');
 let commerceHubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
 let URLUtils = require('dw/web/URLUtils');
+let cache = require('dw/system/CacheMgr');
 
 
 function getBaseUrl()
@@ -61,6 +62,9 @@ function getCommercehubCredentials()
         FiservLogs.error_log('CommerceHub credentails response failed validation: '.concat(response));
         throw new Error("Unable to retreive payment authorization credentails.")
     }
+
+    let fiservCache = cache.getCache('FiservCommerceHubCache');
+    fiservCache.put(parsedResponse['accessToken'], parsedResponse['sessionId']);
 
     return parsedResponse;
 }
