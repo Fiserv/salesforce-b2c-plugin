@@ -55,6 +55,11 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
             results.type = paymentInstrument.creditCardType;
             results.maskedCreditCardNumber = paymentInstrument.custom.maskedCardNumber;
             results.expirationMonth = paymentInstrument.custom.expireMonth !== null ? paymentInstrument.custom.expireMonth : "**";
+        } else if (paymentInstrument.paymentMethod === 'GIFT_CARD')
+        {
+            // Need to map this for differing currency symbols...
+            results.currencySymbol = '$';
+            results.amount = results.amount.toFixed(2);
         } else if (paymentInstrument.paymentMethod === 'GIFT_CERTIFICATE') {
             results.giftCertificateCode = paymentInstrument.giftCertificateCode;
             results.maskedGiftCertificateCode = paymentInstrument.maskedGiftCertificateCode;

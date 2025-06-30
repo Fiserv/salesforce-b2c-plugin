@@ -1,21 +1,54 @@
 "use strict";
 
 var Logger = require('dw/system/Logger');
-function fatal_log(msg) {
-  return Logger.getLogger('CommerceHub_fatal', 'Fiserv').fatal(msg);
+const commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+const lvlMap = {
+    'L1': 1,
+    'L2': 2,
+    'L3': 3,
 }
-function error_log(msg) {
-  return Logger.getLogger('CommerceHub_error', 'Fiserv').error(msg);
+const logLevel = lvlMap[commercehubConfig.getCommerceHubLoggingLevel()];
+
+// For future enhancements...
+function formatMessage(lvl, msg, orderNo)
+{
+    return '[L' + lvl + '] ' + (orderNo ? '[Order:' + orderNo + '] ' : '') + msg;
 }
-function debug_log(msg) {
-  return Logger.getLogger('CommerceHub_debug', 'Fiserv').debug(msg);
+
+function logFatal(lvl, msg, orderNo) {
+    if(lvl > logLevel)
+        return;
+    return Logger.getLogger('CommerceHub_FATAL', 'Fiserv').fatal(formatMessage(lvl, msg, orderNo));
 }
-function info_log(msg) {
-  return Logger.getLogger('CommerceHub_info', 'Fiserv').info(msg);
+
+function logError(lvl, msg, orderNo) {
+    if(lvl > logLevel)
+        return;
+    return Logger.getLogger('CommerceHub_ERROR', 'Fiserv').error(formatMessage(lvl, msg, orderNo));
 }
+
+function logWarn(lvl, msg, orderNo) {
+    if(lvl > logLevel)
+        return;
+    return Logger.getLogger('CommerceHub_WARN', 'Fiserv').warn(formatMessage(lvl, msg, orderNo));
+}
+
+function logInfo(lvl, msg, orderNo) {
+    if(lvl > logLevel)
+        return;
+    return Logger.getLogger('CommerceHub_INFO', 'Fiserv').info(formatMessage(lvl, msg, orderNo));
+}
+
+function logDebug(lvl, msg, orderNo) {
+    if(lvl > logLevel)
+        return;
+    return Logger.getLogger('CommerceHub_DEBUG', 'Fiserv').debug(formatMessage(lvl, msg, orderNo));
+}
+
 module.exports = {
-  fatal_log: fatal_log,
-  error_log: error_log,
-  debug_log: debug_log,
-  info_log: info_log
+    logFatal: logFatal,
+    logError: logError,
+    logWarn: logWarn,
+    logInfo: logInfo,
+    logDebug: logDebug
 };

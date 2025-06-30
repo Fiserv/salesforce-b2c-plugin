@@ -65,6 +65,8 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
     viewData.paymentInformation.expirationYear = { value : paymentInstrument.creditCardExpirationYear };
     viewData.paymentInformation.creditCardToken = { value : paymentInstrument.creditCardToken };
     viewData.paymentInformation.tokenSource = { value : paymentInstrument.custom.commercehubTokenSource };
+    viewData.paymentInformation.commercehubCardType = { value : paymentInstrument.custom.commercehubCardType };
+    viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
 
     return viewData;
 }
@@ -73,8 +75,8 @@ function getNewCardViewData(viewFormData, paymentForm)
 {
     let viewData = getBaseViewData(viewFormData, paymentForm);
     // do not receive expiration month or year from tokenization response, so use dummy here
-    viewData.paymentInformation.expirationMonth = { value: 99 };
-    viewData.paymentInformation.expirationYear = { value: 9999 };
+    viewData.paymentInformation.expirationMonth = { 'value': paymentForm.creditCardFields.expirationMonth.value };
+    viewData.paymentInformation.expirationYear = { 'value': paymentForm.creditCardFields.expirationYear.value };
     viewData.paymentInformation.cardType = paymentForm.creditCardFields.cardType;
     viewData.paymentInformation.cardNumber = paymentForm.creditCardFields.cardNumber;
     viewData.paymentInformation.sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;

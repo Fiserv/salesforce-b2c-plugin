@@ -15,7 +15,7 @@ function getBaseUrl()
     
     if (domain == null || typeof(domain[0]) === 'undefined')
     {
-        FiservLogs.error_log("Unable to determine store base URL: ".concat(checkoutUrl).concat(" Fiserv CommerceHub credentials request failed."));
+        FiservLogs.logError(2, "Unable to determine store base URL: ".concat(checkoutUrl).concat(" Fiserv CommerceHub credentials request failed."));
         throw new Error("Fiserv CommerceHub credentials request failed");
     } 
     return domain[0] 
@@ -48,24 +48,34 @@ function validateCredentialsResponse(jsonResponse)
 
 function getCommercehubCredentials()
 {
+    FiservLogs.logInfo(1, 'Intitating Credentials Request');
     let credsService = FiservServices.getService('CommercehubCredentials');
     if (credsService == null)
         throw new Error("Could not create Fiserv service: CommerceHubCredentials");
 
     let payload = getCredentialsPayload();
 
-    let response = FiservServices.callService(credsService, payload);
-    let parsedResponse = JSON.parse(response);
+    let parsedResponse = null;
+    try
+    {
+        parsedResponse = FiservServices.callService(credsService, payload);
+    }
+    catch(error)
+    {
+        FiservLogs.logInfo(1, 'Credentials request failure');
+        throw error;
+    }
 
     if (!validateCredentialsResponse(parsedResponse))
     {
-        FiservLogs.error_log('CommerceHub credentails response failed validation: '.concat(response));
+        FiservLogs.logError(2, 'CommerceHub credentails response failed validation');
         throw new Error("Unable to retreive payment authorization credentails.")
     }
 
     let fiservCache = cache.getCache('FiservCommerceHubCache');
     fiservCache.put(parsedResponse['accessToken'], parsedResponse['sessionId']);
 
+    FiservLogs.logInfo(1, 'Credentials Request Successful');
     return parsedResponse;
 }
 

@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "Sandbox - FileSystem",
+			"uri": "ccfs://current-sandbox"
+		}
+	],
+	"settings": {
+		"typescript.enablePromptUseWorkspaceTsdk": true,
+		"typescript.tsdk": "/Applications/Visual Studio Code.app/Contents/Resources/app/extensions/node_modules/typescript/lib"
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "prophet",
+				"request": "launch",
+				"name": "Attach to Sandbox"
+			}
+		]
+	}
+}

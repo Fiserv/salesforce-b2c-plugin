@@ -1,57 +1,76 @@
 "use strict"
 
+let Resource = require('dw/web/Resource');
 let creds = require("*/cartridge/scripts/credentials/commercehubCredentials");
 let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 
-// https://salesforcecommercecloud.github.io/b2c-dev-doc/docs/current/sfrajsdoc/js/client/global.html#addSpinner
-// https://salesforcecommercecloud.github.io/b2c-dev-doc/docs/current/sfrajsdoc/js/client/global.html#removeSpinner
-
-// current idea is to kick off the hosted payment page flow when the payments template is rendered
-// can we call a script from the template?
-// 1. start spinner to veil the component
-// 2. perform CH credentials request
-// 3. request HPP customizations
-// 4. use credentails & customizations (json) to instantiate HPP 
-// 5. register external trigger for HPP submission
-// 6. handle errors on failure or continue checkout flow passing sessionId on success
-
-function buildFormConfig(credentials) {
-    let formConfig = {};
-    formConfig['merchantId'] = FiservConfig.getCommerceHubMerchantId();
-    formConfig['publicKey'] = credentials['publicKey'];
-    formConfig['asymmetricEncryptionAlgorithm'] = credentials['symmetricEncryptionAlgorithm'];
-    formConfig['keyId'] = credentials['keyId'];
-    formConfig["payButton"] = { "label" : "CREATE", "loading" : "PROCESSING" };
-
-    // TODO: implement form customization
-    // if (typeof(this.config[this.configCssKey]) !== "undefined") {
-    //     formConfig[this.formConfigCssKey] = this.config[this.configCssKey];
-    // }
-    
-    return formConfig;
-}
-
-function collectFormData(credentials)
+function collectSubmitData(credentials)
 {
-    let apiKey = FiservConfig.getCommerceHubApiKey(); 
-    let authorization = credentials['accessToken'];
-    let formConfig = buildFormConfig(credentials);
-    let sessionId = credentials['sessionId'];
-
     return {
-        'apiKey' : apiKey,
-        'authorization' : authorization,
-        'formConfig' : formConfig,
-        'sessionId' : sessionId
+        'submitConfig' : {
+            'apiKey' : FiservConfig.getCommerceHubApiKey(),
+            'accessToken': credentials['accessToken'],
+            'createToken': false,
+            'publicKey': credentials['publicKey'],
+            'keyId': credentials['keyId'],
+            'merchantId': FiservConfig.getCommerceHubMerchantId(),
+            'terminalId': FiservConfig.getCommerceHubTerminalId()
+        },
+        'sessionId' : credentials['sessionId']
     }
 }
 
-function createPaymentPageData()
+function prepareFormSubmission()
 {
-    return collectFormData(creds.getCommercehubCredentials());
+    return collectSubmitData(creds.getCommercehubCredentials());
+}
+
+// Provides the frontend files with config settings needed by the frontend
+function getFrontendConfigData(formId)
+{
+    let configData;
+    switch(formId)
+    {
+        case 'Payment':
+            configData = {
+                'tokenizeEarly': FiservConfig.getEarlyTokenization(),
+                'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null)
+            };
+            break;
+        case 'Tokenization':
+            configData = {
+                'captureFailureMessage': Resource.msg('message.error.scc.captureFailTokenization', 'error', null)
+            }
+            break;
+        case 'Gift':
+            configData = {
+                'captureFailureMessage': Resource.msg('message.error.scc.captureFailGift', 'error', null),
+            }
+            break;
+        default:
+            configData = {};
+            break;
+    }
+    return configData;
+}
+
+function collectInitializationData(formId)
+{
+    return {
+        'environment': FiservConfig.getCommerceHubApiEnvironment(),
+        'formCustomization': FiservConfig.getFormConfig(formId),
+        'invalidFields': FiservConfig.getInvalidFields(formId),
+        'configData': getFrontendConfigData(formId)
+    }
+}
+
+function retrieveFormInitializationData(formId)
+{
+    return collectInitializationData(formId);
 }
 
 module.exports = 
 { 
-    createPaymentPageData : createPaymentPageData 
+    prepareFormSubmission : prepareFormSubmission,
+    retrieveFormInitializationData : retrieveFormInitializationData
 }

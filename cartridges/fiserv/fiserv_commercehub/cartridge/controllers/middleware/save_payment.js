@@ -4,31 +4,21 @@ let server = require('server');
 let Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 let URLUtils = require('dw/web/URLUtils');
-let PaymentMgr = require('dw/order/PaymentMgr');
 let fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+let commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
 const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
 let FiservServices = require('*/cartridge/scripts/utils/commercehubServices');
 let requestBuilder = require('*/cartridge/scripts/requests/request_builder');
 let savePaymentInstrument = require('*/cartridge/scripts/account/fiservAccount/save_payment_instrument');
+let constants = require('*/cartridge/fiservConstants/constants');
 
-function isFiserv()
-{
-    let cc = PaymentMgr.getPaymentMethod('CREDIT_CARD');
-    
-    if (cc !== null)
-    {
-        return cc.isActive();
-    }
 
-    return false;
-}
 
 function validForm(paymentForm)
 {
     return typeof(paymentForm) !== "undefined" &&
         typeof(paymentForm.fiservCommercehubPaymentFields) !== "undefined" &&
         typeof(paymentForm.fiservCommercehubPaymentFields.commercehubSessionId) !== "undefined" &&
-        typeof(paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value) !== "undefined" &&
         typeof(paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value) !== "undefined" &&
         fiservHelper.validSessionId(paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value) &&
         typeof(paymentForm.cardType) !== "undefined" &&
@@ -37,48 +27,118 @@ function validForm(paymentForm)
 
 function sendTokenizationRequest(tokenizationRequest)
 {
-    let tokenizationService = FiservServices.getService('CommercehubTokenization');
-    let response = FiservServices.callService(tokenizationService, tokenizationRequest);
-    let parsedResponse = JSON.parse(response);
-    FiservLogs.error_log(response);
+    try {
+        let tokenizationService = FiservServices.getService('CommercehubTokenization');
+        let parsedResponse = FiservServices.callService(tokenizationService, tokenizationRequest);
+        return parsedResponse;
+    }
+    catch(e)
+    {
+        throw new Error(Resource.msg('message.error.tokenization.failed', 'error', null))
+    }
+}
 
-    return parsedResponse;
+function savePaymentEarly(req, res, next)
+{
+    let sessionId = req.form.sessionId;
+    if(sessionId !== null && commercehubConfig.getEarlyTokenization())
+    {
+        FiservLogs.logInfo(1, 'Initiating Early Tokenization call');
+        return executeSavePaymentTransaction.call(this, req, res, next, sessionId);
+    }
+    return next();
 }
 
 function savePayment(req, res, next) {
-    if (!isFiserv())
+    if (commercehubConfig.getCommerceHubStandaloneSpa())
+    {
+        FiservLogs.logInfo(1, 'Initiating Standalone Tokenization call');
+        return executeSavePaymentTransaction.call(this, req, res, next);
+    }
+    return next();
+}
+
+function executeSavePaymentTransaction(req, res, next, sessionId)
+{
+    if(!fiservHelper.isFiserv() || !commercehubConfig.getCommerceHubTokenization())
     {
         return next();
     }
 
     Transaction.begin();
+    let tokenResponse = null;
     try {
-        let paymentForm = server.forms.getForm('creditCard');
-        if (!validForm(paymentForm))
+        let early = sessionId != undefined;
+        if(!early)
         {
-            throw new Error("Invalid payment card tokenization form.");
+            let paymentForm = server.forms.getForm('creditCard');
+            if (!validForm(paymentForm))
+            {
+                throw new Error(Resource.msg('message.error.tokenization.invalidForm', 'error', null));
+            }
+            sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
         }
 
-        let tokenRequest = requestBuilder.buildTokenRequest(paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value);
-        let tokenResponse = sendTokenizationRequest(tokenRequest);
-        
-        savePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiservHelper.getB2cCardType({ value : paymentForm.cardType.htmlValue }), tokenResponse);
+        // Get the actual sessionId here
+
+        let tokenRequest = requestBuilder.buildTokenRequest(sessionId);
+        tokenResponse = sendTokenizationRequest(tokenRequest);
+        let cardType = fiservHelper.secureTraversal(tokenResponse, constants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
+        if(cardType === 'PIN_ONLY')
+        {
+            throw new Error(Resource.msg('message.error.payment.pinonly', 'error', null));
+        }
+
+        let savedCard = savePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiservHelper.getB2cCardType({ value : cardType }), tokenResponse);
+
+        if('duplicate' in savedCard)
+        {
+            if(early)
+            {
+                savedCard = savedCard.duplicate;
+            }
+            else
+            {
+                throw new Error(savedCard.errorMessage);
+            }
+        }
+
+        let uuid = savedCard ? savedCard.getUUID() : null;
         
         Transaction.commit();
+        FiservLogs.logInfo(1, 'Tokenization Request Successful');
+        let transactionId = fiservHelper.secureTraversal(tokenResponse, constants.RESPONSE_PATHS.TRANSACTION_ID);
+        if (transactionId)
+        {
+            FiservLogs.logInfo(1, 'Transaction ID: ' + transactionId);
+        }
         res.json({
             success: true,
+            uuid: uuid,
             redirectUrl: URLUtils.url('PaymentInstruments-List').toString()
         });
-        return this.emit('route:Complete', req, res);    
+        if(!early)
+        {
+            return this.emit('route:Complete', req, res);
+        }
+        else
+        {
+            return next();
+        }
     } catch (_er) {
         Transaction.rollback();
+        FiservLogs.logInfo(1, 'Failed to store card in wallet.');
+        if(tokenResponse)
+        {
+            FiservLogs.logError(2, 'Transaction ID: ' + fiservHelper.secureTraversal(tokenResponse, constants.RESPONSE_PATHS.TRANSACTION_ID));
+        }
 
-        FiservLogs.error_log('Error while tokenizing payment card: '.concat(_er.message));
         res.json({
             success: false,
-            _er: [Resource.msg('error.card.information.error', 'creditCard', null)]
+            error: [_er.message]
         });
+        return this.emit('route:Complete', req, res);
     }
-  }
+}
 
-  module.exports = { savePayment : savePayment };
+module.exports = { savePayment : savePayment, savePaymentEarly : savePaymentEarly };

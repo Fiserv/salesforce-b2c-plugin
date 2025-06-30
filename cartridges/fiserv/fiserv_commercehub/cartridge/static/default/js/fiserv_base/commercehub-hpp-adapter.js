@@ -15,11 +15,14 @@ class FiservIframe
         formReadyCallback, 
         formValidCallback, 
         formInvalidCallback,
+        cardBrandHandler,
+        fieldValidityHandler,
+        fieldFocusHandler,
         runSuccessCallback,
         runFailureCallback) 
     {
         // CommerceHub SDK loaded separately by B2C SFRA assets.js
-        if (typeof(commercehub) === "undefined")
+        if (typeof(window.fiserv) === "undefined")
         {
             throw new Error("CommerceHub SDK not found. Unable to create CommerceHub Hosted Payment Page.")
         }
@@ -29,22 +32,57 @@ class FiservIframe
         this.formReadyCb = formReadyCallback;
         this.formValidCb = formValidCallback;
         this.formInvalidCb = formInvalidCallback
+        this.cardBrandHandler = cardBrandHandler;
+        this.fieldValidityHandler = fieldValidityHandler;
+        this.fieldFocusHandler = fieldFocusHandler;
         this.runSuccessCallback = runSuccessCallback;
         this.runFailureCallback = runFailureCallback;
     }
 
-    initSdk = function(formData) 
+    initSdk = function(formConfig, formType)
     {
-        this.form = new commercehub.Fiserv(formData['formConfig'], formData['authorization'], formData['apiKey']);
+        window.fiserv.components.paymentFields(this.buildFormConfig(formConfig, formType))
+            .then((next) => {
+                this.form = next;
+                this.loadSuccessCallback();
+                this.iframeActive = true;
+                this.formReadyCb();
+            })
+            .catch((error) => {
+                this.loadFailCallback(error);
+            });
     }
 
-    getCommerceHubCredentials = function(credsUrl, successCb, failureCb)
+    buildFormConfig = function(formConfigInput, formType)
+    {
+        let formConfig = {
+            "data" : formConfigInput['formCustomization'],
+            "hooks" : {
+                "onFormValid" : () => { this.formValidCb(); },
+                "onFormNoLongerValid" : () => { this.formInvalidCb(); },
+                "onCardBrandChange" : (data) => { this.cardBrandHandler(data); },
+                "onFieldValidityChange" : (data) => { this.fieldValidityHandler(data); },
+                "onFocus" : (data) => { this.fieldFocusHandler(data); },
+                "onLostFocus" : (data) => { this.fieldFocusHandler(data); }
+            }
+        };
+
+        formConfig["data"]["environment"] =  formConfigInput['environment'];
+        
+        // Useful for Valuelink form differential (not necessary rn)
+        formConfig["data"]["paymentMethod"] = formType;
+
+        return formConfig;
+    }
+
+    backendCall = function(backendUrl, successCb, failureCb, data = null)
     {
         $.ajax({
-            url: credsUrl,
+            url: backendUrl,
             cache: false,
             dataType: 'json',
             type: "POST",
+            data: data,
             success: function(response) {
                 successCb(response);
             },
@@ -54,78 +92,39 @@ class FiservIframe
         });
     }
 
-    handleIframeEvents = function(eventData) 
+    submitForm = function(credentialsUrl, storeSessionCallback)
     {
-        if (eventData.trigger.type === "ready") {
-            this.formReadyCb();
-            this.iframeActive = true;
-        }
-
-        if (eventData.valid && eventData.trigger.type === 'card-capture-success')
+        if (this.form !== "undefined" && this.iframeActive === true)
         {
-            console.log(eventData.response.body);
-            this.runSuccessCallback(eventData.response.body);
-        } else if (eventData.valid && eventData.trigger.type !== 'card-capture-success')
-        {
-            this.formValidCb();
-        } else
-        {
-            this.formInvalidCb();
-        }
-    }
+            let promise = new Promise((resolve, reject) => {
+                this.backendCall(credentialsUrl, resolve, reject);	
+            });
 
-    listenForIframeMessages = function () {
-        let handler = (eventData) => { this.handleIframeEvents(eventData); };
-        this.iframeEventListener = function(event) 
-        {
-            var trustedOrigins = ["https://api.fiservapps.com", "https://cert.api.fiservapps.com", "https://prod.api.fiservapps.com"];    
-            var trustedEventTypes = ["saq-card-form-state-change", "saqa-card-form-state-change"];    
-            if (trustedOrigins.includes(event.origin) && event.data && trustedEventTypes.includes(event.data.type)) 
-            {      
-                handler(event.data);    
-            }
-        }
-
-        window.addEventListener('message', this.iframeEventListener, false); 
-    }
-
-    createPaymentIframe = function()
-    {
-        this.listenForIframeMessages();
-        try {
-            this.form.loadPaymentForm("fiserv-commercehub-card-form-container")
-            .then((next) => {
-                // next is null here
-                // need to handle this when window receives capture event (handleIframeEvents)
+            promise.then((credentialsResponse) => {
+                storeSessionCallback(credentialsResponse['sessionId']);
+                this.form.submit(credentialsResponse['submitConfig'])
+                    .then((response) => {
+                        this.runSuccessCallback(response);
+                    })
+                    .catch((error) => {
+                        this.runFailureCallback(error);
+                    })
             })
             .catch((error) => {
                 this.runFailureCallback(error);
             });
-            this.loadSuccessCallback()
-        } catch (error) {
-            this.loadFailCallback(error);
         }
     }
 
-    submitForm = function()
+    destroyIframe = function(formId)
     {
-        if (this.iframeActive === true)
-        {
-            this.form.submitCardForm();    
-        }
+        $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
     }
 
-    destroyIframe = function()
-    {
-        $("#fiserv-commercehub-card-form-container").find("iframe").remove();
-        window.removeEventListener('message', this.iframeEventListener, false);
-    }
-
-    reactivateIframe = function()
+    reactivateIframe = function(formId)
     {
         this.iframeActive = true;
-        this.listenForIframeMessages();
-        $("#fiserv-commercehub-card-form-container").find("iframe").show();
+        $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").show();
     }
 
     deactivateIframe = function()
@@ -133,7 +132,17 @@ class FiservIframe
         if (typeof(this.form) !== "undefined")
         {
             $("#fiserv-commercehub-card-form-container").find("iframe").hide();
-            window.removeEventListener('message', this.iframeEventListener, false);
+            this.iframeActive = false;
         }
+    }
+
+    unmask = function(field)
+    {
+        this.form.mask(field, false);
+    }
+
+    mask = function(field)
+    {
+        this.form.mask(field, true);
     }
 }

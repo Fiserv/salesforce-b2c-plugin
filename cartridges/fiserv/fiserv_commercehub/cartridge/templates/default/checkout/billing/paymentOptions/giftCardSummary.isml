@@ -1,0 +1,3 @@
+<div class="gift-card-item">
+    <span>${Resource.msg('display.html.gift.giftListItem', 'display', null)} - ${payment.currencySymbol}${payment.amount}</span>
+</div>
