@@ -1,0 +1,12 @@
+<div class="payment-details">
+    <isloop items="${pdict.order.billing.payment.selectedPaymentInstruments}" var="payment" status="status">
+        <isif condition="${payment.paymentMethod === 'CREDIT_CARD'}">
+            <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
+        <iselseif condition="${payment.paymentMethod === 'GIFT_CARD'}" />
+            <isinclude template="checkout/billing/paymentOptions/giftCardSummary" />
+        </isif>
+        <isif condition="${!status.last}">
+            <br>
+        </isif>
+    </isloop>
+</div>

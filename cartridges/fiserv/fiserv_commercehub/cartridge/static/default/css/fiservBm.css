@@ -1,0 +1,412 @@
+.fullPageContainer, .headerContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    font-family: PT Sans,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+    font-style: normal;
+}
+
+.headerContainer {
+    margin-bottom: 0.5rem;
+}
+
+.settingsContainer, .header {
+    padding: 0 1rem;
+    flex: 0 0 70%;
+}
+
+.scrollBarContainer {
+    flex: 0 2 auto;
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    margin-top: 1.75rem;
+    top: 2rem;
+    align-self: flex-start
+}
+
+.actionFooter {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    bottom: -1rem;
+    background-color: white;
+    margin-left: 1rem;
+    margin-right: 2rem;
+    padding-top: 1.5em;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    border-top: solid 1px lightgray;
+}
+
+.logo {
+    width: 135px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 0.5rem;
+}
+
+.titleHeader {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    font-weight: normal;
+}
+
+.titleText {
+    padding-top: 2rem;
+    font-size: 2.5rem;
+}
+
+.headerDescription, .configGroupContainer, .customizationTitleContainer, .formTitleContainer {
+    font-size: 16px;
+    padding-left: 1rem;
+}
+
+.configGroupContainer {
+    padding-top: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.formContainer {
+    margin-bottom: 0.75rem;
+}
+
+.formConfigGroupContainer {
+    margin-left: 1rem;
+}
+
+.formTitleContainer {
+    padding-left: 0;
+    padding-top: 1rem;
+    margin-right: 2rem;
+    margin-left: 1rem;
+    border-top: solid 2px lightgray;
+}
+
+.configTitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 0.4rem;
+    height: 1.3rem;
+}
+
+.configTitleText {
+    white-space: nowrap;
+    max-width: 75%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.configTitle > * {
+    margin: 0 0.075rem;
+}
+
+.configGroupTitle, .customizationTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.customizationTitle{
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    margin-right: 2rem;
+    border-top: solid 2px lightgray;
+    margin-bottom: 0;
+}
+
+.formTitle {
+    font-size: 1.5rem;
+    text-decoration: underline;
+}
+
+.configGroup {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.configItem {
+    flex: 0 0 50%;
+    margin-bottom: 1rem;
+    min-width: 14rem;
+}
+
+.configInput, .alertDetail {
+    width: auto;
+    margin-right: 4.5rem;
+}
+
+.configField, .fieldError, .fieldWarn, .textBoxConfigField {
+    border-radius: .25rem;
+    width: 100%;
+    padding-left: .6rem;
+    padding-right: 1.5rem;
+}
+
+.configField, .textBoxConfigField {
+    font-size: 13px;
+    border: solid 1px lightgray;
+    background-color: white;
+}
+
+.configField {
+    height: 2.25rem;
+}
+
+.configField:disabled {
+    color: #bbb;
+    border-color: #bbb;
+}
+
+select.configField {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+
+    background-image: url('data:image/svg+xml,<svg width="15" height="10" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 9 L1 1 L14 1 Z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right .5rem top 50%;
+    background-size: 0.5rem auto;
+}
+
+select.configField:disabled {
+    background-image: url('data:image/svg+xml,<svg width="15" height="10" xmlns="http://www.w3.org/2000/svg" fill="%23bbb"><path d="M7.5 9 L1 1 L14 1 Z"/></svg>');
+}
+
+.fieldError, .fieldWarn {
+    margin-top: .5rem;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+}
+
+.configScrollOptionContainer {
+    padding: 0.25rem 0;
+    padding-left: 1rem;
+    border-left: solid 1px lightgray;
+    color: gray;
+    font-weight: lighter;
+}
+
+.formScrollOption {
+    padding-left: 2.5rem;
+}
+
+.scrollLocation {
+    color: #3ba6e4;
+    border-left: solid 2px #F57C00;
+}
+
+.noLocation {
+    color: gray;
+    border-left: solid 1px lightgray;
+}
+
+.scrollLabel {
+    cursor: pointer;
+}
+
+a.headerLink:link, a.headerLink:visited {
+    text-decoration: none;
+    color: #3ba6e4 !important;
+}
+
+a.headerLink:hover {
+    text-decoration: underline;
+}
+
+div.hidden, span.hidden {
+    display: none;
+}
+
+.star {
+    font-family: "Source Sans Pro, sans-serif";
+}
+
+.descriptionContainer {
+    font-size: 16px;
+    color: #3ba6e4;
+    position: relative;
+    flex: .95 0 0;
+}
+
+.descriptionIcon:hover {
+    cursor: help;
+}
+
+.descriptionTooltip {
+    visibility: hidden;
+    text-align: center;
+    width: auto;
+    background-color: white;
+    color: black;
+    padding: 0.25rem 0.5rem;
+    border: solid 1px lightgray;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10;
+    bottom: 90%;
+    left: 0%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.descriptionIcon:hover + .descriptionTooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.messageBlock {
+    color: white;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 0.5rem;
+    padding-left: 1rem;
+    border-radius: 0.25rem;
+}
+
+.removeMessage {
+    animation: removeMessage 0.5s ease-in-out;
+    opacity: 0%;
+}
+
+@keyframes removeMessage {
+    0% {
+        opacity: 100%;
+    }
+    100% {
+        opacity: 0%;
+    }
+}
+
+.successMessage {
+    background-color: #61d000;
+}
+
+.warnMessage, .fieldWarn {
+    background-color: #ffc107;
+    border: solid 1px #ffc107;
+}
+
+.failMessage, .fieldError {
+    background-color: #ff3434;
+    border: solid 1px #ff3434;
+}
+
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 4rem;
+    height: 2.25rem;
+}
+
+.toggle input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: darkgrey;
+    transition: .3s;
+    border-radius: 2rem;
+}
+
+input:disabled + .slider {
+    background-color: #676767;
+}
+  
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 1.65rem;
+    width: 1.65rem;
+    left: .3rem;
+    bottom: .3rem;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:disabled + .slider::before {
+    background-color: #CECBCB;
+}
+
+input:checked + .slider {
+    background-color: #F57C00;
+}
+
+input:checked:disabled + .slider {
+    background-color: #ab5601;
+}
+  
+input:checked + .slider:before {
+    transform: translateX(1.75rem);
+}
+
+button.saveButton {
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;
+    margin-left: auto;
+    width: 4.25rem;
+    height: 2.5rem;
+    background-color: #3676D0;
+    border: 1px solid #3676D0;
+    border-radius: 0.3rem;
+    color: white;
+    font-size: 16px;
+    margin-right: 1rem;
+    transition: color 0.25s, background-color 0.25s;
+    cursor: pointer;
+}
+
+button.saveButton:hover {
+    background-color: #4692fd;
+    border: 1px solid #4692fd;
+}
+
+button.saveButton:disabled {
+    background-color: #2a5ea6;
+    border: 1px solid #2a5ea6;
+    color: #d3d3d3;
+    cursor: default;
+}
+
+button.saveButton:active {
+    background-color: #326cbc;
+    border: 1px solid #326cbc;
+}
+
+button.cancelButton {
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;
+    margin-left: auto;
+    width: 9.5rem;
+    height: 2.5rem;
+    background-color: white;
+    border: 1px solid lightgray;
+    border-radius: 0.3rem;
+    font-size: 16px;
+    margin-right: 1rem;
+    cursor: pointer;
+}
+
+button.cancelButton:hover {
+    border: 2px solid lightgray;
+}
+
+button.cancelButton:active {
+    border: 2px solid #9d9d9d;
+}

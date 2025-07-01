@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<extensions xmlns="http://www.demandware.com/xml/bmmodules/2007-12-11" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://www.demandware.com/xml/bmmodules/2007-12-11 bmext.xsd">
+    <menuitem id="fiserv-commercehub" position="1">
+        <name xml:lang="x-default">Fiserv Payments</name>
+        <short_description xml:lang="x-default">Manage Fiserv Payments settings for your storefront</short_description>
+        <description xml:lang="x-default">Access the below Fiserv Payment tools to gain more insight to your storefront</description>
+        <icon>images/configIcons/fs-money.png</icon>
+    </menuitem>
+    <menuaction id="fiserv-commercehub-config" menupath="fiserv-commercehub" position="1">
+        <name xml:lang="x-default">Config Settings</name>
+        <short_description xml:lang="x-default">Manage the configurations of your storefront page</short_description>
+        <description xml:lang="x-default">Manage the configurations of your storefront page</description>
+        <exec pipeline="FiservSettings" node="Config" />
+        <sub-pipelines>
+            <pipeline name="FiservSettings-Config" />
+            <pipeline name="FiservSettings-SaveChanges" />
+        </sub-pipelines>
+        <icon>images/configIcons/fs-gear-filled.png</icon>
+    </menuaction>
+</extensions>

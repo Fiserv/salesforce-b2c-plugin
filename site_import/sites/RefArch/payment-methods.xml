@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
+    <payment-method method-id="CREDIT_CARD">
+        <name xml:lang="x-default">Credit Card</name>
+        <description xml:lang="x-default">Use this payment method for payment cards</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FISERV_COMMERCEHUB</processor-id>
+    </payment-method>
+    <payment-method method-id="GIFT_CARD">
+        <name xml:lang="x-default">Gift Card</name>
+        <description xml:lang="x-default">Use this payment method for gift cards</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FISERV_COMMERCEHUB_GIFT</processor-id>
+    </payment-method>
+</payment-settings>

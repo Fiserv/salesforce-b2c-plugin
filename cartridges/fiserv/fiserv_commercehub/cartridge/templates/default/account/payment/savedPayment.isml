@@ -1,0 +1,12 @@
+<div style="display: flex; flex-wrap: nowrap; justify-content: space-between">
+    <div>
+        <p>${Resource.msg('label.payment.credit','account',null)} ${payment.creditCardType}</p>
+        <p>${payment.maskedCreditCardNumber}</p>
+        <p>${Resource.msg('label.payment.ending','account',null)} ${payment.creditCardExpirationMonth}/${payment.creditCardExpirationYear}</p>
+    </div>
+    <isif condition="${payment.cardTypeImage}">
+        <div style="height: 72px; align-self: center; margin-right: 4rem;">
+            <img src="${payment.cardTypeImage.src}" alt="${payment.cardTypeImage.alt}"/>
+        </div>
+    </isif>
+</div>

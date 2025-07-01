@@ -1,0 +1,94 @@
+<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
+<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+<isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
+<isset name="canTokenizeSpa" value="${pdict.commercehubConfig.getCommerceHubStandaloneSpa()}" scope="pdict" />
+<isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getCreditPrivacyStatementEnabled()}" scope="pdict" />
+
+<isif condition="${pdict.canTokenize && pdict.canTokenizeSpa}">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets.js');
+        assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+        assets.addJs('/js/fiserv_account/commercehub_tokenize_form.js');
+        assets.addJs('/js/fiserv_account/tokenize.js');
+        assets.addJs(pdict.chSdkUrl);
+        assets.addCss('css/fiservScc.css');
+    </isscript>
+
+    <div id="fiserv-commercehub-card-form-container" 
+        data-commercehub-form-config="${URLUtils.https('Fiserv-InitializationData', 'formId', 'Tokenization')}"
+        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}">
+        <div class="sdc-row">
+            <div id="sdc-card-number-frame" class="sdc-field-frame sdc-text">
+                <div id="sdc-card-brand-icon" class="sdc-card-brand-icon"></div>
+                <div id="fiserv_commercehub-card-number" class="sdc-field"></div>
+                <button id="sdc-mask-cardNumber" class="btn sdc-unmasking-icon"></button>
+            </div>
+            <span id="sdc-card-number-invalid-message" class="sdc-error-message sdc-hidden"></span>
+        </div>
+        <div class="sdc-row">
+            <div id="sdc-card-name-frame" class="sdc-field-frame sdc-text">
+                <div id="fiserv_commercehub-name-on-card" class="sdc-field"></div>
+            </div>                                                                                                
+            <span id="sdc-card-name-invalid-message" class="sdc-error-message sdc-hidden"></span>
+        </div>
+        <div class="sdc-row">
+            <div id="sdc-security-code-frame" class="sdc-field-frame sdc-text">
+                <div id="fiserv_commercehub-security-code" class="sdc-field"></div>
+                <button id="sdc-mask-securityCode" class="btn sdc-unmasking-icon"></button>
+            </div>
+            <span id="sdc-security-code-invalid-message" class="sdc-error-message sdc-hidden"></span>
+        </div>
+        <div class="sdc-column">
+            <div class="sdc-row">
+                <div id="sdc-exp-month-frame" class="sdc-field-frame sdc-dropdown">
+                    <div id="fiserv_commercehub-expiration-month" class="sdc-field"></div>
+                </div>
+                <span id="sdc-exp-month-invalid-message" class="sdc-error-message sdc-hidden"></span>
+            </div>
+            <div class="sdc-row">
+                <div id="sdc-exp-year-frame" class="sdc-field-frame sdc-dropdown">
+                    <div id="fiserv_commercehub-expiration-year" class="sdc-field"></div>
+                </div>
+                <span id="sdc-exp-year-invalid-message" class="sdc-error-message sdc-hidden"></span>
+            </div>
+        </div>
+        <isif condition="${pdict.showPrivacyStatement}">
+            <div class="privacyPolicy">
+                <span></span>
+                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+            </div>
+        </isif>
+        <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
+            <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
+        </div>
+    </div>
+
+
+    <form
+        action="${URLUtils.url('PaymentInstruments-SavePayment', 'UUID', pdict.UUID)}"
+        class="payment-form"
+        method="POST"
+        name="payment-form" ${pdict.paymentForm.attributes}>
+
+        <!--- Hidden input for credit card type --->
+        <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+        <input type="hidden" id="commercehubSessionIdInput" name="${pdict.paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+        
+        <!-- Cancel and Save Buttons -->
+        <div class="row">
+            <div class="col">
+                <a href="${URLUtils.url('PaymentInstruments-List')}" class="btn btn-block btn-outline-primary">${Resource.msg('button.cancel','account',null)}</a>
+            </div>
+            <div class="col">
+                <button type="submit" name="save" class="btn btn-save btn-block btn-primary">${Resource.msg('button.save','account',null)}</button>
+            </div>
+        </div>
+
+    </form>
+<iselse/>
+    <p>Card saving feature is disabled</p>
+    <div class="col">
+        <a href="${URLUtils.url('PaymentInstruments-List')}" class="btn btn-block btn-outline-primary">${Resource.msg('button.cancel','account',null)}</a>
+    </div>
+</isif>

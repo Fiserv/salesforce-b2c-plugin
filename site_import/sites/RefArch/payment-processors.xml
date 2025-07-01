@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-processors xmlns="http://www.demandware.com/xml/impex/paymentprocessor/2007-03-31">
+    <payment-processor processor-id="FISERV_COMMERCEHUB">
+        <description>Fiserv Commerce Hub payment processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE PAYMENT ACCEPTANCE SETTINGS START-->
+
+                <preference preference-id="CommerceHubAcceptedCurrency">
+                    <value>USD</value>
+                </preference>
+                <preference preference-id="CommerceHubAcceptedCountries">
+                    <value>United States</value>
+                </preference>
+
+                <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
+
+                <preference preference-id="CommerceHubCreditPrivacyStatement">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubCreditPaymentMethodTitle">
+                    <value>Credit/Debit Cards</value>
+                </preference>
+                <preference preference-id="CommerceHubCreditPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenization">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationStrategy">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubStandaloneSPA">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubEarlyTokenization">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubCreditPrivacyStatement">
+                    <value>true</value>
+                </preference>
+
+                <!--THIS IS WHERE THE PAYMENT FORM CUSTOMIZATION STARTS-->
+
+                <preference preference-id="CommerceHubPaymentFormCardNumberPlaceholder">
+                    <value>Card Number</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCardNumberPlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCardNumberFormat">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCardNumberMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCardNumberMaskCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCardNumberMaskMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCardNumberMaskLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCardNumberInvalidFieldMessage">
+                    <value>Invalid Card Number</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormNameOnCardPlaceholder">
+                    <value>Name on Card</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormNameOnCardInvalidFieldMessage">
+                    <value>Invalid Name on Card</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormSecurityCodePlaceholder">
+                    <value>CVV</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormSecurityCodePlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormSecurityCodeMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormSecurityCodeMaskCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormSecurityCodeMaskMode">
+                    <value>ALWAYS_MASK_ALL</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormSecurityCodeInvalidFieldMessage">
+                    <value>Invalid Security Code</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormExpirationMonthPlaceholder">
+                    <value>Expiration Month</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormExpirationMonthOptionLabels">
+                    <value>
+[
+	"01 - January",
+	"02 - February",
+	"03 - March",
+	"04 - April",
+	"05 - May",
+	"06 - June",
+	"07 - July",
+	"08 - August",
+	"09 - September",
+	"10 - October",
+	"11 - November",
+	"12 - December"
+]</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormExpirationMonthInvalidFieldMessage">
+                    <value>Invalid Expiration Month</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormExpirationYearPlaceholder">
+                    <value>Expiration Year</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormExpirationYearInvalidFieldMessage">
+                    <value>Invalid Expiration Year</value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormCSS">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormFontData">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormFontFamily">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormFontFormat">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubPaymentFormFontIntegrity">
+                    <value></value>
+                </preference>
+
+                <!--THIS IS WHERE THE TOKENIZATION FORM CUSTOMIZATION STARTS-->
+
+                <preference preference-id="CommerceHubTokenizationFormCardNumberPlaceholder">
+                    <value>Card Number</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCardNumberPlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCardNumberFormat">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCardNumberMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCardNumberMaskCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCardNumberMaskMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCardNumberMaskLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCardNumberInvalidFieldMessage">
+                    <value>Invalid Card Number</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormNameOnCardPlaceholder">
+                    <value>Name on Card</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormNameOnCardInvalidFieldMessage">
+                    <value>Invalid Name on Card</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormSecurityCodePlaceholder">
+                    <value>CVV</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormSecurityCodePlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormSecurityCodeMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormSecurityCodeMaskCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormSecurityCodeMaskMode">
+                    <value>ALWAYS_MASK_ALL</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormSecurityCodeInvalidFieldMessage">
+                    <value>Invalid Security Code</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormExpirationMonthPlaceholder">
+                    <value>Expiration Month</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormExpirationMonthOptionLabels">
+                    <value>
+[
+	"01 - January",
+	"02 - February",
+	"03 - March",
+	"04 - April",
+	"05 - May",
+	"06 - June",
+	"07 - July",
+	"08 - August",
+	"09 - September",
+	"10 - October",
+	"11 - November",
+	"12 - December"
+]</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormExpirationMonthInvalidFieldMessage">
+                    <value>Invalid Expiration Month</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormExpirationYearPlaceholder">
+                    <value>Expiration Year</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormExpirationYearInvalidFieldMessage">
+                    <value>Invalid Expiration Year</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormCSS">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormFontData">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormFontFamily">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormFontFormat">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubTokenizationFormFontIntegrity">
+                    <value></value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_GIFT">
+        <description>Fiserv Commerce Hub gift card processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
+
+                <preference preference-id="CommerceHubGiftEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftPaymentMethodTitle">
+                    <value>Gift Cards</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubMaxGiftCards">
+                    <value>1</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftSecurityEnable">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftPrivacyStatement">
+                    <value>true</value>
+                </preference>
+                
+                <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
+
+                <preference preference-id="CommerceHubGiftFormCardNumberPlaceholder">
+                    <value>Gift Card Number</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCardNumberPlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCardNumberFormat">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCardNumberMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCardNumberMaskCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCardNumberMaskMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCardNumberMaskLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCardNumberInvalidFieldMessage">
+                    <value>Invalid Gift Card Number</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormSecurityCodePlaceholder">
+                    <value>CVV</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormSecurityCodePlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormSecurityCodeMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormSecurityCodeMaskCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormSecurityCodeMaskMode">
+                    <value>ALWAYS_MASK_ALL</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormSecurityCodeInvalidFieldMessage">
+                    <value>Invalid Security Code</value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormCSS">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormFontData">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormFontFamily">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormFontFormat">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubGiftFormFontIntegrity">
+                    <value></value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+</payment-processors>

@@ -1,0 +1,84 @@
+<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
+<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+<isset name="CHGiftEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
+<isset name="CHGiftSecurityEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftSecurityEnabled()}" scope="pdict" />
+<isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getGiftPrivacyStatementEnabled()}" scope="pdict" />
+<isif condition="${pdict.currentStage}">
+    <isset name="giftCardInfo" value="${pdict.FiservHelper.retrieveAppliedGiftCards()}" scope="pdict" />
+</isif>
+
+<isif condition="${pdict.CHGiftEnabled}">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets.js');
+        assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+        assets.addJs('/js/fiserv_gift/commercehub-giftcard-form.js');
+        assets.addJs('/js/fiserv_gift/giftcard.js');
+        assets.addJs(pdict.chSdkUrl);
+        assets.addCss('css/fiservScc.css');
+    </isscript>
+
+    <isif condition="${!pdict.CHGiftPanelTitlePresent}">
+        <label class="form-control-label" for="fiserv-commercehub-gift-form-container">
+            <isprint value="${pdict.commercehubConfig.getCommerceHubGiftTitle()}" />
+        </label>
+    </isif>
+    <div id="fiserv-commercehub-gift-form-container"
+        data-commercehub-form-config="${URLUtils.https('Fiserv-InitializationData', 'formId', 'Gift')}"
+        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+        data-commercehub-balance-inquiry="${URLUtils.https('FiservGift-BalanceInquiry')}"
+        <isif condition="${pdict.currentStage}">
+            data-commercehub-gift-apply="${URLUtils.https('FiservGift-ApplyGiftCard')}"
+            data-commercehub-gift-remove="${URLUtils.https('FiservGift-RemoveGiftCard')}"
+            data-initial-checkout-stage="${pdict.currentStage}"
+            data-gift-card-line-item-text="${Resource.msg('display.html.gift.giftListItem', 'display', null)}"
+            data-gift-card-remove-text="${Resource.msg('display.html.gift.removeGiftListItem', 'display', null)}"
+        </isif>>
+
+        <div class="sdc-row">
+            <div id="sdc-gift-card-number-frame" class="sdc-field-frame sdc-text">
+                <div id="fiserv_commercehub-gift-card-number" class="sdc-field"></div>
+                <button id="sdc-mask-gift-cardNumber" class="btn sdc-unmasking-icon"></button>
+            </div>
+            <span id="sdc-gift-card-number-invalid-message" class="sdc-error-message sdc-hidden"></span>
+        </div>
+        <isif condition="${pdict.CHGiftSecurityEnabled}">
+            <div class="sdc-row">
+                <div id="sdc-gift-security-code-frame" class="sdc-field-frame sdc-text">
+                    <div id="fiserv_commercehub-gift-security-code" class="sdc-field"></div>
+                    <button id="sdc-mask-gift-securityCode" class="btn sdc-unmasking-icon"></button>
+                </div>
+                <span id="sdc-gift-security-code-invalid-message" class="sdc-error-message sdc-hidden"></span>
+            </div>
+        </isif>
+
+        <div id="fiserv-scc-gift-fatal-notice" class="alert alert-danger">
+            <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
+        </div>
+        <div id="sdc-gift-after-form-container">
+            <div id="fiserv-scc-gift-alert-container"></div>
+            <div id="sdc-gift-button-container">
+                <input type="hidden" id="commercehubGiftPrimarySessionIdInput"/>
+                <input type="hidden" id="commercehubGiftSecondarySessionIdInput"/>
+                <button type="button" id="gift-balance-button" class="btn btn-outline-primary">${Resource.msg('display.html.gift.checkBalance', 'display', null)}</button>
+                <isif condition="${pdict.currentStage}">
+                    <button type="button" id="gift-submit-button" class="btn btn-primary">${Resource.msg('display.html.gift.apply', 'display', null)}</button>
+                </isif>
+                </div>
+                <div id="fiserv-scc-gift-balance" class="sdc-hidden">
+                    ${Resource.msg('display.html.gift.balance', 'display', null)} <span id="fiserv-scc-gift-balance-amount"></span>
+                </div>
+        </div>
+
+        <isif condition="${pdict.showPrivacyStatement}">
+            <div class="privacyPolicy">
+                <span></span>
+                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+            </div>
+        </isif>
+
+        <isif condition="${pdict.currentStage}">
+            <div id="fiserv-scc-gift-card-info-container" data-gift-card-list-json="${JSON.stringify(pdict.giftCardInfo)}"></div>
+        </isif>
+    </div>
+</isif>

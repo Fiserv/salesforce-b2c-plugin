@@ -1,0 +1,79 @@
+<div class="configGroup">
+    <isloop items="${configGroup.items}" alias="configDescription" status="status">
+        <div id="${configDescription.id}Item" class="configItem">
+            <div class="configTitle">
+                <span class="configTitleText"><isprint value="${configDescription.displayName}" /></span>
+                <isif condition="${configDescription.mandatory}"><span class="star">*</span></isif>
+                <isif condition="${configDescription.description}">
+                    <span id="${configDescription.id}Description" class="descriptionContainer">
+                        <span class="descriptionIcon">&#9432;</span>
+                        <span class="descriptionTooltip"><isprint value="${configDescription.description}" /></span>
+                    </span>
+                </isif>
+            </div>
+            <div class="configInput">
+                <isif condition="${configDescription.valueType == 3}">
+                    <iscomment>
+                        This section is for single line text boxes
+                    </iscomment>
+                    <input id="${configDescription.id}" class="configField"  type="text" maxlength="248" value="${configDescription.currentValue}" placeholder="Enter Text" />
+                <iselseif condition="${configDescription.valueType == 1}">
+                    <iscomment>
+                        This section is for single line number boxes
+                    </iscomment>
+                    <input id="${configDescription.id}" class="configField"  type="text" maxlength="248" value="${configDescription.currentValue}" oninput="this.value = this.value.replace(/[^\d]/g, '')" placeholder="Enter a Number"/>
+                <iselseif condition="${configDescription.valueType == 13}" />
+                    <iscomment>
+                        This section is for single line text boxes that are masked (Don't ask me why max-length needs to be 2048, reason is silly)
+                    </iscomment>
+                    <isif condition="${configDescription.currentValue === ''}">
+                        <input id="${configDescription.id}" class="configField"  type="password" maxlength="2048" value="" placeholder="Enter Text" />
+                    <iselse/>
+                        <input id="${configDescription.id}" class="configField"  type="password" maxlength="2048" value="******" placeholder="Enter Text" />
+                    </isif>
+                <iselseif condition="${configDescription.valueType == 4}" />
+                    <iscomment>
+                        This section is for large text boxes
+                    </iscomment>
+                    <textarea id="${configDescription.id}" class="textBoxConfigField" rows="5" placeholder="Enter Text"><isprint value="${configDescription.currentValue}" /></textarea>
+                <iselseif condition="${configDescription.valueType == 8}" />
+                    <iscomment>
+                        This section is for boolean checkboxes
+                    </iscomment>
+                    <label class="toggle">
+                        <isif condition="${configDescription.currentValue}">
+                            <input id="${configDescription.id}" class="configField" type="checkbox" checked="checked" />
+                        <iselse/>
+                            <input id="${configDescription.id}" class="configField" type="checkbox" />
+                        </isif>
+                        <span class="slider"></span>
+                    </label>
+                <iselseif condition="${configDescription.valueType == 31 || configDescription.valueType == 33}" />
+                    <iscomment>
+                        This section is for dropdowns
+                    </iscomment>
+                    <select id="${configDescription.id}" class="configField">
+                        <isloop items="${configDescription.values}" alias="valueOption">
+                            <isif condition="${valueOption.value == configDescription.currentValue}">
+                                <option value="${valueOption.value}" selected="selected">
+                                    <isprint value="${valueOption.displayValue}" />
+                                    <isif condition="${valueOption.value == configDescription.defaultValue.value}">
+                                        &nbsp;(default) 
+                                    </isif>
+                                </option>
+                            <iselse/>
+                                <option value="${valueOption.value}">
+                                    <isprint value="${valueOption.displayValue}" />
+                                    <isif condition="${valueOption.value == configDescription.defaultValue.value}">
+                                        &nbsp;(default) 
+                                    </isif>
+                                </option>
+                            </isif>
+                        </isloop>
+                    </select>
+                </isif>
+            </div>
+            <div id="${configDescription.id}Alert" class="alertDetail hidden"><div></div></div>
+        </div>
+    </isloop>
+</div>

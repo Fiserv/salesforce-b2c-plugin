@@ -1,0 +1,8 @@
+{
+    "caches" : [
+        {
+            "id" : "FiservCommerceHubCache",
+            "expireAfterSeconds" : 2100
+        }
+    ]
+}

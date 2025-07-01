@@ -1,0 +1,1329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+
+            <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubMerchantID">
+                <display-name xml:lang="x-default">CommerceHub Merchant ID</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTerminalID">
+                <display-name xml:lang="x-default">CommerceHub Terminal ID</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAPIKey">
+                <display-name xml:lang="x-default">CommerceHub API Key</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAPISecret">
+                <display-name xml:lang="x-default">CommerceHub API Secret</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAPIEnvironment">
+                <display-name xml:lang="x-default">CommerceHub API Environment</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>CERT</display>
+                        <value>CERT</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>PROD</display>
+                        <value>PROD</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubLogLevel">
+                <display-name xml:lang="x-default">CommerceHub Logging Level</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display>L1 --- Basic Information</display>
+                        <value>L1</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <display>L2 --- Error Reporting</display>
+                        <value>L2</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>L3 --- In depth, detailed logs (Development)</display>
+                        <value>L3</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubMerchantPartnerIntegrator">
+                <display-name xml:lang="x-default">CommerceHub Merchant Partner Integrator</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTimeout">
+                <display-name xml:lang="x-default">CommerceHub API Request Timeouts (in seconds)</display-name>
+                <type>int</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>5</min-value>
+                <max-value>30</max-value>
+                <default-value>30</default-value>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE PAYMENT ACCEPTANCE SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubAcceptedCurrency">
+                <display-name xml:lang="x-default">CommerceHub Accepted Currency</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>US Dollars</display>
+                        <value>USD</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAcceptedCountries">
+                <display-name xml:lang="x-default">CommerceHub Accepted Countries</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>United States</display>
+                        <value>United States</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubCreditEnable">
+                <display-name xml:lang="x-default">Enable Credit/Debit Cards</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubCreditPaymentMethodTitle">
+                <display-name xml:lang="x-default">CommerceHub Payment Method Title</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubCreditPaymentType">
+                <display-name xml:lang="x-default">CommerceHub Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenization">
+                <display-name xml:lang="x-default">Tokenization</display-name>
+                <description xml:lang="x-default">Allow customers to tokenize payment information for later use</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationStrategy">
+                <display-name xml:lang="x-default">CommerceHub Payment Card Tokenization Strategy</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Tokenize at customer request</display>
+                        <value>false</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Tokenize all transactions</display>
+                        <value>true</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubStandaloneSPA">
+                <display-name xml:lang="x-default">Standalone Tokenization</display-name>
+                <description xml:lang="x-default">Allow customers to tokenize payment information without a transaction</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubEarlyTokenization">
+                <display-name xml:lang="x-default">Early Tokenization</display-name>
+                <description xml:lang="x-default">Allow customers to tokenize payment information on credit card capture in the checkout flow</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubCreditPrivacyStatement">
+                <display-name xml:lang="x-default">Show Privacy Statement</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubGiftEnable">
+                <display-name xml:lang="x-default">Enable Gift Cards</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftPaymentMethodTitle">
+                <display-name xml:lang="x-default">CommerceHubGift Payment Method Title</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftPaymentType">
+                <display-name xml:lang="x-default">CommerceHubGift Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftSecurityEnable">
+                <display-name xml:lang="x-default">Enable Security Code</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubMaxGiftCards">
+                <display-name xml:lang="x-default">Max Number of Gift Cards Allowed per Order</display-name>
+                <type>enum-of-int</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>1</display>
+                        <value>1</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>2</display>
+                        <value>2</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>3</display>
+                        <value>3</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>4</display>
+                        <value>4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>5</display>
+                        <value>5</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>6</display>
+                        <value>6</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>7</display>
+                        <value>7</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>8</display>
+                        <value>8</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>9</display>
+                        <value>9</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>10</display>
+                        <value>10</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftPrivacyStatement">
+                <display-name xml:lang="x-default">Show Privacy Statement</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
+
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberPlaceholder">
+                <display-name xml:lang="x-default">Payment Form Card Number Field Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberPlaceholderCharacter">
+                <display-name xml:lang="x-default">Payment Form Card Number Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberFormat">
+                <display-name xml:lang="x-default">Payment Form Card Number Field Format</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberMask">
+                <display-name xml:lang="x-default">Payment Form Card Number Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberMaskCharacter">
+                <display-name xml:lang="x-default">Payment Form Card Number Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberMaskMode">
+                <display-name xml:lang="x-default">Payment Form Card Number Field Mask Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask always except last four</display>
+                        <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4_SHRINK</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur</display>
+                        <value>BLUR_MASK_ALL_SHRINK</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberMaskLength">
+                <display-name xml:lang="x-default">Payment Form Card Number Mask Length</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberInvalidFieldMessage">
+                <display-name xml:lang="x-default">Payment Form Card Number Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Card Number Field for the Payment Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormNameOnCardPlaceholder">
+                <display-name xml:lang="x-default">Payment Form Name On Card Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormNameOnCardInvalidFieldMessage">
+                <display-name xml:lang="x-default">Payment Form Name On Card Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Name On Card Field for the Payment Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormSecurityCodePlaceholder">
+                <display-name xml:lang="x-default">Payment Form Security Code Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormSecurityCodePlaceholderCharacter">
+                <display-name xml:lang="x-default">Payment Form Security Code Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormSecurityCodeMask">
+                <display-name xml:lang="x-default">Payment Form Security Code Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormSecurityCodeMaskCharacter">
+                <display-name xml:lang="x-default">Payment Form Security Code Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormSecurityCodeMaskMode">
+                <display-name xml:lang="x-default">Payment Form Security Code Field Mask Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormSecurityCodeInvalidFieldMessage">
+                <display-name xml:lang="x-default">Payment Form Security Code Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Security Code Field for the Payment Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormExpirationMonthPlaceholder">
+                <display-name xml:lang="x-default">Payment Form Expiration Month Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormExpirationMonthOptionLabels">
+                <display-name xml:lang="x-default">Payment Form Expiration Month Option Labels</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormExpirationMonthInvalidFieldMessage">
+                <display-name xml:lang="x-default">Payment Form Expiration Month Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Expiration Month Field for the Payment Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormExpirationYearPlaceholder">
+                <display-name xml:lang="x-default">Payment Form Expiration Year Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormExpirationYearInvalidFieldMessage">
+                <display-name xml:lang="x-default">Payment Form Expiration Year Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Expiration Year Field for the Payment Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormCSS">
+                <display-name xml:lang="x-default">Payment Form CSS</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the CSS of the Payment Form</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormFontData">
+                <display-name xml:lang="x-default">Payment Form Font Data</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormFontFamily">
+                <display-name xml:lang="x-default">Payment Form Font Family</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormFontFormat">
+                <display-name xml:lang="x-default">Payment Form Font Format</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPaymentFormFontIntegrity">
+                <display-name xml:lang="x-default">Payment Form Font Integrity</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Font of the Payment Form (All fields required to apply custom font)</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            
+            <!--THIS IS WHERE THE TOKENIZATION FORM CUSTOMIZATION STARTS-->
+
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberPlaceholder">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Field Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberPlaceholderCharacter">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberFormat">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Field Format</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberMask">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberMaskCharacter">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberMaskMode">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Field Mask Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask always except last four</display>
+                        <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4_SHRINK</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur</display>
+                        <value>BLUR_MASK_ALL_SHRINK</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberMaskLength">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Mask Length</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCardNumberInvalidFieldMessage">
+                <display-name xml:lang="x-default">Tokenization Form Card Number Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Card Number Field for the Tokenization Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormNameOnCardPlaceholder">
+                <display-name xml:lang="x-default">Tokenization Form Name On Card Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormNameOnCardInvalidFieldMessage">
+                <display-name xml:lang="x-default">Tokenization Form Name On Card Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Name On Card Field for the Tokenization Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormSecurityCodePlaceholder">
+                <display-name xml:lang="x-default">Tokenization Form Security Code Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormSecurityCodePlaceholderCharacter">
+                <display-name xml:lang="x-default">Tokenization Form Security Code Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormSecurityCodeMask">
+                <display-name xml:lang="x-default">Tokenization Form Security Code Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormSecurityCodeMaskCharacter">
+                <display-name xml:lang="x-default">Tokenization Form Security Code Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormSecurityCodeMaskMode">
+                <display-name xml:lang="x-default">Tokenization Form Security Code Field Mask Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormSecurityCodeInvalidFieldMessage">
+                <display-name xml:lang="x-default">Tokenization Form Security Code Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Security Code Field for the Tokenization Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormExpirationMonthPlaceholder">
+                <display-name xml:lang="x-default">Tokenization Form Expiration Month Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormExpirationMonthOptionLabels">
+                <display-name xml:lang="x-default">Tokenization Form Expiration Month Option Labels</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormExpirationMonthInvalidFieldMessage">
+                <display-name xml:lang="x-default">Tokenization Form Expiration Month Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Expiration Month Field for the Tokenization Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormExpirationYearPlaceholder">
+                <display-name xml:lang="x-default">Tokenization Form Expiration Year Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormExpirationYearInvalidFieldMessage">
+                <display-name xml:lang="x-default">Tokenization Form Expiration Year Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Expiration Year Field for the Tokenization Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormCSS">
+                <display-name xml:lang="x-default">Tokenization Form CSS</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the CSS of the Tokenization Form</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormFontData">
+                <display-name xml:lang="x-default">Tokenization Form Font Data</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormFontFamily">
+                <display-name xml:lang="x-default">Tokenization Form Font Family</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormFontFormat">
+                <display-name xml:lang="x-default">Tokenization Form Font Format</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenizationFormFontIntegrity">
+                <display-name xml:lang="x-default">Tokenization Form Font Integrity</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Font of the Tokenization Form (All fields required to apply custom font)</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
+
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberPlaceholder">
+                <display-name xml:lang="x-default">Gift Form Card Number Field Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberPlaceholderCharacter">
+                <display-name xml:lang="x-default">Gift Form Card Number Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberFormat">
+                <display-name xml:lang="x-default">Gift Form Card Number Field Format</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberMask">
+                <display-name xml:lang="x-default">Gift Form Card Number Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberMaskCharacter">
+                <display-name xml:lang="x-default">Gift Form Card Number Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberMaskMode">
+                <display-name xml:lang="x-default">Gift Form Card Number Field Mask Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask always except last four</display>
+                        <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4_SHRINK</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur</display>
+                        <value>BLUR_MASK_ALL_SHRINK</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberMaskLength">
+                <display-name xml:lang="x-default">Gift Form Card Number Mask Length</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCardNumberInvalidFieldMessage">
+                <display-name xml:lang="x-default">Gift Form Card Number Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Card Number Field for the Gift Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormSecurityCodePlaceholder">
+                <display-name xml:lang="x-default">Gift Form Security Code Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormSecurityCodePlaceholderCharacter">
+                <display-name xml:lang="x-default">Gift Form Security Code Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormSecurityCodeMask">
+                <display-name xml:lang="x-default">Gift Form Security Code Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormSecurityCodeMaskCharacter">
+                <display-name xml:lang="x-default">Gift Form Security Code Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormSecurityCodeMaskMode">
+                <display-name xml:lang="x-default">Gift Form Security Code Field Mask Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormSecurityCodeInvalidFieldMessage">
+                <display-name xml:lang="x-default">Gift Form Security Code Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Security Code Field for the Gift Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormCSS">
+                <display-name xml:lang="x-default">Gift Form CSS</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the CSS of the Gift Form</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormFontData">
+                <display-name xml:lang="x-default">Gift Form Font Data</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormFontFamily">
+                <display-name xml:lang="x-default">Gift Form Font Family</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormFontFormat">
+                <display-name xml:lang="x-default">Gift Form Font Format</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubGiftFormFontIntegrity">
+                <display-name xml:lang="x-default">Gift Form Font Integrity</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Font of the Gift Form (All fields required to apply custom font)</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+
+                <!--THIS IS WHERE THE PAYMENT ACCEPTANCE SETTINGS START-->
+                <attribute attribute-id="CommerceHubAcceptedCurrency"/>
+                <attribute attribute-id="CommerceHubAcceptedCountries"/>
+
+                <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
+                <attribute attribute-id="CommerceHubCreditEnable"/>
+                <attribute attribute-id="CommerceHubCreditPaymentMethodTitle"/>
+                <attribute attribute-id="CommerceHubCreditPaymentType"/>
+                <attribute attribute-id="CommerceHubTokenization"/>
+                <attribute attribute-id="CommerceHubTokenizationStrategy"/>
+                <attribute attribute-id="CommerceHubStandaloneSPA"/>
+                <attribute attribute-id="CommerceHubEarlyTokenization"/>
+                <attribute attribute-id="CommerceHubCreditPrivacyStatement"/>
+
+                <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberFormat"/>
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberMask"/>
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberMaskCharacter"/>
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberMaskMode"/>
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberMaskLength"/>
+                <attribute attribute-id="CommerceHubPaymentFormCardNumberInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubPaymentFormNameOnCardPlaceholder"/>
+                <attribute attribute-id="CommerceHubPaymentFormNameOnCardInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubPaymentFormSecurityCodePlaceholder"/>
+                <attribute attribute-id="CommerceHubPaymentFormSecurityCodePlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubPaymentFormSecurityCodeMask"/>
+                <attribute attribute-id="CommerceHubPaymentFormSecurityCodeMaskCharacter"/>
+                <attribute attribute-id="CommerceHubPaymentFormSecurityCodeMaskMode"/>
+                <attribute attribute-id="CommerceHubPaymentFormSecurityCodeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubPaymentFormExpirationMonthPlaceholder"/>
+                <attribute attribute-id="CommerceHubPaymentFormExpirationMonthOptionLabels"/>
+                <attribute attribute-id="CommerceHubPaymentFormExpirationMonthInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubPaymentFormExpirationYearPlaceholder"/>
+                <attribute attribute-id="CommerceHubPaymentFormExpirationYearInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubPaymentFormCSS"/>
+                <attribute attribute-id="CommerceHubPaymentFormFontData"/>
+                <attribute attribute-id="CommerceHubPaymentFormFontFamily"/>
+                <attribute attribute-id="CommerceHubPaymentFormFontFormat"/>
+                <attribute attribute-id="CommerceHubPaymentFormFontIntegrity"/>
+
+                <!--THIS IS WHERE THE TOKENIZATION FORM CUSTOMIZATION STARTS-->
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberPlaceholder"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberPlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberFormat"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberMask"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberMaskCharacter"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberMaskMode"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberMaskLength"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCardNumberInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubTokenizationFormNameOnCardPlaceholder"/>
+                <attribute attribute-id="CommerceHubTokenizationFormNameOnCardInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubTokenizationFormSecurityCodePlaceholder"/>
+                <attribute attribute-id="CommerceHubTokenizationFormSecurityCodePlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubTokenizationFormSecurityCodeMask"/>
+                <attribute attribute-id="CommerceHubTokenizationFormSecurityCodeMaskCharacter"/>
+                <attribute attribute-id="CommerceHubTokenizationFormSecurityCodeMaskMode"/>
+                <attribute attribute-id="CommerceHubTokenizationFormSecurityCodeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubTokenizationFormExpirationMonthPlaceholder"/>
+                <attribute attribute-id="CommerceHubTokenizationFormExpirationMonthOptionLabels"/>
+                <attribute attribute-id="CommerceHubTokenizationFormExpirationMonthInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubTokenizationFormExpirationYearPlaceholder"/>
+                <attribute attribute-id="CommerceHubTokenizationFormExpirationYearInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubTokenizationFormCSS"/>
+                <attribute attribute-id="CommerceHubTokenizationFormFontData"/>
+                <attribute attribute-id="CommerceHubTokenizationFormFontFamily"/>
+                <attribute attribute-id="CommerceHubTokenizationFormFontFormat"/>
+                <attribute attribute-id="CommerceHubTokenizationFormFontIntegrity"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Gift Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+
+                <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
+                <attribute attribute-id="CommerceHubGiftEnable"/>
+                <attribute attribute-id="CommerceHubGiftPaymentMethodTitle"/>
+                <attribute attribute-id="CommerceHubGiftPaymentType"/>
+                <attribute attribute-id="CommerceHubGiftSecurityEnable"/>
+                <attribute attribute-id="CommerceHubMaxGiftCards"/>
+                <attribute attribute-id="CommerceHubGiftPrivacyStatement"/>
+
+                <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
+                <attribute attribute-id="CommerceHubGiftFormCardNumberPlaceholder"/>
+                <attribute attribute-id="CommerceHubGiftFormCardNumberPlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubGiftFormCardNumberFormat"/>
+                <attribute attribute-id="CommerceHubGiftFormCardNumberMask"/>
+                <attribute attribute-id="CommerceHubGiftFormCardNumberMaskCharacter"/>
+                <attribute attribute-id="CommerceHubGiftFormCardNumberMaskMode"/>
+                <attribute attribute-id="CommerceHubGiftFormCardNumberMaskLength"/>
+                <attribute attribute-id="CommerceHubGiftFormCardNumberInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubGiftFormSecurityCodePlaceholder"/>
+                <attribute attribute-id="CommerceHubGiftFormSecurityCodePlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubGiftFormSecurityCodeMask"/>
+                <attribute attribute-id="CommerceHubGiftFormSecurityCodeMaskCharacter"/>
+                <attribute attribute-id="CommerceHubGiftFormSecurityCodeMaskMode"/>
+                <attribute attribute-id="CommerceHubGiftFormSecurityCodeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubGiftFormCSS"/>
+                <attribute attribute-id="CommerceHubGiftFormFontData"/>
+                <attribute attribute-id="CommerceHubGiftFormFontFamily"/>
+                <attribute attribute-id="CommerceHubGiftFormFontFormat"/>
+                <attribute attribute-id="CommerceHubGiftFormFontIntegrity"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="OrderPaymentInstrument">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="maskedCardNumber">
+                <display-name xml:lang="x-default">Masked Card Number</display-name>
+                <description xml:lang="x-default">Masked card number associated with payment card</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubTokenSource">
+                <display-name xml:lang="x-default">Token Source</display-name>
+                <description xml:lang="x-default">Source from which payment token was created</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="expireMonth">
+                <display-name xml:lang="x-default">Expiration Month</display-name>
+                <description xml:lang="x-default">Expiration month of stored payment card</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="expireYear">
+                <display-name xml:lang="x-default">Expiration Year</display-name>
+                <description xml:lang="x-default">Expiration year of stored payment card</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubCardType">
+                <display-name xml:lang="x-default">Card Type</display-name>
+                <description xml:lang="x-default">Card Type of the payment instrument used</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubCardIndicator">
+                <display-name xml:lang="x-default">Card Indicator</display-name>
+                <description xml:lang="x-default">Card Indicator (Credit/Debit) of the payment instrument used</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="balance">
+                <display-name xml:lang="x-default">Balance</display-name>
+                <description xml:lang="x-default">Balance of gift card</description>
+                <type>double</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="maskedCardNumber"/>
+                <attribute attribute-id="commercehubTokenSource"/>
+                <attribute attribute-id="expireMonth"/>
+                <attribute attribute-id="expireYear"/>
+                <attribute attribute-id="commercehubCardType"/>
+                <attribute attribute-id="commercehubCardIndicator"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Gift</display-name>
+                <attribute attribute-id="balance"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="CustomerPaymentInstrument">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubCardType">
+                <display-name xml:lang="x-default">Card Type</display-name>
+                <description xml:lang="x-default">Card Type of the payment instrument used</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubCardIndicator">
+                <display-name xml:lang="x-default">Card Indicator</display-name>
+                <description xml:lang="x-default">Card Indicator (Credit/Debit) of the payment instrument used</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubTokenSource">
+                <display-name xml:lang="x-default">Token Source</display-name>
+                <description xml:lang="x-default">Source from which payment token was created</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubTokenResponseCode">
+                <display-name xml:lang="x-default">Token Response Code</display-name>
+                <description xml:lang="x-default">Response returned by Commerce Hub during token creation</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubTokenResponseDescription">
+                <display-name xml:lang="x-default">Token Response Description</display-name>
+                <description xml:lang="x-default">Human-readable response returned by Commerce Hub during token creation</description>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="forcedTokenization">
+                <display-name xml:lang="x-default">Forced Tokenization</display-name>
+                <description xml:lang="x-default">Whether a card has been tokenized without express consent from the consumer</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubCardType"/>
+                <attribute attribute-id="commercehubCardIndicator"/>
+                <attribute attribute-id="commercehubTokenSource"/>
+                <attribute attribute-id="commercehubTokenResponseCode"/>
+                <attribute attribute-id="commercehubTokenResponseDescription"/>
+                <attribute attribute-id="forcedTokenization"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="PaymentTransaction">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubSessionId">
+                <display-name xml:lang="x-default">Session ID</display-name>
+                <description xml:lang="x-default">CommerceHub Session ID used as payment source</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="tokenizeCard">
+                <display-name xml:lang="x-default">Tokenize Card</display-name>
+                <description xml:lang="x-default">Whether to tokenize payment card for later use</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="paymentAction">
+                <display-name xml:lang="x-default">Payment Action</display-name>
+                <description xml:lang="x-default">Payment action for CommerceHub transaction</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="tokenizeCard"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+</metadata>

@@ -1,0 +1,89 @@
+<isdecorate template="application/MenuFrame">
+    <div class="headerContainer">
+        <div class="header">
+            <div class="titleHeader">
+                <img class="logo" src="${URLUtils.staticURL('/images/branding/FiservLogo.jpg')}" alt="Logo for Fiserv" />
+                <span class="titleText">Fiserv Payments Configuration Settings</span>
+            </div>
+            <div class="headerDescription">
+                Fiserv Payments is a seamless, all-in-one payment solution engineered to elevate your Salesforce Commerce Cloud experience. Built in-house by Fiserv engineers, ensures reliable maintenance and advancements for your business. Designed for companies ready to thrive in today's digital landscape, Fiserv Payments provides comprehensive commerce services that offer a smooth, secure transaction process for you and your customers.
+                <br><a target="_blank" rel="noopener noreferrer" class="headerLink" href="https://developer.fiserv.com">Please follow this link to documentation for Fiserv's in-house built Salesforce Commerce Cloud extension.</a>
+                <br><br>Fields with a <span class="star">*</span> next to them are mandatory in order for payments to be processed.
+            </div>
+            <div id="messageContainer"></div>
+        </div>
+    </div>
+    <div class="fullPageContainer">
+        <div class="settingsContainer">
+            <isloop items="${pdict.ConfigList}" alias="configGroup">
+                <isif condition="${configGroup.id != 'FormCustomization'}">
+                    <iscomment> Normal Display </iscomment>
+                    <div id="${configGroup.id}" class="configGroupContainer">
+                        <div class="configGroupTitle">
+                            <isprint value="${configGroup.label}" />
+                        </div>
+                        <isinclude template="${'/extensions/configGroup'}"/>
+                    </div>
+                <iselse/>
+                    <iscomment> All of this extra work is here to properly render the layered forms... </iscomment>
+                    <div class="customizationTitleContainer">
+                        <div class="customizationTitle">
+                            <isprint value="${configGroup.label}" />
+                        </div>
+                    </div>
+                    <isloop items="${configGroup.forms}" alias="form">
+                        <div class="formContainer" name="${form.id}">
+                            <div id="${form.id}" class="configGroupContainer formTitleContainer">
+                                <div class="configGroupTitle formTitle">
+                                    <isprint value="${form.label}" />
+                                </div>
+                            </div>
+                            <isloop items="${form.items}" alias="configGroup">
+                                <div id="${configGroup.id}" class="configGroupContainer formConfigGroupContainer">
+                                    <div class="configGroupTitle">
+                                        <isprint value="${configGroup.label}" />
+                                    </div>
+                                    <isinclude template="${'/extensions/configGroup'}"/>
+                                </div>
+                            </isloop>
+                        </div>
+                    </isloop>
+                </isif>
+            </isloop>
+            <div class="actionFooter">
+                <div>
+                    <button class="cancelButton" onclick="clearChanges()">Cancel Changes</button>
+                    <button id="saveButton" disabled="" class="saveButton" onclick="applyChanges()">Save</button>
+                </div>
+            </div>
+        </div>
+        <div class="scrollBarContainer">
+            <isloop items="${pdict.ConfigList}" alias="configGroup">
+                <isif condition="${configGroup.id != 'FormCustomization'}">
+                    <div class="configScrollOptionContainer">
+                        <span class="scrollLabel" name="${configGroup.id}"><isprint value="${configGroup.label}" /></span>
+                    </div>
+                <iselse/>
+                    <isloop items="${configGroup.forms}" alias="form">
+                        <div class="configScrollOptionContainer">
+                            <span class="scrollLabel" name="${form.id}"><isprint value="${form.label}" /></span>
+                        </div>
+                        <isloop items="${form.items}" alias="configGroup">
+                            <div class="configScrollOptionContainer formScrollOption hidden" data-form-name="${form.id}">
+                                <span class="scrollLabel" name="${configGroup.id}"><isprint value="${configGroup.label}" /></span>
+                            </div>
+                        </isloop>
+                    </isloop>
+                </isif>
+            </isloop>
+        </div>
+    </div>
+</isdecorate>
+
+<iscomment>I could not telly you why isscript is not working but this works fine so screw it</iscomment>
+<link rel="stylesheet" href="${URLUtils.httpsStatic('/css/fiservBm.css')}">
+<script src="${URLUtils.httpsStatic('/js/fiserv_config/form-manager.js')}"></script>
+<div style="display:none;" id="instantiationParams"
+    preference-values="${JSON.stringify(pdict.SimplifiedPreferences)}"
+    save-url="${URLUtils.https('FiservSettings-SaveChanges')}"></div>
+<script>instantiate()</script>

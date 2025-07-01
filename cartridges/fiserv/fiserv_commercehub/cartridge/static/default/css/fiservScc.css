@@ -1,0 +1,183 @@
+#fiserv-scc-fatal-notice, #fiserv-scc-gift-fatal-notice {
+    display: none;
+}
+
+.privacyPolicy {
+	display: flex;
+	align-items: center;
+	font-size: 10px;
+	margin-bottom: 10px;
+}
+
+.privacyPolicy span {
+	background-image: url("../images/branding/privacyStatementLock.png");
+	background-size: contain;
+	height: 15px;
+	width: 15px;
+	margin: 4px;
+	background-repeat: no-repeat;
+}
+
+.cc-type-image {
+    margin-top: 0.5em;
+    width: 100%;
+}
+
+.sdc-column {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.sdc-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
+.sdc-field-frame {
+    height: 40px;
+    border: 1px solid #999;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+#sdc-gift-button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+#sdc-gift-after-form-container {
+    max-width: 400px;
+    margin-bottom: 0.75rem;
+}
+
+.rmv-btn {
+    background-color: white;
+    height: 2rem;
+    padding: 1px 6px;
+    font-size: 14px;
+}
+
+.gift-payment-summary {
+    color: #008827;
+}
+
+.sdc-field {
+    height: 30px;
+    margin-top: 2px;
+    padding: 5px;
+    width: 100%;
+}
+
+.sdc-text {
+    max-width: 400px;
+}
+
+.sdc-dropdown {
+    max-width: 215px;
+}
+
+.sdc-error-field {
+    border: solid #d81118;
+    border-width: 1px 1px 3px;
+}
+
+.sdc-valid-field {
+    border: 1px solid #45c445;
+}
+
+.sdc-hidden {
+    display: none;
+}
+
+.sdc-error-message {
+    color: #d81118;
+    font-size: 13px;
+}
+
+.sdc-focused-field {
+    border-width: 2px;
+}
+
+.sdc-card-brand-icon {
+    background-image: url('../../images/credit.png');
+	background-size: contain;
+	display: block;
+	height: 28px;
+    margin-top: 4px;
+    margin-left: 8px;
+	position: relative;
+	width: 55px;
+	background-repeat: no-repeat;
+}
+
+.sdc-card-brand-icon-visa {
+    background-image: url('../../images/payment-types.png');
+    background-size: auto;
+    background-position: -230px -110px;
+}
+
+.sdc-card-brand-icon-mastercard {
+    background-image: url('../../images/payment-types.png');
+    background-size: auto;
+    background-position: -298px -110px;
+}
+
+.sdc-card-brand-icon-amex {
+    background-image: url('../../images/payment-types.png');
+    background-size: auto;
+    background-position: -298px -16px;
+}
+
+.sdc-card-brand-icon-discover {
+    background-image: url('../../images/payment-types.png');
+    background-size: auto;
+    background-position: -298px -63px;
+}
+
+.sdc-card-brand-icon-diners {
+    background-image: url('../../images/payment-types.png');
+    background-size: auto;
+    background-position: -298px -204px;
+}
+
+.sdc-card-brand-icon-jcb {
+    background-image: url('../../images/cards/jcb.png');
+    background-size: contain;
+}
+
+.sdc-card-brand-icon-union {
+    background-image: url('../../images/cards/unionpay.jpg');
+    background-size: contain;
+}
+
+.sdc-unmasking-icon {
+	background-image: url('../images/fieldUnmask.png');
+	background-size: contain;
+	display: block;
+	height: auto;
+	width: 30px;
+	margin: 4px;
+	position: relative;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+.sdc-masking-icon {
+  background-image: url('../../images/fieldMask.png');
+	background-size: contain;
+	display: block;
+	height: auto;
+	width: 30px;
+	margin: 4px;
+	position: relative;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
