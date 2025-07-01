@@ -41,7 +41,7 @@
                     </value-definition>
                     <value-definition>
                         <display>PROD</display>
-                        <value>LIVE</value>
+                        <value>PROD</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>

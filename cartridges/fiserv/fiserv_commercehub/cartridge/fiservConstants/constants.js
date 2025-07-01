@@ -3,7 +3,7 @@
 module.exports = {
     VERSION : '1.0.0',
     COMMERCEHUB_CERT_ENV : 'CERT',
-    COMMERCEHUB_LIVE_ENV : 'LIVE',
+    COMMERCEHUB_LIVE_ENV : 'PROD',
     ENVIRONMENT_URL_PLACEHOLDER : '[CH_ENVIRONMENT_BASE]',
     COMMERCEHUB_LIVE_BASE : "connect.fiservapis.com",
     COMMERCEHUB_CERT_BASE : "connect-cert.fiservapis.com",
