@@ -88,6 +88,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubEarlyTokenization');
     },
 
+    get3DSEnabled()
+    {
+        return getSitePreference('CommerceHub3DSEnable');
+    },
+
     getCreditPrivacyStatementEnabled()
     {
         return getSitePreference('CommerceHubCreditPrivacyStatement');

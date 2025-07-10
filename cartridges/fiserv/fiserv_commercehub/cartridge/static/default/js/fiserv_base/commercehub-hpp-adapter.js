@@ -75,6 +75,17 @@ class FiservIframe
         return formConfig;
     }
 
+    buildInitConfig = function(credentialsResponse)
+    {
+        let initConfig = {
+            ...credentialsResponse['submitConfig'],
+            ...credentialsResponse['initConfig'],
+            'sessionId': credentialsResponse['sessionId']
+        }
+
+        return initConfig;
+    }
+
     backendCall = function(backendUrl, successCb, failureCb, data = null)
     {
         $.ajax({
@@ -92,26 +103,31 @@ class FiservIframe
         });
     }
 
-    submitForm = function(credentialsUrl, storeSessionCallback)
+    submitForm = function(credentialsUrl, storeSessionCallback, is3DS = false)
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
             let promise = new Promise((resolve, reject) => {
-                this.backendCall(credentialsUrl, resolve, reject);	
+                this.backendCall(credentialsUrl, resolve, reject, { is3DS: is3DS });
             });
 
-            promise.then((credentialsResponse) => {
+            promise.then(async (credentialsResponse) => {
                 storeSessionCallback(credentialsResponse['sessionId']);
+
+                if(is3DS) {
+                    await window.fiserv.init(this.buildInitConfig(credentialsResponse));
+                }
+
                 this.form.submit(credentialsResponse['submitConfig'])
                     .then((response) => {
                         this.runSuccessCallback(response);
                     })
                     .catch((error) => {
-                        this.runFailureCallback(error);
+                        this.runFailureCallback();
                     })
             })
             .catch((error) => {
-                this.runFailureCallback(error);
+                this.runFailureCallback();
             });
         }
     }

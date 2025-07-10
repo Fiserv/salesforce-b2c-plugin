@@ -3,6 +3,7 @@
 let FiservServices = require('*/cartridge/scripts/utils/commercehubServices');
 let FiservLogs = require('*/cartridge/scripts/utils/commercehubLogs');
 let commerceHubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+let requestBuilder = require('*/cartridge/scripts/requests/request_builder');
 let URLUtils = require('dw/web/URLUtils');
 let cache = require('dw/system/CacheMgr');
 
@@ -21,21 +22,6 @@ function getBaseUrl()
     return domain[0] 
 }
 
-function getCredentialsPayload()
-{
-    let baseUrl = getBaseUrl();
-    let payload = {
-        'domains' : [
-            { 'url': baseUrl }
-        ],
-        'merchantDetails' : {
-            'merchantId' : commerceHubConfig.getCommerceHubMerchantId() 
-        }
-    }
-
-    return payload;
-}
-
 function validateCredentialsResponse(jsonResponse)
 {
     return typeof(jsonResponse) !== 'undefined' &&
@@ -46,14 +32,14 @@ function validateCredentialsResponse(jsonResponse)
         typeof(jsonResponse['symmetricEncryptionAlgorithm']) !== 'undefined';
 }
 
-function getCommercehubCredentials()
+function getCommercehubCredentials(is3DS)
 {
     FiservLogs.logInfo(1, 'Intitating Credentials Request');
     let credsService = FiservServices.getService('CommercehubCredentials');
     if (credsService == null)
         throw new Error("Could not create Fiserv service: CommerceHubCredentials");
 
-    let payload = getCredentialsPayload();
+    let payload = requestBuilder.buildCredentialsRequest(getBaseUrl(), is3DS);
 
     let parsedResponse = null;
     try

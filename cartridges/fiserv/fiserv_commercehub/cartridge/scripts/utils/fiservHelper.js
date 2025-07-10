@@ -35,6 +35,7 @@ function getB2cCardType(cardType) {
         case 'discover':
             return 'Discover';
     }
+
     throw new Error('Unable to determine Salesforce B2C card type for: '.concat(cardType));
 }
 
@@ -139,6 +140,21 @@ function recalculateGiftCardAmounts(basket)
     };
 }
 
+function retreiveNonGiftChargeAmount(currentBasket) {
+    let paymentAmount = currentBasket.totalGrossPrice.value;
+    if(commercehubConfig.getCommerceHubGiftEnabled())
+    {
+        currentBasket.paymentInstruments.toArray().forEach((pi) => {
+            if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+            {
+                paymentAmount -= pi.paymentTransaction.amount.value;
+            }
+        });
+    }
+
+    return paymentAmount;
+}
+
 function isFiserv()
 {
     let cc = PaymentMgr.getPaymentMethod('CREDIT_CARD');
@@ -171,6 +187,7 @@ module.exports =
     retrieveAppliedGiftCards : retrieveAppliedGiftCards,
     getGiftCardChargeAmount : getGiftCardChargeAmount,
     recalculateGiftCardAmounts : recalculateGiftCardAmounts,
+    retreiveNonGiftChargeAmount : retreiveNonGiftChargeAmount,
     validSessionId : validSessionId,
     isFiserv : isFiserv,
     secureTraversal : secureTraversal

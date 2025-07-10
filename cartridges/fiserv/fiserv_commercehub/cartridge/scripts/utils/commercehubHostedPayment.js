@@ -3,6 +3,8 @@
 let Resource = require('dw/web/Resource');
 let creds = require("*/cartridge/scripts/credentials/commercehubCredentials");
 let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+let secureRandom = new dw.crypto.SecureRandom;
+let encoder = dw.crypto.Encoding;
 
 function collectSubmitData(credentials)
 {
@@ -16,13 +18,17 @@ function collectSubmitData(credentials)
             'merchantId': FiservConfig.getCommerceHubMerchantId(),
             'terminalId': FiservConfig.getCommerceHubTerminalId()
         },
+        'initConfig' : {
+            'cspNonce': encoder.toBase64(secureRandom.nextBytes(32)),
+            'environment': FiservConfig.getCommerceHubApiEnvironment()
+        },
         'sessionId' : credentials['sessionId']
     }
 }
 
-function prepareFormSubmission()
+function prepareFormSubmission(is3DS)
 {
-    return collectSubmitData(creds.getCommercehubCredentials());
+    return collectSubmitData(creds.getCommercehubCredentials(is3DS));
 }
 
 // Provides the frontend files with config settings needed by the frontend
@@ -34,7 +40,9 @@ function getFrontendConfigData(formId)
         case 'Payment':
             configData = {
                 'tokenizeEarly': FiservConfig.getEarlyTokenization(),
-                'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null)
+                'use3DS': FiservConfig.get3DSEnabled(),
+                'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
+                'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null)
             };
             break;
         case 'Tokenization':

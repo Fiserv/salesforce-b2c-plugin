@@ -3,9 +3,12 @@
 const FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 let constants = require('*/cartridge/fiservConstants/constants');
 const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+let FiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
 let uuidUtils = require("dw/util/UUIDUtils");
 let OrderMgr = require('dw/order/OrderMgr');
+let BasketMgr = require('dw/order/BasketMgr');
 let orderNo = null;
+let showBuilders = true;
 
 function buildMerchantDetailsObject()
 {
@@ -14,7 +17,8 @@ function buildMerchantDetailsObject()
     merchantDetails["terminalId"] = FiservConfig.getCommerceHubTerminalId();
     merchantDetails["merchantPartner"] = buildMerchantPartnerField();
 
-    FiservLogs.logDebug(3, "Merchant Details Data Builder:\n" + JSON.stringify(merchantDetails,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Merchant Details Data Builder:\n" + JSON.stringify(merchantDetails,null,2), orderNo);
     return merchantDetails;
 }
 
@@ -39,7 +43,8 @@ function buildTransactionInteractionObject()
     txnInteraction["eciIndicator"] = constants.ECI_INDICATOR;
     txnInteraction["posConditionCode"] = constants.POS_CONDITION_CODE;
 
-    FiservLogs.logDebug(3, "Transaction Interaction Data Builder:\n" + JSON.stringify(txnInteraction,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Transaction Interaction Data Builder:\n" + JSON.stringify(txnInteraction,null,2), orderNo);
     return txnInteraction;
 }
 
@@ -56,7 +61,8 @@ function buildTransactionDetailsObject(capture, tokenize)
     txnDetails["merchantOrderId"] = orderNo;
     txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
     
-    FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
     return txnDetails;
 }
 
@@ -79,7 +85,8 @@ function buildTokenSourceObject(paymentInstrument)
         "expirationYear" : paymentInstrument.custom.expireYear
     }
 
-    FiservLogs.logDebug(3, "Token Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Token Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
     return source;
 }
 
@@ -89,7 +96,8 @@ function buildSessionSourceObject(sessionId)
     source["sourceType"] = constants.SESSION_SOURCE_TYPE;
     source["sessionId"] = sessionId;
     
-    FiservLogs.logDebug(3, "Session Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Session Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
     return source;
 }
 
@@ -99,13 +107,23 @@ function buildAmountObject(paymentInstrument)
     amount["total"] = paymentInstrument.paymentTransaction.amount.getValue();
     amount["currency"] = paymentInstrument.paymentTransaction.amount.getCurrencyCode();
 
-    FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
     return amount;
 }
 
-function buildBillingAddressObject()
+function buildAmountObjectFromBasket(basketObject) {
+    let amount = {}
+    amount['total'] = FiservHelper.retreiveNonGiftChargeAmount(basketObject);
+    amount['currency'] = basketObject.getCurrencyCode();
+
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
+    return amount;
+}
+
+function buildBillingAddressObject(billingAddressObject)
 {
-    let billingAddressObject = OrderMgr.getOrder(orderNo).getBillingAddress();
     if(!billingAddressObject)
         return;
 
@@ -125,17 +143,17 @@ function buildBillingAddressObject()
         "phoneNumber": billingAddressObject.phone
     };
 
-    FiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
     return billingAddress;
 }
 
-function buildCustomerObject()
+function buildCustomerObject(cartInfoContainer)
 {
     let customer = {};
-    let order = OrderMgr.getOrder(orderNo);
-    customer["email"] = order.customerEmail;
+    customer["email"] = cartInfoContainer.customerEmail;
 
-    let customerObject = order.getCustomer();
+    let customerObject = cartInfoContainer.getCustomer();
     let profileObject;
     if(customerObject && (profileObject = customerObject.getProfile()))
     {
@@ -153,8 +171,20 @@ function buildCustomerObject()
         customer["phone"] = phone;
     }
 
-    FiservLogs.logDebug(3, "Customer Data Builder:\n" + JSON.stringify(customer,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Customer Data Builder:\n" + JSON.stringify(customer,null,2), orderNo);
     return customer;
+}
+
+function build3DSObject(paymentInstrument)
+{
+    let additionalData3DS = {};
+
+    additionalData3DS['authenticationTransactionId'] = paymentInstrument.paymentTransaction.custom.commercehub3DSAuthenitcationId;
+    
+    if(showBuilders)
+        FiservLogs.logDebug(3, "3DS Data Builder:\n" + JSON.stringify(additionalData3DS,null,2), orderNo);
+    return additionalData3DS;
 }
 
 function buildCardRequest(paymentInstrument, paymentAction)
@@ -187,8 +217,14 @@ function buildCardRequest(paymentInstrument, paymentAction)
     req["transactionDetails"] = buildTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, tokenize);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
-    req["billingAddress"] = buildBillingAddressObject();
-    req["customer"] = buildCustomerObject();
+    let order = OrderMgr.getOrder(orderNo)
+    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["customer"] = buildCustomerObject(order);
+
+    if(FiservConfig.get3DSEnabled())
+    {
+        req['additionalData3DS'] = build3DSObject(paymentInstrument);
+    }
 
     return req;
 }
@@ -204,8 +240,9 @@ function buildGiftRequest(paymentInstrument, paymentAction)
     req["transactionDetails"] = buildTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, null);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
-    req["billingAddress"] = buildBillingAddressObject();
-    req["customer"] = buildCustomerObject();
+    let order = OrderMgr.getOrder(orderNo)
+    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["customer"] = buildCustomerObject(order);
 
     return req;
 }
@@ -290,8 +327,35 @@ function buildRecoveryPayload(orderNumber, merchantTransactionId)
     return req;
 }
 
+function buildCredentialsRequest(baseUrl, is3DS)
+{
+    showBuilders = false;
+
+    let payload = {
+        'domains' : [
+            { 'url': baseUrl }
+        ],
+        'merchantDetails' : {
+            'merchantId' : FiservConfig.getCommerceHubMerchantId()
+        }
+    };
+
+    if(is3DS) {
+        let basket = BasketMgr.getCurrentBasket();
+        payload['amount'] = buildAmountObjectFromBasket(basket);
+        payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
+        payload['customer'] = buildCustomerObject(basket);
+        payload['transactionDetails'] = {
+            'authentication3DS': true
+        };
+    }
+
+    return payload;
+}
+
 module.exports = 
 {
+    buildCredentialsRequest : buildCredentialsRequest,
     buildPrimaryRequest : buildPrimaryRequest,
     buildTokenRequest : buildTokenRequest,
     buildBalanceInquiryRequest : buildBalanceInquiryRequest,

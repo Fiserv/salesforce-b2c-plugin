@@ -63,6 +63,7 @@ class CommercehubTokenizationForm
             this.formConfig = formConfig;
             this.configDataTokenization = formConfig.configData;
             this.formAdapter.initSdk(formConfig);
+            $('#sdc-mask-cardNumber, #sdc-mask-securityCode').off('click', (element) => {this.mask(element);});
             $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
         }).catch((err) => 
         {

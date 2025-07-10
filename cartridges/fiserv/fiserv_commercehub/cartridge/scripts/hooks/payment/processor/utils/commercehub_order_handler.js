@@ -29,6 +29,10 @@ function convertToB2cCardType(paymentInformation, paymentInstrument) {
     {
         paymentInstrument.paymentTransaction.custom.tokenizeCard = paymentInformation.tokenizeCard ? paymentInformation.tokenizeCard : false;
     }
+    if(FiservConfig.get3DSEnabled())
+    {
+        paymentInstrument.paymentTransaction.custom.commercehub3DSAuthenitcationId = paymentInformation.authenitcationId3DS;
+    }
 
     if (paymentInformation.creditCardToken)
     {      
@@ -50,16 +54,7 @@ function handleOrder(basket, paymentInformation) {
     Transaction.wrap(function () {
         removeNonGiftPaymentInstruments(currentBasket);
 
-        let paymentAmount = currentBasket.totalGrossPrice.value;
-        if(FiservConfig.getCommerceHubGiftEnabled())
-        {
-            currentBasket.paymentInstruments.toArray().forEach((pi) => {
-                if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
-                {
-                    paymentAmount -= pi.paymentTransaction.amount.value;
-                }
-            });
-        }
+        let paymentAmount = fiservHelper.retreiveNonGiftChargeAmount(currentBasket);
 
         let paymentInstrument = currentBasket.createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD, new dw.value.Money(paymentAmount, 'USD'));
         convertToB2cCardType(paymentInformation, paymentInstrument);

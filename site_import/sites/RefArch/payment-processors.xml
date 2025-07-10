@@ -49,6 +49,9 @@
                 <preference preference-id="CommerceHubEarlyTokenization">
                     <value>false</value>
                 </preference>
+                <preference preference-id="CommerceHub3DSEnable">
+                    <value>false</value>
+                </preference>
                 <preference preference-id="CommerceHubCreditPrivacyStatement">
                     <value>true</value>
                 </preference>
