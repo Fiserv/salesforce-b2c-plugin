@@ -10,7 +10,10 @@ server.post('InitializationData', function(req, res, next) {
 });
 
 server.post('Credentials', function(req, res, next) {
-    let creds = credService.prepareFormSubmission();
+    var is3DS = false;
+    if(req.form && req.form.is3DS !== undefined)
+        is3DS = req.form.is3DS === 'true' ? true : false;
+    let creds = credService.prepareFormSubmission(is3DS);
     res.json(creds);
     return next();
 });

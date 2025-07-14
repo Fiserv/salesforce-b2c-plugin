@@ -65,6 +65,7 @@ class CommercehubCheckoutForm
             this.formConfig = formConfig;
             this.configDataPaymentCard = formConfig.configData;
             this.formAdapter.initSdk(formConfig);
+            $('#sdc-mask-cardNumber, #sdc-mask-securityCode').off('click', (element) => {this.mask(element);});
             $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
         }).catch((err) => 
         {
@@ -164,9 +165,21 @@ class CommercehubCheckoutForm
                     throw new Error(err);
                 });
             } catch (e) {
-                this.watchSubmitButton();
-                this.showError(e.message);
-                $.spinner().stop();
+                this.cardCaptureFailure(e.message);
+                return;
+            }
+        } else if(this.configDataPaymentCard.use3DS) {
+            try {
+                const {transactionState, authenticationTransactionId} = await window.fiserv.components.threeDSecure();
+                if(transactionState === 'DECLINED') {
+                    this.cardCaptureFailure(this.configDataPaymentCard.threeDSFailureMessage);
+                    return;
+                }
+
+                $('input#authenticationId3DSInput').val(authenticationTransactionId);
+            }
+            catch(e) {
+                this.cardCaptureFailure(this.configDataPaymentCard.threeDSFailureMessage);
                 return;
             }
         }
@@ -183,12 +196,12 @@ class CommercehubCheckoutForm
         $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth'});
     }
 
-    cardCaptureFailure = function(error)
+    cardCaptureFailure = function(msg)
     {
         this.formAdapter.destroyIframe('card');
         this.initializeAdapter();
         this.watchSubmitButton();
-        this.showError(this.configDataPaymentCard.captureFailureMessage);
+        this.showError(msg ? msg : this.configDataPaymentCard.captureFailureMessage);
         $.spinner().stop();
     }
 
@@ -224,7 +237,7 @@ class CommercehubCheckoutForm
             _e.preventDefault();
             $.spinner().start();
             this.unwatchSubmitButton();
-            this.formAdapter.submitForm(this.credsUrl, this.setSessionIdInput);
+            this.formAdapter.submitForm(this.credsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS);
             return false;
         }
     }

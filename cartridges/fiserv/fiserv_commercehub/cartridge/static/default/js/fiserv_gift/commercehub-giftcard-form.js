@@ -72,6 +72,7 @@ class CommercehubGiftForm
             this.formConfig = formConfig;
             this.configDataGift = formConfig.configData;
             this.formAdapter.initSdk(formConfig, 'GIFT');
+            $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').off('click', (element) => {this.mask(element);});
             $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').on('click', (element) => {this.mask(element);});
         }).catch((err) => 
         {

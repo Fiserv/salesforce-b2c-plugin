@@ -77,6 +77,7 @@
 
 <!--- Hidden input for credit card type --->
 <input id="commercehubSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+<input id="authenticationId3DSInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.authenticationId3DS.htmlName}"/>
 <input type="hidden" class="form-control" id="cardType"
     name="${creditFields.cardType.htmlName}"
     value="" />

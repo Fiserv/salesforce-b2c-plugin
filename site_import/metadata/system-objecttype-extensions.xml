@@ -179,6 +179,13 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHub3DSEnable">
+                <display-name xml:lang="x-default">Enable 3DS</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
             <attribute-definition attribute-id="CommerceHubCreditPrivacyStatement">
                 <display-name xml:lang="x-default">Show Privacy Statement</display-name>
                 <type>boolean</type>
@@ -1048,6 +1055,7 @@
                 <attribute attribute-id="CommerceHubTokenizationStrategy"/>
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
+                <attribute attribute-id="CommerceHub3DSEnable"/>
                 <attribute attribute-id="CommerceHubCreditPrivacyStatement"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
@@ -1295,6 +1303,15 @@
                 <min-length>0</min-length>
                 <field-length>0</field-length>
             </attribute-definition>
+            <attribute-definition attribute-id="commercehub3DSAuthenitcationId">
+                <display-name xml:lang="x-default">3DS Transaction Id</display-name>
+                <description xml:lang="x-default">CommerceHub authentication transaction id for verifying 3DS</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
             <attribute-definition attribute-id="tokenizeCard">
                 <display-name xml:lang="x-default">Tokenize Card</display-name>
                 <description xml:lang="x-default">Whether to tokenize payment card for later use</description>
@@ -1316,6 +1333,7 @@
             <attribute-group group-id="FISERV_COMMERCEHUB">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="commercehub3DSAuthenitcationId"/>
                 <attribute attribute-id="tokenizeCard"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
