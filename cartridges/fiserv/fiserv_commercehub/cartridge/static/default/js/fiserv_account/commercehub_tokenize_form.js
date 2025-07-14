@@ -2,14 +2,16 @@
 
 class CommercehubTokenizationForm
 {
-    constructor(formConfigUrl, credentialsUrl) 
+    constructor(initializationData) 
     {
-        if (typeof(formConfigUrl) === "undefined" || typeof(credentialsUrl) === "undefined")
+        if (typeof(initializationData) === "undefined")
         {
-            throw new Error("Credentials endpoint not found. Unable to create CommerceHub Hosted Payment Page.");
+            throw new Error("Initialization Data not found. Unable to initialize card form.");
         }
-        this.formConfigUrl = formConfigUrl;
-        this.credsUrl = credentialsUrl;
+        this.formConfig = initializationData.config;
+        this.configDataTokenization = initializationData.config.configData;
+        this.credsUrl = initializationData.credentialsUrl;
+        $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
     }
     
     initialize = function()
@@ -53,23 +55,15 @@ class CommercehubTokenizationForm
     initializeAdapter = function()
     {
         this.clearValidation();
-
-        let promise = new Promise((resolve, reject) => {
-            this.formAdapter.backendCall(this.formConfigUrl, resolve, reject);	
-        });
-
-        promise.then((formConfig) => 
+        try
         {
-            this.formConfig = formConfig;
-            this.configDataTokenization = formConfig.configData;
-            this.formAdapter.initSdk(formConfig);
-            $('#sdc-mask-cardNumber, #sdc-mask-securityCode').off('click', (element) => {this.mask(element);});
-            $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
-        }).catch((err) => 
+            this.formAdapter.initSdk(this.formConfig);
+        } 
+        catch(err)
         {
             console.log(err);
             throw new Error(err);
-        });
+        };
     }
 
     clearValidation = function()
@@ -94,7 +88,7 @@ class CommercehubTokenizationForm
 
     getSccContainer = function()
     {
-        return $('#fiserv-commercehub-card-form-container');
+        return $('#fiserv-commercehub-tokenize-form-container');
     }
 
     getFatalNotice = function()
@@ -273,6 +267,8 @@ class CommercehubTokenizationForm
                 this.setCardBrandIconClass('sdc-card-brand-icon-elo');
                 break;
         }
+
+        $('#cardType').val(brand);
     }
 
     fieldValidityHandler = function(data)

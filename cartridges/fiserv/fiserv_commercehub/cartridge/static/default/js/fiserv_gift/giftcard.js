@@ -1,42 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let getFormConfigUrl = function ()
+    let extractInitializationData = function()
     {
-        return $('#fiserv-commercehub-gift-form-container').attr('data-commercehub-form-config');
+        let data = {
+            config: $('#fiserv-commercehub-gift-form-init-container').data('commercehub-initialization-data'),
+            credentialsUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-credentials'),
+            balanceUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-balance-inquiry'),
+            applyUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-gift-apply'),
+            giftRemoveUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-gift-remove'),
+        }
+        $('#fiserv-commercehub-gift-form-init-container').remove();
+        return data;
     }
 
-    let getCredentialsUrl = function ()
-    {
-        return $('#fiserv-commercehub-gift-form-container').attr('data-commercehub-credentials');
-    }
-
-    let getBalanceInquiryUrl = function ()
-    {
-        return $('#fiserv-commercehub-gift-form-container').attr('data-commercehub-balance-inquiry');
-    }
-
-    let getApplyUrl = function ()
-    {
-        return $('#fiserv-commercehub-gift-form-container').attr('data-commercehub-gift-apply');
-    }
-
-    let getRemoveUrl = function ()
-    {
-        return $('#fiserv-commercehub-gift-form-container').attr('data-commercehub-gift-remove');
-    }
-
-    let getLineItemText = function ()
-    {
-        return {
-            'title': $('#fiserv-commercehub-gift-form-container').attr('data-gift-card-line-item-text'),
-            'remove': $('#fiserv-commercehub-gift-form-container').attr('data-gift-card-remove-text')
-         };
-    }
-
-    const checkoutStage = $('#fiserv-commercehub-gift-form-container').attr('data-initial-checkout-stage');
+    const checkoutStage = $('#fiserv-commercehub-gift-form-init-container').attr('data-initial-checkout-stage');
 
     if(checkoutStage !== undefined)
     {
-        let form = new CommercehubGiftForm(getFormConfigUrl(), getCredentialsUrl(), getBalanceInquiryUrl(), getApplyUrl(), getRemoveUrl(), getLineItemText());
+        let form = new CommercehubGiftForm(extractInitializationData());
         let initialized = false;
 
         let clearGiftForm = function()
@@ -130,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else
     {
-        let form = new CommercehubGiftForm(getFormConfigUrl(), getCredentialsUrl(), getBalanceInquiryUrl());
+        let form = new CommercehubGiftForm(extractInitializationData());
         form.initialize();
     }
 });

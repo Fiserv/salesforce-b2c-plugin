@@ -2,15 +2,17 @@
 
 class CommercehubCheckoutForm
 {
-    constructor(formConfigUrl, credentialsUrl, tokenizationUrl) 
+    constructor(initializationData) 
     {
-        if (typeof(formConfigUrl) === "undefined" || typeof(credentialsUrl) === "undefined")
+        if (typeof(initializationData) === "undefined")
         {
-            throw new Error("Credentials endpoint not found. Unable to create CommerceHub Hosted Payment Page.");
+            throw new Error("Initialization Data not found. Unable to initialize card form.");
         }
-        this.formConfigUrl = formConfigUrl;
-        this.credsUrl = credentialsUrl;
-        this.tokenizationUrl = tokenizationUrl;
+        this.formConfig = initializationData.config;
+        this.configDataPaymentCard = initializationData.config.configData;
+        this.credsUrl = initializationData.credentialsUrl;
+        this.tokenizationUrl = initializationData.tokenizationUrl;
+        $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
     }
     
     initialize = function()
@@ -55,23 +57,15 @@ class CommercehubCheckoutForm
     initializeAdapter = function()
     {
         this.clearValidation();
-
-        let promise = new Promise((resolve, reject) => {
-            this.formAdapter.backendCall(this.formConfigUrl, resolve, reject);	
-        });
-
-        promise.then((formConfig) => 
+        try
         {
-            this.formConfig = formConfig;
-            this.configDataPaymentCard = formConfig.configData;
-            this.formAdapter.initSdk(formConfig);
-            $('#sdc-mask-cardNumber, #sdc-mask-securityCode').off('click', (element) => {this.mask(element);});
-            $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
-        }).catch((err) => 
+            this.formAdapter.initSdk(this.formConfig);
+        } 
+        catch(err)
         {
             console.log(err);
             throw new Error(err);
-        });
+        };
     }
 
     clearValidation = function()
@@ -148,7 +142,7 @@ class CommercehubCheckoutForm
         {
             try {
                 await new Promise((resolve, reject) => {
-                    this.formAdapter.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value })
+                    this.formAdapter.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value, cardType: $('#cardType')[0].value })
                 }).then((response) => 
                 {
                     if(response.error)
