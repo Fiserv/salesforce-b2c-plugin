@@ -2,23 +2,24 @@
 
 class CommercehubGiftForm
 {
-    constructor(formConfigUrl, credentialsUrl, balanceUrl, applyUrl, giftRemoveUrl, giftLineItemText)
+    constructor(initializationData)
     {
-        if (typeof(formConfigUrl) === "undefined" || typeof(credentialsUrl) === "undefined")
+        if (typeof(initializationData) === "undefined")
         {
-            throw new Error("Credentials endpoint not found. Unable to create CommerceHub Hosted Payment Page.");
+            throw new Error("Initialization Data not found. Unable to initialize gift card form.");
         }
-        this.formConfigUrl = formConfigUrl;
-        this.credsUrl = credentialsUrl;
-        this.balanceUrl = balanceUrl;
-        this.applyUrl = applyUrl;
-        this.giftRemoveUrl = giftRemoveUrl;
-        this.giftLineItemText = giftLineItemText;
+        this.formConfig = initializationData.config;
+        this.configDataGift = initializationData.config.configData;
+        this.credsUrl = initializationData.credentialsUrl;
+        this.balanceUrl = initializationData.balanceUrl;
+        this.applyUrl = initializationData.applyUrl;
+        this.giftRemoveUrl = initializationData.giftRemoveUrl;
+        $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').on('click', (element) => {this.mask(element);});
 
         this.createAdapter();
         
         // Only run this if loaded in checkout page...
-        if(applyUrl !== null)
+        if(initializationData.applyUrl !== undefined)
         {
             this.showGiftCards();
         }
@@ -64,21 +65,15 @@ class CommercehubGiftForm
     initializeAdapter = function()
     {
         this.clearValidation();
-
-        new Promise((resolve, reject) => {
-            this.formAdapter.backendCall(this.formConfigUrl, resolve, reject);	
-        }).then((formConfig) => 
+        try
         {
-            this.formConfig = formConfig;
-            this.configDataGift = formConfig.configData;
-            this.formAdapter.initSdk(formConfig, 'GIFT');
-            $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').off('click', (element) => {this.mask(element);});
-            $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').on('click', (element) => {this.mask(element);});
-        }).catch((err) => 
+            this.formAdapter.initSdk(this.formConfig, 'GIFT');
+        } 
+        catch(err)
         {
             console.log(err);
             throw new Error(err);
-        });
+        };
     }
 
     clearValidation = function()
@@ -261,7 +256,7 @@ class CommercehubGiftForm
     {
         $('<div id="' + giftCardInfo.uuid + '"class="row gift-total leading-lines gift-payment-summary">'
             + '<div class="col-6 start-lines">'
-                + '<p class="order-receipt-label"><span>' + this.giftLineItemText.title + '&nbsp;<button class="btn btn-outline-primary rmv-btn">' + this.giftLineItemText.remove + '</button></span></p>'
+                + '<p class="order-receipt-label"><span>' + this.configDataGift.giftCardLineItemTitle + '&nbsp;<button class="btn btn-outline-primary rmv-btn">' + this.configDataGift.giftCardRemoveText + '</button></span></p>'
             + '</div>'
             + '<div class="col-6 end-lines">'
                 + '<p class="text-right"><span class="gift-total-sum">-' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount + '</span></p>'
@@ -285,7 +280,7 @@ class CommercehubGiftForm
         {
             $('<div class="gift-details"></div>').insertBefore('.payment-details');
         }
-        $('.gift-details').append('<div class="giftDetail' + giftCardInfo.uuid + '">' + this.giftLineItemText.title + '&nbsp;-&nbsp;<span>' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount + '</span></div><br class="giftDetail' + giftCardInfo.uuid + '">');
+        $('.gift-details').append('<div class="giftDetail' + giftCardInfo.uuid + '">' + this.configDataGift.giftCardLineItemTitle + '&nbsp;-&nbsp;<span>' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount + '</span></div><br class="giftDetail' + giftCardInfo.uuid + '">');
     }
 
     removeGiftCard = function(uuid)

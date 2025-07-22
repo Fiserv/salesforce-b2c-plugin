@@ -1,4 +1,5 @@
 <isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 <isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
 <isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 <isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
@@ -15,9 +16,11 @@
         assets.addCss('css/fiservScc.css');
     </isscript>
 
-    <div id="fiserv-commercehub-card-form-container" 
-        data-commercehub-form-config="${URLUtils.https('Fiserv-InitializationData', 'formId', 'Tokenization')}"
-        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}">
+    <div id="fiserv-commercehub-tokenize-form-init-container" 
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Tokenization'))}"
+        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"></div>
+
+    <div id="fiserv-commercehub-tokenize-form-container">
         <div class="sdc-row">
             <div id="sdc-card-number-frame" class="sdc-field-frame sdc-text">
                 <div id="sdc-card-brand-icon" class="sdc-card-brand-icon"></div>
@@ -74,6 +77,7 @@
         <!--- Hidden input for credit card type --->
         <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
         <input type="hidden" id="commercehubSessionIdInput" name="${pdict.paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+        <input type="hidden" id="cardType" name="${pdict.paymentForm.cardType.htmlName}"/>
         
         <!-- Cancel and Save Buttons -->
         <div class="row">

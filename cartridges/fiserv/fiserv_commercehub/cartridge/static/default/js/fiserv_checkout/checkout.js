@@ -1,19 +1,16 @@
 /* eslint-disable prefer-regex-literals */
 document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
     let initialized = false;
-    let getFormConfigUrl = function () 
-    {
-        return $('#fiserv-commercehub-card-form-container').attr('data-commercehub-form-config');
-    }
 
-    let getCredentialsUrl = function () 
+    let extractInitializationData = function()
     {
-        return $('#fiserv-commercehub-card-form-container').attr('data-commercehub-credentials');
-    }
-
-    let getTokenizationUrl = function () 
-    {
-        return $('#fiserv-commercehub-card-form-container').attr('data-commercehub-tokenization');
+        let data = {
+            config: $('#fiserv-commercehub-card-form-init-container').data('commercehub-initialization-data'),
+            credentialsUrl: $('#fiserv-commercehub-card-form-init-container').attr('data-commercehub-credentials'),
+            tokenizationUrl: $('#fiserv-commercehub-card-form-init-container').attr('data-commercehub-tokenization')
+        }
+        $('#fiserv-commercehub-card-form-init-container').remove();
+        return data;
     }
 
     let savedPaymentsPresent = function()
@@ -26,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
         return $('.credit-card-form.checkout-hidden').length
     }
 
-    let form = new CommercehubCheckoutForm(getFormConfigUrl(), getCredentialsUrl(), getTokenizationUrl());
+    let form = new CommercehubCheckoutForm(extractInitializationData());
 
     let clearPaymentForm = function()
     {
