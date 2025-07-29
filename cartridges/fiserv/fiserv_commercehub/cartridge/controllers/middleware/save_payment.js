@@ -93,7 +93,7 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
         }
 
         // We are retrieving the card type either from the form or the request body in the case of early tokens, but we still prefer the value from CH if possible
-        cardType = cardProduct ? cardIndicator : cardType;
+        cardType = cardProduct ? cardProduct : cardType;
 
         let savedCard = savePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiservHelper.getB2cCardType({ value : cardType }), tokenResponse);
 
