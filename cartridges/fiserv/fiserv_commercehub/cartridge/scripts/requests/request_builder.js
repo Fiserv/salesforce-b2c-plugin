@@ -221,7 +221,7 @@ function buildCardRequest(paymentInstrument, paymentAction)
     req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
     req["customer"] = buildCustomerObject(order);
 
-    if(FiservConfig.get3DSEnabled())
+    if(FiservConfig.get3DSEnabled() && !paymentInstrument.creditCardToken)
     {
         req['additionalData3DS'] = build3DSObject(paymentInstrument);
     }
@@ -272,6 +272,8 @@ function buildTokenRequest(sessionId)
     let req = {};
     req['source'] = buildSessionSourceObject(sessionId);
     req["merchantDetails"] = buildMerchantDetailsObject();
+
+
 
     return req;
 }
