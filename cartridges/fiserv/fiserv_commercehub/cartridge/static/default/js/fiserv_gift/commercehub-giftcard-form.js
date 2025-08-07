@@ -173,7 +173,7 @@ class CommercehubGiftForm
             {
                 if(this.buttonClicked === 'balance')
                 {
-                    $('#fiserv-scc-gift-balance-amount').text(response.currencySymbol + response.balance + ' (' + response.currency + ')');
+                    $('#fiserv-scc-gift-balance-amount').text(response.currencySymbol + response.balance);
                     this.getBalanceBlock().removeClass('sdc-hidden');
                 }
                 else if(this.buttonClicked === 'applySecondary')

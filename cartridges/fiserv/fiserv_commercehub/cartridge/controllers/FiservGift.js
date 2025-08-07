@@ -19,7 +19,6 @@ server.post('BalanceInquiry', function(req, res, next) {
         res.json({
             balance: Number(balanceResponse.endingBalance).toFixed(2),
             currencySymbol: '$',
-            currency: balanceResponse.currency
         });
     }
     return next();
