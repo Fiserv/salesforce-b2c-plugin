@@ -278,10 +278,14 @@ function buildTokenRequest(sessionId)
     return req;
 }
 
-function buildBalanceInquiryRequest(sessionId)
+function buildBalanceInquiryRequest(sessionId, currencyCode)
 {
     FiservLogs.logInfo(1, 'Initiating Balance Inquiry');
     let req = {};
+    req['balance'] = {
+        'currency': currencyCode
+    };
+    FiservLogs.logDebug(3, "Balance Data Builder:\n" + JSON.stringify(req["balance"],null,2), orderNo);
     req['source'] = buildSessionSourceObject(sessionId);
     req['merchantDetails'] = buildMerchantDetailsObject();
     if(FiservConfig.getCommerceHubGiftSecurityEnabled())

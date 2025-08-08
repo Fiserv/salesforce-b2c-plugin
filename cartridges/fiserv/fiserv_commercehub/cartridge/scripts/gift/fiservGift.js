@@ -12,7 +12,14 @@ function executeBalanceInquiry(sessionId)
 {
     try
     {
-        let balanceInquiryRequest = requestBuilder.buildBalanceInquiryRequest(sessionId);
+        let basket = BasketMgr.getCurrentBasket();
+        if(!basket)
+        {
+            return { error: Resource.msg('message.error.gift.genericBalance', 'error', null) };
+        }
+
+        let currencyCode = basket.getCurrencyCode();
+        let balanceInquiryRequest = requestBuilder.buildBalanceInquiryRequest(sessionId, currencyCode);
 
         let balanceInquiryService = FiservServices.getService('CommercehubBalanceInquiry');
         let parsedResponse = FiservServices.callService(balanceInquiryService, balanceInquiryRequest);
@@ -21,7 +28,12 @@ function executeBalanceInquiry(sessionId)
         {
             let balanceList = FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.GIFT_BALANCES);
             FiservLogs.logInfo(1, 'Balance Inquiry Success');
-            return balanceList[0];
+            for(let i = 0; i < balanceList.length; i++)
+            {
+                if(balanceList[i].currency == currencyCode)
+                    return balanceList[i];
+            }
+            return { error: Resource.msg('message.error.gift.currencyError', 'error', null) };
         }
         else
         {
