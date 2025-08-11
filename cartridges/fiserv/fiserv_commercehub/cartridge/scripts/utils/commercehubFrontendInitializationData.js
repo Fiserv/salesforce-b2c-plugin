@@ -29,6 +29,11 @@ function getFrontendConfigData(formId)
                 'giftCardRemoveText': Resource.msg('display.html.gift.removeGiftListItem', 'display', null)
             }
             break;
+        case 'PayPal':
+            configData = {
+                
+            }
+            break;
         default:
             configData = {};
             break;

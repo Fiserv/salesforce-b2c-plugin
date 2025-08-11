@@ -155,6 +155,15 @@ function retreiveNonGiftChargeAmount(currentBasket) {
     return paymentAmount;
 }
 
+function removeGiftCardsFromCart(currentBasket) {
+    currentBasket.paymentInstruments.toArray().forEach((pi) => {
+        if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        {
+            currentBasket.removePaymentInstrument(pi);
+        }
+    });
+}
+
 function isFiserv()
 {
     let cc = PaymentMgr.getPaymentMethod('CREDIT_CARD');
@@ -188,6 +197,7 @@ module.exports =
     getGiftCardChargeAmount : getGiftCardChargeAmount,
     recalculateGiftCardAmounts : recalculateGiftCardAmounts,
     retreiveNonGiftChargeAmount : retreiveNonGiftChargeAmount,
+    removeGiftCardsFromCart : removeGiftCardsFromCart,
     validSessionId : validSessionId,
     isFiserv : isFiserv,
     secureTraversal : secureTraversal

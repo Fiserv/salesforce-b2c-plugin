@@ -4,9 +4,10 @@
 <isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 <isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="canTokenizeSpa" value="${pdict.commercehubConfig.getCommerceHubStandaloneSpa()}" scope="pdict" />
+<isset name="creditEnabled" value="${pdict.commercehubConfig.getCommerceHubCreditEnabled()}" scope="pdict" />
 <isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getCreditPrivacyStatementEnabled()}" scope="pdict" />
 
-<isif condition="${pdict.canTokenize && pdict.canTokenizeSpa}">
+<isif condition="${pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeSpa}">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');

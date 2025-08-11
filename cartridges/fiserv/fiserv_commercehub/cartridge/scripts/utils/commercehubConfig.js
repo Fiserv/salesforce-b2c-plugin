@@ -1,5 +1,6 @@
 const dwSystem = require('dw/system');
 const currentSite = dwSystem.Site.getCurrent();
+let constants = require('*/cartridge/fiservConstants/constants');
 const NO_MASKING = 'NO_MASKING';
 
 function getSitePreference(field)
@@ -139,6 +140,9 @@ const commerceHubExport =
 
     getFormConfig(formId)
     {
+        if(!constants.FORM_ID_LIST.includes(formId))
+            return;
+
         let config = {};
         config['fields'] = this.buildFormFieldsConfig(formId);
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
@@ -218,6 +222,10 @@ const commerceHubExport =
 
     getInvalidFields(formId)
     {
+        if(!constants.FORM_ID_LIST.includes(formId))
+            return;
+
+
         let invalidFields = {
             'cardNumber': getSitePreference('CommerceHub' + formId + 'FormCardNumberInvalidFieldMessage'),
             'nameOnCard': getSitePreference('CommerceHub' + formId + 'FormNameOnCardInvalidFieldMessage'),

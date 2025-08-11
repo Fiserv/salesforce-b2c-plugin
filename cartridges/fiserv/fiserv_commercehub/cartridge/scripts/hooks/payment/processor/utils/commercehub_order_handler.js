@@ -47,7 +47,7 @@ function convertToB2cCardType(paymentInformation, paymentInstrument) {
     }
 }
 
-function handleOrder(basket, paymentInformation) {
+function handleOrder(basket, paymentInformation, processorID) {
     let currentBasket = basket;
     let cardErrors = {};
     let serverErrors = [];
@@ -56,7 +56,7 @@ function handleOrder(basket, paymentInformation) {
 
         let paymentAmount = fiservHelper.retreiveNonGiftChargeAmount(currentBasket);
 
-        let paymentInstrument = currentBasket.createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD, new dw.value.Money(paymentAmount, 'USD'));
+        let paymentInstrument = currentBasket.createPaymentInstrument(processorID, new dw.value.Money(paymentAmount, 'USD'));
         convertToB2cCardType(paymentInformation, paymentInstrument);
     });
     return {

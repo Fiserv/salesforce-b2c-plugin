@@ -5,7 +5,6 @@ let BasketMgr = require('dw/order/BasketMgr');
 let Transaction = require('dw/system/Transaction');
 let FiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
 let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-let constants = require('*/cartridge/fiservConstants/constants');
 
 server.extend(module.superModule);
 
@@ -39,12 +38,7 @@ server.append('RemoveProductLineItem', function (req, res, next) {
         }
 
         Transaction.begin();
-        basket.paymentInstruments.toArray().forEach((pi) => {
-            if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
-            {
-                basket.removePaymentInstrument(pi);
-            }
-        });
+        FiservHelper.removeGiftCardsFromCart(basket);
         Transaction.commit();
     }
 

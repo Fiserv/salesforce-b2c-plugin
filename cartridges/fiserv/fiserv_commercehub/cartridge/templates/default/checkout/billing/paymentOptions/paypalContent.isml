@@ -1,0 +1,38 @@
+<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+    assets.addJs('/js/fiserv_paypal/commercehub-paypal-form.js');
+    assets.addJs('/js/fiserv_paypal/paypal.js');
+    assets.addJs(pdict.chSdkUrl);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+<div class="tab-pane paypal-content" id="paypal-content" role="tabpanel">
+
+    <fieldset class="payment-form-fields">
+        
+        <!--- payment method is PayPal --->
+        <input type="hidden" class="form-control"
+               name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+               value="CREDIT_CARD"
+        >
+
+        <div id="fiserv-commercehub-card-form-init-container" 
+            data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('PayPal'))}"
+            data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"></div>
+    
+        <div id="fiserv-commercehub-card-form-container">
+
+            <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
+                <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
+            </div>
+        </div>
+
+        <!--- Hidden input for credit card type --->
+        <input id="commercehubSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+    </fieldset>
+</div>

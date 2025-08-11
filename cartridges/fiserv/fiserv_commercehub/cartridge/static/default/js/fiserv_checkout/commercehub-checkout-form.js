@@ -85,14 +85,12 @@ class CommercehubCheckoutForm
     {
         this.formAdapter.reactivateIframe('card');
         this.watchSubmitButton()
-        this.getSubmitButton().prop('disabled', true);
     }
     
     deactivateCommercehubForm = function()
     {
         this.formAdapter.deactivateIframe();
         this.unwatchSubmitButton();
-        this.getSubmitButton().prop('disabled', false);
     }
 
     setSessionIdInput = function(sessionId)

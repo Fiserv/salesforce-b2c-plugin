@@ -343,7 +343,7 @@ class CommercehubGiftForm
 
     hidePaymentBlock = function()
     {
-        $('input[name=dwfrm_billing_paymentMethod]').val('GIFT_CARD');
+        $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val('GIFT_CARD');
         $('.payment-information').parent().addClass('checkout-hidden');
         $('.payment-details').addClass('checkout-hidden');
         $('.gift-details').children().last().addClass('checkout-hidden');
@@ -357,7 +357,7 @@ class CommercehubGiftForm
 
     showPaymentBlock = function()
     {
-        $('input[name=dwfrm_billing_paymentMethod]').val($(".payment-information").attr("data-payment-method-id"));
+        $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val($(".payment-information").data("payment-method-id"));
         $('.payment-information').parent().removeClass('checkout-hidden');
         $('.payment-details').removeClass('checkout-hidden');
         $('.gift-details').children().last().removeClass('checkout-hidden');
