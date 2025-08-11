@@ -288,6 +288,16 @@
                 <default-value>true</default-value>
             </attribute-definition>
 
+            <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubPayPalEnable">
+                <display-name xml:lang="x-default">Enable PayPal</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
 
             <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberPlaceholder">
@@ -1155,6 +1165,22 @@
                 <attribute attribute-id="CommerceHubGiftFormFontFamily"/>
                 <attribute attribute-id="CommerceHubGiftFormFontFormat"/>
                 <attribute attribute-id="CommerceHubGiftFormFontIntegrity"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
+                <display-name xml:lang="x-default">Fiserv CommerceHub PayPal Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+
+                <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
+                <attribute attribute-id="CommerceHubPayPalEnable"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

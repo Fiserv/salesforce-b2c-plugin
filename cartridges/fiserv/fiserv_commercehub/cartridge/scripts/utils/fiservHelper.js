@@ -159,7 +159,7 @@ function isFiserv()
 {
     let cc = PaymentMgr.getPaymentMethod('CREDIT_CARD');
     
-    if (cc !== null && cc.paymentProcessor !== null && cc.paymentProcessor.ID == constants.COMMERCEHUB_PROCESSOR)
+    if (cc !== null && cc.paymentProcessor !== null && cc.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
     {
         return cc.isActive();
     }

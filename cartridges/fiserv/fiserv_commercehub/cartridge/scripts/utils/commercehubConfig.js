@@ -130,6 +130,13 @@ const commerceHubExport =
         return getSitePreference('CommerceHubGiftPrivacyStatement');
     },
 
+    // This is where the PayPal settings start
+
+    getCommerceHubPayPalEnabled()
+    {
+        return getSitePreference('CommerceHubPayPalEnable');
+    },
+
     getFormConfig(formId)
     {
         let config = {};

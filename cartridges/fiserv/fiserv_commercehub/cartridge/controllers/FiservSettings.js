@@ -26,27 +26,29 @@ if(chPreferenceDescriptions != null)
 
 function retrieveCommerceHubPreferences()
 {
-    let chAttributeGroupCH = currentSite.getPreferences().describe().getAttributeGroup(constants.COMMERCEHUB_PROCESSOR);
-    let configListCH = [];
-    if(chAttributeGroupCH)
-    {
-        configListCH = chAttributeGroupCH.getAttributeDefinitions().toArray();
-    }
+    var configList = null;
+    Object.values(constants.PROCESSOR_ID_LIST).forEach((processorID) => {
+        let chAttributeGroup = currentSite.getPreferences().describe().getAttributeGroup(processorID);
+        if(!chAttributeGroup)
+            return;
+    
+        let partialConfigList = chAttributeGroup.getAttributeDefinitions().toArray();
+        if(!partialConfigList)
+            return;
 
-    let chAttributeGroupCHGift = currentSite.getPreferences().describe().getAttributeGroup(constants.COMMERCEHUB_GIFT_PROCESSOR);
-    let configListCHGift = [];
-    if(chAttributeGroupCHGift)
-    {
-        configListCHGift = chAttributeGroupCHGift.getAttributeDefinitions().toArray();
-    }
+        if(!configList)
+        {
+            configList = partialConfigList;
+        }
+        else
+        {
+            configList = configList.concat(partialConfigList);
+        }
+    });
 
-    // Return null if neither groups present...
-    if(!chAttributeGroupCH && !chAttributeGroupCHGift)
-    {
+    if(!configList)
         return null;
-    }
 
-    let configList = configListCH.concat(configListCHGift);
     let idConfigList = {};
     
     configList.forEach(configDefinition => {
@@ -290,6 +292,14 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubGiftSecurityEnable'),
             getPreferenceDescription('CommerceHubMaxGiftCards'),
             getPreferenceDescription('CommerceHubGiftPrivacyStatement')
+        ]
+    });
+
+    configList.push({
+        'label': 'PayPal',
+        'id': 'PayPal',
+        'items': [
+            getPreferenceDescription('CommerceHubPayPalEnable')
         ]
     });
 

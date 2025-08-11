@@ -354,4 +354,32 @@
             <production/>
         </preferences>
     </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_PAYPAL">
+        <description>Fiserv Commerce Hub PayPal processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
+
+                <preference preference-id="CommerceHubPayPalEnable">
+                    <value>false</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
 </payment-processors>

@@ -38,11 +38,11 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     Transaction.wrap(function () {
         paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
         let _type = null;
-        if(paymentProcessor.ID === constants.COMMERCEHUB_PROCESSOR)
+        if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
         {
             _type = FiservConfig.getCommerceHubCreditPaymentType();
         }
-        else if(paymentProcessor.ID === constants.COMMERCEHUB_GIFT_PROCESSOR)
+        else if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR)
         {
             _type = FiservConfig.getCommerceHubGiftPaymentType();
             paymentInstrument.paymentTransaction.custom.paymentAction = _type;
@@ -57,7 +57,7 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     Transaction.begin();
 
     let res;
-    if(paymentProcessor.ID === constants.COMMERCEHUB_PROCESSOR)
+    if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
         res = fiservCheckout.executeCommercehubTransaction(orderNo, paymentInstrument);
     else
         res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
@@ -83,12 +83,12 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
         paymentInstrument.paymentTransaction.transactionID = transactionId;
     }
 
-    if(paymentProcessor.ID !== constants.COMMERCEHUB_GIFT_PROCESSOR && !paymentInstrument.creditCardToken)
+    if(paymentProcessor.ID !== constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR && !paymentInstrument.creditCardToken)
     {
         paymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_TYPE);
         paymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_INDICATOR);
     }
-    else if(paymentProcessor.ID === constants.COMMERCEHUB_GIFT_PROCESSOR)
+    else if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR)
     {
         paymentInstrument.custom.balance = null;
     }
@@ -98,10 +98,10 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     let transactionState = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.TRANSACTION_STATE)
     let processorString;
     switch(paymentProcessor.ID) {
-        case constants.COMMERCEHUB_PROCESSOR:
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
             processorString = 'Payment ' + (paymentInstrument.creditCardToken ? 'Token' : 'Card');
             break;
-        case constants.COMMERCEHUB_GIFT_PROCESSOR:
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
             processorString = 'Gift Card';
             break;
     }
