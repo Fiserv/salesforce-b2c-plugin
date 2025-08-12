@@ -39,7 +39,7 @@ class CommercehubTokenizationForm
         let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
         let runFailureCallback = (error) => { this.cardCaptureFailure(error); };
 
-        this.formAdapter = new FiservIframe(
+        this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
             loadFailCallback,
             formReadyCallback,

@@ -297,6 +297,22 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalPaymentType">
+                <display-name xml:lang="x-default">CommerceHubPayPal Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
 
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
 
@@ -1181,6 +1197,7 @@
 
                 <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
                 <attribute attribute-id="CommerceHubPayPalEnable"/>
+                <attribute attribute-id="CommerceHubPayPalPaymentType"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

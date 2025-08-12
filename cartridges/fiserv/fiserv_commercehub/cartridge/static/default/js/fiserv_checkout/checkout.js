@@ -2,6 +2,9 @@
 document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
     let initialized = false;
 
+    // detect current stage
+    const checkoutStage = $('#fiserv-commercehub-card-form-init-container').attr('data-initial-checkout-stage');
+
     let extractInitializationData = function()
     {
         let data = {
@@ -93,11 +96,6 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
         clearPaymentForm();
         initPaymentForm();
     });
-
-    // detect current stage
-    const checkoutStage = new RegExp('[?&]stage=([a-zA-Z0-9]+)([^&]*)').exec(
-        window.location.search,
-    );
 
     // if payment stage: instantiate payment form
     // if beyond payment stage: return to payment stage

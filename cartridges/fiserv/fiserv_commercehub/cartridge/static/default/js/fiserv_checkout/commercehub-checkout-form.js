@@ -41,7 +41,7 @@ class CommercehubCheckoutForm
         let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
         let runFailureCallback = (error) => { this.cardCaptureFailure(error); };
 
-        this.formAdapter = new FiservIframe(
+        this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
             loadFailCallback,
             formReadyCallback,
@@ -140,7 +140,7 @@ class CommercehubCheckoutForm
         {
             try {
                 await new Promise((resolve, reject) => {
-                    this.formAdapter.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value, cardType: $('#cardType')[0].value })
+                    FiservSDKHelper.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value, cardType: $('#cardType')[0].value })
                 }).then((response) => 
                 {
                     if(response.error)

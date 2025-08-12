@@ -4,8 +4,9 @@
 
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
-    assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
-    assets.addJs('/js/fiserv_paypal/commercehub-paypal-form.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_paypal/commercehub-paypal-button.js');
     assets.addJs('/js/fiserv_paypal/paypal.js');
     assets.addJs(pdict.chSdkUrl);
     assets.addCss('css/fiservScc.css');
@@ -21,11 +22,13 @@
                value="CREDIT_CARD"
         >
 
-        <div id="fiserv-commercehub-card-form-init-container" 
+        <div id="fiserv-commercehub-paypal-form-init-container" 
             data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('PayPal'))}"
-            data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"></div>
+            data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+            data-initial-checkout-stage="${pdict.currentStage}"></div>
     
-        <div id="fiserv-commercehub-card-form-container">
+        <div id="fiserv-commercehub-paypal-form-container">
+            <div id="fiserv_commercehub-paypal-button" class="sdc-field"></div>
 
             <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
                 <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            

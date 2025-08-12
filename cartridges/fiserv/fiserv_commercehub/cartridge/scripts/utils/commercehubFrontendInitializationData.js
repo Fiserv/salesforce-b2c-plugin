@@ -31,7 +31,9 @@ function getFrontendConfigData(formId)
             break;
         case 'PayPal':
             configData = {
-                
+                'buttonsConfig': FiservConfig.buildPayPalButtonsConfig(),
+                'chargeType': FiservConfig.getCommerceHubPayPalPaymentType(),
+                'customerId': null
             }
             break;
         default:

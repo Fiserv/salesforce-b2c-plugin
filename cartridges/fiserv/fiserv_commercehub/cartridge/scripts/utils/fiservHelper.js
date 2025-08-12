@@ -126,7 +126,7 @@ function recalculateGiftCardAmounts(basket)
             }
             else
             {
-                grossTotal = pi.paymentTransaction.amount.value;
+                grossTotal -= pi.paymentTransaction.amount.value;
             }
         }
     });

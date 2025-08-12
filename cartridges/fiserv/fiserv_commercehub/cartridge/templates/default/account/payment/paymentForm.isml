@@ -10,7 +10,8 @@
 <isif condition="${pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeSpa}">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
-        assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
         assets.addJs('/js/fiserv_account/commercehub_tokenize_form.js');
         assets.addJs('/js/fiserv_account/tokenize.js');
         assets.addJs(pdict.chSdkUrl);

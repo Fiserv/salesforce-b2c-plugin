@@ -288,7 +288,7 @@
                 <preference preference-id="CommerceHubGiftPrivacyStatement">
                     <value>true</value>
                 </preference>
-                
+
                 <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
 
                 <preference preference-id="CommerceHubGiftFormCardNumberPlaceholder">
@@ -371,10 +371,13 @@
                     <value>30</value>
                 </preference>
 
-                <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
+                <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
 
                 <preference preference-id="CommerceHubPayPalEnable">
                     <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalPaymentType">
+                    <value>AUTH</value>
                 </preference>
             </all-instances>
             <development/>

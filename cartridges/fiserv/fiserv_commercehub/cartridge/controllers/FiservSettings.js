@@ -65,7 +65,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = constants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub(Gift)?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(constants.CONFIG_DESCRIPTIONS[id])
         {
@@ -299,7 +299,8 @@ function buildConfigList(chPreferenceDescriptions)
         'label': 'PayPal',
         'id': 'PayPal',
         'items': [
-            getPreferenceDescription('CommerceHubPayPalEnable')
+            getPreferenceDescription('CommerceHubPayPalEnable'),
+            getPreferenceDescription('CommerceHubPayPalPaymentType')
         ]
     });
 

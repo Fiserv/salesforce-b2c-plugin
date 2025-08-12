@@ -49,7 +49,7 @@ class CommercehubGiftForm
         let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
         let runFailureCallback = (error) => { this.cardCaptureFailure(error); };
 
-        this.formAdapter = new FiservIframe(
+        this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
             loadFailCallback,
             formReadyCallback,
@@ -157,13 +157,13 @@ class CommercehubGiftForm
             await new Promise((resolve, reject) => {
                 if(this.buttonClicked === 'balance')
                 {
-                    this.formAdapter.backendCall(this.balanceUrl, resolve, reject, { sessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value });
+                    FiservSDKHelper.backendCall(this.balanceUrl, resolve, reject, { sessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value });
                 }
                 else if(this.getSubmitButton().length && this.buttonClicked === 'applySecondary')
                 {
                     // Run in a timeout to avoid velocity
                     setTimeout(() => {
-                        this.formAdapter.backendCall(this.applyUrl, resolve, reject, {
+                        FiservSDKHelper.backendCall(this.applyUrl, resolve, reject, {
                             primarySessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value,
                             secondarySessionId : $('input#commercehubGiftSecondarySessionIdInput')[0].value,
                         })
@@ -290,7 +290,7 @@ class CommercehubGiftForm
         this.unwatchFormButtons();
         
         let promise = new Promise((resolve, reject) => {
-            this.formAdapter.backendCall(this.giftRemoveUrl, resolve, reject, { uuid: uuid });
+            FiservSDKHelper.backendCall(this.giftRemoveUrl, resolve, reject, { uuid: uuid });
         });
 
         promise.then((response) => 

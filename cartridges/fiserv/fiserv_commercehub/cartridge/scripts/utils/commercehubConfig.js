@@ -138,6 +138,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalEnable');
     },
 
+    getCommerceHubPayPalPaymentType()
+    {
+        return getSitePreference('CommerceHubPayPalPaymentType').value;
+    },
+
     getFormConfig(formId)
     {
         if(!constants.FORM_ID_LIST.includes(formId))
@@ -235,6 +240,30 @@ const commerceHubExport =
         };
 
         return invalidFields;
+    },
+
+    buildPayPalButtonsConfig()
+    {
+        let buttonsConfig = {};
+        // Only splitting this up in preparation for the potential implementation of Venmo in the future...
+        // Temporarily hard coded as well...
+        if(this.getCommerceHubPayPalEnabled())
+        {
+            buttonsConfig['paypal'] = {
+                'parentElementId': 'fiserv_commercehub-paypal-button',
+                'color': 'gold',
+                'shape': 'rect',
+                'label': 'paypal'
+            }
+        }
+
+        let dataConfig = {
+            'enableVaulting': false,
+            'customerConfirmation': 'PAY_NOW',
+            'buttons': buttonsConfig
+        };
+
+        return dataConfig;
     }
 };
 
