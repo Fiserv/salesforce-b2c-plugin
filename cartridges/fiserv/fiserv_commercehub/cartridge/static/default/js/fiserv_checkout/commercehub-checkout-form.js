@@ -229,7 +229,7 @@ class CommercehubCheckoutForm
             _e.preventDefault();
             $.spinner().start();
             this.unwatchSubmitButton();
-            this.formAdapter.submitForm(this.credsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS);
+            this.formAdapter.submitForm(this.credsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS ? "3DS" : null);
             return false;
         }
     }

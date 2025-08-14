@@ -22,9 +22,6 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
             throw new Error(Resource.msg('message.error.order.retrieval', 'error', null).concat(orderNo));
         }
 
-        // enhance with 3ds
-        // 3ds here
-
         // enhance with L2/L3
         // L2/L3 here
 

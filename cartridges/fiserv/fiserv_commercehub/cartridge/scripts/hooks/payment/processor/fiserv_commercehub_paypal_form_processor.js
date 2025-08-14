@@ -12,6 +12,7 @@ function processForm(req, paymentForm, viewFormData) {
             phone: viewFormData.phone,
             paymentInformation: {
                 isCreditCard: false,
+                orderId: paymentForm.fiservCommercehubPaymentFields.commercehubOrderId.value
             }
         }
     }

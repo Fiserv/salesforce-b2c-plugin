@@ -4,8 +4,8 @@ let orderHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/co
 let transactionHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_transaction_handler');
 
 // Does nothing. Used to bypass payment method for a covered cart in checkout flow
-function Handle(basket, paymentInformation, processorID) {
-    return orderHandler.handleOrder(basket, paymentInformation, processorID);
+function Handle(basket, paymentInformation, methodID) {
+    return orderHandler.handleOrder(basket, paymentInformation, methodID);
 }
 
 function Authorize(orderNo, paymentInstrument, paymentProcessor) {

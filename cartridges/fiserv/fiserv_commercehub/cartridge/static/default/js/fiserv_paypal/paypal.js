@@ -35,6 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    $('.payment-summary .edit-button').on('click', () => {
+        initPayPal();
+    });
+
     // if payment stage: instantiate gift form
     // if beyond payment stage: return to payment stage
     switch (checkoutStage) {

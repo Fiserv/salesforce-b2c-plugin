@@ -16,13 +16,14 @@ class FiservSDKButton
         this.sdkReadyCallback = sdkReadyCallback;
     }
 
-    initSdk = async function(credentialsUrl, storeSessionCallback)
+    initSdk = async function(credentialsUrl, storeSessionCallback, requestPurpose = null)
     {
         await new Promise((resolve, reject) => {
-            FiservSDKHelper.backendCall(credentialsUrl, resolve, reject);
+            FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
         })
         .then(async (credentialsResponse) => {
-            storeSessionCallback(credentialsResponse['sessionId']);
+            if(storeSessionCallback)
+                storeSessionCallback(credentialsResponse['sessionId']);
 
             await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
 

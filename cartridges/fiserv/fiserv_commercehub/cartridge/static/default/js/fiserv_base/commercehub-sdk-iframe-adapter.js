@@ -76,18 +76,18 @@ class FiservSDKIframe
         return formConfig;
     }
 
-    submitForm = function(credentialsUrl, storeSessionCallback, is3DS = false)
+    submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null)
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
             let promise = new Promise((resolve, reject) => {
-                FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { is3DS: is3DS });
+                FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
             });
 
             promise.then(async (credentialsResponse) => {
                 storeSessionCallback(credentialsResponse['sessionId']);
 
-                if(is3DS) {
+                if(requestPurpose === "3DS") {
                     await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
                 }
 

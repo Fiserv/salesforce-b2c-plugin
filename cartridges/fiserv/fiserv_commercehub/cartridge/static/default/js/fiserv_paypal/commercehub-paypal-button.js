@@ -2,17 +2,24 @@
 
 class CommercehubPayPal
 {
+
     constructor(initializationData)
     {
         if (typeof(initializationData) === "undefined")
         {
             throw new Error("Initialization Data not found. Unable to initialize PayPal button.");
         }
+
         this.formConfig = initializationData.config;
         this.configDataPayPal = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
 
         this.createAdapter();
+
+        this.watchButtonLoadLag();
+        this.watchPaymentMethods();
+
+        new MutationObserver(() => { this.grandTotalUpdated(); }).observe($('.grand-total-sum')[0], { childList: true })
     }
 
     initialize = function()
@@ -43,7 +50,7 @@ class CommercehubPayPal
     {
         try
         {
-            this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput);
+            this.sdkButton.initSdk(this.credentialsUrl, null, "PayPal");
         }
         catch(err)
         {
@@ -55,11 +62,11 @@ class CommercehubPayPal
     createCallbacksObject = function()
     {
         return {
-            onApprove: this.paypalApproval,
-            onCancel: this.paypalCancel,
-            onError: this.paypalError,
-            onShippingAddressChange: this.paypalShippingAddressChange,
-            onShippingOptionsChange: this.paypalShippingOptionsChange
+            onApprove: (response) => { this.paypalApproval(response); },
+            onCancel: (response) => { this.paypalCancel(response); },
+            onError: (response) => { this.paypalError(response); },
+            onShippingAddressChange: (response) => { this.paypalShippingAddressChange(response); },
+            onShippingOptionsChange: (response) => { this.paypalShippingOptionsChange(response); }
         };
     }
 
@@ -86,33 +93,89 @@ class CommercehubPayPal
         throw new Error("Unable to load CommerceHub SDK.")
     }
 
-    paypalApproval = function()
+    paypalApproval = function(response)
     {
+        this.setOrderIdInput(response.orderId);
+        $('.payment-details').addClass('checkout-hidden');
+        $('<div class="payment-details-paypal">PayPal</div>').insertAfter('.payment-details');
+        $('.edit-button').on('click', this.removeInsertedSummary);
+        $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+    }
 
+    removeInsertedSummary = () =>
+    {
+        $('.payment-details').removeClass('checkout-hidden');
+        $('.payment-details-paypal').remove();
+        $('.edit-button').off('click', this.removeInsertedSummary);
     }
 
     paypalCancel = function()
     {
-        
+        console.log("PayPal flow cancelled");
     }
 
     paypalError = function()
     {
-        
+        // this.showError()...
     }
 
     paypalShippingAddressChange = function()
     {
-        
+        // ¯\_(ツ)_/¯
     }
 
     paypalShippingOptionsChange = function()
     {
-        
+        // ¯\_(ツ)_/¯
     }
 
-    setSessionIdInput = function(sessionId)
+    setOrderIdInput = function(sessionId)
     {
-        $('input#commercehubSessionIdInput').val(sessionId);
+        $('input#commercehubOrderIdInputPayPal').val(sessionId);
+    }
+
+    grandTotalUpdated = function(context)
+    {
+        $('#fiserv_commercehub-paypal-button').children().remove();
+        this.initialize();
+    }
+
+    watchPaymentMethods = function()
+    {
+        $('ul.payment-options li.nav-item').on('click', this.paymentMethodHandler);
+    }
+
+    unwatchPaymentMethods = function()
+    {
+        $('ul.payment-options li.nav-item').off('click', this.paymentMethodHandler);
+    }
+
+    paymentMethodHandler = (_e) => { 
+        /*if (
+            $(_e.currentTarget).attr("data-method-id") !== 'CREDIT_CARD' && 
+            $('a.credit-card-tab.active').length)
+        {
+            this.deactivateCommercehubForm();
+        } 
+        else if (
+            $(_e.currentTarget).attr("data-method-id") === 'CREDIT_CARD' && 
+            !$(_e.currentTarget).find("a.nav-link").hasClass('active'))
+        {
+            this.activateCommercehubForm();
+        }*/
+    }
+
+    watchButtonLoadLag = function()
+    {
+        $('.paypal-option').on('click', this.waitForButtonLoad);
+    }
+
+    waitForButtonLoad = function()
+    {
+        if(!$('#fiserv_commercehub-paypal-button').children().length)
+        {
+            $.spinner().start();
+        }
+        $('.paypal-option').off('click', this.waitForButtonLoad);
     }
 }

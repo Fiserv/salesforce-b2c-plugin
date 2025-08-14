@@ -19,7 +19,7 @@
         <!--- payment method is PayPal --->
         <input type="hidden" class="form-control"
                name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-               value="CREDIT_CARD"
+               value="PAYPAL"
         >
 
         <div id="fiserv-commercehub-paypal-form-init-container" 
@@ -28,7 +28,7 @@
             data-initial-checkout-stage="${pdict.currentStage}"></div>
     
         <div id="fiserv-commercehub-paypal-form-container">
-            <div id="fiserv_commercehub-paypal-button" class="sdc-field"></div>
+            <div id="fiserv_commercehub-paypal-button" class="sdc-button"></div>
 
             <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
                 <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
@@ -36,6 +36,6 @@
         </div>
 
         <!--- Hidden input for credit card type --->
-        <input id="commercehubSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+        <input id="commercehubOrderIdInputPayPal" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
     </fieldset>
 </div>

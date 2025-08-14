@@ -3,8 +3,8 @@
 let orderHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_order_handler');
 let transactionHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_transaction_handler');
 
-function Handle(basket, paymentInformation, processorID) {
-    return orderHandler.handleOrder(basket, paymentInformation, processorID);
+function Handle(basket, paymentInformation, methodID) {
+    return orderHandler.handleOrder(basket, paymentInformation, methodID);
 }
 
 function Authorize(orderNo, paymentInstrument, paymentProcessor) {

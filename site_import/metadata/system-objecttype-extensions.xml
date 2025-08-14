@@ -1355,6 +1355,15 @@
                 <min-length>0</min-length>
                 <field-length>0</field-length>
             </attribute-definition>
+            <attribute-definition attribute-id="commercehubOrderId">
+                <display-name xml:lang="x-default">Commerce Hub Order ID</display-name>
+                <description xml:lang="x-default">CommerceHub Session ID used as payment source</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
             <attribute-definition attribute-id="tokenizeCard">
                 <display-name xml:lang="x-default">Tokenize Card</display-name>
                 <description xml:lang="x-default">Whether to tokenize payment card for later use</description>
@@ -1383,6 +1392,11 @@
             <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubOrderId"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
         </group-definitions>

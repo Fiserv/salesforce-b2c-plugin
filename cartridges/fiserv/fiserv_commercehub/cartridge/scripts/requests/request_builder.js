@@ -333,7 +333,7 @@ function buildRecoveryPayload(orderNumber, merchantTransactionId)
     return req;
 }
 
-function buildCredentialsRequest(baseUrl, is3DS)
+function buildCredentialsRequest(baseUrl, requestPurpose)
 {
     showBuilders = false;
 
@@ -346,14 +346,17 @@ function buildCredentialsRequest(baseUrl, is3DS)
         }
     };
 
-    if(is3DS) {
+    if(requestPurpose) {
         let basket = BasketMgr.getCurrentBasket();
         payload['amount'] = buildAmountObjectFromBasket(basket);
         payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
-        payload['transactionDetails'] = {
-            'authentication3DS': true
-        };
+        if(requestPurpose === "3DS")
+        {
+            payload['transactionDetails'] = {
+                'authentication3DS': true
+            };
+        }
     }
 
     return payload;

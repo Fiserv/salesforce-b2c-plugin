@@ -38,6 +38,10 @@
     margin-bottom: 1rem;
 }
 
+.sdc-button {
+    height: auto;
+}
+
 .sdc-field-frame {
     height: 40px;
     border: 1px solid #999;

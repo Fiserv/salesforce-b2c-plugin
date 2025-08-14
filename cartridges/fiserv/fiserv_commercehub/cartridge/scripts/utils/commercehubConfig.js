@@ -259,7 +259,7 @@ const commerceHubExport =
 
         let dataConfig = {
             'enableVaulting': false,
-            'customerConfirmation': 'PAY_NOW',
+            'customerConfirmation': 'REVIEW_AND_PAY',
             'buttons': buttonsConfig
         };
 

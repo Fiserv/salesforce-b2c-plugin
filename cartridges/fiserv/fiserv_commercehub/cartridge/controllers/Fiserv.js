@@ -4,10 +4,10 @@ var server = require('server');
 var credService = require("*/cartridge/scripts/utils/commercehubHostedPayment");
 
 server.post('Credentials', function(req, res, next) {
-    var is3DS = false;
-    if(req.form && req.form.is3DS !== undefined)
-        is3DS = req.form.is3DS === 'true' ? true : false;
-    let creds = credService.prepareFormSubmission(is3DS);
+    var requestPurpose = null;
+    if(req.form && req.form.requestPurpose !== undefined)
+        requestPurpose = req.form.requestPurpose ? req.form.requestPurpose : null;
+    let creds = credService.prepareFormSubmission(requestPurpose);
     res.json(creds);
     return next();
 });
