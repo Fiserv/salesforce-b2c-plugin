@@ -313,6 +313,13 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPayVaultingEnable">
+                <display-name xml:lang="x-default">Enable PayPal Vaulting</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
 
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
 
@@ -1198,6 +1205,7 @@
                 <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
                 <attribute attribute-id="CommerceHubPayPalEnable"/>
                 <attribute attribute-id="CommerceHubPayPalPaymentType"/>
+                <attribute attribute-id="CommerceHubPayPayVaultingEnable"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -1398,6 +1406,25 @@
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubOrderId"/>
                 <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="Profile">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubCustomerId">
+                <display-name xml:lang="x-default">Commercehub Customer ID</display-name>
+                <description xml:lang="x-default">CommerceHub Customer ID used for PayPal vaulting</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubCustomerId"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

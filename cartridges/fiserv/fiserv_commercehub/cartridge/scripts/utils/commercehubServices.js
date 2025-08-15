@@ -48,7 +48,7 @@ let helper =
                         }
                         client.send(args.payload);
                         return client;
-                   },
+                    },
                     parseResponse: function parseResponse(svc, client)
                     {
                         return client;
@@ -101,7 +101,7 @@ let helper =
                 if(!callResult.isOk())
                 {
                     // Only do further steps on a non-tokenization call because no txn is stored for tokenization calls
-                    if(service.credentialID === 'CommercehubTokenization')
+                    if(service.credentialID === 'CommercehubTokenization' || service.credentialID === 'CommercehubOrders') // Change to accomodate for Orders later...
                     {
                         FiservLogs.logWarn(1, "Idempotency attempt failure. Non-payment call detected. Further recovery attempts not possible. Failed to recover from tokenization timeout", orderNo);
                         throw new Error(Resource.msg('message.error.service.timeout', 'error', null));

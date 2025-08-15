@@ -379,6 +379,9 @@
                 <preference preference-id="CommerceHubPayPalPaymentType">
                     <value>AUTH</value>
                 </preference>
+                <preference preference-id="CommerceHubPayPayVaultingEnable">
+                    <value>false</value>
+                </preference>
             </all-instances>
             <development/>
             <staging/>

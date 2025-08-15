@@ -27,7 +27,6 @@ class CommercehubPayPal
         try {
             $.spinner().start();
             this.initializeAdapter();
-            //this.watchFormButtons();
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -116,7 +115,7 @@ class CommercehubPayPal
 
     paypalError = function()
     {
-        // this.showError()...
+        this.showError(this.configDataPayPal.paypalFailureMessage);
     }
 
     paypalShippingAddressChange = function()
@@ -129,9 +128,9 @@ class CommercehubPayPal
         // ¯\_(ツ)_/¯
     }
 
-    setOrderIdInput = function(sessionId)
+    setOrderIdInput = function(orderId)
     {
-        $('input#commercehubOrderIdInputPayPal').val(sessionId);
+        $('input#commercehubOrderIdInputPayPal').val(orderId);
     }
 
     grandTotalUpdated = function(context)
@@ -177,5 +176,13 @@ class CommercehubPayPal
             $.spinner().start();
         }
         $('.paypal-option').off('click', this.waitForButtonLoad);
+    }
+
+    showError = function(message)
+    {
+        let form = $('#dwfrm_billing');
+        $('.alert', form).remove();
+        form.prepend('<div class="alert alert-danger" role="alert">' + message + '</div>');
+        $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth'});
     }
 }

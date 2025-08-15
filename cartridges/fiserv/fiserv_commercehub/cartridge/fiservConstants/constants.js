@@ -38,6 +38,7 @@ module.exports = {
         PAYMENT_TOKEN: ['paymentTokens', 0],
         RESPONSE_MESSAGE: ['paymentReceipt', 'processorResponseDetails', 'responseMessage'],
         SOURCE_TYPE: ['source', 'sourceType'],
+        PAYPAL_CUSTOMER_ID: ['customer', 'providerCustomerId'],
         GIFT_BALANCES: ['paymentReceipt', 'balances'],
         ERROR_MESSAGE: ['error', [0], 'message']
     },
@@ -65,6 +66,10 @@ module.exports = {
             'CommerceHubGiftSecurityEnable',
             'CommerceHubMaxGiftCards',
             'CommerceHubGiftPrivacyStatement'
+        ],
+        'CommerceHubPayPalEnable': [
+            'CommerceHubPayPalPaymentType',
+            'CommerceHubPayPayVaultingEnable'
         ]
     },
     FORM_DEPENDENCY_LIST : {

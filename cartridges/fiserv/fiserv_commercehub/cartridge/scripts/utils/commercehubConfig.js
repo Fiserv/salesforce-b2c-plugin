@@ -143,6 +143,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalPaymentType').value;
     },
 
+    getCommerceHubPayPayVaultingEnabled()
+    {
+        return getSitePreference('CommerceHubPayPayVaultingEnable');
+    },
+
     getFormConfig(formId)
     {
         if(!constants.FORM_ID_LIST.includes(formId))
@@ -258,7 +263,7 @@ const commerceHubExport =
         }
 
         let dataConfig = {
-            'enableVaulting': false,
+            'enableVaulting': this.getCommerceHubPayPayVaultingEnabled(),
             'customerConfirmation': 'REVIEW_AND_PAY',
             'buttons': buttonsConfig
         };

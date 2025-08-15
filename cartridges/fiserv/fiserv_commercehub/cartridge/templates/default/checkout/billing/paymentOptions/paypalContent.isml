@@ -30,8 +30,8 @@
         <div id="fiserv-commercehub-paypal-form-container">
             <div id="fiserv_commercehub-paypal-button" class="sdc-button"></div>
 
-            <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
-                <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
+            <div id="fiserv-paypal-fatal-notice" class="alert alert-danger">
+                <p>${Resource.msg('message.error.paypal.fatal','error',null)}</p>            
             </div>
         </div>
 

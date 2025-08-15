@@ -2,6 +2,7 @@
 
 let Resource = require('dw/web/Resource');
 let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+let BasketMgr = require('dw/order/BasketMgr');
 
 // Provides the frontend files with config settings needed by the frontend
 function getFrontendConfigData(formId)
@@ -30,10 +31,13 @@ function getFrontendConfigData(formId)
             }
             break;
         case 'PayPal':
+            let basket = BasketMgr.getCurrentBasket();
+            let customerId = basket.customer.profile ? basket.customer.profile.custom.commercehubCustomerId : null;
             configData = {
                 'buttonsConfig': FiservConfig.buildPayPalButtonsConfig(),
                 'chargeType': FiservConfig.getCommerceHubPayPalPaymentType(),
-                'customerId': null
+                'customerId': customerId,
+                'paypalFailureMessage': Resource.msg('message.error.paypal.failure', 'error', null),
             }
             break;
         default:
