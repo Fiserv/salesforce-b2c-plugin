@@ -117,12 +117,6 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubCreditPaymentMethodTitle">
-                <display-name xml:lang="x-default">CommerceHub Payment Method Title</display-name>
-                <type>string</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-            </attribute-definition>
             <attribute-definition attribute-id="CommerceHubCreditPaymentType">
                 <display-name xml:lang="x-default">CommerceHub Charge Type</display-name>
                 <type>enum-of-string</type>
@@ -319,6 +313,78 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalButtonColor">
+                <display-name xml:lang="x-default">CommerceHubPayPal Button Color</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Gold</display>
+                        <value>gold</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Blue</display>
+                        <value>blue</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Silver</display>
+                        <value>silver</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>White</display>
+                        <value>white</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Black</display>
+                        <value>black</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalButtonShape">
+                <display-name xml:lang="x-default">CommerceHubPayPal Button Shape</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Rect</display>
+                        <value>rect</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Pill</display>
+                        <value>pill</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sharp</display>
+                        <value>sharp</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalButtonLabel">
+                <display-name xml:lang="x-default">CommerceHubPayPal Button Label</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>PayPal</display>
+                        <value>paypal</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Checkout</display>
+                        <value>checkout</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Buy Now</display>
+                        <value>buynow</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Pay</display>
+                        <value>pay</value>
+                    </value-definition>
+                </value-definitions>
             </attribute-definition>
 
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
@@ -1082,7 +1148,6 @@
 
                 <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
                 <attribute attribute-id="CommerceHubCreditEnable"/>
-                <attribute attribute-id="CommerceHubCreditPaymentMethodTitle"/>
                 <attribute attribute-id="CommerceHubCreditPaymentType"/>
                 <attribute attribute-id="CommerceHubTokenization"/>
                 <attribute attribute-id="CommerceHubTokenizationStrategy"/>
@@ -1206,6 +1271,9 @@
                 <attribute attribute-id="CommerceHubPayPalEnable"/>
                 <attribute attribute-id="CommerceHubPayPalPaymentType"/>
                 <attribute attribute-id="CommerceHubPayPayVaultingEnable"/>
+                <attribute attribute-id="CommerceHubPayPalButtonColor"/>
+                <attribute attribute-id="CommerceHubPayPalButtonShape"/>
+                <attribute attribute-id="CommerceHubPayPalButtonLabel"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

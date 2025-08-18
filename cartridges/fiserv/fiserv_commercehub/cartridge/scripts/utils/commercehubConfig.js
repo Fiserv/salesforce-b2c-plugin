@@ -256,9 +256,9 @@ const commerceHubExport =
         {
             buttonsConfig['paypal'] = {
                 'parentElementId': 'fiserv_commercehub-paypal-button',
-                'color': 'gold',
-                'shape': 'rect',
-                'label': 'paypal'
+                'color': getSitePreference('CommerceHubPayPalButtonColor').value,
+                'shape': getSitePreference('CommerceHubPayPalButtonShape').value,
+                'label': getSitePreference('CommerceHubPayPalButtonLabel').value
             }
         }
 
