@@ -46,7 +46,6 @@ module.exports = {
     FORM_ID_LIST : [ 'Payment', 'Tokenization', 'Gift' ],
     DEPENDENCY_LIST : { 
         'CommerceHubCreditEnable': [
-            'CommerceHubCreditPaymentMethodTitle',
             'CommerceHubCreditPaymentType',
             'CommerceHubTokenization',
             'CommerceHubTokenizationStrategy',
@@ -69,7 +68,8 @@ module.exports = {
         ],
         'CommerceHubPayPalEnable': [
             'CommerceHubPayPalPaymentType',
-            'CommerceHubPayPayVaultingEnable'
+            'CommerceHubPayPayVaultingEnable',
+            'PayPalButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {

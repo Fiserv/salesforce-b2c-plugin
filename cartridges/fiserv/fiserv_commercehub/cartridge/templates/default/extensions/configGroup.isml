@@ -76,4 +76,13 @@
             <div id="${configDescription.id}Alert" class="alertDetail hidden"><div></div></div>
         </div>
     </isloop>
+    <isif condition="${configGroup.subform}">
+        <isset name="configGroup" value="${configGroup.subform}" scope="page"/>
+        <div id="${configGroup.id}Item" class="subformConfigGroupContainer">
+            <div class="configGroupSubTitle">
+                <isprint value="${configGroup.label}" />
+            </div>
+            <isinclude template="${'/extensions/configGroup'}"/>
+        </div>
+    </isif>
 </div>

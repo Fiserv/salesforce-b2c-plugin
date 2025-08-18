@@ -68,6 +68,10 @@
     margin-bottom: 0.75rem;
 }
 
+.subformConfigGroupContainer {
+    flex: 0 0 100%;
+}
+
 .formContainer {
     margin-bottom: 0.75rem;
 }
@@ -106,6 +110,11 @@
 .configGroupTitle, .customizationTitle {
     font-size: 1.5rem;
     margin-bottom: 1rem;
+}
+
+.configGroupSubTitle {
+    margin-bottom: 1rem;
+    text-decoration: underline;
 }
 
 .customizationTitle{
