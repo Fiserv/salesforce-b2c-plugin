@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
 
     // if payment stage: instantiate payment form
     // if beyond payment stage: return to payment stage
-    switch (checkoutStage[1]) {
+    switch (checkoutStage) {
         case 'payment':
             if (!savedPaymentsPresent() && !creditCardFormHidden())
             {

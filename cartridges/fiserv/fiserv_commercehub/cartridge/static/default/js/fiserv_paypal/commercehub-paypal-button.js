@@ -17,7 +17,7 @@ class CommercehubPayPal
         this.createAdapter();
 
         this.watchButtonLoadLag();
-        this.watchPaymentMethods();
+        this.watchPaymentMethod();
 
         new MutationObserver(() => { this.grandTotalUpdated(); }).observe($('.grand-total-sum')[0], { childList: true })
     }
@@ -98,6 +98,7 @@ class CommercehubPayPal
         $('.payment-details').addClass('checkout-hidden');
         $('<div class="payment-details-paypal">PayPal</div>').insertAfter('.payment-details');
         $('.edit-button').on('click', this.removeInsertedSummary);
+        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
     }
 
@@ -115,6 +116,7 @@ class CommercehubPayPal
 
     paypalError = function()
     {
+        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
         this.showError(this.configDataPayPal.paypalFailureMessage);
     }
 
@@ -139,29 +141,13 @@ class CommercehubPayPal
         this.initialize();
     }
 
-    watchPaymentMethods = function()
+    watchPaymentMethod = function()
     {
-        $('ul.payment-options li.nav-item').on('click', this.paymentMethodHandler);
+        $('ul.payment-options li.nav-item[data-method-id=PAYPAL]').on('click', this.paymentMethodHandler);
     }
 
-    unwatchPaymentMethods = function()
-    {
-        $('ul.payment-options li.nav-item').off('click', this.paymentMethodHandler);
-    }
-
-    paymentMethodHandler = (_e) => { 
-        /*if (
-            $(_e.currentTarget).attr("data-method-id") !== 'CREDIT_CARD' && 
-            $('a.credit-card-tab.active').length)
-        {
-            this.deactivateCommercehubForm();
-        } 
-        else if (
-            $(_e.currentTarget).attr("data-method-id") === 'CREDIT_CARD' && 
-            !$(_e.currentTarget).find("a.nav-link").hasClass('active'))
-        {
-            this.activateCommercehubForm();
-        }*/
+    paymentMethodHandler = (_e) => {
+        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
     }
 
     watchButtonLoadLag = function()

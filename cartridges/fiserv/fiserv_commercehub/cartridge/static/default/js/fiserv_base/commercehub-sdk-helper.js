@@ -30,3 +30,9 @@ class FiservSDKHelper
         return initConfig;
     }
 }
+
+
+// Preliminary shared setup call to help with tab navigation...
+$('ul.payment-options li.nav-item').on('click', () => {
+    $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
+});

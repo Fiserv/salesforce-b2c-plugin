@@ -21,7 +21,8 @@ class CommercehubCheckoutForm
             $.spinner().start();
             this.createAdapter();
             this.initializeAdapter();
-            this.watchSubmitButton();
+            if($('.nav-link.credit-card-tab.active').length)
+                this.watchSubmitButton();
             this.watchPaymentMethods();               
         } catch (_err) {
             this.sdkLoadFailure(_err);
@@ -33,8 +34,8 @@ class CommercehubCheckoutForm
         let loadSuccessCallback = () => { console.log("CommerceHub SDK has loaded."); };
         let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
         let formReadyCallback = () => { this.sdkInitialized() };
-        let formValidCallback = () => { this.getSubmitButton().prop('disabled', false); };
-        let formInvalidCallback = () => { this.getSubmitButton().prop('disabled', true); };
+        let formValidCallback = () => { this.getSubmitButton().prop('disabled', false); this.validForm = true; };
+        let formInvalidCallback = () => { this.getSubmitButton().prop('disabled', true); this.validForm = false; };
         let cardBrandHandler = (brand) => { this.cardBrandChangeHandler(brand) };
         let fieldValidityHandler = (data) => { this.fieldValidityHandler(data); };
         let fieldFocusHandler = (data) => { this.fieldFocusHandler(data) };
@@ -203,12 +204,16 @@ class CommercehubCheckoutForm
             $('a.credit-card-tab.active').length)
         {
             this.deactivateCommercehubForm();
-        } 
+        }
         else if (
             $(_e.currentTarget).attr("data-method-id") === 'CREDIT_CARD' && 
             !$(_e.currentTarget).find("a.nav-link").hasClass('active'))
         {
             this.activateCommercehubForm();
+            if(!this.validForm)
+            {
+                this.disableSubmitButton();
+            }
         }
     }
 
