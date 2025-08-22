@@ -63,9 +63,7 @@ class CommercehubPayPal
         return {
             onApprove: (response) => { this.paypalApproval(response); },
             onCancel: (response) => { this.paypalCancel(response); },
-            onError: (response) => { this.paypalError(response); },
-            onShippingAddressChange: (response) => { this.paypalShippingAddressChange(response); },
-            onShippingOptionsChange: (response) => { this.paypalShippingOptionsChange(response); }
+            onError: (response) => { this.paypalError(response); }
         };
     }
 
@@ -73,10 +71,6 @@ class CommercehubPayPal
     {
         let paypalLoadConfig = {};
         paypalLoadConfig['intent'] = this.configDataPayPal.chargeType === 'AUTH' ? 'authorize' : 'capture';
-        if(this.configDataPayPal.customerId)
-        {
-            paypalLoadConfig['customerId'] = this.configDataPayPal.customerId;
-        }
         const paypal = await window.fiserv.components.paypal(paypalLoadConfig);
 
         await paypal.buttons({ data: this.configDataPayPal.buttonsConfig, hooks: this.createCallbacksObject() });
@@ -118,16 +112,6 @@ class CommercehubPayPal
     {
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
         this.showError(this.configDataPayPal.paypalFailureMessage);
-    }
-
-    paypalShippingAddressChange = function()
-    {
-        // ¯\_(ツ)_/¯
-    }
-
-    paypalShippingOptionsChange = function()
-    {
-        // ¯\_(ツ)_/¯
     }
 
     setOrderIdInput = function(orderId)
