@@ -31,12 +31,9 @@ function getFrontendConfigData(formId)
             }
             break;
         case 'PayPal':
-            let basket = BasketMgr.getCurrentBasket();
-            let customerId = basket.customer.profile ? basket.customer.profile.custom.commercehubCustomerId : null;
             configData = {
                 'buttonsConfig': FiservConfig.buildPayPalButtonsConfig(),
                 'chargeType': FiservConfig.getCommerceHubPayPalPaymentType(),
-                'customerId': customerId,
                 'paypalFailureMessage': Resource.msg('message.error.paypal.failure', 'error', null),
             }
             break;
