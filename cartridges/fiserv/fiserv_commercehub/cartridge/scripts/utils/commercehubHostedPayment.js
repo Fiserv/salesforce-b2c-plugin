@@ -25,9 +25,9 @@ function collectSubmitData(credentials)
     }
 }
 
-function prepareFormSubmission(is3DS)
+function prepareFormSubmission(requestPurpose)
 {
-    return collectSubmitData(creds.getCommercehubCredentials(is3DS));
+    return collectSubmitData(creds.getCommercehubCredentials(requestPurpose));
 }
 
 module.exports = 

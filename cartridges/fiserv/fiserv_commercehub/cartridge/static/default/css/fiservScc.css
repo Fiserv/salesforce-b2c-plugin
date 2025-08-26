@@ -1,4 +1,4 @@
-#fiserv-scc-fatal-notice, #fiserv-scc-gift-fatal-notice {
+#fiserv-scc-fatal-notice, #fiserv-scc-gift-fatal-notice, #fiserv-paypal-fatal-notice {
     display: none;
 }
 
@@ -36,6 +36,10 @@
     flex-direction: column;
     justify-content: flex-start;
     margin-bottom: 1rem;
+}
+
+.sdc-button {
+    height: auto;
 }
 
 .sdc-field-frame {

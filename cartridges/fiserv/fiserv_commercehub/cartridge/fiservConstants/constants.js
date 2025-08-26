@@ -15,9 +15,13 @@ module.exports = {
     POS_CONDITION_CODE : "CARD_NOT_PRESENT_ECOM",
     SESSION_SOURCE_TYPE : "PaymentSession",
     TOKEN_SOURCE_TYPE : "PaymentToken",
-    COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
-    COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
+    PROCESSOR_ID_LIST : {
+        COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
+        COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
+        COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
+    },
     COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
+    COMMERCEHUB_PAYPAL_PAYMENT_METHOD : "PAYPAL",
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",
@@ -34,6 +38,7 @@ module.exports = {
         PAYMENT_TOKEN: ['paymentTokens', 0],
         RESPONSE_MESSAGE: ['paymentReceipt', 'processorResponseDetails', 'responseMessage'],
         SOURCE_TYPE: ['source', 'sourceType'],
+        PAYPAL_CUSTOMER_ID: ['customer', 'providerCustomerId'],
         GIFT_BALANCES: ['paymentReceipt', 'balances'],
         ERROR_MESSAGE: ['error', [0], 'message']
     },
@@ -41,7 +46,6 @@ module.exports = {
     FORM_ID_LIST : [ 'Payment', 'Tokenization', 'Gift' ],
     DEPENDENCY_LIST : { 
         'CommerceHubCreditEnable': [
-            'CommerceHubCreditPaymentMethodTitle',
             'CommerceHubCreditPaymentType',
             'CommerceHubTokenization',
             'CommerceHubTokenizationStrategy',
@@ -61,6 +65,11 @@ module.exports = {
             'CommerceHubGiftSecurityEnable',
             'CommerceHubMaxGiftCards',
             'CommerceHubGiftPrivacyStatement'
+        ],
+        'CommerceHubPayPalEnable': [
+            'CommerceHubPayPalPaymentType',
+            'CommerceHubPayPayVaultingEnable',
+            'PayPalButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {

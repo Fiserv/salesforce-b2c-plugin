@@ -31,9 +31,6 @@
                 <preference preference-id="CommerceHubCreditPrivacyStatement">
                     <value>true</value>
                 </preference>
-                <preference preference-id="CommerceHubCreditPaymentMethodTitle">
-                    <value>Credit/Debit Cards</value>
-                </preference>
                 <preference preference-id="CommerceHubCreditPaymentType">
                     <value>AUTH</value>
                 </preference>
@@ -288,7 +285,7 @@
                 <preference preference-id="CommerceHubGiftPrivacyStatement">
                     <value>true</value>
                 </preference>
-                
+
                 <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
 
                 <preference preference-id="CommerceHubGiftFormCardNumberPlaceholder">
@@ -347,6 +344,49 @@
                 </preference>
                 <preference preference-id="CommerceHubGiftFormFontIntegrity">
                     <value></value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_PAYPAL">
+        <description>Fiserv Commerce Hub PayPal processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubPayPalEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPayVaultingEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalButtonColor">
+                    <value>gold</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalButtonShape">
+                    <value>rect</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalButtonLabel">
+                    <value>paypal</value>
                 </preference>
             </all-instances>
             <development/>

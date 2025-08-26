@@ -1,7 +1,6 @@
 <isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
 <isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 <isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
-<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 <isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
 <isset name="earlyTokenization" value="${pdict.commercehubConfig.getEarlyTokenization()}" scope="pdict" />
@@ -9,7 +8,8 @@
 
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
-    assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
     assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
     assets.addJs('/js/fiserv_checkout/checkout.js');
     assets.addJs(pdict.chSdkUrl);
@@ -19,7 +19,8 @@
 <div id="fiserv-commercehub-card-form-init-container" 
     data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Payment'))}"
     data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
-    data-commercehub-tokenization="${URLUtils.https('PaymentInstruments-EarlyTokenization')}"></div>
+    data-commercehub-tokenization="${URLUtils.https('PaymentInstruments-EarlyTokenization')}"
+    data-initial-checkout-stage="${pdict.currentStage}"></div>
 
 <div id="fiserv-commercehub-card-form-container">
     <div class="sdc-row">

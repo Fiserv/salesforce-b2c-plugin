@@ -2,6 +2,7 @@
 
 let Resource = require('dw/web/Resource');
 let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+let BasketMgr = require('dw/order/BasketMgr');
 
 // Provides the frontend files with config settings needed by the frontend
 function getFrontendConfigData(formId)
@@ -27,6 +28,13 @@ function getFrontendConfigData(formId)
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailGift', 'error', null),
                 'giftCardLineItemTitle': Resource.msg('display.html.gift.giftListItem', 'display', null),
                 'giftCardRemoveText': Resource.msg('display.html.gift.removeGiftListItem', 'display', null)
+            }
+            break;
+        case 'PayPal':
+            configData = {
+                'buttonsConfig': FiservConfig.buildPayPalButtonsConfig(),
+                'chargeType': FiservConfig.getCommerceHubPayPalPaymentType(),
+                'paypalFailureMessage': Resource.msg('message.error.paypal.failure', 'error', null),
             }
             break;
         default:

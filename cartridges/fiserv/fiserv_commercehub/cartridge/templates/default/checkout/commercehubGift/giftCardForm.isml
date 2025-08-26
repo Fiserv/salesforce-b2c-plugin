@@ -1,7 +1,6 @@
 <isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
 <isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 <isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
-<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 <isset name="CHGiftEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
 <isset name="CHGiftSecurityEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftSecurityEnabled()}" scope="pdict" />
 <isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getGiftPrivacyStatementEnabled()}" scope="pdict" />
@@ -12,7 +11,8 @@
 <isif condition="${pdict.CHGiftEnabled}">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
-        assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
         assets.addJs('/js/fiserv_gift/commercehub-giftcard-form.js');
         assets.addJs('/js/fiserv_gift/giftcard.js');
         assets.addJs(pdict.chSdkUrl);

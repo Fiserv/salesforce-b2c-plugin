@@ -21,7 +21,8 @@ class CommercehubCheckoutForm
             $.spinner().start();
             this.createAdapter();
             this.initializeAdapter();
-            this.watchSubmitButton();
+            if($('.nav-link.credit-card-tab.active').length)
+                this.watchSubmitButton();
             this.watchPaymentMethods();               
         } catch (_err) {
             this.sdkLoadFailure(_err);
@@ -33,15 +34,15 @@ class CommercehubCheckoutForm
         let loadSuccessCallback = () => { console.log("CommerceHub SDK has loaded."); };
         let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
         let formReadyCallback = () => { this.sdkInitialized() };
-        let formValidCallback = () => { this.getSubmitButton().prop('disabled', false); };
-        let formInvalidCallback = () => { this.getSubmitButton().prop('disabled', true); };
+        let formValidCallback = () => { this.getSubmitButton().prop('disabled', false); this.validForm = true; };
+        let formInvalidCallback = () => { this.getSubmitButton().prop('disabled', true); this.validForm = false; };
         let cardBrandHandler = (brand) => { this.cardBrandChangeHandler(brand) };
         let fieldValidityHandler = (data) => { this.fieldValidityHandler(data); };
         let fieldFocusHandler = (data) => { this.fieldFocusHandler(data) };
         let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
         let runFailureCallback = (error) => { this.cardCaptureFailure(error); };
 
-        this.formAdapter = new FiservIframe(
+        this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
             loadFailCallback,
             formReadyCallback,
@@ -85,14 +86,12 @@ class CommercehubCheckoutForm
     {
         this.formAdapter.reactivateIframe('card');
         this.watchSubmitButton()
-        this.getSubmitButton().prop('disabled', true);
     }
     
     deactivateCommercehubForm = function()
     {
         this.formAdapter.deactivateIframe();
         this.unwatchSubmitButton();
-        this.getSubmitButton().prop('disabled', false);
     }
 
     setSessionIdInput = function(sessionId)
@@ -142,7 +141,7 @@ class CommercehubCheckoutForm
         {
             try {
                 await new Promise((resolve, reject) => {
-                    this.formAdapter.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value, cardType: $('#cardType')[0].value })
+                    FiservSDKHelper.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value, cardType: $('#cardType')[0].value })
                 }).then((response) => 
                 {
                     if(response.error)
@@ -205,12 +204,16 @@ class CommercehubCheckoutForm
             $('a.credit-card-tab.active').length)
         {
             this.deactivateCommercehubForm();
-        } 
+        }
         else if (
             $(_e.currentTarget).attr("data-method-id") === 'CREDIT_CARD' && 
             !$(_e.currentTarget).find("a.nav-link").hasClass('active'))
         {
             this.activateCommercehubForm();
+            if(!this.validForm)
+            {
+                this.disableSubmitButton();
+            }
         }
     }
 
@@ -231,7 +234,7 @@ class CommercehubCheckoutForm
             _e.preventDefault();
             $.spinner().start();
             this.unwatchSubmitButton();
-            this.formAdapter.submitForm(this.credsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS);
+            this.formAdapter.submitForm(this.credsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS ? "3DS" : null);
             return false;
         }
     }

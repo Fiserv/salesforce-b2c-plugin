@@ -1,5 +1,6 @@
 const dwSystem = require('dw/system');
 const currentSite = dwSystem.Site.getCurrent();
+let constants = require('*/cartridge/fiservConstants/constants');
 const NO_MASKING = 'NO_MASKING';
 
 function getSitePreference(field)
@@ -130,8 +131,28 @@ const commerceHubExport =
         return getSitePreference('CommerceHubGiftPrivacyStatement');
     },
 
+    // This is where the PayPal settings start
+
+    getCommerceHubPayPalEnabled()
+    {
+        return getSitePreference('CommerceHubPayPalEnable');
+    },
+
+    getCommerceHubPayPalPaymentType()
+    {
+        return getSitePreference('CommerceHubPayPalPaymentType').value;
+    },
+
+    getCommerceHubPayPayVaultingEnabled()
+    {
+        return getSitePreference('CommerceHubPayPayVaultingEnable');
+    },
+
     getFormConfig(formId)
     {
+        if(!constants.FORM_ID_LIST.includes(formId))
+            return;
+
         let config = {};
         config['fields'] = this.buildFormFieldsConfig(formId);
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
@@ -211,6 +232,10 @@ const commerceHubExport =
 
     getInvalidFields(formId)
     {
+        if(!constants.FORM_ID_LIST.includes(formId))
+            return;
+
+
         let invalidFields = {
             'cardNumber': getSitePreference('CommerceHub' + formId + 'FormCardNumberInvalidFieldMessage'),
             'nameOnCard': getSitePreference('CommerceHub' + formId + 'FormNameOnCardInvalidFieldMessage'),
@@ -220,6 +245,30 @@ const commerceHubExport =
         };
 
         return invalidFields;
+    },
+
+    buildPayPalButtonsConfig()
+    {
+        let buttonsConfig = {};
+        // Only splitting this up in preparation for the potential implementation of Venmo in the future...
+        // Temporarily hard coded as well...
+        if(this.getCommerceHubPayPalEnabled())
+        {
+            buttonsConfig['paypal'] = {
+                'parentElementId': 'fiserv_commercehub-paypal-button',
+                'color': getSitePreference('CommerceHubPayPalButtonColor').value,
+                'shape': getSitePreference('CommerceHubPayPalButtonShape').value,
+                'label': getSitePreference('CommerceHubPayPalButtonLabel').value
+            }
+        }
+
+        let dataConfig = {
+            'enableVaulting': this.getCommerceHubPayPayVaultingEnabled(),
+            'customerConfirmation': 'REVIEW_AND_PAY',
+            'buttons': buttonsConfig
+        };
+
+        return dataConfig;
     }
 };
 

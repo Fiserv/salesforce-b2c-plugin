@@ -48,7 +48,7 @@ function buildTransactionInteractionObject()
     return txnInteraction;
 }
 
-function buildTransactionDetailsObject(capture, tokenize)
+function buildChargesTransactionDetailsObject(capture, tokenize)
 {
     let txnDetails = {};
     txnDetails["captureFlag"] = capture;
@@ -214,7 +214,7 @@ function buildCardRequest(paymentInstrument, paymentAction)
 
     req["amount"] = buildAmountObject(paymentInstrument);
     req["source"] = buildSourceObject(paymentInstrument);
-    req["transactionDetails"] = buildTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, tokenize);
+    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, tokenize);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
@@ -237,7 +237,7 @@ function buildGiftRequest(paymentInstrument, paymentAction)
 
     req["amount"] = buildAmountObject(paymentInstrument);
     req["source"] = buildSourceObject(paymentInstrument);
-    req["transactionDetails"] = buildTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, null);
+    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, null);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
@@ -333,7 +333,46 @@ function buildRecoveryPayload(orderNumber, merchantTransactionId)
     return req;
 }
 
-function buildCredentialsRequest(baseUrl, is3DS)
+function buildOrdersTransactionDetailsObject(paymentAction)
+{
+    let txnDetails = {};
+    txnDetails["operationType"] = paymentAction === constants.COMMERCEHUB_AUTH_ACTION ? "AUTHORIZE" : "CAPTURE";
+    txnDetails["accountVerification"] = false;
+    txnDetails["merchantOrderId"] = orderNo;
+    txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
+    
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
+    return txnDetails;
+}
+
+function buildOrderRequest(orderNumber, paymentInstrument)
+{
+    orderNo = orderNumber;
+    let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
+    if(paymentAction === constants.COMMERCEHUB_AUTH_ACTION || paymentAction === constants.COMMERCEHUB_SALE_ACTION)
+    {
+        FiservLogs.logInfo(1, 'Initiating Order ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
+        let req = {};
+
+        req["transactionDetails"] = buildOrdersTransactionDetailsObject(paymentAction);
+        req["referenceTransactionDetails"] = {
+            "referenceOrderId": paymentInstrument.paymentTransaction.custom.commercehubOrderId
+        };
+        req["paymentMethod"] = {
+            "provider": paymentInstrument.paymentMethod
+        }
+        req["merchantDetails"] = buildMerchantDetailsObject();
+
+        return req;
+    }
+    else
+    {
+        return {};
+    }
+}
+
+function buildCredentialsRequest(baseUrl, requestPurpose)
 {
     showBuilders = false;
 
@@ -346,14 +385,31 @@ function buildCredentialsRequest(baseUrl, is3DS)
         }
     };
 
-    if(is3DS) {
+    if(requestPurpose) {
         let basket = BasketMgr.getCurrentBasket();
         payload['amount'] = buildAmountObjectFromBasket(basket);
         payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
-        payload['transactionDetails'] = {
-            'authentication3DS': true
-        };
+        if(requestPurpose === "3DS")
+        {
+            payload['transactionDetails'] = {
+                'authentication3DS': true
+            };
+        }
+        else if(requestPurpose === "PayPal" && FiservConfig.getCommerceHubPayPayVaultingEnabled() && basket.customer.profile)
+        {
+            payload['providerCredentials'] = [
+                {
+                    "credentialType": "PAYPAL",
+                    "attributes": [
+                        {
+                            "key": "customerId",
+                            "value": basket.customer.profile.custom.commercehubCustomerId
+                        }
+                    ]
+                }
+            ]
+        }
     }
 
     return payload;
@@ -366,5 +422,6 @@ module.exports =
     buildTokenRequest : buildTokenRequest,
     buildBalanceInquiryRequest : buildBalanceInquiryRequest,
     buildCancelPayload : buildCancelPayload,
-    buildRecoveryPayload : buildRecoveryPayload
+    buildRecoveryPayload : buildRecoveryPayload,
+    buildOrderRequest : buildOrderRequest
 }

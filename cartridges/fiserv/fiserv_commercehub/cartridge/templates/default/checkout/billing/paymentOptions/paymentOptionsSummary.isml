@@ -4,9 +4,11 @@
             <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
         <iselseif condition="${payment.paymentMethod === 'GIFT_CARD'}" />
             <isinclude template="checkout/billing/paymentOptions/giftCardSummary" />
+        <iselseif condition="${payment.paymentMethod === 'PAYPAL'}" />
+            <isinclude template="checkout/billing/paymentOptions/paypalSummary" />
         </isif>
         <isif condition="${!status.last}">
-            <br>
+            <br/>
         </isif>
     </isloop>
 </div>

@@ -12,4 +12,10 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>FISERV_COMMERCEHUB_GIFT</processor-id>
     </payment-method>
+    <payment-method method-id="PAYPAL">
+        <name xml:lang="x-default">PayPal</name>
+        <description xml:lang="x-default">Use this payment method for PayPal</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FISERV_COMMERCEHUB_PAYPAL</processor-id>
+    </payment-method>
 </payment-settings>

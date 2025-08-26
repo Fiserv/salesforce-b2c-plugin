@@ -1,10 +1,11 @@
 "use strict"
 
-class FiservIframe
+// This class is for sdk form constructions
+class FiservSDKIframe
 {
     // load success callback fires on successful load of the CommerceHub SDK
     // load fail callback fires on failure to load the CommerceHub SDK
-    // form ready callback fires when form is successfully loaded
+    // sdk ready callback fires when form is successfully loaded
     // form valid callback fires when form is marked valid
     // form invalid callback fires when form is marked invalid
     // run success callback fires when card is successfully tokenized
@@ -12,24 +13,24 @@ class FiservIframe
     constructor(
         loadSuccessCallback, 
         loadFailCallback,
-        formReadyCallback, 
+        sdkReadyCallback, 
         formValidCallback, 
         formInvalidCallback,
         cardBrandHandler,
         fieldValidityHandler,
         fieldFocusHandler,
         runSuccessCallback,
-        runFailureCallback) 
-    {
+        runFailureCallback
+    ) {
         // CommerceHub SDK loaded separately by B2C SFRA assets.js
         if (typeof(window.fiserv) === "undefined")
         {
             throw new Error("CommerceHub SDK not found. Unable to create CommerceHub Hosted Payment Page.")
         }
-
+        
         this.loadSuccessCallback = loadSuccessCallback;
         this.loadFailCallback = loadFailCallback;
-        this.formReadyCb = formReadyCallback;
+        this.sdkReadyCallback = sdkReadyCallback;
         this.formValidCb = formValidCallback;
         this.formInvalidCb = formInvalidCallback
         this.cardBrandHandler = cardBrandHandler;
@@ -46,7 +47,7 @@ class FiservIframe
                 this.form = next;
                 this.loadSuccessCallback();
                 this.iframeActive = true;
-                this.formReadyCb();
+                this.sdkReadyCallback();
             })
             .catch((error) => {
                 this.loadFailCallback(error);
@@ -75,47 +76,19 @@ class FiservIframe
         return formConfig;
     }
 
-    buildInitConfig = function(credentialsResponse)
-    {
-        let initConfig = {
-            ...credentialsResponse['submitConfig'],
-            ...credentialsResponse['initConfig'],
-            'sessionId': credentialsResponse['sessionId']
-        }
-
-        return initConfig;
-    }
-
-    backendCall = function(backendUrl, successCb, failureCb, data = null)
-    {
-        $.ajax({
-            url: backendUrl,
-            cache: false,
-            dataType: 'json',
-            type: "POST",
-            data: data,
-            success: function(response) {
-                successCb(response);
-            },
-            error: function(err) {
-                failureCb(err)
-            }
-        });
-    }
-
-    submitForm = function(credentialsUrl, storeSessionCallback, is3DS = false)
+    submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null)
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
             let promise = new Promise((resolve, reject) => {
-                this.backendCall(credentialsUrl, resolve, reject, { is3DS: is3DS });
+                FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
             });
 
             promise.then(async (credentialsResponse) => {
                 storeSessionCallback(credentialsResponse['sessionId']);
 
-                if(is3DS) {
-                    await window.fiserv.init(this.buildInitConfig(credentialsResponse));
+                if(requestPurpose === "3DS") {
+                    await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
                 }
 
                 this.form.submit(credentialsResponse['submitConfig'])
