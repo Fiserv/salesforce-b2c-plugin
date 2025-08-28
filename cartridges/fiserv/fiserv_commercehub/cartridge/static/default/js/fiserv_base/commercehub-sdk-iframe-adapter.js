@@ -38,12 +38,18 @@ class FiservSDKIframe
         this.fieldFocusHandler = fieldFocusHandler;
         this.runSuccessCallback = runSuccessCallback;
         this.runFailureCallback = runFailureCallback;
+
+        this.fastlaneStatus = false;
+        this.fastlaneInitStatus = false;
+        this.fastlaneAuthResponse = null;
     }
 
-    initSdk = function(formConfig, formType)
+    initSdk = function(formConfig, formType, fastlaneObject)
     {
-        window.fiserv.components.paymentFields(this.buildFormConfig(formConfig, formType))
+        window.fiserv.components.paymentFields(this.buildFormConfig(formConfig, formType, fastlaneObject))
             .then((next) => {
+                this.fastlaneStatus = fastlaneObject !== undefined;
+                this.fastlaneInitStatus = false;
                 this.form = next;
                 this.loadSuccessCallback();
                 this.iframeActive = true;
@@ -54,7 +60,7 @@ class FiservSDKIframe
             });
     }
 
-    buildFormConfig = function(formConfigInput, formType)
+    buildFormConfig = function(formConfigInput, formType, fastlaneObject)
     {
         let formConfig = {
             "data" : formConfigInput['formCustomization'],
@@ -72,6 +78,14 @@ class FiservSDKIframe
         
         // Useful for Valuelink form differential (not necessary rn)
         formConfig["data"]["paymentMethod"] = formType;
+
+        if(fastlaneObject)
+        {
+            formConfig = {
+                ...formConfig,
+                ...fastlaneObject
+            };
+        }
 
         return formConfig;
     }
@@ -133,5 +147,35 @@ class FiservSDKIframe
     mask = function(field)
     {
         this.form.mask(field, true);
+    }
+
+    getFastlaneStatus = function()
+    {
+        return this.fastlaneStatus;
+    }
+
+    setFastlaneStatus = function(newStatus)
+    {
+        this.fastlaneStatus = newStatus;
+    }
+
+    getFastlaneInitStatus = function()
+    {
+        return this.fastlaneInitStatus;
+    }
+
+    setFastlaneInitStatus = function(newStatus)
+    {
+        this.fastlaneInitStatus = newStatus;
+    }
+
+    getFastlaneAuthResponse = function()
+    {
+        return this.fastlaneAuthResponse;
+    }
+
+    setFastlaneAuthResponse = function(newAuthResponse)
+    {
+        this.fastlaneAuthResponse = newAuthResponse;
     }
 }

@@ -301,6 +301,7 @@ function buildConfigList(chPreferenceDescriptions)
         'id': 'PayPal',
         'items': [
             getPreferenceDescription('CommerceHubPayPalEnable'),
+            getPreferenceDescription('CommerceHubPayPayFastlaneEnable'),
             getPreferenceDescription('CommerceHubPayPalPaymentType'),
             getPreferenceDescription('CommerceHubPayPayVaultingEnable')
         ],

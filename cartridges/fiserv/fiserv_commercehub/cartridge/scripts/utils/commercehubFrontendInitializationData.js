@@ -2,7 +2,6 @@
 
 let Resource = require('dw/web/Resource');
 let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-let BasketMgr = require('dw/order/BasketMgr');
 
 // Provides the frontend files with config settings needed by the frontend
 function getFrontendConfigData(formId)
@@ -14,6 +13,7 @@ function getFrontendConfigData(formId)
             configData = {
                 'tokenizeEarly': FiservConfig.getEarlyTokenization(),
                 'use3DS': FiservConfig.get3DSEnabled(),
+                'fastlaneEnabled': FiservConfig.getCommerceHubPayPayFastlaneEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null)
             };

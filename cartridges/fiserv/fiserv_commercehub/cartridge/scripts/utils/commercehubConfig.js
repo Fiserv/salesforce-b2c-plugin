@@ -138,6 +138,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalEnable');
     },
 
+    getCommerceHubPayPayFastlaneEnabled()
+    {
+        return getSitePreference('CommerceHubPayPayFastlaneEnable');
+    },
+
     getCommerceHubPayPalPaymentType()
     {
         return getSitePreference('CommerceHubPayPalPaymentType').value;

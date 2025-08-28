@@ -12,6 +12,10 @@
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
     assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
     assets.addJs('/js/fiserv_checkout/checkout.js');
+    if(!pdict.customer.registeredUser && pdict.commercehubConfig.getCommerceHubPayPayFastlaneEnabled())
+    {
+        assets.addJs('/js/fiserv_paypal/commercehub-paypal-fastlane.js');
+    }
     assets.addJs(pdict.chSdkUrl);
     assets.addCss('css/fiservScc.css');
 </isscript>
@@ -20,7 +24,8 @@
     data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Payment'))}"
     data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
     data-commercehub-tokenization="${URLUtils.https('PaymentInstruments-EarlyTokenization')}"
-    data-initial-checkout-stage="${pdict.currentStage}"></div>
+    data-initial-checkout-stage="${pdict.currentStage}"
+    data-user-logged-in="${pdict.customer.registeredUser}"></div>
 
 <div id="fiserv-commercehub-card-form-container">
     <div class="sdc-row">

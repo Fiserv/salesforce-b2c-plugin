@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
     {
         let data = {
             config: $('#fiserv-commercehub-card-form-init-container').data('commercehub-initialization-data'),
+            userLoggedIn: $('#fiserv-commercehub-card-form-init-container').data('user-logged-in'),
             credentialsUrl: $('#fiserv-commercehub-card-form-init-container').attr('data-commercehub-credentials'),
             tokenizationUrl: $('#fiserv-commercehub-card-form-init-container').attr('data-commercehub-tokenization')
         }
