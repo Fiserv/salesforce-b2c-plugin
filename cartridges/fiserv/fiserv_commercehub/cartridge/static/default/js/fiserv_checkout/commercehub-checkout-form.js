@@ -140,7 +140,7 @@ class CommercehubCheckoutForm
 
     cardCaptureSuccess = async function(responseBody)
     {
-        if(!this.formAdapter.getFastlaneStatus())
+        if(responseBody.source)
         {
             let cardDetails = responseBody.source.card;
             $('#cardNumber').val(cardDetails.last4.padStart(16, '*'));

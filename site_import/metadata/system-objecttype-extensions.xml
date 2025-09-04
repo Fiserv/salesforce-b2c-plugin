@@ -180,13 +180,6 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubCreditPrivacyStatement">
-                <display-name xml:lang="x-default">Show Privacy Statement</display-name>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>true</default-value>
-            </attribute-definition>
 
             <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
 
@@ -273,13 +266,6 @@
                         <value>10</value>
                     </value-definition>
                 </value-definitions>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubGiftPrivacyStatement">
-                <display-name xml:lang="x-default">Show Privacy Statement</display-name>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>true</default-value>
             </attribute-definition>
 
             <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
@@ -1161,7 +1147,6 @@
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
-                <attribute attribute-id="CommerceHubCreditPrivacyStatement"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
                 <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>
@@ -1238,7 +1223,6 @@
                 <attribute attribute-id="CommerceHubGiftPaymentType"/>
                 <attribute attribute-id="CommerceHubGiftSecurityEnable"/>
                 <attribute attribute-id="CommerceHubMaxGiftCards"/>
-                <attribute attribute-id="CommerceHubGiftPrivacyStatement"/>
 
                 <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
                 <attribute attribute-id="CommerceHubGiftFormCardNumberPlaceholder"/>

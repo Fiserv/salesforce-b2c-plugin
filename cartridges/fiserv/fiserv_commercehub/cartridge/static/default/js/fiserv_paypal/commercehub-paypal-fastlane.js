@@ -2,8 +2,61 @@
 
 class FiservFastlaneInitializer
 {
+    static watermarkInsertions = [];
+
     static async initFastlane(credentialsUrl, formAdapter, formConfig)
     {
+        let addressFormList = {};
+        let ajaxSuccessAlreadyAdded = false;
+
+        let createAddressFormFields = function(baseForm, type)
+        {
+            let baseId = type === 'shipping' ? 'dwfrm_shipping_shippingAddress' : 'dwfrm_billing';
+            let fields = {};
+            Object.keys(baseForm).forEach((key) => {
+                fields[key] = {};
+                let formElement = $('[name=' + (baseId + baseForm[key]) + ']');
+                if(!formElement.length)
+                    return;
+                let id = formElement.attr('id');
+                if(!id)
+                    return;
+                fields[key]['elementId'] = id;
+            })
+
+            return { fields: fields };
+        }
+
+        let createAddressObject = function(addr, name)
+        {
+            return {
+                firstName: name.firstName,
+                lastName: name.lastName,
+                street: addr.addressLine1,
+                city: addr.adminArea2,
+                stateOrProvince: addr.adminArea1,
+                postalCode: addr.postalCode,
+                country: addr.countryCode
+            };
+        }
+
+        let populateAddress = async function(addressObject, purpose)
+        {
+            let addressForm = addressFormList[purpose] ?
+                addressFormList[purpose] :
+                await window.fiserv.components.address(createAddressFormFields(formConfig.configData.fastlaneAddressFormNames, purpose));
+            
+            addressFormList[purpose] = addressForm;
+            addressForm.populate(addressObject);
+        }
+
+        let insertWatermarkElementManual = function(fastlane, jQueryElement, id)
+        {
+            if(!$('#' + id).length)
+                jQueryElement.before('<div id="' + id + '"></div>');
+            fastlane.renderWatermark(id);
+        }
+
         $.spinner().start();
         await new Promise((resolve, reject) => {
             FiservSDKHelper.backendCall(credentialsUrl, resolve, reject);
@@ -14,19 +67,15 @@ class FiservFastlaneInitializer
             let paypal = await window.fiserv.components.paypal();
             let fastlane = await paypal.fastlane();
 
-            let emailWatermarkId = 'fastlane-email-watermark';
-            $('<div id="' + emailWatermarkId + '"></div>').insertAfter('input[name=dwfrm_coCustomer_email]');
-            fastlane.renderWatermark(emailWatermarkId);
+            insertWatermarkElementManual(fastlane, $('input[name=dwfrm_coCustomer_email]'), 'fastlane-email-watermark');
 
             let fastlaneObject = {
-                paypalFastlane: {
-                    component: fastlane,
-                    consent: {
-                        parentElementId: emailWatermarkId
-                    },
-                    watermark: {
-                        parentElementId: emailWatermarkId
-                    }
+                component: fastlane,
+                consent: {
+                    parentElementId: "paypal-fastlane-payment-form-consent"
+                },
+                watermark: {
+                    parentElementId: "paypal-fastlane-payment-form-watermark"
                 }
             };
 
@@ -36,13 +85,66 @@ class FiservFastlaneInitializer
                 $.spinner().start();
                 await fastlane.authenticate({
                     email: $('input[name=dwfrm_coCustomer_email]').val()
-                }).then((authResponse) => {
-                    formAdapter.setFastlaneAuthResponse(authResponse);
+                }).then(async (authResponse) => {
+                    if(!authResponse.isGuestCheckout) {
+                        let authValues = authResponse[Object.getOwnPropertySymbols(authResponse)[0]];
+
+                        let paymentFieldWatermarkId = 'paypal-fastlane-payment-form-watermark';
+                        fastlane.renderWatermark(paymentFieldWatermarkId);
+                        FiservFastlaneInitializer.watermarkInsertions.push(paymentFieldWatermarkId);
+                        
+                        let shippingResponse = authValues.profile.shippingAddress;
+                        let shippingObject = createAddressObject(shippingResponse.address, shippingResponse.name);
+                        populateAddress(shippingObject, 'shipping');
+                        let shippingAddressBlockElement = $('.shipping-address-block');
+                        if(shippingAddressBlockElement.length)
+                        {
+                            let shippingWatermarkId = 'fastlane-shipping-address-watermark';
+                            insertWatermarkElementManual(fastlane, shippingAddressBlockElement, shippingWatermarkId);
+                            FiservFastlaneInitializer.watermarkInsertions.push(shippingWatermarkId);
+                        }
+
+                        // Fill out billing address form only after shipping has been submitted...
+                        if(!ajaxSuccessAlreadyAdded)
+                        {
+                            $(document).on("ajaxSuccess", (ev, xhr) => { 
+                                if (typeof(xhr.responseJSON) !== 'undefined' &&
+                                    typeof(xhr.responseJSON.action) !== 'undefined' &&
+                                    xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
+                                    typeof(xhr.responseJSON.order) !== 'undefined' &&
+                                    typeof(xhr.responseJSON.order.shipping) !== 'undefined')
+                                {
+                                    let billingBase = authValues.profile;
+                                    let billingObject = createAddressObject(billingBase.card.paymentSource.card.billingAddress, billingBase.name);
+                                    if(JSON.stringify(billingObject) !== JSON.stringify(shippingObject))
+                                    {
+                                        $('.address-selector-block').find('.btn-add-new').trigger('click');
+                                        populateAddress(billingObject, 'billing');
+                                    }
+                                }
+                            });
+                            ajaxSuccessAlreadyAdded = true;
+                        }
+
+                        let billingAddressBlockElement = $('.billing-address');
+                        if(billingAddressBlockElement.length)
+                        {
+                            let billingWatermarkId = 'fastlane-billing-address-watermark'
+                            insertWatermarkElementManual(fastlane, billingAddressBlockElement, billingWatermarkId);
+                            FiservFastlaneInitializer.watermarkInsertions.push(billingWatermarkId);
+                        }
+
+                        formAdapter.setFastlaneAuthResponse(authResponse);
+                    }
                     $.spinner().stop();
                 }).catch((e) => {
                     console.log(e);
                     $.spinner().stop();
                 });
+            });
+
+            $('.customer-summary .edit-button').on('click', () => {
+                FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter, fastlaneObject);
             });
 
             $.spinner().stop();
@@ -52,11 +154,22 @@ class FiservFastlaneInitializer
         });
     }
 
+    static async resetFastlane(formConfig, formAdapter, fastlaneObject)
+    {
+        formAdapter.destroyIframe('card');
+        formAdapter.initSdk(formConfig, null, fastlaneObject);
+
+        FiservFastlaneInitializer.watermarkInsertions.forEach((id) => {
+            $('#' + id).find('paypal-watermark').remove();
+        });
+        FiservFastlaneInitializer.watermarkInsertions = [];
+    }
+
     static setCardInfoFromFastlane(authResp)
     {
         let authValues = authResp[Object.getOwnPropertySymbols(authResp)[0]]
         let card = authValues.profile.card.paymentSource.card;
-        // Setting hardcoded for now, will change later
+        
         $('#cardType').val(card.brand.toLowerCase());
         $('#cardNumber').val(card.lastDigits.padStart(16, '*'));
         let expMon = card.expiry.substr(5);

@@ -4,7 +4,7 @@
 <isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
 <isset name="earlyTokenization" value="${pdict.commercehubConfig.getEarlyTokenization()}" scope="pdict" />
-<isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getCreditPrivacyStatementEnabled()}" scope="pdict" />
+<isset name="fastlaneEnabled" value="${pdict.commercehubConfig.getCommerceHubPayPayFastlaneEnabled()}" scope="pdict" />
 
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
@@ -12,7 +12,7 @@
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
     assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
     assets.addJs('/js/fiserv_checkout/checkout.js');
-    if(!pdict.customer.registeredUser && pdict.commercehubConfig.getCommerceHubPayPayFastlaneEnabled())
+    if(!pdict.customer.registeredUser && pdict.fastlaneEnabled)
     {
         assets.addJs('/js/fiserv_paypal/commercehub-paypal-fastlane.js');
     }
@@ -63,11 +63,13 @@
             <span id="sdc-exp-year-invalid-message" class="sdc-error-message sdc-hidden"></span>
         </div>
     </div>
-    <isif condition="${pdict.showPrivacyStatement}">
-        <div class="privacyPolicy">
-            <span></span>
-            Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
-        </div>
+    <div class="privacyPolicy">
+        <span></span>
+        Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+    </div>
+    <isif condition="${!pdict.customer.registeredUser && pdict.fastlaneEnabled}">
+        <div id="paypal-fastlane-payment-form-watermark"></div>
+        <div id="paypal-fastlane-payment-form-consent"></div>
     </isif>
     <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
         <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            

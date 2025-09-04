@@ -30,6 +30,10 @@
         <div id="fiserv-commercehub-paypal-form-container">
             <div id="fiserv_commercehub-paypal-button" class="sdc-button"></div>
 
+            <div class="privacyPolicy">
+                <span></span>
+                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+            </div>
             <div id="fiserv-paypal-fatal-notice" class="alert alert-danger">
                 <p>${Resource.msg('message.error.paypal.fatal','error',null)}</p>            
             </div>

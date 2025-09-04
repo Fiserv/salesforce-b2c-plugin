@@ -3,7 +3,6 @@
 <isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
 <isset name="CHGiftEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
 <isset name="CHGiftSecurityEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftSecurityEnabled()}" scope="pdict" />
-<isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getGiftPrivacyStatementEnabled()}" scope="pdict" />
 <isif condition="${pdict.currentStage}">
     <isset name="giftCardInfo" value="${pdict.FiservHelper.retrieveAppliedGiftCards()}" scope="pdict" />
 </isif>
@@ -71,12 +70,10 @@
                 </div>
         </div>
 
-        <isif condition="${pdict.showPrivacyStatement}">
-            <div class="privacyPolicy">
-                <span></span>
-                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
-            </div>
-        </isif>
+        <div class="privacyPolicy">
+            <span></span>
+            Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+        </div>
 
         <isif condition="${pdict.currentStage}">
             <div id="fiserv-scc-gift-card-info-container" data-gift-card-list-json="${JSON.stringify(pdict.giftCardInfo)}"></div>

@@ -17,6 +17,10 @@ function getFrontendConfigData(formId)
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null)
             };
+            if(configData.fastlaneEnabled)
+            {
+                configData['fastlaneAddressFormNames'] = FiservConfig.buildFastlaneFormNamesObject();
+            }
             break;
         case 'Tokenization':
             configData = {

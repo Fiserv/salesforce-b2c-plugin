@@ -81,10 +81,7 @@ class FiservSDKIframe
 
         if(fastlaneObject)
         {
-            formConfig = {
-                ...formConfig,
-                ...fastlaneObject
-            };
+            formConfig["paypalFastlane"] = fastlaneObject;
         }
 
         return formConfig;

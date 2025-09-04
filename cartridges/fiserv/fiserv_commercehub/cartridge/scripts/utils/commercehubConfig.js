@@ -94,11 +94,6 @@ const commerceHubExport =
         return getSitePreference('CommerceHub3DSEnable');
     },
 
-    getCreditPrivacyStatementEnabled()
-    {
-        return getSitePreference('CommerceHubCreditPrivacyStatement');
-    },
-
     // This is where the Gift Card settings start
 
     getCommerceHubGiftEnabled()
@@ -124,11 +119,6 @@ const commerceHubExport =
     getCommerceHubGiftMaxCards()
     {
         return getSitePreference('CommerceHubMaxGiftCards').value;
-    },
-
-    getGiftPrivacyStatementEnabled()
-    {
-        return getSitePreference('CommerceHubGiftPrivacyStatement');
     },
 
     // This is where the PayPal settings start
@@ -274,6 +264,19 @@ const commerceHubExport =
         };
 
         return dataConfig;
+    },
+
+    buildFastlaneFormNamesObject()
+    {
+        return {
+            firstName: "_addressFields_firstName",
+            lastName: "_addressFields_lastName",
+            street: "_addressFields_address1",
+            city: "_addressFields_city",
+            stateOrProvince: "_addressFields_states_stateCode",
+            postalCode: "_addressFields_postalCode",
+            country: "_addressFields_country"
+        };
     }
 };
 
