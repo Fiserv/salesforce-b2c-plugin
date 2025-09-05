@@ -63,6 +63,10 @@
             <span id="sdc-exp-year-invalid-message" class="sdc-error-message sdc-hidden"></span>
         </div>
     </div>
+
+    <isif condition="${!pdict.customer.registeredUser && pdict.fastlaneEnabled}">
+        <button type="button" id="fastlane-re-enable-form-button" class="btn btn-outline-primary checkout-hidden">${Resource.msg('display.html.fastlane.edit', 'display', null)}</button>
+    </isif>
     <div class="privacyPolicy">
         <span></span>
         Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.

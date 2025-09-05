@@ -18,6 +18,10 @@
 	background-repeat: no-repeat;
 }
 
+#fastlane-re-enable-form-button {
+    margin-bottom: 1rem;
+}
+
 .cc-type-image {
     margin-top: 0.5em;
     width: 100%;

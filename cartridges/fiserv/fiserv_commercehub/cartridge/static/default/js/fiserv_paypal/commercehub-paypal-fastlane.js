@@ -8,6 +8,7 @@ class FiservFastlaneInitializer
     {
         let addressFormList = {};
         let ajaxSuccessAlreadyAdded = false;
+        let authValues, billingPhone, shippingObject; // Values kept up here to update in the billing event
 
         let createAddressFormFields = function(baseForm, type)
         {
@@ -57,6 +58,16 @@ class FiservFastlaneInitializer
             fastlane.renderWatermark(id);
         }
 
+        let insertWatermarkBeforeElement = function(fastlane, elementClass, watermarkId)
+        {
+            let element = $('.' + elementClass);
+            if(element.length)
+            {
+                insertWatermarkElementManual(fastlane, element, watermarkId);
+                FiservFastlaneInitializer.watermarkInsertions.push(watermarkId);
+            }
+        }
+
         $.spinner().start();
         await new Promise((resolve, reject) => {
             FiservSDKHelper.backendCall(credentialsUrl, resolve, reject);
@@ -87,21 +98,29 @@ class FiservFastlaneInitializer
                     email: $('input[name=dwfrm_coCustomer_email]').val()
                 }).then(async (authResponse) => {
                     if(!authResponse.isGuestCheckout) {
-                        let authValues = authResponse[Object.getOwnPropertySymbols(authResponse)[0]];
+                        authValues = authResponse[Object.getOwnPropertySymbols(authResponse)[0]];
 
                         let paymentFieldWatermarkId = 'paypal-fastlane-payment-form-watermark';
                         fastlane.renderWatermark(paymentFieldWatermarkId);
                         FiservFastlaneInitializer.watermarkInsertions.push(paymentFieldWatermarkId);
                         
                         let shippingResponse = authValues.profile.shippingAddress;
-                        let shippingObject = createAddressObject(shippingResponse.address, shippingResponse.name);
+                        shippingObject = createAddressObject(shippingResponse.address, shippingResponse.name);
                         populateAddress(shippingObject, 'shipping');
-                        let shippingAddressBlockElement = $('.shipping-address-block');
-                        if(shippingAddressBlockElement.length)
+
+                        insertWatermarkBeforeElement(fastlane, 'shipping-address-block', 'fastlane-shipping-address-watermark');
+                        insertWatermarkBeforeElement(fastlane, 'billing-address', 'fastlane-billing-address-watermark');
+
+                        let shippingPhone = shippingResponse.phoneNumber?.nationalNumber;
+                        billingPhone = authValues.profile.phones ? authValues.profile.phones[0]?.nationalNumber : null;
+                        if(shippingPhone || billingPhone)
                         {
-                            let shippingWatermarkId = 'fastlane-shipping-address-watermark';
-                            insertWatermarkElementManual(fastlane, shippingAddressBlockElement, shippingWatermarkId);
-                            FiservFastlaneInitializer.watermarkInsertions.push(shippingWatermarkId);
+                            if(!shippingPhone)
+                                shippingPhone = billingPhone;
+                            if(!billingPhone)
+                                billingPhone = shippingPhone;
+
+                            $('[name=dwfrm_shipping_shippingAddress_addressFields_phone').val(shippingPhone);
                         }
 
                         // Fill out billing address form only after shipping has been submitted...
@@ -121,18 +140,13 @@ class FiservFastlaneInitializer
                                         $('.address-selector-block').find('.btn-add-new').trigger('click');
                                         populateAddress(billingObject, 'billing');
                                     }
+                                    $('[name=dwfrm_billing_contactInfoFields_phone').val(billingPhone);
                                 }
                             });
                             ajaxSuccessAlreadyAdded = true;
                         }
 
-                        let billingAddressBlockElement = $('.billing-address');
-                        if(billingAddressBlockElement.length)
-                        {
-                            let billingWatermarkId = 'fastlane-billing-address-watermark'
-                            insertWatermarkElementManual(fastlane, billingAddressBlockElement, billingWatermarkId);
-                            FiservFastlaneInitializer.watermarkInsertions.push(billingWatermarkId);
-                        }
+                        $('#fastlane-re-enable-form-button').removeClass('checkout-hidden');
 
                         formAdapter.setFastlaneAuthResponse(authResponse);
                     }
@@ -143,7 +157,7 @@ class FiservFastlaneInitializer
                 });
             });
 
-            $('.customer-summary .edit-button').on('click', () => {
+            $('.customer-summary .edit-button, #fastlane-re-enable-form-button').on('click', (e) => {
                 FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter, fastlaneObject);
             });
 
@@ -158,6 +172,7 @@ class FiservFastlaneInitializer
     {
         formAdapter.destroyIframe('card');
         formAdapter.initSdk(formConfig, null, fastlaneObject);
+        $('#fastlane-re-enable-form-button').addClass('checkout-hidden');
 
         FiservFastlaneInitializer.watermarkInsertions.forEach((id) => {
             $('#' + id).find('paypal-watermark').remove();
