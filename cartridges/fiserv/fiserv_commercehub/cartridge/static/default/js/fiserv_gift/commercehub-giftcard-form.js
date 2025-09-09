@@ -425,7 +425,6 @@ class CommercehubGiftForm
     {
         this.formAdapter.destroyIframe('gift');
         this.getFatalNotice().hide();
-        this.getSccContainer().removeClass('initialized-scc-container');
         this.unwatchFormButtons();
     }
 

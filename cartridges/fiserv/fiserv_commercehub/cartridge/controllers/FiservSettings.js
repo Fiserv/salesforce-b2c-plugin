@@ -278,8 +278,7 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubTokenizationStrategy'),
             getPreferenceDescription('CommerceHubStandaloneSPA'),
             getPreferenceDescription('CommerceHubEarlyTokenization'),
-            getPreferenceDescription('CommerceHub3DSEnable'),
-            getPreferenceDescription('CommerceHubCreditPrivacyStatement')
+            getPreferenceDescription('CommerceHub3DSEnable')
         ]
     });
 
@@ -291,8 +290,7 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubGiftPaymentMethodTitle'),
             getPreferenceDescription('CommerceHubGiftPaymentType'),
             getPreferenceDescription('CommerceHubGiftSecurityEnable'),
-            getPreferenceDescription('CommerceHubMaxGiftCards'),
-            getPreferenceDescription('CommerceHubGiftPrivacyStatement')
+            getPreferenceDescription('CommerceHubMaxGiftCards')
         ]
     });
 
@@ -301,6 +299,7 @@ function buildConfigList(chPreferenceDescriptions)
         'id': 'PayPal',
         'items': [
             getPreferenceDescription('CommerceHubPayPalEnable'),
+            getPreferenceDescription('CommerceHubPayPayFastlaneEnable'),
             getPreferenceDescription('CommerceHubPayPalPaymentType'),
             getPreferenceDescription('CommerceHubPayPayVaultingEnable')
         ],

@@ -18,15 +18,14 @@ class CommercehubPayPal
 
         this.watchButtonLoadLag();
         this.watchPaymentMethod();
-
-        new MutationObserver(() => { this.grandTotalUpdated(); }).observe($('.grand-total-sum')[0], { childList: true })
     }
 
-    initialize = function()
+    initialize = async function()
     {
         try {
             $.spinner().start();
-            this.initializeAdapter();
+            $('#fiserv-paypal-fatal-notice').hide();
+            await this.sdkButton.initSdk(this.credentialsUrl, null, "PayPal");
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -45,19 +44,6 @@ class CommercehubPayPal
         );
     }
 
-    initializeAdapter = async function()
-    {
-        try
-        {
-            this.sdkButton.initSdk(this.credentialsUrl, null, "PayPal");
-        }
-        catch(err)
-        {
-            console.log(err);
-            throw new Error(err);
-        };
-    }
-
     createCallbacksObject = function()
     {
         return {
@@ -69,19 +55,25 @@ class CommercehubPayPal
 
     sdkInitialized = async function() 
     {
-        let paypalLoadConfig = {};
-        paypalLoadConfig['intent'] = this.configDataPayPal.chargeType === 'AUTH' ? 'authorize' : 'capture';
-        const paypal = await window.fiserv.components.paypal(paypalLoadConfig);
+        try
+        {
+            let paypalLoadConfig = {};
+            paypalLoadConfig['intent'] = this.configDataPayPal.chargeType === 'AUTH' ? 'authorize' : 'capture';
+            const paypal = await window.fiserv.components.paypal(paypalLoadConfig);
 
-        await paypal.buttons({ data: this.configDataPayPal.buttonsConfig, hooks: this.createCallbacksObject() });
+            await paypal.buttons({ data: this.configDataPayPal.buttonsConfig, hooks: this.createCallbacksObject() });
+        }
+        catch(e)
+        {
+            $('#fiserv-paypal-fatal-notice').show();
+        }
         $.spinner().stop();
     }
 
     sdkLoadFailure = function (err) 
     {
         console.log(err);
-        this.disableFormButtons();
-        this.getFatalNotice().show();
+        $('#fiserv-paypal-fatal-notice').show();
         $.spinner().stop(); 
         throw new Error("Unable to load CommerceHub SDK.")
     }
@@ -117,12 +109,6 @@ class CommercehubPayPal
     setOrderIdInput = function(orderId)
     {
         $('input#commercehubOrderIdInputPayPal').val(orderId);
-    }
-
-    grandTotalUpdated = function(context)
-    {
-        $('#fiserv_commercehub-paypal-button').children().remove();
-        this.initialize();
     }
 
     watchPaymentMethod = function()

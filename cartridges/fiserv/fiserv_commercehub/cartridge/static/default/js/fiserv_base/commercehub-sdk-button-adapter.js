@@ -28,6 +28,8 @@ class FiservSDKButton
             await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
 
             this.sdkReadyCallback();
+        }).catch((error) => {
+            this.loadFailCallback(error);
         });
     }
 }

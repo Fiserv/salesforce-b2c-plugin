@@ -12,15 +12,25 @@ class CommercehubCheckoutForm
         this.configDataPaymentCard = initializationData.config.configData;
         this.credsUrl = initializationData.credentialsUrl;
         this.tokenizationUrl = initializationData.tokenizationUrl;
+        this.createAdapter();
+
         $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
+
+        if(this.configDataPaymentCard.fastlaneEnabled && !initializationData.userLoggedIn)
+        {
+            this.formAdapter.setFastlaneInitStatus(true);
+            FiservFastlaneInitializer.initFastlane(this.credsUrl, this.formAdapter, this.formConfig);
+        }
     }
     
     initialize = function()
     {
         try {
-            $.spinner().start();
-            this.createAdapter();
-            this.initializeAdapter();
+            if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
+            {
+                $.spinner().start();
+                this.initializeAdapter();
+            }
             if($('.nav-link.credit-card-tab.active').length)
                 this.watchSubmitButton();
             this.watchPaymentMethods();               
@@ -130,12 +140,19 @@ class CommercehubCheckoutForm
 
     cardCaptureSuccess = async function(responseBody)
     {
-        let cardDetails = responseBody.source.card;
-        $('#cardNumber').val(cardDetails.last4.padStart(16, '*'));
-        $("#expirationMonthValue").attr("value", cardDetails.expirationMonth);
-        $("#expirationMonth").val(cardDetails.expirationMonth);
-        $("#expirationYearValue").attr("value", cardDetails.expirationYear);
-        $("#expirationYear").val(cardDetails.expirationYear);
+        if(responseBody.source)
+        {
+            let cardDetails = responseBody.source.card;
+            $('#cardNumber').val(cardDetails.last4.padStart(16, '*'));
+            $("#expirationMonthValue").attr("value", cardDetails.expirationMonth);
+            $("#expirationMonth").val(cardDetails.expirationMonth);
+            $("#expirationYearValue").attr("value", cardDetails.expirationYear);
+            $("#expirationYear").val(cardDetails.expirationYear);
+        }
+        else
+        {
+            FiservFastlaneInitializer.setCardInfoFromFastlane(this.formAdapter.getFastlaneAuthResponse());
+        }
 
         if(this.configDataPaymentCard.tokenizeEarly && $('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked)
         {
@@ -191,8 +208,11 @@ class CommercehubCheckoutForm
 
     cardCaptureFailure = function(msg)
     {
-        this.formAdapter.destroyIframe('card');
-        this.initializeAdapter();
+        if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
+        {
+            this.formAdapter.destroyIframe('card');
+            this.initializeAdapter();
+        }
         this.watchSubmitButton();
         this.showError(msg ? msg : this.configDataPaymentCard.captureFailureMessage);
         $.spinner().stop();
@@ -261,9 +281,9 @@ class CommercehubCheckoutForm
 
     resetForm = function()
     {
-        this.formAdapter.destroyIframe('card');
+        if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
+            this.formAdapter.destroyIframe('card');
         this.getFatalNotice().hide();
-        this.getSccContainer().removeClass('initialized-scc-container');
         this.unwatchSubmitButton();
         this.unwatchPaymentMethods();
         this.enableSubmitButton();

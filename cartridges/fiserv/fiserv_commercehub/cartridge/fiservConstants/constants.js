@@ -52,7 +52,7 @@ module.exports = {
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization',
             'CommerceHub3DSEnable',
-            'CommerceHubCreditPrivacyStatement',
+            'CommerceHubPayPayFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
         ],
         'CommerceHubTokenization': [
             'CommerceHubTokenizationStrategy',
@@ -63,8 +63,7 @@ module.exports = {
             'CommerceHubGiftPaymentMethodTitle',
             'CommerceHubGiftPaymentType',
             'CommerceHubGiftSecurityEnable',
-            'CommerceHubMaxGiftCards',
-            'CommerceHubGiftPrivacyStatement'
+            'CommerceHubMaxGiftCards'
         ],
         'CommerceHubPayPalEnable': [
             'CommerceHubPayPalPaymentType',

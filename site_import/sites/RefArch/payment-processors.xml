@@ -28,9 +28,6 @@
 
                 <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
 
-                <preference preference-id="CommerceHubCreditPrivacyStatement">
-                    <value>true</value>
-                </preference>
                 <preference preference-id="CommerceHubCreditPaymentType">
                     <value>AUTH</value>
                 </preference>
@@ -48,9 +45,6 @@
                 </preference>
                 <preference preference-id="CommerceHub3DSEnable">
                     <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHubCreditPrivacyStatement">
-                    <value>true</value>
                 </preference>
 
                 <!--THIS IS WHERE THE PAYMENT FORM CUSTOMIZATION STARTS-->
@@ -282,9 +276,6 @@
                 <preference preference-id="CommerceHubGiftSecurityEnable">
                     <value>true</value>
                 </preference>
-                <preference preference-id="CommerceHubGiftPrivacyStatement">
-                    <value>true</value>
-                </preference>
 
                 <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
 
@@ -371,6 +362,9 @@
                 <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
 
                 <preference preference-id="CommerceHubPayPalEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPayFastlaneEnable">
                     <value>false</value>
                 </preference>
                 <preference preference-id="CommerceHubPayPalPaymentType">
