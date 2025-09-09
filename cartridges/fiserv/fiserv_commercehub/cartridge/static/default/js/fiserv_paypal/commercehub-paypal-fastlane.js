@@ -8,7 +8,7 @@ class FiservFastlaneInitializer
     {
         let addressFormList = {};
         let ajaxSuccessAlreadyAdded = false;
-        let authValues, billingPhone, shippingObject; // Values kept up here to update in the billing event
+        let authValues, billingPhone, fastlaneGuestCheckout; // Values kept up here to update in the billing event
 
         let createAddressFormFields = function(baseForm, type)
         {
@@ -97,7 +97,8 @@ class FiservFastlaneInitializer
                 await fastlane.authenticate({
                     email: $('input[name=dwfrm_coCustomer_email]').val()
                 }).then(async (authResponse) => {
-                    if(!authResponse.isGuestCheckout) {
+                    fastlaneGuestCheckout = authResponse.isGuestCheckout;
+                    if(!fastlaneGuestCheckout) {
                         authValues = authResponse[Object.getOwnPropertySymbols(authResponse)[0]];
 
                         let paymentFieldWatermarkId = 'paypal-fastlane-payment-form-watermark';
@@ -105,7 +106,7 @@ class FiservFastlaneInitializer
                         FiservFastlaneInitializer.watermarkInsertions.push(paymentFieldWatermarkId);
                         
                         let shippingResponse = authValues.profile.shippingAddress;
-                        shippingObject = createAddressObject(shippingResponse.address, shippingResponse.name);
+                        let shippingObject = createAddressObject(shippingResponse.address, shippingResponse.name);
                         populateAddress(shippingObject, 'shipping');
 
                         insertWatermarkBeforeElement(fastlane, 'shipping-address-block', 'fastlane-shipping-address-watermark');
@@ -133,13 +134,12 @@ class FiservFastlaneInitializer
                                     typeof(xhr.responseJSON.order) !== 'undefined' &&
                                     typeof(xhr.responseJSON.order.shipping) !== 'undefined')
                                 {
+                                    if(fastlaneGuestCheckout)
+                                        return;
                                     let billingBase = authValues.profile;
                                     let billingObject = createAddressObject(billingBase.card.paymentSource.card.billingAddress, billingBase.name);
-                                    if(JSON.stringify(billingObject) !== JSON.stringify(shippingObject))
-                                    {
-                                        $('.address-selector-block').find('.btn-add-new').trigger('click');
-                                        populateAddress(billingObject, 'billing');
-                                    }
+                                    $('.address-selector-block').find('.btn-add-new').trigger('click');
+                                    populateAddress(billingObject, 'billing');
                                     $('[name=dwfrm_billing_contactInfoFields_phone').val(billingPhone);
                                 }
                             });
