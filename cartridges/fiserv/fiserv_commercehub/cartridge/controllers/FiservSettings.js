@@ -65,7 +65,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = constants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(ApplePay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(constants.CONFIG_DESCRIPTIONS[id])
         {
@@ -310,6 +310,23 @@ function buildConfigList(chPreferenceDescriptions)
                 getPreferenceDescription('CommerceHubPayPalButtonColor'),
                 getPreferenceDescription('CommerceHubPayPalButtonShape'),
                 getPreferenceDescription('CommerceHubPayPalButtonLabel')
+            ]
+        }
+    });
+
+    configList.push({
+        'label': 'Apple Pay',
+        'id': 'ApplePay',
+        'items': [
+            getPreferenceDescription('CommerceHubApplePayEnable'),
+            getPreferenceDescription('CommerceHubApplePayPaymentType')
+        ],
+        'subform': {
+            'label': 'Apple Pay Button Customization',
+            'id': 'ApplePayButton',
+            'items': [
+                getPreferenceDescription('CommerceHubApplePayButtonColor'),
+                getPreferenceDescription('CommerceHubApplePayButtonLabel')
             ]
         }
     });

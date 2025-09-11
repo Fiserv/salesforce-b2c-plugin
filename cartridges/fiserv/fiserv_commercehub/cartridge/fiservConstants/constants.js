@@ -22,6 +22,7 @@ module.exports = {
         COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
         COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
         COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
+        COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
     },
     COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
     COMMERCEHUB_PAYPAL_PAYMENT_METHOD : "PAYPAL",
@@ -72,6 +73,10 @@ module.exports = {
             'CommerceHubPayPalPaymentType',
             'CommerceHubPayPayVaultingEnable',
             'PayPalButton'
+        ],
+        'CommerceHubApplePayEnable': [
+            'CommerceHubApplePayPaymentType',
+            'ApplePayButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {

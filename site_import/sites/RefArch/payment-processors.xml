@@ -388,4 +388,41 @@
             <production/>
         </preferences>
     </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_APPLEPAY">
+        <description>Fiserv Commerce Hub Apple Pay processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+
+                <preference preference-id="CommerceHubApplePayEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubApplePayPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubApplePayButtonColor">
+                    <value>black</value>
+                </preference>
+                <preference preference-id="CommerceHubApplePayButtonLabel">
+                    <value>pay</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
 </payment-processors>

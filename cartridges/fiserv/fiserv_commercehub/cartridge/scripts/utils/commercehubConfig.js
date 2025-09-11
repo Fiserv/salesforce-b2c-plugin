@@ -143,6 +143,18 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPayVaultingEnable');
     },
 
+    // This is where the Apple Pay settings start
+
+    getCommerceHubApplePayEnabled()
+    {
+        return getSitePreference('CommerceHubApplePayEnable');
+    },
+
+    getCommerceHubApplePayPaymentType()
+    {
+        return getSitePreference('CommerceHubApplePayPaymentType').value;
+    },
+
     getFormConfig(formId)
     {
         if(!constants.FORM_ID_LIST.includes(formId))
