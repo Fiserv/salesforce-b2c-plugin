@@ -6,6 +6,8 @@
             <isinclude template="checkout/billing/paymentOptions/giftCardSummary" />
         <iselseif condition="${payment.paymentMethod === 'PAYPAL'}" />
             <isinclude template="checkout/billing/paymentOptions/paypalSummary" />
+        <iselseif condition="${payment.paymentMethod === 'APPLEPAY'}" />
+            <isinclude template="checkout/billing/paymentOptions/applepaySummary" />
         </isif>
         <isif condition="${!status.last}">
             <br/>

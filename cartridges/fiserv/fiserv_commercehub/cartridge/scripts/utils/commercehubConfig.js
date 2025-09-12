@@ -257,8 +257,6 @@ const commerceHubExport =
     buildPayPalButtonsConfig()
     {
         let buttonsConfig = {};
-        // Only splitting this up in preparation for the potential implementation of Venmo in the future...
-        // Temporarily hard coded as well...
         if(this.getCommerceHubPayPalEnabled())
         {
             buttonsConfig['paypal'] = {
@@ -289,6 +287,20 @@ const commerceHubExport =
             postalCode: "_addressFields_postalCode",
             country: "_addressFields_country"
         };
+    },
+
+    buildApplePayButtonConfig()
+    {
+        if(!this.getCommerceHubApplePayEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-applepay-button',
+            'color': getSitePreference('CommerceHubApplePayButtonColor').value,
+            'type': getSitePreference('CommerceHubApplePayButtonLabel').value
+        }
+
+        return { 'button': buttonConfig };
     }
 };
 

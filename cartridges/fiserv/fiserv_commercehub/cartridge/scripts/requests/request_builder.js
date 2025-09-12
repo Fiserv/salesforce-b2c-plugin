@@ -410,6 +410,58 @@ function buildCredentialsRequest(baseUrl, requestPurpose)
                 }
             ]
         }
+        else if(requestPurpose === "ApplePay")
+        {
+            let orderData = {};
+            let basket = BasketMgr.getCurrentBasket();
+            if(basket)
+            {
+                let itemDetails = [];
+                basket.getAllProductLineItems().toArray().forEach((item) => {
+                    let itemData = {
+                        itemNumber: item.position,
+                        itemType: "PRODUCT",
+                        itemName: item.productName,
+                        itemDescription: item.lineItemText,
+                        quantity: item.quantityValue,
+                        amountComponents: {
+                            unitPrice: item.basePrice.value,
+                            shippingAmount: 0,
+                            taxAmounts: [
+                                {
+                                    taxType: item.taxClassID,
+                                    taxAmount: item.tax.value
+                                }
+                            ],
+                        }
+                    }
+                    itemDetails.push(itemData)
+                });
+
+                let shippingData = {
+                    itemNumber: basket.getAllProductLineItems().toArray().length + 1,
+                    itemType: "SHIPPING",
+                    itemName: "Shipping",
+                    itemDescription: "Shipping",
+                    quantity: 1,
+                    amountComponents: {
+                        unitPrice: basket.shippingTotalPrice.value,
+                        shippingAmount: 0,
+                        taxAmounts: [
+                            {
+                                taxType: "Sales Tax",
+                                taxAmount: basket.shippingTotalTax.value
+                            }
+                        ],
+                    }
+                };
+                itemDetails.push(shippingData);
+
+                orderData['itemDetails'] = itemDetails;
+                orderData['orderDate'] = basket.getCreationDate().toISOString().substring(0,10);
+            }
+            payload['orderData'] = orderData;
+        }
     }
 
     return payload;

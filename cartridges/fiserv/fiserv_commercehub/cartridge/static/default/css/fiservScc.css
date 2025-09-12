@@ -1,4 +1,7 @@
-#fiserv-scc-fatal-notice, #fiserv-scc-gift-fatal-notice, #fiserv-paypal-fatal-notice {
+#fiserv-scc-fatal-notice,
+#fiserv-scc-gift-fatal-notice,
+#fiserv-paypal-fatal-notice,
+#fiserv-applepay-fatal-notice {
     display: none;
 }
 
@@ -20,6 +23,12 @@
 
 #fastlane-re-enable-form-button {
     margin-bottom: 1rem;
+}
+
+#fiserv_commercehub-applepay-button {
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
 }
 
 .cc-type-image {

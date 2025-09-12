@@ -6,41 +6,42 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
-    assets.addJs('/js/fiserv_paypal/commercehub-paypal-button.js');
-    assets.addJs('/js/fiserv_paypal/paypal.js');
+    assets.addJs('/js/fiserv_applepay/commercehub-applepay-button.js');
+    assets.addJs('/js/fiserv_applepay/applepay.js');
     assets.addJs(pdict.chSdkUrl);
     assets.addCss('css/fiservScc.css');
 </isscript>
 
-<div class="tab-pane paypal-content" id="paypal-content" role="tabpanel">
+<div class="tab-pane applepay-content" id="applepay-content" role="tabpanel">
 
     <fieldset class="payment-form-fields">
         
-        <!--- payment method is PayPal --->
+        <!--- payment method is Apple Pay --->
         <input type="hidden" class="form-control"
                name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-               value="PAYPAL"
+               value="APPLEPAY"
         >
 
-        <div id="fiserv-commercehub-paypal-form-init-container" 
-            data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('PayPal'))}"
+        <div id="fiserv-commercehub-applepay-form-init-container" 
+            data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('ApplePay'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
-            data-initial-checkout-stage="${pdict.currentStage}"></div>
+            data-initial-checkout-stage="${pdict.currentStage}"
+            data-locale="${pdict.locale}"></div>
     
-        <div id="fiserv-commercehub-paypal-form-container">
-            <div id="fiserv_commercehub-paypal-button" class="sdc-button"></div>
+        <div id="fiserv-commercehub-applepay-form-container">
+            <div id="fiserv_commercehub-applepay-button" class="sdc-button"></div>
 
             <div class="privacyPolicy">
                 <span></span>
                 Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
             </div>
-            <div id="fiserv-paypal-fatal-notice" class="alert alert-danger">
-                <p>${Resource.msg('message.error.paypal.fatal','error',null)}</p>            
+            <div id="fiserv-applepay-fatal-notice" class="alert alert-danger">
+                <p>${Resource.msg('message.error.applepay.fatal','error',null)}</p>            
             </div>
         </div>
 
-        <!--- Hidden input for order ID --->
-        <input id="commercehubOrderIdInputPayPal" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
+        <!--- Hidden input for session ID --->
+        <input id="commercehubSessionIdInputApplePay" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
 
         <!-- These fields are required for the Payment method to function without Debit Cards enabled -->
         <isif condition="${!pdict.commercehubConfig.getCommerceHubCreditEnabled()}">
