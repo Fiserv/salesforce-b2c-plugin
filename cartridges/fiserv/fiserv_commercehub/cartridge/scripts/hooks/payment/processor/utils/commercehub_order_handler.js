@@ -52,6 +52,11 @@ function convertToB2cCardTypePayPal(paymentInformation, paymentInstrument) {
     paymentInstrument.paymentTransaction.custom.commercehubOrderId = paymentInformation.orderId;
 }
 
+function convertToB2cCardTypeApplePay(paymentInformation, paymentInstrument) {
+    paymentInstrument.paymentTransaction.custom.paymentAction = FiservConfig.getCommerceHubApplePayPaymentType();
+    paymentInstrument.paymentTransaction.custom.commercehubSessionId = paymentInformation.sessionId;
+}
+
 function handleOrder(basket, paymentInformation, methodID) {
     let currentBasket = basket;
     let cardErrors = {};
@@ -70,6 +75,9 @@ function handleOrder(basket, paymentInformation, methodID) {
                 break;
             case constants.COMMERCEHUB_PAYPAL_PAYMENT_METHOD:
                 convertToB2cCardTypePayPal(paymentInformation, paymentInstrument);
+                break;
+            case constants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD:
+                convertToB2cCardTypeApplePay(paymentInformation, paymentInstrument);
                 break;
             default:
                 break;

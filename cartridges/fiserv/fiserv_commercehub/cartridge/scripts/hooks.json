@@ -23,6 +23,14 @@
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub_paypal",
 			"script": "./hooks/payment/processor/fiserv_commercehub_paypal_form_processor"
+		},
+		{
+			"name": "app.payment.processor.fiserv_commercehub_applepay",
+			"script": "./hooks/payment/processor/fiserv_commercehub_applepay"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub_applepay",
+			"script": "./hooks/payment/processor/fiserv_commercehub_applepay_form_processor"
 		}
 	]
 }

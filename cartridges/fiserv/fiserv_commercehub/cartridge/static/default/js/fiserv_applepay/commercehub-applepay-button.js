@@ -76,13 +76,35 @@ class CommercehubApplePay
         throw new Error("Unable to load CommerceHub SDK.")
     }
 
-    applepayApproval = function()
+    applepayApproval = function(response)
     {
         $('.payment-details').addClass('checkout-hidden');
         $('<div class="payment-details-applepay">Apple Pay</div>').insertAfter('.payment-details');
         $('.edit-button').on('click', this.removeInsertedSummary);
+        $(document).on("ajaxSuccess", this.immediatePlaceOrder);
+        this.completePayment = response.completePayment;
+
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+    }
+
+    immediatePlaceOrder = function(ev, xhr)
+    { 
+        $(document).off("ajaxSuccess", this.immediatePlaceOrder);
+        if (typeof(xhr.responseJSON) !== 'undefined' &&
+            typeof(xhr.responseJSON.action) !== 'undefined' &&
+            xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
+            xhr.responseJSON.isApplePaySuccess
+        ) {
+            new Promise((resolve, reject) => {
+                FiservSDKHelper.backendCall(xhr.responseJSON.placeOrderURL, resolve, reject);
+            })
+            .then((response) => {
+                console.log("Success");
+            }).catch((error) => {
+                console.log("Error");
+            });
+        }
     }
 
     removeInsertedSummary = () =>
