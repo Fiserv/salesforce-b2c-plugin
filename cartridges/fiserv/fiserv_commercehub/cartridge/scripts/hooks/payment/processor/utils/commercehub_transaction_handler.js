@@ -144,6 +144,12 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
         case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
             processorString = 'Gift Card';
             break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
+            processorString = 'PayPal';
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
+            processorString = 'Apple Pay';
+            break;
     }
     if(transactionState === constants.TXN_STATES.AUTHORIZED)
     {

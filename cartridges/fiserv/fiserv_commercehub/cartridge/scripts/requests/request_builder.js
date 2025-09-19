@@ -359,9 +359,6 @@ function buildOrderRequest(orderNumber, paymentInstrument)
         req["referenceTransactionDetails"] = {
             "referenceOrderId": paymentInstrument.paymentTransaction.custom.commercehubOrderId
         };
-        req["paymentMethod"] = {
-            "provider": paymentInstrument.paymentMethod
-        }
         req["merchantDetails"] = buildMerchantDetailsObject();
 
         return req;
