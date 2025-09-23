@@ -164,13 +164,25 @@ function removeGiftCardsFromCart(currentBasket) {
     });
 }
 
-function isFiserv()
+function isCreditCardFiserv()
 {
-    let cc = PaymentMgr.getPaymentMethod('CREDIT_CARD');
+    let method = PaymentMgr.getPaymentMethod('CREDIT_CARD');
     
-    if (cc !== null && cc.paymentProcessor !== null && cc.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
+    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
     {
-        return cc.isActive();
+        return method.isActive();
+    }
+
+    return false;
+}
+
+function isApplePayFiserv()
+{
+    let method = PaymentMgr.getPaymentMethod('APPLEPAY');
+    
+    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
+    {
+        return method.isActive();
     }
 
     return false;
@@ -199,6 +211,7 @@ module.exports =
     retreiveNonGiftChargeAmount : retreiveNonGiftChargeAmount,
     removeGiftCardsFromCart : removeGiftCardsFromCart,
     validSessionId : validSessionId,
-    isFiserv : isFiserv,
+    isCreditCardFiserv : isCreditCardFiserv,
+    isApplePayFiserv : isApplePayFiserv,
     secureTraversal : secureTraversal
 }

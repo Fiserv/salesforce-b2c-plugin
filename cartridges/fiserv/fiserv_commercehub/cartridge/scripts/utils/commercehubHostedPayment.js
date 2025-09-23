@@ -25,9 +25,9 @@ function collectSubmitData(credentials)
     }
 }
 
-function prepareFormSubmission(requestPurpose)
+function prepareFormSubmission(hostURL, requestPurpose)
 {
-    return collectSubmitData(creds.getCommercehubCredentials(requestPurpose));
+    return collectSubmitData(creds.getCommercehubCredentials(hostURL, requestPurpose));
 }
 
 module.exports = 

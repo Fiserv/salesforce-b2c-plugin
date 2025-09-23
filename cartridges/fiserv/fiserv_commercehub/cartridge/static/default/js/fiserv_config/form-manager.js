@@ -13,7 +13,7 @@ function instantiate()
     instantiationDomElement.remove();
 
     // Basic input tracking
-    jQuery('input.configField, select.configField, textarea.configField').on("input", function() {
+    jQuery('input.configField, select.configField, textarea.textBoxConfigField').on("input", function() {
         let newValue = jQuery(this).val();
         if(jQuery(this).attr('type') === 'checkbox') {
             newValue = jQuery(this).is(':checked');

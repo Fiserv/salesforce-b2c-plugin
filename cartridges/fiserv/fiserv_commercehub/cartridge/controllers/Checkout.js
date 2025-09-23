@@ -10,7 +10,7 @@ let Transaction = require('dw/system/Transaction');
 server.extend(module.superModule);
 
 server.append('Begin', function (req, res, next) {
-    if(!fiservHelper.isFiserv())
+    if(!fiservHelper.isCreditCardFiserv())
     {
         return next();
     }

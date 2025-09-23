@@ -7,7 +7,7 @@ server.post('Credentials', function(req, res, next) {
     var requestPurpose = null;
     if(req.form && req.form.requestPurpose !== undefined)
         requestPurpose = req.form.requestPurpose ? req.form.requestPurpose : null;
-    let creds = credService.prepareFormSubmission(requestPurpose);
+    let creds = credService.prepareFormSubmission(req.host, requestPurpose);
     res.json(creds);
     return next();
 });

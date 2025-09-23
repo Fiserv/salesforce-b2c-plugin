@@ -41,6 +41,12 @@ function getFrontendConfigData(formId)
                 'paypalFailureMessage': Resource.msg('message.error.paypal.failure', 'error', null),
             }
             break;
+        case 'ApplePay':
+            configData = {
+                'buttonConfig': FiservConfig.buildApplePayButtonConfig(),
+                'applepayFailureMessage': Resource.msg('message.error.applepay.failure', 'error', null),
+            }
+            break;
         default:
             configData = {};
             break;

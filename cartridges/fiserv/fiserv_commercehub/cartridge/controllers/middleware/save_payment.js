@@ -62,7 +62,7 @@ function savePayment(req, res, next) {
 
 function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
 {
-    if(!fiservHelper.isFiserv() || !commercehubConfig.getCommerceHubTokenization())
+    if(!fiservHelper.isCreditCardFiserv() || !commercehubConfig.getCommerceHubTokenization())
     {
         return next();
     }

@@ -32,14 +32,14 @@ function validateCredentialsResponse(jsonResponse)
         typeof(jsonResponse['symmetricEncryptionAlgorithm']) !== 'undefined';
 }
 
-function getCommercehubCredentials(requestPurpose)
+function getCommercehubCredentials(hostURL, requestPurpose)
 {
     FiservLogs.logInfo(1, 'Intitating Credentials Request');
     let credsService = FiservServices.getService('CommercehubCredentials');
     if (credsService == null)
         throw new Error("Could not create Fiserv service: CommerceHubCredentials");
 
-    let payload = requestBuilder.buildCredentialsRequest(getBaseUrl(), requestPurpose);
+    let payload = requestBuilder.buildCredentialsRequest(hostURL, getBaseUrl(), requestPurpose);
 
     let parsedResponse = null;
     try

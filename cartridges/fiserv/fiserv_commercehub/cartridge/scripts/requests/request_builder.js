@@ -187,7 +187,7 @@ function build3DSObject(paymentInstrument)
     return additionalData3DS;
 }
 
-function buildCardRequest(paymentInstrument, paymentAction)
+function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
 {
     if(paymentInstrument.creditCardToken)
     {
@@ -229,7 +229,7 @@ function buildCardRequest(paymentInstrument, paymentAction)
     return req;
 }
 
-function buildGiftRequest(paymentInstrument, paymentAction)
+function buildGiftChargesRequest(paymentInstrument, paymentAction)
 {
     FiservLogs.logInfo(1, 'Initiating Gift Card ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
 
@@ -247,16 +247,16 @@ function buildGiftRequest(paymentInstrument, paymentAction)
     return req;
 }
 
-function buildPrimaryRequest(orderNumber, paymentInstrument)
+function buildChargesRequest(orderNumber, paymentInstrument)
 {
     orderNo = orderNumber;
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
     if(paymentAction === constants.COMMERCEHUB_AUTH_ACTION || paymentAction === constants.COMMERCEHUB_SALE_ACTION)
     {
-        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD)
-            return buildCardRequest(paymentInstrument, paymentAction);
+        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === constants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
+            return buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction);
         else if(paymentInstrument.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
-            return buildGiftRequest(paymentInstrument, paymentAction);
+            return buildGiftChargesRequest(paymentInstrument, paymentAction);
         else
             return {};
     }
@@ -359,9 +359,6 @@ function buildOrderRequest(orderNumber, paymentInstrument)
         req["referenceTransactionDetails"] = {
             "referenceOrderId": paymentInstrument.paymentTransaction.custom.commercehubOrderId
         };
-        req["paymentMethod"] = {
-            "provider": paymentInstrument.paymentMethod
-        }
         req["merchantDetails"] = buildMerchantDetailsObject();
 
         return req;
@@ -372,7 +369,7 @@ function buildOrderRequest(orderNumber, paymentInstrument)
     }
 }
 
-function buildCredentialsRequest(baseUrl, requestPurpose)
+function buildCredentialsRequest(hostURL, baseUrl, requestPurpose)
 {
     showBuilders = false;
 
@@ -410,6 +407,77 @@ function buildCredentialsRequest(baseUrl, requestPurpose)
                 }
             ]
         }
+        else if(requestPurpose === "ApplePay")
+        {
+            let orderData = {};
+            let basket = BasketMgr.getCurrentBasket();
+            var site = require('dw/system/Site').getCurrent();
+            if(basket)
+            {
+                let itemDetails = [];
+                let itemCount = 0;
+                basket.getAllProductLineItems().toArray().forEach((item) => {
+                    itemCount += item.quantityValue;
+
+                    let itemData = {
+                        itemNumber: item.position,
+                        itemType: "PRODUCT",
+                        itemName: item.productName,
+                        itemDescription: item.lineItemText,
+                        quantity: item.quantityValue,
+                        amountComponents: {
+                            unitPrice: item.basePrice.value,
+                            shippingAmount: 0,
+                            taxAmounts: [
+                                {
+                                    taxType: item.taxClassID,
+                                    taxAmount: item.tax.value
+                                }
+                            ],
+                        }
+                    }
+                    itemDetails.push(itemData)
+                });
+
+                let Resource = require('dw/web/Resource');
+                let shippingData = {
+                    itemNumber: basket.getAllProductLineItems().toArray().length + 1,
+                    itemType: "SHIPPING",
+                    itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                    itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                    quantity: 1,
+                    amountComponents: {
+                        unitPrice: basket.shippingTotalPrice.value,
+                        shippingAmount: 0,
+                        taxAmounts: [
+                            {
+                                taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
+                                taxAmount: basket.shippingTotalTax.value
+                            }
+                        ],
+                    }
+                };
+                itemDetails.push(shippingData);
+
+                orderData['itemCount'] = itemCount;
+                orderData['itemDetails'] = itemDetails;
+                orderData['orderDate'] = basket.getCreationDate().toISOString().substring(0,10);
+            }
+            payload['orderData'] = orderData;
+
+            payload["dynamicDescriptors"] = {
+                "merchantName": site.name,
+                "address": {
+                    "country": site.preferences.custom.countryCode.value
+                }
+            }
+
+            payload["additionalDataCommon"] = {
+                "additionalData": {
+                    "ecomURL": hostURL
+                }
+            }
+        }
     }
 
     return payload;
@@ -418,7 +486,7 @@ function buildCredentialsRequest(baseUrl, requestPurpose)
 module.exports = 
 {
     buildCredentialsRequest : buildCredentialsRequest,
-    buildPrimaryRequest : buildPrimaryRequest,
+    buildChargesRequest : buildChargesRequest,
     buildTokenRequest : buildTokenRequest,
     buildBalanceInquiryRequest : buildBalanceInquiryRequest,
     buildCancelPayload : buildCancelPayload,

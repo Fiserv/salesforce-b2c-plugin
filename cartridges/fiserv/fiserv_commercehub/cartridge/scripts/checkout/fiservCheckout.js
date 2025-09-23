@@ -13,12 +13,12 @@ const okStates = [
     constants.TXN_STATES.CAPTURED
 ];
 
-function executeCommercehubTransaction(orderNo, paymentInstrument) 
+function executeCommercehubChargesTransaction(orderNo, paymentInstrument) 
 {
     try 
     {
         // build request obj    
-        let transactionPayload = requestBuilder.buildPrimaryRequest(orderNo, paymentInstrument);
+        let transactionPayload = requestBuilder.buildChargesRequest(orderNo, paymentInstrument);
 
         let order = OrderMgr.getOrder(orderNo);
         if (order === null)
@@ -192,6 +192,6 @@ function sendOrdersRequest(order, ordersRequest, orderNo)
 
 module.exports = 
 {
-    executeCommercehubTransaction: executeCommercehubTransaction,
+    executeCommercehubChargesTransaction: executeCommercehubChargesTransaction,
     executeCommercehubOrderTransaction: executeCommercehubOrderTransaction
 };

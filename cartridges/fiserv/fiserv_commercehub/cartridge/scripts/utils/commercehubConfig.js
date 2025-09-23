@@ -143,6 +143,23 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPayVaultingEnable');
     },
 
+    // This is where the Apple Pay settings start
+
+    getCommerceHubApplePayEnabled()
+    {
+        return getSitePreference('CommerceHubApplePayEnable');
+    },
+
+    getCommerceHubApplePayPaymentType()
+    {
+        return getSitePreference('CommerceHubApplePayPaymentType').value;
+    },
+
+    getCommerceHubApplePayVerification()
+    {
+        return getSitePreference('CommerceHubApplePayVerification');
+    },
+
     getFormConfig(formId)
     {
         if(!constants.FORM_ID_LIST.includes(formId))
@@ -245,8 +262,6 @@ const commerceHubExport =
     buildPayPalButtonsConfig()
     {
         let buttonsConfig = {};
-        // Only splitting this up in preparation for the potential implementation of Venmo in the future...
-        // Temporarily hard coded as well...
         if(this.getCommerceHubPayPalEnabled())
         {
             buttonsConfig['paypal'] = {
@@ -277,6 +292,20 @@ const commerceHubExport =
             postalCode: "_addressFields_postalCode",
             country: "_addressFields_country"
         };
+    },
+
+    buildApplePayButtonConfig()
+    {
+        if(!this.getCommerceHubApplePayEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-applepay-button',
+            'color': getSitePreference('CommerceHubApplePayButtonColor').value,
+            'type': getSitePreference('CommerceHubApplePayButtonLabel').value
+        }
+
+        return { 'button': buttonConfig };
     }
 };
 

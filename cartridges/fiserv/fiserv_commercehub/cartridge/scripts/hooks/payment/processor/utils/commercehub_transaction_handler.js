@@ -50,6 +50,9 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
             case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
                 _type = FiservConfig.getCommerceHubPayPalPaymentType();
                 break;
+            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
+                _type = FiservConfig.getCommerceHubApplePayPaymentType();
+                break;
             default:
                 FiservLogs.logError(2, 'Invalid Payment Processor somehow made it this far ¯\\_(ツ)_/¯', orderNo);
                 return {
@@ -72,7 +75,8 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     switch(paymentProcessor.ID)
     {
         case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
-            res = fiservCheckout.executeCommercehubTransaction(orderNo, paymentInstrument);
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
+            res = fiservCheckout.executeCommercehubChargesTransaction(orderNo, paymentInstrument);
             break;
         case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
             res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
@@ -111,14 +115,22 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
         paymentInstrument.paymentTransaction.transactionID = transactionId;
     }
 
-    if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR && !paymentInstrument.creditCardToken)
-    {
+    if((paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR
+        && !paymentInstrument.creditCardToken)
+        || paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR
+    ) {
         paymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_TYPE);
         paymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_INDICATOR);
     }
     else if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR)
     {
         paymentInstrument.custom.balance = null;
+    }
+    if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
+    {
+        paymentInstrument.custom.maskedCardNumber = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.LAST_FOUR).padStart(16, '*');
+        paymentInstrument.custom.expireMonth = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.EXP_MONTH);
+        paymentInstrument.custom.expireYear = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.EXP_YEAR);
     }
     
 
@@ -131,6 +143,12 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
             break;
         case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
             processorString = 'Gift Card';
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
+            processorString = 'PayPal';
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
+            processorString = 'Apple Pay';
             break;
     }
     if(transactionState === constants.TXN_STATES.AUTHORIZED)

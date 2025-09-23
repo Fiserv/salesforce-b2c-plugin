@@ -5,6 +5,7 @@ var CustomerMgr = require('dw/customer/CustomerMgr');
 var AccountModel = require('*/cartridge/models/account');
 var fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
 var commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+let constants = require('*/cartridge/fiservConstants/constants');
 
 var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 
@@ -34,9 +35,23 @@ server.append('SubmitPayment', function (req, res, next) {
             }
         }
 
-        if(!fiservHelper.isFiserv())
+        let paymentMethod = res.viewData.paymentMethod.value;
+        if(!res.viewData.error && paymentMethod === constants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD && fiservHelper.isApplePayFiserv())
         {
-            return next();
+            // Fake an error to prevent a page load...
+            res.viewData.error = true;
+            res.viewData.fieldErrors = [];
+            res.viewData.serverErrors = [];
+
+            let URLUtils = require('dw/web/URLUtils');
+            res.viewData['placeOrderURL'] = URLUtils.url('CheckoutServices-PlaceOrder').toString();
+            res.viewData['isApplePaySuccess'] = true;
+            return;
+        }
+
+        if(paymentMethod !== "CREDIT_CARD" || !fiservHelper.isCreditCardFiserv())
+        {
+            return;
         }
         if(req.currentCustomer.profile !== undefined && !res.viewData.error)
         {

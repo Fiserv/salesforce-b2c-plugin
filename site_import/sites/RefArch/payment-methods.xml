@@ -18,4 +18,10 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>FISERV_COMMERCEHUB_PAYPAL</processor-id>
     </payment-method>
+    <payment-method method-id="APPLEPAY">
+        <name xml:lang="x-default">Apple Pay</name>
+        <description xml:lang="x-default">Use this payment method for Apple Pay</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FISERV_COMMERCEHUB_APPLEPAY</processor-id>
+    </payment-method>
 </payment-settings>
