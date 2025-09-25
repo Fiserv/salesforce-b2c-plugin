@@ -21,6 +21,8 @@ class CommercehubCheckoutForm
             this.formAdapter.setFastlaneInitStatus(true);
             FiservFastlaneInitializer.initFastlane(this.credsUrl, this.formAdapter, this.formConfig);
         }
+
+        this.watchPaymentMethods();
     }
     
     initialize = function()
@@ -32,8 +34,9 @@ class CommercehubCheckoutForm
                 this.initializeAdapter();
             }
             if($('.nav-link.credit-card-tab.active').length)
-                this.watchSubmitButton();
-            this.watchPaymentMethods();               
+            {
+                this.watchSubmitButtonForm();
+            }
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -242,12 +245,7 @@ class CommercehubCheckoutForm
         $('ul.payment-options li.nav-item').on('click', this.paymentMethodHandler);
     }
 
-    unwatchPaymentMethods = function()
-    {
-        $('ul.payment-options li.nav-item').off('click', this.paymentMethodHandler);
-    }
-
-    submitHandler = (_e) => 
+    submitHandlerForm = (_e) => 
     {
         if($('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
         {
@@ -259,14 +257,51 @@ class CommercehubCheckoutForm
         }
     }
 
-    watchSubmitButton = function() 
+    submitHandlerToken = (_e) =>
     {
-        this.getSubmitButton().one('click', this.submitHandler);
+        console.log('asdf');
     }
-    
+
+    watchSubmitButton = function()
+    {
+        if($('.credit-card-form.checkout-hidden').length)
+        {
+            this.unwatchSubmitButtonForm();
+            this.watchSubmitButtonToken();
+        }
+        else
+        {
+            this.unwatchSubmitButtonToken();
+            this.watchSubmitButtonForm();
+        }
+    }
+
     unwatchSubmitButton = function()
     {
-        this.getSubmitButton().off('click', this.submitHandler);
+        this.unwatchSubmitButtonForm();
+        this.unwatchSubmitButtonToken();
+    }
+
+    watchSubmitButtonToken = function() 
+    {
+        this.unwatchSubmitButtonForm();
+        this.getSubmitButton().one('click', this.submitHandlerToken);
+    }
+    
+    unwatchSubmitButtonToken = function()
+    {
+        this.getSubmitButton().off('click', this.submitHandlerToken);
+    }
+
+    watchSubmitButtonForm = function() 
+    {
+        this.unwatchSubmitButtonToken();
+        this.getSubmitButton().one('click', this.submitHandlerForm);
+    }
+    
+    unwatchSubmitButtonForm = function()
+    {
+        this.getSubmitButton().off('click', this.submitHandlerForm);
     }
 
     disableSubmitButton = function ()
@@ -284,9 +319,6 @@ class CommercehubCheckoutForm
         if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
             this.formAdapter.destroyIframe('card');
         this.getFatalNotice().hide();
-        this.unwatchSubmitButton();
-        this.unwatchPaymentMethods();
-        this.enableSubmitButton();
     }
 
     getSdcFieldFrame = function(name)
