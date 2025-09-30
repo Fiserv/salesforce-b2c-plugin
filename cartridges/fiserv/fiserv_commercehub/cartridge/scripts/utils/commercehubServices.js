@@ -18,8 +18,6 @@ let getServiceUrl = function(url)
     let base = constants.COMMERCEHUB_CERT_BASE;
     if (env === constants.COMMERCEHUB_LIVE_ENV)
         base = constants.COMMERCEHUB_LIVE_BASE;
-    if (env === constants.COMMERCEHUB_QA_ENV)
-        base = constants.COMMERCEHUB_QA_BASE;
     
     return url.replace(constants.ENVIRONMENT_URL_PLACEHOLDER, base);
 }

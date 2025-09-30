@@ -58,7 +58,7 @@ class CommercehubPayPal
         try
         {
             let paypalLoadConfig = {};
-            paypalLoadConfig['intent'] = this.configDataPayPal.chargeType === 'AUTH' ? 'authorize' : 'capture';
+            paypalLoadConfig['intent'] = this.configDataPayPal.chargeType === 'AUTH' ? 'AUTHORIZE' : 'CAPTURE';
             const paypal = await window.fiserv.components.paypal(paypalLoadConfig);
 
             await paypal.buttons({ data: this.configDataPayPal.buttonsConfig, hooks: this.createCallbacksObject() });
