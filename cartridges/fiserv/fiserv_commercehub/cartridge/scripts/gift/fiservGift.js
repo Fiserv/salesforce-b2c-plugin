@@ -26,12 +26,17 @@ function executeBalanceInquiry(sessionId)
 
         if(FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE) === 'CHECKED')
         {
-            let balanceList = FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.GIFT_BALANCES);
+            var balanceList = FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.GIFT_BALANCES);
             FiservLogs.logInfo(1, 'Balance Inquiry Success');
             for(let i = 0; i < balanceList.length; i++)
             {
                 if(balanceList[i].currency == currencyCode)
-                    return balanceList[i];
+                {
+                    var balanceObject = balanceList[i];
+                    // Need to account for currency precision
+                    balanceObject['remainingBalance'] = Number((balanceObject.beginningBalance - balanceObject.lockAmount).toFixed(2));
+                    return balanceObject;
+                }
             }
             return { error: Resource.msg('message.error.gift.currencyError', 'error', null) };
         }
@@ -59,7 +64,7 @@ function applyGiftCard(balanceObject, sessionId)
 
     let UUID;
     let paymentAmount;
-    let balance = balanceObject.endingBalance;
+    let balance = balanceObject.remainingBalance;
     let amountRemaining;
     let paymentCovered = false;
     try {
