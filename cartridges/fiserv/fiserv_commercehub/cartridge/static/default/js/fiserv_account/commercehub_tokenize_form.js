@@ -10,7 +10,7 @@ class CommercehubTokenizationForm
         }
         this.formConfig = initializationData.config;
         this.configDataTokenization = initializationData.config.configData;
-        this.credsUrl = initializationData.credentialsUrl;
+        this.credentialsUrl = initializationData.credentialsUrl;
         $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
     }
     
@@ -140,7 +140,7 @@ class CommercehubTokenizationForm
         _e.preventDefault();
         $.spinner().start();
         this.unwatchSubmitButton();
-        this.formAdapter.submitForm(this.credsUrl, this.setSessionIdInput);
+        this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput);
         return false; 
     }
 

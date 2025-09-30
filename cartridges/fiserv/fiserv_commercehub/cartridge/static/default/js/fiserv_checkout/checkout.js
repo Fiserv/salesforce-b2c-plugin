@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         else
         {
+            form.unwatchSubmitButtonToken();
             form.watchSubmitButtonToken();
         }
     }
@@ -67,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if(savedPaymentsPresent())
         {
             $('.cancel-new-payment').trigger('click');
-            form.unwatchSubmitButtonToken(); // Make sure that event doesn't fire twice here...
         }
     });
 

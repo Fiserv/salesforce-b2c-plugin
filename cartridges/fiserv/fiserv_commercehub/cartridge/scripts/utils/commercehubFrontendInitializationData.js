@@ -15,7 +15,8 @@ function getFrontendConfigData(formId)
                 'use3DS': FiservConfig.get3DSEnabled(),
                 'fastlaneEnabled': FiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
-                'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null)
+                'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
+                'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
             };
             if(configData.fastlaneEnabled)
             {

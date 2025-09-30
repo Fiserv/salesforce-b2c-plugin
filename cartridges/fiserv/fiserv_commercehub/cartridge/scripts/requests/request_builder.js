@@ -7,6 +7,7 @@ let FiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
 let uuidUtils = require("dw/util/UUIDUtils");
 let OrderMgr = require('dw/order/OrderMgr');
 let BasketMgr = require('dw/order/BasketMgr');
+let Resource = require('dw/web/Resource');
 let orderNo = null;
 let showBuilders = true;
 
@@ -60,7 +61,7 @@ function buildChargesTransactionDetailsObject(capture, tokenize)
     txnDetails["accountVerification"] = false;
     txnDetails["merchantOrderId"] = orderNo;
     txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
-    
+
     if(showBuilders)
         FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
     return txnDetails;
@@ -81,8 +82,8 @@ function buildTokenSourceObject(paymentInstrument)
 
     source["card"] = {
         // month must be two digits
-        "expirationMonth" : paymentInstrument.custom.expireMonth.padStart(2, '0'),
-        "expirationYear" : paymentInstrument.custom.expireYear
+        "expirationMonth": paymentInstrument.creditCardExpirationMonth.toString().padStart(2, '0'),
+        "expirationYear": paymentInstrument.creditCardExpirationYear.toString()
     }
 
     if(showBuilders)
@@ -95,7 +96,7 @@ function buildSessionSourceObject(sessionId)
     let source = {};
     source["sourceType"] = constants.SESSION_SOURCE_TYPE;
     source["sessionId"] = sessionId;
-    
+
     if(showBuilders)
         FiservLogs.logDebug(3, "Session Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
     return source;
@@ -181,7 +182,7 @@ function build3DSObject(paymentInstrument)
     let additionalData3DS = {};
 
     additionalData3DS['authenticationTransactionId'] = paymentInstrument.paymentTransaction.custom.commercehub3DSAuthenitcationId;
-    
+
     if(showBuilders)
         FiservLogs.logDebug(3, "3DS Data Builder:\n" + JSON.stringify(additionalData3DS,null,2), orderNo);
     return additionalData3DS;
@@ -200,7 +201,7 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
 
     let req = {};
     let tokenize = false;
-    if (FiservConfig.getCommerceHubTokenization() && !paymentInstrument.creditCardToken)
+    if(FiservConfig.getCommerceHubTokenization() && !paymentInstrument.creditCardToken)
     {
         if(FiservConfig.getCommerceHubTokenizationStrategy())
         {
@@ -221,7 +222,7 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
     req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
     req["customer"] = buildCustomerObject(order);
 
-    if(FiservConfig.get3DSEnabled() && !paymentInstrument.creditCardToken)
+    if(FiservConfig.get3DSEnabled())
     {
         req['additionalData3DS'] = build3DSObject(paymentInstrument);
     }
@@ -273,8 +274,6 @@ function buildTokenRequest(sessionId)
     req['source'] = buildSessionSourceObject(sessionId);
     req["merchantDetails"] = buildMerchantDetailsObject();
 
-
-
     return req;
 }
 
@@ -322,7 +321,7 @@ function buildCancelPayload(orderNumber, transactionId)
 function buildRecoveryPayload(orderNumber, merchantTransactionId)
 {
     orderNo = orderNumber;
-    
+
     let req = {};
     req["referenceTransactionDetails"] = {
         "referenceMerchantTransactionId": merchantTransactionId
@@ -340,7 +339,7 @@ function buildOrdersTransactionDetailsObject(paymentAction)
     txnDetails["accountVerification"] = false;
     txnDetails["merchantOrderId"] = orderNo;
     txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
-    
+
     if(showBuilders)
         FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
     return txnDetails;
@@ -369,7 +368,7 @@ function buildOrderRequest(orderNumber, paymentInstrument)
     }
 }
 
-function buildCredentialsRequest(hostURL, baseUrl, requestPurpose)
+function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
 {
     showBuilders = false;
 
@@ -382,8 +381,16 @@ function buildCredentialsRequest(hostURL, baseUrl, requestPurpose)
         }
     };
 
-    if(requestPurpose) {
-        let basket = BasketMgr.getCurrentBasket();
+    let requestPurpose;
+    if(credentialsForm)
+        requestPurpose = credentialsForm.requestPurpose;
+    if(requestPurpose)
+    {
+        var basket = BasketMgr.getCurrentBasket();
+        if(!basket)
+        {
+            throw new Error(Resource.msg('message.error.generic.credentialsFailure', 'error', null));
+        }
         payload['amount'] = buildAmountObjectFromBasket(basket);
         payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
@@ -392,6 +399,29 @@ function buildCredentialsRequest(hostURL, baseUrl, requestPurpose)
             payload['transactionDetails'] = {
                 'authentication3DS': true
             };
+            if(credentialsForm.threeDSToken)
+            {
+                let profile = basket.getCustomer().getProfile();
+                if(!profile)
+                {
+                    throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
+                }
+                let paymentInstruments = profile.getWallet().getPaymentInstruments();
+                let pi;
+                for(let i in paymentInstruments)
+                {
+                    if(paymentInstruments[i].UUID === credentialsForm.threeDSToken)
+                    {
+                        pi = paymentInstruments[i];
+                        break;
+                    }
+                }
+                if(!pi)
+                {
+                    throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
+                }
+                payload['source'] = buildTokenSourceObject(pi);
+            }
         }
         else if(requestPurpose === "PayPal" && FiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)
         {
@@ -483,7 +513,7 @@ function buildCredentialsRequest(hostURL, baseUrl, requestPurpose)
     return payload;
 }
 
-module.exports = 
+module.exports =
 {
     buildCredentialsRequest : buildCredentialsRequest,
     buildChargesRequest : buildChargesRequest,
