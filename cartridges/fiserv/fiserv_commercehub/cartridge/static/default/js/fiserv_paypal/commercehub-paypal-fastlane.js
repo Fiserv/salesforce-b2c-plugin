@@ -6,27 +6,8 @@ class FiservFastlaneInitializer
 
     static async initFastlane(credentialsUrl, formAdapter, formConfig)
     {
-        let addressFormList = {};
         let ajaxSuccessAlreadyAdded = false;
         let authValues, billingPhone, fastlaneGuestCheckout; // Values kept up here to update in the billing event
-
-        let createAddressFormFields = function(baseForm, type)
-        {
-            let baseId = type === 'shipping' ? 'dwfrm_shipping_shippingAddress' : 'dwfrm_billing';
-            let fields = {};
-            Object.keys(baseForm).forEach((key) => {
-                fields[key] = {};
-                let formElement = $('[name=' + (baseId + baseForm[key]) + ']');
-                if(!formElement.length)
-                    return;
-                let id = formElement.attr('id');
-                if(!id)
-                    return;
-                fields[key]['elementId'] = id;
-            })
-
-            return { fields: fields };
-        }
 
         let createAddressObject = function(addr, name)
         {
@@ -39,16 +20,6 @@ class FiservFastlaneInitializer
                 postalCode: addr.postalCode,
                 country: addr.countryCode
             };
-        }
-
-        let populateAddress = async function(addressObject, purpose)
-        {
-            let addressForm = addressFormList[purpose] ?
-                addressFormList[purpose] :
-                await window.fiserv.components.address(createAddressFormFields(formConfig.configData.fastlaneAddressFormNames, purpose));
-            
-            addressFormList[purpose] = addressForm;
-            addressForm.populate(addressObject);
         }
 
         let insertWatermarkElementManual = function(fastlane, jQueryElement, id)
@@ -107,7 +78,7 @@ class FiservFastlaneInitializer
                         
                         let shippingResponse = authValues.profile.shippingAddress;
                         let shippingObject = createAddressObject(shippingResponse.address, shippingResponse.name);
-                        populateAddress(shippingObject, 'shipping');
+                        FiservSDKHelper.populateAddress(shippingObject, formConfig.configData.fastlaneAddressFormNames, 'shipping');
 
                         insertWatermarkBeforeElement(fastlane, 'shipping-address-block', 'fastlane-shipping-address-watermark');
                         insertWatermarkBeforeElement(fastlane, 'billing-address', 'fastlane-billing-address-watermark');
@@ -139,7 +110,7 @@ class FiservFastlaneInitializer
                                     let billingBase = authValues.profile;
                                     let billingObject = createAddressObject(billingBase.card.paymentSource.card.billingAddress, billingBase.name);
                                     $('.address-selector-block').find('.btn-add-new').trigger('click');
-                                    populateAddress(billingObject, 'billing');
+                                    FiservSDKHelper.populateAddress(billingObject, formConfig.configData.fastlaneAddressFormNames, 'billing');
                                     $('[name=dwfrm_billing_contactInfoFields_phone').val(billingPhone);
                                 }
                             });

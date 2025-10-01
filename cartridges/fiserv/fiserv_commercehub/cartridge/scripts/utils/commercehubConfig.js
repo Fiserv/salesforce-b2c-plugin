@@ -281,7 +281,7 @@ const commerceHubExport =
         return dataConfig;
     },
 
-    buildFastlaneFormNamesObject()
+    buildAddressFormNamesObject()
     {
         return {
             firstName: "_addressFields_firstName",
