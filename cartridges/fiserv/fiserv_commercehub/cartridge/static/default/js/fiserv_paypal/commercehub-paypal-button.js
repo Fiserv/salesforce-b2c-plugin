@@ -59,6 +59,7 @@ class CommercehubPayPal
         {
             let paypalLoadConfig = {};
             paypalLoadConfig['intent'] = this.configDataPayPal.chargeType === 'AUTH' ? 'AUTHORIZE' : 'CAPTURE';
+            paypalLoadConfig['shippingAddress'] = await FiservSDKHelper.retrieveAddress(this.configDataPayPal.shippingAddressFormNames, 'shipping');
             const paypal = await window.fiserv.components.paypal(paypalLoadConfig);
 
             await paypal.buttons({ data: this.configDataPayPal.buttonsConfig, hooks: this.createCallbacksObject() });
