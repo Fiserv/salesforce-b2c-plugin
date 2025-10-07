@@ -19,7 +19,7 @@ function getFrontendConfigData(formId)
             };
             if(configData.fastlaneEnabled)
             {
-                configData['fastlaneAddressFormNames'] = FiservConfig.buildFastlaneFormNamesObject();
+                configData['fastlaneAddressFormNames'] = FiservConfig.buildAddressFormNamesObject();
             }
             break;
         case 'Tokenization':
@@ -44,6 +44,7 @@ function getFrontendConfigData(formId)
         case 'ApplePay':
             configData = {
                 'buttonConfig': FiservConfig.buildApplePayButtonConfig(),
+                'billingAddressFormNames': FiservConfig.buildAddressFormNamesObject(),
                 'applepayFailureMessage': Resource.msg('message.error.applepay.failure', 'error', null),
             }
             break;

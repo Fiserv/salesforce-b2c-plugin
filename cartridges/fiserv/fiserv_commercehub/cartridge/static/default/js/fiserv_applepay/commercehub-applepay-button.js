@@ -54,6 +54,19 @@ class CommercehubApplePay
         };
     }
 
+    createAddressObject = function(responseAddress)
+        {
+            return {
+                firstName: responseAddress.firstName,
+                lastName: responseAddress.lastName,
+                street: responseAddress.address.street,
+                city: responseAddress.address.city,
+                stateOrProvince: responseAddress.address.stateOrProvince,
+                postalCode: responseAddress.address.postalCode,
+                country: responseAddress.address.country
+            };
+        }
+
     sdkInitialized = async function()
     {
         try
@@ -76,10 +89,13 @@ class CommercehubApplePay
         throw new Error("Unable to load CommerceHub SDK.")
     }
 
-    applepayApproval = function(response)
+    applepayApproval = async function(response)
     {
         $(document).on("ajaxSuccess", $.proxy(this.immediatePlaceOrder, this));
         this.completePayment = response.completePayment;
+        $('.address-selector-block').find('.btn-show-details').trigger('click');
+        let addressObject = this.createAddressObject(response.billingAddress);
+        await FiservSDKHelper.populateAddress(addressObject, this.configDataApplePay.billingAddressFormNames, 'billing');
 
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
