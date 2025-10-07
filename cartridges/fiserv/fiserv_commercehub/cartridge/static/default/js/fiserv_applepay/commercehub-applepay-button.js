@@ -55,17 +55,18 @@ class CommercehubApplePay
     }
 
     createAddressObject = function(responseAddress)
-        {
-            return {
-                firstName: responseAddress.firstName,
-                lastName: responseAddress.lastName,
-                street: responseAddress.address.street,
-                city: responseAddress.address.city,
-                stateOrProvince: responseAddress.address.stateOrProvince,
-                postalCode: responseAddress.address.postalCode,
-                country: responseAddress.address.country
-            };
-        }
+    {
+        return {
+            firstName: responseAddress.firstName,
+            lastName: responseAddress.lastName,
+            street: responseAddress.address.street,
+            houseNumberOrName: responseAddress.address.houseNumberOrName,
+            city: responseAddress.address.city,
+            stateOrProvince: responseAddress.address.stateOrProvince,
+            postalCode: responseAddress.address.postalCode,
+            country: responseAddress.address.country
+        };
+    }
 
     sdkInitialized = async function()
     {

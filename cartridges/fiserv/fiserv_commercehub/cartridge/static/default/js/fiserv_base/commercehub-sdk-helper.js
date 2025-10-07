@@ -58,6 +58,39 @@ class FiservSDKHelper
         FiservSDKHelper.addressFormList[purpose] = addressForm;
         addressForm.populate(addressObject);
     }
+
+    // Method used to create an address field dropdown option
+    static createAddressOption(addressObject, optionId, dropdownId)
+    {
+        let optionQuery = $('#' + optionId);
+        if(optionQuery.length)
+            optionQuery.remove();
+
+        let optionText = '';
+        for(let key in addressObject)
+        {
+            if(key === 'country')
+                continue;
+            if(optionText !== '')
+                optionText += ' ';
+            optionText += addressObject[key];
+        }
+
+        return $('<option>')
+            .appendTo($('#' + dropdownId))
+            .attr('id', optionId)
+            .attr('data-first-name', addressObject.firstName)
+            .attr('data-last-name', addressObject.lastName)
+            .attr('data-address1', addressObject.street)
+            .attr('data-address2', addressObject.houseNumberOrName)
+            .attr('data-city', addressObject.city)
+            .attr('data-state-code', addressObject.stateOrProvince)
+            .attr('data-country-code', addressObject.country)
+            .attr('data-postal-code', addressObject.postalCode)
+            .attr('data-phone', '')
+            .attr('value', optionId)
+            .text(optionText);
+    }
 }
 
 
