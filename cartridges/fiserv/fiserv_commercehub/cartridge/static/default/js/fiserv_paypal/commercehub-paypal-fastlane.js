@@ -40,7 +40,17 @@ class FiservFastlaneInitializer
             }
         }
 
+        let toggleSubmitButton = function(state)
+        {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', state);
+        }
+
         $.spinner().start();
+        if($('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
+        {
+            toggleSubmitButton(true);
+        }
+
         await new Promise((resolve, reject) => {
             FiservSDKHelper.backendCall(credentialsUrl, resolve, reject);
         })
@@ -130,6 +140,11 @@ class FiservFastlaneInitializer
                         $('#fastlane-re-enable-form-button').removeClass('checkout-hidden');
 
                         formAdapter.setFastlaneAuthResponse(authResponse);
+                        toggleSubmitButton(false);
+                    }
+                    else if($('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
+                    {
+                        toggleSubmitButton(true);
                     }
                     $.spinner().stop();
                 }).catch((e) => {
@@ -159,6 +174,14 @@ class FiservFastlaneInitializer
             $('#' + id).find('paypal-watermark').remove();
         });
         FiservFastlaneInitializer.watermarkInsertions = [];
+
+        // clear validation...
+        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        $('#sdc-card-brand-icon').removeClass().addClass('sdc-card-brand-icon');
+        $('#sdc-card-number-frame, #sdc-card-name-frame, #sdc-security-code-frame, #sdc-exp-month-frame, #sdc-exp-year-frame')
+            .removeClass('sdc-valid-field sdc-error-field sdc-focused-field');
+        $('#sdc-card-number-invalid-message, #sdc-card-name-invalid-message, #sdc-security-code-invalid-message, #sdc-exp-month-invalid-message, #sdc-exp-year-invalid-message')
+            .addClass('sdc-hidden');
     }
 
     static setCardInfoFromFastlane(authResp)
