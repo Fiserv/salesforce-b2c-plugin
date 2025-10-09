@@ -15,6 +15,7 @@ class FiservFastlaneInitializer
                 firstName: name.firstName,
                 lastName: name.lastName,
                 street: addr.addressLine1,
+                houseNumberOrName: addr.addressLine2,
                 city: addr.adminArea2,
                 stateOrProvince: addr.adminArea1,
                 postalCode: addr.postalCode,
@@ -65,6 +66,13 @@ class FiservFastlaneInitializer
             
             $('.submit-customer').on('click', async () => {
                 $.spinner().start();
+
+                // Disable multi-ship for Fastlane auto flow (in case someone got to that point...)
+                let multiShipButton = $('#multiShipCheck');
+                if(multiShipButton.length && multiShipButton.is(':checked'))
+                    multiShipButton.trigger('click');
+
+
                 await fastlane.authenticate({
                     email: $('input[name=dwfrm_coCustomer_email]').val()
                 }).then(async (authResponse) => {
@@ -109,8 +117,10 @@ class FiservFastlaneInitializer
                                         return;
                                     let billingBase = authValues.profile;
                                     let billingObject = createAddressObject(billingBase.card.paymentSource.card.billingAddress, billingBase.name);
-                                    $('.address-selector-block').find('.btn-add-new').trigger('click');
                                     FiservSDKHelper.populateAddress(billingObject, formConfig.configData.fastlaneAddressFormNames, 'billing');
+                                    let fastlaneOption = FiservSDKHelper.createAddressOption(billingObject, 'fastlaneBillingSelectOption', 'billingAddressSelector');
+                                    fastlaneOption.attr('data-phone', billingPhone);
+                                    fastlaneOption.prop('selected', true);
                                     $('[name=dwfrm_billing_contactInfoFields_phone').val(billingPhone);
                                 }
                             });

@@ -287,6 +287,7 @@ const commerceHubExport =
             firstName: "_addressFields_firstName",
             lastName: "_addressFields_lastName",
             street: "_addressFields_address1",
+            houseNumberOrName: "_addressFields_address2",
             city: "_addressFields_city",
             stateOrProvince: "_addressFields_states_stateCode",
             postalCode: "_addressFields_postalCode",
