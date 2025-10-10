@@ -95,8 +95,8 @@ class CommercehubApplePay
         $(document).on("ajaxSuccess", $.proxy(this.immediatePlaceOrder, this));
         this.completePayment = response.completePayment;
         $('.address-selector-block').find('.btn-show-details').trigger('click');
-        let addressObject = this.createAddressObject(response.billingAddress);
-        await FiservSDKHelper.populateAddress(addressObject, this.configDataApplePay.billingAddressFormNames, 'billing');
+        //let addressObject = this.createAddressObject(response.billingAddress);
+        //await FiservSDKHelper.populateAddress(addressObject, this.configDataApplePay.billingAddressFormNames, 'billing');
 
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
