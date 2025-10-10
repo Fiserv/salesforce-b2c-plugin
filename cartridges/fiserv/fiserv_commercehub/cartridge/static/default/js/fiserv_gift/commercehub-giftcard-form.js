@@ -14,6 +14,7 @@ class CommercehubGiftForm
         this.balanceUrl = initializationData.balanceUrl;
         this.applyUrl = initializationData.applyUrl;
         this.giftRemoveUrl = initializationData.giftRemoveUrl;
+        this.recalculateGiftUrl = initializationData.recalculateGiftUrl;
         $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').on('click', (element) => {this.mask(element);});
 
         this.createAdapter();
@@ -22,6 +23,14 @@ class CommercehubGiftForm
         if(initializationData.applyUrl !== undefined)
         {
             this.showGiftCards();
+            $(document).on("ajaxSuccess", (ev, xhr) => {
+                if (typeof(xhr.responseJSON) !== 'undefined' &&
+                    typeof(xhr.responseJSON.action) !== 'undefined' &&
+                    xhr.responseJSON.action === "CheckoutShippingServices-SelectShippingMethod")
+                {
+                    this.recalculateGiftCards();
+                }
+            });
         }
     }
     
@@ -338,6 +347,28 @@ class CommercehubGiftForm
             let cardSummaryQuery = $('.' + oldClass);
             cardSummaryQuery.removeClass(oldClass).addClass('giftDetail' + giftCardInfo.uuid);
             cardSummaryQuery.children('span').text(giftCardInfo.currencySymbol + giftCardInfo.paymentAmount);
+        });
+    }
+
+    recalculateGiftCards = function()
+    {
+        new Promise((resolve, reject) => {
+            FiservSDKHelper.backendCall(this.recalculateGiftUrl, resolve, reject);
+        }).then((response) => {
+            this.updateGiftCards(response.updatedGiftCards);
+            $('.grand-total-sum').text(response.currencySymbol + response.amountRemaining);
+
+            if(!response.paymentCovered && $('.payment-information').parent().hasClass('checkout-hidden'))
+            {
+                this.showPaymentBlock();
+            }
+            else if(response.paymentCovered && !$('.payment-information').parent().hasClass('checkout-hidden'))
+            {
+                this.hidePaymentBlock();
+            }
+
+        }).catch((error) => {
+            console.log("An error occured while trying to recalculate gift card amounts")
         });
     }
 

@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
             balanceUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-balance-inquiry'),
             applyUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-gift-apply'),
             giftRemoveUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-gift-remove'),
+            recalculateGiftUrl: $('#fiserv-commercehub-gift-form-init-container').attr('data-commercehub-recalculate')
         }
         $('#fiserv-commercehub-gift-form-init-container').remove();
         return data;

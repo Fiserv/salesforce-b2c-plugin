@@ -79,4 +79,14 @@ server.post('RemoveGiftCard', function(req, res, next) {
     return next();
 });
 
+server.post('RecalculateGiftCardAmounts', function(req, res, next) {
+    let recalculateResponse = fsGift.recalculateGiftCards();
+    if(recalculateResponse.error)
+    {
+        res.setStatusCode(400);
+    }
+    res.json(recalculateResponse);
+    return next();
+});
+
 module.exports = server.exports();
