@@ -13,7 +13,7 @@ function getFrontendConfigData(formId)
             configData = {
                 'tokenizeEarly': FiservConfig.getEarlyTokenization(),
                 'use3DS': FiservConfig.get3DSEnabled(),
-                'fastlaneEnabled': FiservConfig.getCommerceHubPayPayFastlaneEnabled(),
+                'fastlaneEnabled': FiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null)
             };

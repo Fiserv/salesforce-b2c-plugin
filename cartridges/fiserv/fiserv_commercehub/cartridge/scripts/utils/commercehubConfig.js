@@ -128,9 +128,9 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalEnable');
     },
 
-    getCommerceHubPayPayFastlaneEnabled()
+    getCommerceHubPayPalFastlaneEnabled()
     {
-        return getSitePreference('CommerceHubPayPayFastlaneEnable');
+        return getSitePreference('CommerceHubPayPalFastlaneEnable');
     },
 
     getCommerceHubPayPalPaymentType()
@@ -138,9 +138,9 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalPaymentType').value;
     },
 
-    getCommerceHubPayPayVaultingEnabled()
+    getCommerceHubPayPalVaultingEnabled()
     {
-        return getSitePreference('CommerceHubPayPayVaultingEnable');
+        return getSitePreference('CommerceHubPayPalVaultingEnable');
     },
 
     // This is where the Apple Pay settings start
@@ -273,7 +273,7 @@ const commerceHubExport =
         }
 
         let dataConfig = {
-            'enableVaulting': this.getCommerceHubPayPayVaultingEnabled(),
+            'enableVaulting': this.getCommerceHubPayPalVaultingEnabled(),
             'customerConfirmation': 'REVIEW_AND_PAY',
             'buttons': buttonsConfig
         };

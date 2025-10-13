@@ -61,7 +61,7 @@ module.exports = {
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization',
             'CommerceHub3DSEnable',
-            'CommerceHubPayPayFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
+            'CommerceHubPayPalFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
         ],
         'CommerceHubTokenization': [
             'CommerceHubTokenizationStrategy',
@@ -76,7 +76,7 @@ module.exports = {
         ],
         'CommerceHubPayPalEnable': [
             'CommerceHubPayPalPaymentType',
-            'CommerceHubPayPayVaultingEnable',
+            'CommerceHubPayPalVaultingEnable',
             'PayPalButton'
         ],
         'CommerceHubApplePayEnable': [

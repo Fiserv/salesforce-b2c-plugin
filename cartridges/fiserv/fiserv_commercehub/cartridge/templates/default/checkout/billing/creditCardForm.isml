@@ -4,7 +4,7 @@
 <isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
 <isset name="earlyTokenization" value="${pdict.commercehubConfig.getEarlyTokenization()}" scope="pdict" />
-<isset name="fastlaneEnabled" value="${pdict.commercehubConfig.getCommerceHubPayPayFastlaneEnabled()}" scope="pdict" />
+<isset name="fastlaneEnabled" value="${pdict.commercehubConfig.getCommerceHubPayPalFastlaneEnabled()}" scope="pdict" />
 
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');

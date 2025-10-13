@@ -364,13 +364,13 @@
                 <preference preference-id="CommerceHubPayPalEnable">
                     <value>false</value>
                 </preference>
-                <preference preference-id="CommerceHubPayPayFastlaneEnable">
+                <preference preference-id="CommerceHubPayPalFastlaneEnable">
                     <value>false</value>
                 </preference>
                 <preference preference-id="CommerceHubPayPalPaymentType">
                     <value>AUTH</value>
                 </preference>
-                <preference preference-id="CommerceHubPayPayVaultingEnable">
+                <preference preference-id="CommerceHubPayPalVaultingEnable">
                     <value>false</value>
                 </preference>
                 <preference preference-id="CommerceHubPayPalButtonColor">

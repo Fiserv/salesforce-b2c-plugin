@@ -277,7 +277,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubPayPayFastlaneEnable">
+            <attribute-definition attribute-id="CommerceHubPayPalFastlaneEnable">
                 <display-name xml:lang="x-default">Enable PayPal Fastlane</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -300,7 +300,7 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubPayPayVaultingEnable">
+            <attribute-definition attribute-id="CommerceHubPayPalVaultingEnable">
                 <display-name xml:lang="x-default">Enable PayPal Vaulting</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -1389,9 +1389,9 @@
 
                 <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
                 <attribute attribute-id="CommerceHubPayPalEnable"/>
-                <attribute attribute-id="CommerceHubPayPayFastlaneEnable"/>
+                <attribute attribute-id="CommerceHubPayPalFastlaneEnable"/>
                 <attribute attribute-id="CommerceHubPayPalPaymentType"/>
-                <attribute attribute-id="CommerceHubPayPayVaultingEnable"/>
+                <attribute attribute-id="CommerceHubPayPalVaultingEnable"/>
                 <attribute attribute-id="CommerceHubPayPalButtonColor"/>
                 <attribute attribute-id="CommerceHubPayPalButtonShape"/>
                 <attribute attribute-id="CommerceHubPayPalButtonLabel"/>

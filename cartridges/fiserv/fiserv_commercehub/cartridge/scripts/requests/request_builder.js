@@ -393,7 +393,7 @@ function buildCredentialsRequest(hostURL, baseUrl, requestPurpose)
                 'authentication3DS': true
             };
         }
-        else if(requestPurpose === "PayPal" && FiservConfig.getCommerceHubPayPayVaultingEnabled() && basket.customer.profile)
+        else if(requestPurpose === "PayPal" && FiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)
         {
             payload['providerCredentials'] = [
                 {

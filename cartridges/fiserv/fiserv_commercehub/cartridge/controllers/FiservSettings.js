@@ -299,9 +299,9 @@ function buildConfigList(chPreferenceDescriptions)
         'id': 'PayPal',
         'items': [
             getPreferenceDescription('CommerceHubPayPalEnable'),
-            getPreferenceDescription('CommerceHubPayPayFastlaneEnable'),
+            getPreferenceDescription('CommerceHubPayPalFastlaneEnable'),
             getPreferenceDescription('CommerceHubPayPalPaymentType'),
-            getPreferenceDescription('CommerceHubPayPayVaultingEnable')
+            getPreferenceDescription('CommerceHubPayPalVaultingEnable')
         ],
         'subform': {
             'label': 'PayPal Button Customization',
