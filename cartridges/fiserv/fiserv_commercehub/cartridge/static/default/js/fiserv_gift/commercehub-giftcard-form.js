@@ -10,7 +10,7 @@ class CommercehubGiftForm
         }
         this.formConfig = initializationData.config;
         this.configDataGift = initializationData.config.configData;
-        this.credsUrl = initializationData.credentialsUrl;
+        this.credentialsUrl = initializationData.credentialsUrl;
         this.balanceUrl = initializationData.balanceUrl;
         this.applyUrl = initializationData.applyUrl;
         this.giftRemoveUrl = initializationData.giftRemoveUrl;
@@ -149,7 +149,7 @@ class CommercehubGiftForm
         if(this.getSubmitButton().length && this.buttonClicked === 'applyPrimary')
         {
             this.buttonClicked = 'applySecondary';
-            this.formAdapter.submitForm(this.credsUrl, this.setSecondarySessionIdInput);
+            this.formAdapter.submitForm(this.credentialsUrl, this.setSecondarySessionIdInput);
             return;
         }
 
@@ -384,7 +384,7 @@ class CommercehubGiftForm
         this.getBalanceBlock().addClass('sdc-hidden');
         this.unwatchFormButtons();
         this.buttonClicked = "applyPrimary";
-        this.formAdapter.submitForm(this.credsUrl, this.setPrimarySessionIdInput);
+        this.formAdapter.submitForm(this.credentialsUrl, this.setPrimarySessionIdInput);
         return false;
     }
 
@@ -395,7 +395,7 @@ class CommercehubGiftForm
         this.clearAlerts();
         this.unwatchFormButtons();
         this.buttonClicked = "balance";
-        this.formAdapter.submitForm(this.credsUrl, this.setPrimarySessionIdInput);
+        this.formAdapter.submitForm(this.credentialsUrl, this.setPrimarySessionIdInput);
         return false;
     }
 
