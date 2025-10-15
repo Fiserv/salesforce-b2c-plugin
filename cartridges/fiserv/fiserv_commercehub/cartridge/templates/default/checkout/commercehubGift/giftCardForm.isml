@@ -28,6 +28,7 @@
         data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Gift'))}"
         data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
         data-commercehub-balance-inquiry="${URLUtils.https('FiservGift-BalanceInquiry')}"
+        data-commercehub-recalculate="${URLUtils.https('FiservGift-RecalculateGiftCardAmounts')}"
         <isif condition="${pdict.currentStage}">
             data-commercehub-gift-apply="${URLUtils.https('FiservGift-ApplyGiftCard')}"
             data-commercehub-gift-remove="${URLUtils.https('FiservGift-RemoveGiftCard')}"

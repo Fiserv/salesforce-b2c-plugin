@@ -140,9 +140,21 @@ function removeGiftCard(uuid)
     return { error: Resource.msg('message.error.gift.notFound', 'error', null) };
 }
 
+function recalculateGiftCards()
+{
+    let basket = BasketMgr.getCurrentBasket();
+    if(!basket)
+    {
+        return { error: Resource.msg('message.error.gift.genericUpdate', 'error', null) };
+    }
+
+    return FiservHelper.recalculateGiftCardAmounts(basket);
+}
+
 module.exports = 
 {
     executeBalanceInquiry: executeBalanceInquiry,
     applyGiftCard: applyGiftCard,
-    removeGiftCard: removeGiftCard
+    removeGiftCard: removeGiftCard,
+    recalculateGiftCards: recalculateGiftCards
 };
