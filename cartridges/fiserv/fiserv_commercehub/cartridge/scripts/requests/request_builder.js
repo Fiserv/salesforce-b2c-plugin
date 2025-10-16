@@ -377,7 +377,8 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
             { 'url': baseUrl }
         ],
         'merchantDetails' : {
-            'merchantId' : FiservConfig.getCommerceHubMerchantId()
+            'merchantId' : FiservConfig.getCommerceHubMerchantId(),
+            'terminalId' : FiservConfig.getCommerceHubTerminalId()
         }
     };
 
