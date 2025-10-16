@@ -7,7 +7,7 @@ class FiservFastlaneInitializer
     static async initFastlane(credentialsUrl, formAdapter, formConfig)
     {
         let ajaxSuccessAlreadyAdded = false;
-        let authValues, billingPhone, fastlaneGuestCheckout; // Values kept up here to update in the billing event
+        let authValues, billingPhone, fastlaneGuestCheckout = true; // Values kept up here to update in the billing event
 
         let createAddressObject = function(addr, name)
         {
@@ -140,12 +140,8 @@ class FiservFastlaneInitializer
                         $('#fastlane-re-enable-form-button').removeClass('checkout-hidden');
 
                         formAdapter.setFastlaneAuthResponse(authResponse);
-                        toggleSubmitButton(false);
                     }
-                    else if($('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
-                    {
-                        toggleSubmitButton(true);
-                    }
+
                     $.spinner().stop();
                 }).catch((e) => {
                     console.log(e);
@@ -157,6 +153,21 @@ class FiservFastlaneInitializer
                 FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter, fastlaneObject);
             });
 
+            $(document).on("ajaxSuccess", (ev, xhr) => {
+                if (typeof(xhr.responseJSON) !== 'undefined' &&
+                    typeof(xhr.responseJSON.action) !== 'undefined' &&
+                    xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
+                    typeof(xhr.responseJSON.order) !== 'undefined' &&
+                    typeof(xhr.responseJSON.order.shipping) !== 'undefined' &&
+                    $('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD' &&
+                    fastlaneGuestCheckout)
+                {
+                    formAdapter.resetForm();
+                    FiservFastlaneInitializer.clearValidation();
+                    toggleSubmitButton(true);
+                }
+            });
+
             $.spinner().stop();
         }).catch((error) => {
             console.log("Failed to instantiate Fastlane")
@@ -166,8 +177,7 @@ class FiservFastlaneInitializer
 
     static async resetFastlane(formConfig, formAdapter, fastlaneObject)
     {
-        formAdapter.destroyIframe('card');
-        formAdapter.initSdk(formConfig, null, fastlaneObject);
+        formAdapter.resetForm();
         $('#fastlane-re-enable-form-button').addClass('checkout-hidden');
 
         FiservFastlaneInitializer.watermarkInsertions.forEach((id) => {
@@ -175,7 +185,11 @@ class FiservFastlaneInitializer
         });
         FiservFastlaneInitializer.watermarkInsertions = [];
 
-        // clear validation...
+        FiservFastlaneInitializer.clearValidation()
+    }
+
+    static clearValidation()
+    {
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
         $('#sdc-card-brand-icon').removeClass().addClass('sdc-card-brand-icon');
         $('#sdc-card-number-frame, #sdc-card-name-frame, #sdc-security-code-frame, #sdc-exp-month-frame, #sdc-exp-year-frame')

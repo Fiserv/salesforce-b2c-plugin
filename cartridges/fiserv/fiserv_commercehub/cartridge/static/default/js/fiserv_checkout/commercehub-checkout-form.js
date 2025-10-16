@@ -326,7 +326,7 @@ class CommercehubCheckoutForm
         this.unwatchSubmitButtonToken();
     }
 
-    watchSubmitButtonToken = function() 
+    watchSubmitButtonToken = function()
     {
         this.unwatchSubmitButtonForm();
         this.getSubmitButton().one('click', this.submitHandlerToken);
@@ -337,7 +337,7 @@ class CommercehubCheckoutForm
         this.getSubmitButton().off('click', this.submitHandlerToken);
     }
 
-    watchSubmitButtonForm = function() 
+    watchSubmitButtonForm = function()
     {
         this.unwatchSubmitButtonToken();
         this.getSubmitButton().one('click', this.submitHandlerForm);

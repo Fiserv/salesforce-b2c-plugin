@@ -136,6 +136,11 @@ class FiservSDKIframe
         }
     }
 
+    resetForm = function()
+    {
+        this.form.reset();
+    }
+
     unmask = function(field)
     {
         this.form.mask(field, false);
