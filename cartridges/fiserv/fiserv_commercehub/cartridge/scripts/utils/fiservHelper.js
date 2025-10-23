@@ -101,15 +101,21 @@ function recalculateGiftCardAmounts(basket)
     basket.paymentInstruments.toArray().forEach((pi) => {
         if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
-            if(grossTotal > 0 && pi.paymentTransaction.amount.value < pi.custom.balance)
+            if(grossTotal <= 0.00001)
+            {
+                basket.removePaymentInstrument(pi);
+                updatedGiftCards.push({
+                    oldUuid: pi.UUID
+                })
+            }
+            else if(pi.paymentTransaction.amount.value < pi.custom.balance || pi.paymentTransaction.amount.value > grossTotal)
             {
                 let balance = pi.custom.balance;
                 let sessionId = pi.paymentTransaction.custom.commercehubSessionId;
                 let oldUuid = pi.UUID;
                 basket.removePaymentInstrument(pi);
 
-                let chargeAmountResponse = getGiftCardChargeAmount(basket, balance);
-                let paymentAmount = chargeAmountResponse.paymentAmount;
+                let paymentAmount = grossTotal > balance ? balance : Number(grossTotal).toFixed(2);
                 let paymentInstrument = basket.createPaymentInstrument(constants.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
                 paymentInstrument.custom.balance = balance;
                 paymentInstrument.paymentTransaction.custom.commercehubSessionId = sessionId;
@@ -135,9 +141,19 @@ function recalculateGiftCardAmounts(basket)
     return {
         updatedGiftCards: updatedGiftCards,
         currencySymbol: '$',
-        amountRemaining: Number(grossTotal).toFixed(2),
+        amountRemaining: Number(Math.abs(grossTotal)).toFixed(2),
         paymentCovered: Number(Math.abs(grossTotal)).toFixed(2) === Number(0).toFixed(2)
     };
+}
+
+function correctGrandTotalResponseIncludingGiftCards(res)
+{
+    // Overwrite the grand total value returned to the frontend
+    let appliedGiftCards = retrieveAppliedGiftCards();
+    if(appliedGiftCards.giftCardList.length)
+    {
+        res.viewData.order.totals.grandTotal = appliedGiftCards.giftCardList[0].currencySymbol + appliedGiftCards.amountRemaining;
+    }
 }
 
 function retreiveNonGiftChargeAmount(currentBasket) {
@@ -209,6 +225,7 @@ module.exports =
     getGiftCardChargeAmount : getGiftCardChargeAmount,
     recalculateGiftCardAmounts : recalculateGiftCardAmounts,
     retreiveNonGiftChargeAmount : retreiveNonGiftChargeAmount,
+    correctGrandTotalResponseIncludingGiftCards : correctGrandTotalResponseIncludingGiftCards,
     removeGiftCardsFromCart : removeGiftCardsFromCart,
     validSessionId : validSessionId,
     isCreditCardFiserv : isCreditCardFiserv,

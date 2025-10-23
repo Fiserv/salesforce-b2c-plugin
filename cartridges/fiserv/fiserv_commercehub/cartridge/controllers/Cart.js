@@ -38,7 +38,24 @@ server.append('RemoveProductLineItem', function (req, res, next) {
         }
 
         Transaction.begin();
-        FiservHelper.removeGiftCardsFromCart(basket);
+        FiservHelper.recalculateGiftCardAmounts(basket);
+        Transaction.commit();
+    }
+
+    return next();
+});
+
+server.append('UpdateQuantity', function (req, res, next) {
+    if(FiservConfig.getCommerceHubGiftEnabled())
+    {
+        let basket = BasketMgr.getCurrentBasket()
+        if(!basket)
+        {
+            return next();
+        }
+
+        Transaction.begin();
+        FiservHelper.recalculateGiftCardAmounts(basket);
         Transaction.commit();
     }
 

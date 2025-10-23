@@ -338,13 +338,20 @@ class CommercehubGiftForm
     {
         giftCards.forEach((giftCardInfo) => {
             let cardBlockQuery = $('#' + giftCardInfo.oldUuid);
+            let oldClass = 'giftDetail' + giftCardInfo.oldUuid;
+            let cardSummaryQuery = $('.' + oldClass);
+            if(!giftCardInfo.uuid)
+            {
+                cardBlockQuery.remove();
+                cardSummaryQuery.remove();
+                return;
+            }
+
             cardBlockQuery.attr('id', giftCardInfo.uuid);
             cardBlockQuery.find('.gift-total-sum').text('-' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount);
             cardBlockQuery.find('button').off('click');
             cardBlockQuery.find('button').on('click', () => {this.removeGiftCard(giftCardInfo.uuid);})
 
-            let oldClass = 'giftDetail' + giftCardInfo.oldUuid;
-            let cardSummaryQuery = $('.' + oldClass);
             cardSummaryQuery.removeClass(oldClass).addClass('giftDetail' + giftCardInfo.uuid);
             cardSummaryQuery.children('span').text(giftCardInfo.currencySymbol + giftCardInfo.paymentAmount);
         });
