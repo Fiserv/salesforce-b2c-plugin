@@ -110,8 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     $('.btn.cancel-new-payment').click(()=> {
-        form.watchSubmitButtonToken();
-        form.enableSubmitButton();
+        if($(".payment-information").data("payment-method-id") === "CREDIT_CARD" && $('.credit-card-form.checkout-hidden').length)
+        {
+            form.watchSubmitButtonToken();
+            form.enableSubmitButton();
+        }
     });
 
     $('.btn.add-payment').click(()=> {

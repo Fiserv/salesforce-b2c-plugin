@@ -397,9 +397,6 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         payload['customer'] = buildCustomerObject(basket);
         if(requestPurpose === "3DS")
         {
-            payload['transactionDetails'] = {
-                'authentication3DS': true
-            };
             if(credentialsForm.threeDSToken)
             {
                 let profile = basket.getCustomer().getProfile();
