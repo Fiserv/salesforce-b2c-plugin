@@ -234,7 +234,7 @@ class CommercehubCheckoutForm
             !$(_e.currentTarget).find("a.nav-link").hasClass('active'))
         {
             this.activateCommercehubForm();
-            if(!this.validForm)
+            if(!this.validForm && !$('.credit-card-form.checkout-hidden').length)
             {
                 this.disableSubmitButton();
             }
