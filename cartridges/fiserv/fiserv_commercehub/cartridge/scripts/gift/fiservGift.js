@@ -148,7 +148,11 @@ function recalculateGiftCards()
         return { error: Resource.msg('message.error.gift.genericUpdate', 'error', null) };
     }
 
-    return FiservHelper.recalculateGiftCardAmounts(basket);
+    let updatedGiftCards;
+    Transaction.wrap(function () {
+        updatedGiftCards = FiservHelper.recalculateGiftCardAmounts(basket);
+    });
+    return updatedGiftCards;
 }
 
 module.exports = 

@@ -27,12 +27,7 @@ server.append('SubmitPayment', function (req, res, next) {
                 res.viewData.order.billing.payment.selectedPaymentInstruments = selectedPaymentInstruments;
             }
 
-            // Overwrite the grand total value returned to the frontend
-            let appliedGiftCards = fiservHelper.retrieveAppliedGiftCards();
-            if(appliedGiftCards.giftCardList.length)
-            {
-                res.viewData.order.totals.grandTotal = appliedGiftCards.giftCardList[0].currencySymbol + appliedGiftCards.amountRemaining;
-            }
+            fiservHelper.correctGrandTotalResponseIncludingGiftCards(res);
         }
 
         let paymentMethod = res.viewData.paymentMethod.value;
