@@ -39,6 +39,7 @@ function getFrontendConfigData(formId)
             configData = {
                 'buttonsConfig': FiservConfig.buildPayPalButtonsConfig(),
                 'chargeType': FiservConfig.getCommerceHubPayPalPaymentType(),
+                'shippingAddressFormNames': FiservConfig.buildAddressFormNamesObject(),
                 'paypalFailureMessage': Resource.msg('message.error.paypal.failure', 'error', null),
             }
             break;

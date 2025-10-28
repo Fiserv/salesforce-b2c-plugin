@@ -33,30 +33,40 @@ class FiservSDKHelper
     static addressFormList = {};
     static async populateAddress(addressObject, addressFormNames, purpose)
     {
-        let createAddressFormFields = function(baseForm, type)
-        {
-            let baseId = type === 'shipping' ? 'dwfrm_shipping_shippingAddress' : 'dwfrm_billing';
-            let fields = {};
-            Object.keys(baseForm).forEach((key) => {
-                fields[key] = {};
-                let formElement = $('[name=' + (baseId + baseForm[key]) + ']');
-                if(!formElement.length)
-                    return;
-                let id = formElement.attr('id');
-                if(!id)
-                    return;
-                fields[key]['elementId'] = id;
-            })
-
-            return { fields: fields };
-        }
-        
         let addressForm = FiservSDKHelper.addressFormList[purpose] ?
             FiservSDKHelper.addressFormList[purpose] :
-            await window.fiserv.components.address(createAddressFormFields(addressFormNames, purpose));
+            await window.fiserv.components.address(FiservSDKHelper.createAddressFormFields(addressFormNames, purpose));
         
         FiservSDKHelper.addressFormList[purpose] = addressForm;
         addressForm.populate(addressObject);
+    }
+
+    static async retrieveAddress(addressFormNames, purpose)
+    {
+        let addressForm = FiservSDKHelper.addressFormList[purpose] ?
+            FiservSDKHelper.addressFormList[purpose] :
+            await window.fiserv.components.address(FiservSDKHelper.createAddressFormFields(addressFormNames, purpose));
+        
+        FiservSDKHelper.addressFormList[purpose] = addressForm;
+        return addressForm.getData();
+    }
+
+    static createAddressFormFields(baseForm, type)
+    {
+        let baseId = type === 'shipping' ? 'dwfrm_shipping_shippingAddress' : 'dwfrm_billing';
+        let fields = {};
+        Object.keys(baseForm).forEach((key) => {
+            fields[key] = {};
+            let formElement = $('[name=' + (baseId + baseForm[key]) + ']');
+            if(!formElement.length)
+                return;
+            let id = formElement.attr('id');
+            if(!id)
+                return;
+            fields[key]['elementId'] = id;
+        })
+
+        return { fields: fields };
     }
 
     // Method used to create an address field dropdown option
