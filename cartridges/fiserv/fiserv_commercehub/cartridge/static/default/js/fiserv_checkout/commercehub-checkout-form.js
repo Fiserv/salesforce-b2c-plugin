@@ -293,7 +293,7 @@ class CommercehubCheckoutForm
             }
             catch(e) {
                 console.log(e);
-                this.paymentProceedFailure(true);
+                this.paymentProceedFailure(this.configDataPaymentCard.threeDSFailureMessage, true);
                 return false;
             }
         })
