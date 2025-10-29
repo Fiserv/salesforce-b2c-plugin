@@ -382,11 +382,12 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         }
     };
 
-    let requestPurpose;
+    // Leaving this code here just in case we ever need to re-introduce this...
+    /*let requestPurpose;
     if(credentialsForm)
         requestPurpose = credentialsForm.requestPurpose;
     if(requestPurpose)
-    {
+    {*/
         var basket = BasketMgr.getCurrentBasket();
         if(!basket)
         {
@@ -395,33 +396,30 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         payload['amount'] = buildAmountObjectFromBasket(basket);
         payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
-        if(requestPurpose === "3DS")
+        if(FiservConfig.get3DSEnabled() && credentialsForm.threeDSToken)
         {
-            if(credentialsForm.threeDSToken)
+            let profile = basket.getCustomer().getProfile();
+            if(!profile)
             {
-                let profile = basket.getCustomer().getProfile();
-                if(!profile)
-                {
-                    throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
-                }
-                let paymentInstruments = profile.getWallet().getPaymentInstruments();
-                let pi;
-                for(let i in paymentInstruments)
-                {
-                    if(paymentInstruments[i].UUID === credentialsForm.threeDSToken)
-                    {
-                        pi = paymentInstruments[i];
-                        break;
-                    }
-                }
-                if(!pi)
-                {
-                    throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
-                }
-                payload['source'] = buildTokenSourceObject(pi);
+                throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
             }
+            let paymentInstruments = profile.getWallet().getPaymentInstruments();
+            let pi;
+            for(let i in paymentInstruments)
+            {
+                if(paymentInstruments[i].UUID === credentialsForm.threeDSToken)
+                {
+                    pi = paymentInstruments[i];
+                    break;
+                }
+            }
+            if(!pi)
+            {
+                throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
+            }
+            payload['source'] = buildTokenSourceObject(pi);
         }
-        else if(requestPurpose === "PayPal" && FiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)
+        if(FiservConfig.getCommerceHubPayPalEnabled() && FiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)
         {
             payload['providerCredentials'] = [
                 {
@@ -435,7 +433,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                 }
             ]
         }
-        else if(requestPurpose === "ApplePay")
+        if(FiservConfig.getCommerceHubApplePayEnabled())
         {
             let orderData = {};
             let basket = BasketMgr.getCurrentBasket();
@@ -506,7 +504,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                 }
             }
         }
-    }
+    //}
 
     return payload;
 }
