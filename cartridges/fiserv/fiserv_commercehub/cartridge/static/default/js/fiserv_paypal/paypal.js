@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
         $('#fiserv_commercehub-paypal-button').children().remove();
         if(initialized)
         {
+            // Temporary fix...
+            location.reload();
+            return;
+            
             initialized = false;
             if($('.data-checkout-stage').attr('data-checkout-stage') === "payment"
                 && $(".payment-information").data("payment-method-id") === "PAYPAL")
