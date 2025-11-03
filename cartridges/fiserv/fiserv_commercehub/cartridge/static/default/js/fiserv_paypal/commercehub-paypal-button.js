@@ -17,6 +17,7 @@ class CommercehubPayPal
         this.createAdapter();
 
         this.watchButtonLoadLag();
+        this.watchSubmitResponse();
         this.watchPaymentMethod();
     }
 
@@ -106,6 +107,25 @@ class CommercehubPayPal
     {
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
         this.showError(this.configDataPayPal.paypalFailureMessage);
+    }
+
+    watchSubmitResponse = function()
+    {
+        $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
+    }
+
+    onSubmitResponse = function(ev, xhr)
+    {
+        if (typeof(xhr.responseJSON) !== 'undefined' &&
+            typeof(xhr.responseJSON.action) !== 'undefined' &&
+            xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
+            $(".payment-information").data("payment-method-id") === "PAYPAL" &&
+            xhr.responseJSON.error
+        ) {
+            this.setOrderIdInput('');
+            this.removeInsertedSummary();
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        }
     }
 
     setOrderIdInput = function(orderId)

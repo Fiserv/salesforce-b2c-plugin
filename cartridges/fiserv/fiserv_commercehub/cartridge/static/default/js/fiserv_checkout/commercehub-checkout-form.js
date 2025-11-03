@@ -22,6 +22,7 @@ class CommercehubCheckoutForm
             FiservFastlaneInitializer.initFastlane(this.credentialsUrl, this.formAdapter, this.formConfig);
         }
 
+        this.watchSubmitResponse();
         this.watchPaymentMethods();
     }
     
@@ -304,6 +305,24 @@ class CommercehubCheckoutForm
             this.watchSubmitButton();
             $.spinner().stop()
         });
+    }
+
+    watchSubmitResponse = function()
+    {
+        $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
+    }
+
+    onSubmitResponse = function(ev, xhr)
+    {
+        if (typeof(xhr.responseJSON) !== 'undefined' &&
+            typeof(xhr.responseJSON.action) !== 'undefined' &&
+            xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
+            $(".payment-information").data("payment-method-id") === "CREDIT_CARD" &&
+            xhr.responseJSON.error
+        ) {
+            this.setSessionIdInput('');
+            this.watchSubmitButton();
+        }
     }
 
     watchSubmitButton = function()

@@ -18,6 +18,7 @@ class CommercehubApplePay
         this.createAdapter();
 
         this.watchButtonLoadLag();
+        this.watchSubmitResponse();
         this.watchPaymentMethod();
     }
 
@@ -93,7 +94,6 @@ class CommercehubApplePay
 
     applepayApproval = async function(response)
     {
-        $(document).on("ajaxSuccess", $.proxy(this.immediatePlaceOrder, this));
         this.completePayment = response.completePayment;
         $('.address-selector-block').find('.btn-show-details').trigger('click');
         let addressObject = this.createAddressObject(response.billingAddress);
@@ -104,28 +104,41 @@ class CommercehubApplePay
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
     }
 
-    immediatePlaceOrder = function(ev, xhr)
-    { 
-        $(document).off("ajaxSuccess", this.immediatePlaceOrder);
+    watchSubmitResponse = function()
+    {
+        $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
+    }
+
+    onSubmitResponse = function(ev, xhr)
+    {
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
-            xhr.responseJSON.isApplePaySuccess
+            $(".payment-information").data("payment-method-id") === "APPLEPAY"
         ) {
-            new Promise((resolve, reject) => {
-                FiservSDKHelper.backendCall(xhr.responseJSON.placeOrderURL, resolve, reject);
-            })
-            .then(async (response) => {
-                if(response.error)
-                {
-                    this.applepayFailure(response.errorMessage);
-                    return;
-                }
+            if(xhr.responseJSON.isApplePaySuccess)
+            {
+                new Promise((resolve, reject) => {
+                    FiservSDKHelper.backendCall(xhr.responseJSON.placeOrderURL, resolve, reject);
+                })
+                .then(async (response) => {
+                    if(response.error)
+                    {
+                        this.applepayFailure(response.errorMessage);
+                        return;
+                    }
 
-                this.applepaySuccess(response);
-            }).catch((error) => {
+                    this.applepaySuccess(response);
+                }).catch((error) => {
+                    this.applepayFailure();
+                });
+            }
+            else
+            {
+                this.setSessionIdInput('');
+                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
                 this.applepayFailure();
-            });
+            }
         }
     }
 
@@ -173,7 +186,7 @@ class CommercehubApplePay
 
     applepayError = function()
     {
-        applepayFailure(this.configDataApplePay.applepayFailureMessage);
+        this.applepayFailure(this.configDataApplePay.applepayFailureMessage);
     }
 
     setSessionIdInput = function(sessionId)
