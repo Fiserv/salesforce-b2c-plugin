@@ -382,12 +382,11 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         }
     };
 
-    // Leaving this code here just in case we ever need to re-introduce this...
-    /*let requestPurpose;
+    let requestPurpose;
     if(credentialsForm)
         requestPurpose = credentialsForm.requestPurpose;
-    if(requestPurpose)
-    {*/
+    if(requestPurpose !== "STANDALONE")
+    {
         var basket = BasketMgr.getCurrentBasket();
         if(!basket)
         {
@@ -504,7 +503,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                 }
             }
         }
-    //}
+    }
 
     return payload;
 }
