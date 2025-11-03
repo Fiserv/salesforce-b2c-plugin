@@ -129,7 +129,7 @@ class CommercehubTokenizationForm
 
     cardCaptureFailure = function(error)
     {
-        this.formAdapter.destroyIframe('card');
+        this.formAdapter.destroyIframe('tokenize');
         this.initializeAdapter();
         this.watchSubmitButton();
         this.showError(this.configDataTokenization.captureFailureMessage);
@@ -140,7 +140,7 @@ class CommercehubTokenizationForm
         _e.preventDefault();
         $.spinner().start();
         this.unwatchSubmitButton();
-        this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput);
+        this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput, "STANDALONE");
         return false; 
     }
 
