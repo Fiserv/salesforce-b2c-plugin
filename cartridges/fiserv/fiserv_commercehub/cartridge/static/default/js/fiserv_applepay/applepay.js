@@ -13,9 +13,17 @@ document.addEventListener("DOMContentLoaded", () => {
     //const checkoutStage = $('#fiserv-commercehub-applepay-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubApplePay(extractInitializationData());
     let initialized = false;
+    let postInitPaymentChangeDetected = false;
 
     let initApplePay = async function()
     {
+        // Temporary fix...
+        if(postInitPaymentChangeDetected)
+        {
+            location.reload();
+            return;
+        }
+        
         if (!initialized)
         {
             await form.initialize();
@@ -46,13 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let grandTotalUpdated = function(context)
     {
+        if(window.fiservPluginSDKInitRan)
+        {
+            postInitPaymentChangeDetected = true;
+        }
+
         $('#fiserv_commercehub-applepay-button').children().remove();
         if(initialized)
         {
             // Temporary fix...
             location.reload();
             return;
-            
+
             initialized = false;
             if($('.data-checkout-stage').attr('data-checkout-stage') === "payment"
                 && $(".payment-information").data("payment-method-id") === "APPLEPAY")

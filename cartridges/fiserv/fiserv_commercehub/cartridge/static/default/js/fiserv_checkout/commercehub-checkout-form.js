@@ -281,6 +281,7 @@ class CommercehubCheckoutForm
         {
             try {
                 await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
+                window.fiservPluginSDKInitRan = true;
 
                 if(await this.execute3DS(true))
                 {

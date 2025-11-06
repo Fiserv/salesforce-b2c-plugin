@@ -100,6 +100,7 @@ class FiservSDKIframe
 
                 if(requestPurpose === "3DS") {
                     await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
+                    window.fiservPluginSDKInitRan = true;
                 }
 
                 this.form.submit(credentialsResponse['submitConfig'])

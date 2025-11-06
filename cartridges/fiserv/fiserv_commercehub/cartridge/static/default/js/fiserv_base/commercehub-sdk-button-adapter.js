@@ -26,6 +26,7 @@ class FiservSDKButton
                 storeSessionCallback(credentialsResponse['sessionId']);
 
             await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
+            window.fiservPluginSDKInitRan = true;
 
             this.sdkReadyCallback();
         }).catch((error) => {

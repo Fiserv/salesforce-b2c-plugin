@@ -56,6 +56,7 @@ class FiservFastlaneInitializer
         })
         .then(async (credentialsResponse) => {
             await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
+            window.fiservPluginSDKInitRan = true;
 
             let paypal = await window.fiserv.components.paypal();
             let fastlane = await paypal.fastlane();
