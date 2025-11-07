@@ -28,12 +28,6 @@
 
                 <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
 
-                <preference preference-id="CommerceHubCreditPrivacyStatement">
-                    <value>true</value>
-                </preference>
-                <preference preference-id="CommerceHubCreditPaymentMethodTitle">
-                    <value>Credit/Debit Cards</value>
-                </preference>
                 <preference preference-id="CommerceHubCreditPaymentType">
                     <value>AUTH</value>
                 </preference>
@@ -49,8 +43,8 @@
                 <preference preference-id="CommerceHubEarlyTokenization">
                     <value>false</value>
                 </preference>
-                <preference preference-id="CommerceHubCreditPrivacyStatement">
-                    <value>true</value>
+                <preference preference-id="CommerceHub3DSEnable">
+                    <value>false</value>
                 </preference>
 
                 <!--THIS IS WHERE THE PAYMENT FORM CUSTOMIZATION STARTS-->
@@ -282,10 +276,7 @@
                 <preference preference-id="CommerceHubGiftSecurityEnable">
                     <value>true</value>
                 </preference>
-                <preference preference-id="CommerceHubGiftPrivacyStatement">
-                    <value>true</value>
-                </preference>
-                
+
                 <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
 
                 <preference preference-id="CommerceHubGiftFormCardNumberPlaceholder">
@@ -344,6 +335,92 @@
                 </preference>
                 <preference preference-id="CommerceHubGiftFormFontIntegrity">
                     <value></value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_PAYPAL">
+        <description>Fiserv Commerce Hub PayPal processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubPayPalEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalFastlaneEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalVaultingEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalButtonColor">
+                    <value>gold</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalButtonShape">
+                    <value>rect</value>
+                </preference>
+                <preference preference-id="CommerceHubPayPalButtonLabel">
+                    <value>paypal</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_APPLEPAY">
+        <description>Fiserv Commerce Hub Apple Pay processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+
+                <preference preference-id="CommerceHubApplePayEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubApplePayPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubApplePayVerification">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubApplePayButtonColor">
+                    <value>black</value>
+                </preference>
+                <preference preference-id="CommerceHubApplePayButtonLabel">
+                    <value>pay</value>
                 </preference>
             </all-instances>
             <development/>

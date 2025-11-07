@@ -35,6 +35,7 @@ function getB2cCardType(cardType) {
         case 'discover':
             return 'Discover';
     }
+
     throw new Error('Unable to determine Salesforce B2C card type for: '.concat(cardType));
 }
 
@@ -100,15 +101,21 @@ function recalculateGiftCardAmounts(basket)
     basket.paymentInstruments.toArray().forEach((pi) => {
         if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
-            if(grossTotal > 0 && pi.paymentTransaction.amount.value < pi.custom.balance)
+            if(grossTotal <= 0.00001)
+            {
+                basket.removePaymentInstrument(pi);
+                updatedGiftCards.push({
+                    oldUuid: pi.UUID
+                })
+            }
+            else if(pi.paymentTransaction.amount.value < pi.custom.balance || pi.paymentTransaction.amount.value > grossTotal)
             {
                 let balance = pi.custom.balance;
                 let sessionId = pi.paymentTransaction.custom.commercehubSessionId;
                 let oldUuid = pi.UUID;
                 basket.removePaymentInstrument(pi);
 
-                let chargeAmountResponse = getGiftCardChargeAmount(basket, balance);
-                let paymentAmount = chargeAmountResponse.paymentAmount;
+                let paymentAmount = grossTotal > balance ? balance : Number(grossTotal).toFixed(2);
                 let paymentInstrument = basket.createPaymentInstrument(constants.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
                 paymentInstrument.custom.balance = balance;
                 paymentInstrument.paymentTransaction.custom.commercehubSessionId = sessionId;
@@ -125,7 +132,7 @@ function recalculateGiftCardAmounts(basket)
             }
             else
             {
-                grossTotal = pi.paymentTransaction.amount.value;
+                grossTotal -= pi.paymentTransaction.amount.value;
             }
         }
     });
@@ -134,18 +141,64 @@ function recalculateGiftCardAmounts(basket)
     return {
         updatedGiftCards: updatedGiftCards,
         currencySymbol: '$',
-        amountRemaining: Number(grossTotal).toFixed(2),
+        amountRemaining: Number(Math.abs(grossTotal)).toFixed(2),
         paymentCovered: Number(Math.abs(grossTotal)).toFixed(2) === Number(0).toFixed(2)
     };
 }
 
-function isFiserv()
+function correctGrandTotalResponseIncludingGiftCards(res)
 {
-    let cc = PaymentMgr.getPaymentMethod('CREDIT_CARD');
-    
-    if (cc !== null && cc.paymentProcessor !== null && cc.paymentProcessor.ID == constants.COMMERCEHUB_PROCESSOR)
+    // Overwrite the grand total value returned to the frontend
+    let appliedGiftCards = retrieveAppliedGiftCards();
+    if(appliedGiftCards.giftCardList.length)
     {
-        return cc.isActive();
+        res.viewData.order.totals.grandTotal = appliedGiftCards.giftCardList[0].currencySymbol + appliedGiftCards.amountRemaining;
+    }
+}
+
+function retreiveNonGiftChargeAmount(currentBasket) {
+    let paymentAmount = currentBasket.totalGrossPrice.value;
+    if(commercehubConfig.getCommerceHubGiftEnabled())
+    {
+        currentBasket.paymentInstruments.toArray().forEach((pi) => {
+            if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+            {
+                paymentAmount -= pi.paymentTransaction.amount.value;
+            }
+        });
+    }
+
+    return paymentAmount;
+}
+
+function removeGiftCardsFromCart(currentBasket) {
+    currentBasket.paymentInstruments.toArray().forEach((pi) => {
+        if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        {
+            currentBasket.removePaymentInstrument(pi);
+        }
+    });
+}
+
+function isCreditCardFiserv()
+{
+    let method = PaymentMgr.getPaymentMethod('CREDIT_CARD');
+    
+    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
+    {
+        return method.isActive();
+    }
+
+    return false;
+}
+
+function isApplePayFiserv()
+{
+    let method = PaymentMgr.getPaymentMethod('APPLEPAY');
+    
+    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
+    {
+        return method.isActive();
     }
 
     return false;
@@ -171,7 +224,11 @@ module.exports =
     retrieveAppliedGiftCards : retrieveAppliedGiftCards,
     getGiftCardChargeAmount : getGiftCardChargeAmount,
     recalculateGiftCardAmounts : recalculateGiftCardAmounts,
+    retreiveNonGiftChargeAmount : retreiveNonGiftChargeAmount,
+    correctGrandTotalResponseIncludingGiftCards : correctGrandTotalResponseIncludingGiftCards,
+    removeGiftCardsFromCart : removeGiftCardsFromCart,
     validSessionId : validSessionId,
-    isFiserv : isFiserv,
+    isCreditCardFiserv : isCreditCardFiserv,
+    isApplePayFiserv : isApplePayFiserv,
     secureTraversal : secureTraversal
 }

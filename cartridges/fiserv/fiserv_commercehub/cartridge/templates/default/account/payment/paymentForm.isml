@@ -1,23 +1,27 @@
 <isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 <isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
 <isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 <isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="canTokenizeSpa" value="${pdict.commercehubConfig.getCommerceHubStandaloneSpa()}" scope="pdict" />
-<isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getCreditPrivacyStatementEnabled()}" scope="pdict" />
+<isset name="creditEnabled" value="${pdict.commercehubConfig.getCommerceHubCreditEnabled()}" scope="pdict" />
 
-<isif condition="${pdict.canTokenize && pdict.canTokenizeSpa}">
+<isif condition="${pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeSpa}">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
-        assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
         assets.addJs('/js/fiserv_account/commercehub_tokenize_form.js');
         assets.addJs('/js/fiserv_account/tokenize.js');
         assets.addJs(pdict.chSdkUrl);
         assets.addCss('css/fiservScc.css');
     </isscript>
 
-    <div id="fiserv-commercehub-card-form-container" 
-        data-commercehub-form-config="${URLUtils.https('Fiserv-InitializationData', 'formId', 'Tokenization')}"
-        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}">
+    <div id="fiserv-commercehub-tokenize-form-init-container" 
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Tokenization'))}"
+        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"></div>
+
+    <div id="fiserv-commercehub-tokenize-form-container">
         <div class="sdc-row">
             <div id="sdc-card-number-frame" class="sdc-field-frame sdc-text">
                 <div id="sdc-card-brand-icon" class="sdc-card-brand-icon"></div>
@@ -53,12 +57,10 @@
                 <span id="sdc-exp-year-invalid-message" class="sdc-error-message sdc-hidden"></span>
             </div>
         </div>
-        <isif condition="${pdict.showPrivacyStatement}">
-            <div class="privacyPolicy">
-                <span></span>
-                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
-            </div>
-        </isif>
+        <div class="privacyPolicy">
+            <span></span>
+            Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+        </div>
         <div id="fiserv-scc-fatal-notice" class="alert alert-danger">
             <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>            
         </div>
@@ -74,6 +76,7 @@
         <!--- Hidden input for credit card type --->
         <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
         <input type="hidden" id="commercehubSessionIdInput" name="${pdict.paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+        <input type="hidden" id="cardType" name="${pdict.paymentForm.cardType.htmlName}"/>
         
         <!-- Cancel and Save Buttons -->
         <div class="row">

@@ -117,12 +117,6 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubCreditPaymentMethodTitle">
-                <display-name xml:lang="x-default">CommerceHub Payment Method Title</display-name>
-                <type>string</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-            </attribute-definition>
             <attribute-definition attribute-id="CommerceHubCreditPaymentType">
                 <display-name xml:lang="x-default">CommerceHub Charge Type</display-name>
                 <type>enum-of-string</type>
@@ -179,12 +173,12 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubCreditPrivacyStatement">
-                <display-name xml:lang="x-default">Show Privacy Statement</display-name>
+            <attribute-definition attribute-id="CommerceHub3DSEnable">
+                <display-name xml:lang="x-default">Enable 3DS</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
-                <default-value>true</default-value>
+                <default-value>false</default-value>
             </attribute-definition>
 
             <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
@@ -273,12 +267,246 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubGiftPrivacyStatement">
-                <display-name xml:lang="x-default">Show Privacy Statement</display-name>
+
+            <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubPayPalEnable">
+                <display-name xml:lang="x-default">Enable PayPal</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalFastlaneEnable">
+                <display-name xml:lang="x-default">Enable PayPal Fastlane</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalPaymentType">
+                <display-name xml:lang="x-default">CommerceHubPayPal Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalVaultingEnable">
+                <display-name xml:lang="x-default">Enable PayPal Vaulting</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalButtonColor">
+                <display-name xml:lang="x-default">CommerceHubPayPal Button Color</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Gold</display>
+                        <value>gold</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Blue</display>
+                        <value>blue</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Silver</display>
+                        <value>silver</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>White</display>
+                        <value>white</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Black</display>
+                        <value>black</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalButtonShape">
+                <display-name xml:lang="x-default">CommerceHubPayPal Button Shape</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Rect</display>
+                        <value>rect</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Pill</display>
+                        <value>pill</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sharp</display>
+                        <value>sharp</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubPayPalButtonLabel">
+                <display-name xml:lang="x-default">CommerceHubPayPal Button Label</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>PayPal</display>
+                        <value>paypal</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Checkout</display>
+                        <value>checkout</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Buy Now</display>
+                        <value>buynow</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Pay</display>
+                        <value>pay</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubApplePayEnable">
+                <display-name xml:lang="x-default">Enable Apple Pay</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubApplePayPaymentType">
+                <display-name xml:lang="x-default">CommerceHubApplePay Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubApplePayVerification"> 
+                <display-name xml:lang="x-default">Apple Pay Verification Text</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubApplePayButtonColor">
+                <display-name xml:lang="x-default">CommerceHubApplePay Button Color</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Black</display>
+                        <value>black</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>White</display>
+                        <value>white</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>White Outline</display>
+                        <value>white-outline</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubApplePayButtonLabel">
+                <display-name xml:lang="x-default">CommerceHubApplePay Button Label</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display>Add Money</display>
+                        <value>add-money</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Book</display>
+                        <value>book</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Buy</display>
+                        <value>buy</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Checkout</display>
+                        <value>check-out</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Continue</display>
+                        <value>continue</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Contribute</display>
+                        <value>contribute</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Donate</display>
+                        <value>donate</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Order</display>
+                        <value>order</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <display>Pay</display>
+                        <value>pay</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Plain</display>
+                        <value>plain</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Reload</display>
+                        <value>reload</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Rent</display>
+                        <value>rent</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Set Up</display>
+                        <value>set-up</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Subscribe</display>
+                        <value>subscribe</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Support</display>
+                        <value>support</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Tip</display>
+                        <value>tip</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Top Up</display>
+                        <value>top-up</value>
+                    </value-definition>
+                </value-definitions>
             </attribute-definition>
 
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
@@ -1042,13 +1270,12 @@
 
                 <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
                 <attribute attribute-id="CommerceHubCreditEnable"/>
-                <attribute attribute-id="CommerceHubCreditPaymentMethodTitle"/>
                 <attribute attribute-id="CommerceHubCreditPaymentType"/>
                 <attribute attribute-id="CommerceHubTokenization"/>
                 <attribute attribute-id="CommerceHubTokenizationStrategy"/>
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
-                <attribute attribute-id="CommerceHubCreditPrivacyStatement"/>
+                <attribute attribute-id="CommerceHub3DSEnable"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
                 <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>
@@ -1125,7 +1352,6 @@
                 <attribute attribute-id="CommerceHubGiftPaymentType"/>
                 <attribute attribute-id="CommerceHubGiftSecurityEnable"/>
                 <attribute attribute-id="CommerceHubMaxGiftCards"/>
-                <attribute attribute-id="CommerceHubGiftPrivacyStatement"/>
 
                 <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
                 <attribute attribute-id="CommerceHubGiftFormCardNumberPlaceholder"/>
@@ -1147,6 +1373,48 @@
                 <attribute attribute-id="CommerceHubGiftFormFontFamily"/>
                 <attribute attribute-id="CommerceHubGiftFormFontFormat"/>
                 <attribute attribute-id="CommerceHubGiftFormFontIntegrity"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
+                <display-name xml:lang="x-default">Fiserv CommerceHub PayPal Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+
+                <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubPayPalEnable"/>
+                <attribute attribute-id="CommerceHubPayPalFastlaneEnable"/>
+                <attribute attribute-id="CommerceHubPayPalPaymentType"/>
+                <attribute attribute-id="CommerceHubPayPalVaultingEnable"/>
+                <attribute attribute-id="CommerceHubPayPalButtonColor"/>
+                <attribute attribute-id="CommerceHubPayPalButtonShape"/>
+                <attribute attribute-id="CommerceHubPayPalButtonLabel"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Apple Pay Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+
+                <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+                <attribute attribute-id="CommerceHubApplePayEnable"/>
+                <attribute attribute-id="CommerceHubApplePayPaymentType"/>
+                <attribute attribute-id="CommerceHubApplePayVerification"/>
+                <attribute attribute-id="CommerceHubApplePayButtonColor"/>
+                <attribute attribute-id="CommerceHubApplePayButtonLabel"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -1220,6 +1488,14 @@
             <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
                 <display-name xml:lang="x-default">Fiserv CommerceHub Gift</display-name>
                 <attribute attribute-id="balance"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="maskedCardNumber"/>
+                <attribute attribute-id="expireMonth"/>
+                <attribute attribute-id="expireYear"/>
+                <attribute attribute-id="commercehubCardType"/>
+                <attribute attribute-id="commercehubCardIndicator"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -1295,6 +1571,24 @@
                 <min-length>0</min-length>
                 <field-length>0</field-length>
             </attribute-definition>
+            <attribute-definition attribute-id="commercehub3DSAuthenitcationId">
+                <display-name xml:lang="x-default">3DS Transaction Id</display-name>
+                <description xml:lang="x-default">CommerceHub authentication transaction id for verifying 3DS</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubOrderId">
+                <display-name xml:lang="x-default">Commerce Hub Order ID</display-name>
+                <description xml:lang="x-default">CommerceHub Session ID used as payment source</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
             <attribute-definition attribute-id="tokenizeCard">
                 <display-name xml:lang="x-default">Tokenize Card</display-name>
                 <description xml:lang="x-default">Whether to tokenize payment card for later use</description>
@@ -1316,6 +1610,7 @@
             <attribute-group group-id="FISERV_COMMERCEHUB">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="commercehub3DSAuthenitcationId"/>
                 <attribute attribute-id="tokenizeCard"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
@@ -1323,6 +1618,35 @@
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
                 <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubOrderId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="Profile">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubCustomerId">
+                <display-name xml:lang="x-default">Commercehub Customer ID</display-name>
+                <description xml:lang="x-default">CommerceHub Customer ID used for PayPal vaulting</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubCustomerId"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

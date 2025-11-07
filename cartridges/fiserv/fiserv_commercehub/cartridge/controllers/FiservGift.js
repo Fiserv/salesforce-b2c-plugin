@@ -17,9 +17,8 @@ server.post('BalanceInquiry', function(req, res, next) {
     {
         // Need to account for currency precision and symbol
         res.json({
-            balance: Number(balanceResponse.endingBalance).toFixed(2),
+            balance: Number(balanceResponse.remainingBalance).toFixed(2),
             currencySymbol: '$',
-            currency: balanceResponse.currency
         });
     }
     return next();
@@ -53,7 +52,7 @@ server.post('ApplyGiftCard', function(req, res, next) {
     else
     {
         // Return if gift card has no balance
-        if(balanceResponse.endingBalance === 0)
+        if(balanceResponse.remainingBalance === 0)
         {
             res.setStatusCode(400);
             res.json({ error: Resource.msg('message.error.gift.noBalance', 'error', null) });
@@ -77,6 +76,16 @@ server.post('RemoveGiftCard', function(req, res, next) {
         res.setStatusCode(400);
     }
     res.json(removeResponse);
+    return next();
+});
+
+server.post('RecalculateGiftCardAmounts', function(req, res, next) {
+    let recalculateResponse = fsGift.recalculateGiftCards();
+    if(recalculateResponse.error)
+    {
+        res.setStatusCode(400);
+    }
+    res.json(recalculateResponse);
     return next();
 });
 

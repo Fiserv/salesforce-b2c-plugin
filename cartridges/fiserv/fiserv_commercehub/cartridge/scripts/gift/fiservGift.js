@@ -12,16 +12,33 @@ function executeBalanceInquiry(sessionId)
 {
     try
     {
-        let balanceInquiryRequest = requestBuilder.buildBalanceInquiryRequest(sessionId);
+        let basket = BasketMgr.getCurrentBasket();
+        if(!basket)
+        {
+            return { error: Resource.msg('message.error.gift.genericBalance', 'error', null) };
+        }
+
+        let currencyCode = basket.getCurrencyCode();
+        let balanceInquiryRequest = requestBuilder.buildBalanceInquiryRequest(sessionId, currencyCode);
 
         let balanceInquiryService = FiservServices.getService('CommercehubBalanceInquiry');
         let parsedResponse = FiservServices.callService(balanceInquiryService, balanceInquiryRequest);
 
         if(FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE) === 'CHECKED')
         {
-            let balanceList = FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.GIFT_BALANCES);
+            var balanceList = FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.GIFT_BALANCES);
             FiservLogs.logInfo(1, 'Balance Inquiry Success');
-            return balanceList[0];
+            for(let i = 0; i < balanceList.length; i++)
+            {
+                if(balanceList[i].currency == currencyCode)
+                {
+                    var balanceObject = balanceList[i];
+                    // Need to account for currency precision
+                    balanceObject['remainingBalance'] = Number((balanceObject.beginningBalance - balanceObject.lockAmount).toFixed(2));
+                    return balanceObject;
+                }
+            }
+            return { error: Resource.msg('message.error.gift.currencyError', 'error', null) };
         }
         else
         {
@@ -47,7 +64,7 @@ function applyGiftCard(balanceObject, sessionId)
 
     let UUID;
     let paymentAmount;
-    let balance = balanceObject.endingBalance;
+    let balance = balanceObject.remainingBalance;
     let amountRemaining;
     let paymentCovered = false;
     try {
@@ -123,9 +140,25 @@ function removeGiftCard(uuid)
     return { error: Resource.msg('message.error.gift.notFound', 'error', null) };
 }
 
+function recalculateGiftCards()
+{
+    let basket = BasketMgr.getCurrentBasket();
+    if(!basket)
+    {
+        return { error: Resource.msg('message.error.gift.genericUpdate', 'error', null) };
+    }
+
+    let updatedGiftCards;
+    Transaction.wrap(function () {
+        updatedGiftCards = FiservHelper.recalculateGiftCardAmounts(basket);
+    });
+    return updatedGiftCards;
+}
+
 module.exports = 
 {
     executeBalanceInquiry: executeBalanceInquiry,
     applyGiftCard: applyGiftCard,
-    removeGiftCard: removeGiftCard
+    removeGiftCard: removeGiftCard,
+    recalculateGiftCards: recalculateGiftCards
 };

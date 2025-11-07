@@ -1,0 +1,59 @@
+<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_applepay/commercehub-applepay-button.js');
+    assets.addJs('/js/fiserv_applepay/applepay.js');
+    assets.addJs(pdict.chSdkUrl);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+<div class="tab-pane applepay-content" id="applepay-content" role="tabpanel">
+
+    <fieldset class="payment-form-fields">
+        
+        <!--- payment method is Apple Pay --->
+        <input type="hidden" class="form-control"
+               name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+               value="APPLEPAY"
+        >
+
+        <div id="fiserv-commercehub-applepay-form-init-container" 
+            data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('ApplePay'))}"
+            data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+            data-initial-checkout-stage="${pdict.currentStage}"
+            data-locale="${pdict.locale}"></div>
+    
+        <div id="fiserv-commercehub-applepay-form-container">
+            <div id="fiserv_commercehub-applepay-button" class="sdc-button"></div>
+
+            <div class="privacyPolicy">
+                <span></span>
+                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+            </div>
+            <div id="fiserv-applepay-fatal-notice" class="alert alert-danger">
+                <p>${Resource.msg('message.error.applepay.fatal','error',null)}</p>            
+            </div>
+        </div>
+
+        <!--- Hidden input for session ID --->
+        <input id="commercehubSessionIdInputApplePay" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+
+        <!-- These fields are required for the Payment method to function without Debit Cards enabled -->
+        <isif condition="${!pdict.commercehubConfig.getCommerceHubCreditEnabled()}">
+            <input type="hidden" class="form-control" id="cardType" name="${pdict.forms.billingForm.creditCardFields.cardType.htmlName}" value="" />
+            <input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
+            <select style="display:none;" id="expirationMonth" name="${pdict.forms.billingForm.creditCardFields.expirationMonth.htmlName}">
+                <option id="expirationMonthValue" value=""></option>
+            </select>
+            <select style="display:none;" id="expirationYear" name="${pdict.forms.billingForm.creditCardFields.expirationYear.htmlName}">
+                <option id="expirationYearValue" value=""></option>
+            </select>
+        </isif>
+        
+    </fieldset>
+</div>

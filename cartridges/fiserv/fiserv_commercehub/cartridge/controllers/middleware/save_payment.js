@@ -38,13 +38,15 @@ function sendTokenizationRequest(tokenizationRequest)
     }
 }
 
+// Because the early tokenization call gets ran before form submission occurs, we pass the card type and session ID through as body parameters...
 function savePaymentEarly(req, res, next)
 {
     let sessionId = req.form.sessionId;
+    let cardType = req.form.cardType;
     if(sessionId !== null && commercehubConfig.getEarlyTokenization())
     {
         FiservLogs.logInfo(1, 'Initiating Early Tokenization call');
-        return executeSavePaymentTransaction.call(this, req, res, next, sessionId);
+        return executeSavePaymentTransaction.call(this, req, res, next, sessionId, cardType);
     }
     return next();
 }
@@ -58,9 +60,9 @@ function savePayment(req, res, next) {
     return next();
 }
 
-function executeSavePaymentTransaction(req, res, next, sessionId)
+function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
 {
-    if(!fiservHelper.isFiserv() || !commercehubConfig.getCommerceHubTokenization())
+    if(!fiservHelper.isCreditCardFiserv() || !commercehubConfig.getCommerceHubTokenization())
     {
         return next();
     }
@@ -77,17 +79,21 @@ function executeSavePaymentTransaction(req, res, next, sessionId)
                 throw new Error(Resource.msg('message.error.tokenization.invalidForm', 'error', null));
             }
             sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
+            cardType = paymentForm.cardType.value;
         }
 
         // Get the actual sessionId here
 
         let tokenRequest = requestBuilder.buildTokenRequest(sessionId);
         tokenResponse = sendTokenizationRequest(tokenRequest);
-        let cardType = fiservHelper.secureTraversal(tokenResponse, constants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
-        if(cardType === 'PIN_ONLY')
+        let cardProduct = fiservHelper.secureTraversal(tokenResponse, constants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
+        if(cardProduct === 'PIN_ONLY')
         {
             throw new Error(Resource.msg('message.error.payment.pinonly', 'error', null));
         }
+
+        // We are retrieving the card type either from the form or the request body in the case of early tokens, but we still prefer the value from CH if possible
+        cardType = cardProduct ? cardProduct : cardType;
 
         let savedCard = savePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiservHelper.getB2cCardType({ value : cardType }), tokenResponse);
 

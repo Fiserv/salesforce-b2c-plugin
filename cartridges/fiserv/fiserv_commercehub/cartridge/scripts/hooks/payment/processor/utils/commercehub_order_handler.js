@@ -15,7 +15,7 @@ function removeNonGiftPaymentInstruments(currentBasket) {
     });
 }
 
-function convertToB2cCardType(paymentInformation, paymentInstrument) {
+function convertToB2cCardTypeCredit(paymentInformation, paymentInstrument) {
     let b2cCardType = fiservHelper.getB2cCardType(paymentInformation.cardType);
     paymentInstrument.setCreditCardNumber(paymentInformation.cardNumber.value);
     paymentInstrument.setCreditCardType(b2cCardType);
@@ -28,6 +28,10 @@ function convertToB2cCardType(paymentInformation, paymentInstrument) {
     if (FiservConfig.getCommerceHubTokenization())
     {
         paymentInstrument.paymentTransaction.custom.tokenizeCard = paymentInformation.tokenizeCard ? paymentInformation.tokenizeCard : false;
+    }
+    if(FiservConfig.get3DSEnabled())
+    {
+        paymentInstrument.paymentTransaction.custom.commercehub3DSAuthenitcationId = paymentInformation.authenitcationId3DS;
     }
 
     if (paymentInformation.creditCardToken)
@@ -43,26 +47,41 @@ function convertToB2cCardType(paymentInformation, paymentInstrument) {
     }
 }
 
-function handleOrder(basket, paymentInformation) {
+function convertToB2cCardTypePayPal(paymentInformation, paymentInstrument) {
+    paymentInstrument.paymentTransaction.custom.paymentAction = FiservConfig.getCommerceHubPayPalPaymentType();
+    paymentInstrument.paymentTransaction.custom.commercehubOrderId = paymentInformation.orderId;
+}
+
+function convertToB2cCardTypeApplePay(paymentInformation, paymentInstrument) {
+    paymentInstrument.paymentTransaction.custom.paymentAction = FiservConfig.getCommerceHubApplePayPaymentType();
+    paymentInstrument.paymentTransaction.custom.commercehubSessionId = paymentInformation.sessionId;
+}
+
+function handleOrder(basket, paymentInformation, methodID) {
     let currentBasket = basket;
     let cardErrors = {};
     let serverErrors = [];
     Transaction.wrap(function () {
         removeNonGiftPaymentInstruments(currentBasket);
 
-        let paymentAmount = currentBasket.totalGrossPrice.value;
-        if(FiservConfig.getCommerceHubGiftEnabled())
-        {
-            currentBasket.paymentInstruments.toArray().forEach((pi) => {
-                if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
-                {
-                    paymentAmount -= pi.paymentTransaction.amount.value;
-                }
-            });
-        }
+        let paymentAmount = fiservHelper.retreiveNonGiftChargeAmount(currentBasket);
 
-        let paymentInstrument = currentBasket.createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD, new dw.value.Money(paymentAmount, 'USD'));
-        convertToB2cCardType(paymentInformation, paymentInstrument);
+        let paymentInstrument = currentBasket.createPaymentInstrument(methodID, new dw.value.Money(paymentAmount, 'USD'));
+
+        switch(methodID)
+        {
+            case PaymentInstrument.METHOD_CREDIT_CARD:
+                convertToB2cCardTypeCredit(paymentInformation, paymentInstrument);
+                break;
+            case constants.COMMERCEHUB_PAYPAL_PAYMENT_METHOD:
+                convertToB2cCardTypePayPal(paymentInformation, paymentInstrument);
+                break;
+            case constants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD:
+                convertToB2cCardTypeApplePay(paymentInformation, paymentInstrument);
+                break;
+            default:
+                break;
+        }
     });
     return {
         fieldErrors: cardErrors,

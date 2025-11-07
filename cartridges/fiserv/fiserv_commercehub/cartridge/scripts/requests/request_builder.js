@@ -3,9 +3,13 @@
 const FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 let constants = require('*/cartridge/fiservConstants/constants');
 const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+let FiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
 let uuidUtils = require("dw/util/UUIDUtils");
 let OrderMgr = require('dw/order/OrderMgr');
+let BasketMgr = require('dw/order/BasketMgr');
+let Resource = require('dw/web/Resource');
 let orderNo = null;
+let showBuilders = true;
 
 function buildMerchantDetailsObject()
 {
@@ -14,7 +18,8 @@ function buildMerchantDetailsObject()
     merchantDetails["terminalId"] = FiservConfig.getCommerceHubTerminalId();
     merchantDetails["merchantPartner"] = buildMerchantPartnerField();
 
-    FiservLogs.logDebug(3, "Merchant Details Data Builder:\n" + JSON.stringify(merchantDetails,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Merchant Details Data Builder:\n" + JSON.stringify(merchantDetails,null,2), orderNo);
     return merchantDetails;
 }
 
@@ -39,11 +44,12 @@ function buildTransactionInteractionObject()
     txnInteraction["eciIndicator"] = constants.ECI_INDICATOR;
     txnInteraction["posConditionCode"] = constants.POS_CONDITION_CODE;
 
-    FiservLogs.logDebug(3, "Transaction Interaction Data Builder:\n" + JSON.stringify(txnInteraction,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Transaction Interaction Data Builder:\n" + JSON.stringify(txnInteraction,null,2), orderNo);
     return txnInteraction;
 }
 
-function buildTransactionDetailsObject(capture, tokenize)
+function buildChargesTransactionDetailsObject(capture, tokenize)
 {
     let txnDetails = {};
     txnDetails["captureFlag"] = capture;
@@ -55,8 +61,9 @@ function buildTransactionDetailsObject(capture, tokenize)
     txnDetails["accountVerification"] = false;
     txnDetails["merchantOrderId"] = orderNo;
     txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
-    
-    FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
+
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
     return txnDetails;
 }
 
@@ -75,11 +82,12 @@ function buildTokenSourceObject(paymentInstrument)
 
     source["card"] = {
         // month must be two digits
-        "expirationMonth" : paymentInstrument.custom.expireMonth.padStart(2, '0'),
-        "expirationYear" : paymentInstrument.custom.expireYear
+        "expirationMonth": paymentInstrument.creditCardExpirationMonth.toString().padStart(2, '0'),
+        "expirationYear": paymentInstrument.creditCardExpirationYear.toString()
     }
 
-    FiservLogs.logDebug(3, "Token Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Token Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
     return source;
 }
 
@@ -88,8 +96,9 @@ function buildSessionSourceObject(sessionId)
     let source = {};
     source["sourceType"] = constants.SESSION_SOURCE_TYPE;
     source["sessionId"] = sessionId;
-    
-    FiservLogs.logDebug(3, "Session Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
+
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Session Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
     return source;
 }
 
@@ -99,13 +108,23 @@ function buildAmountObject(paymentInstrument)
     amount["total"] = paymentInstrument.paymentTransaction.amount.getValue();
     amount["currency"] = paymentInstrument.paymentTransaction.amount.getCurrencyCode();
 
-    FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
     return amount;
 }
 
-function buildBillingAddressObject()
+function buildAmountObjectFromBasket(basketObject) {
+    let amount = {}
+    amount['total'] = FiservHelper.retreiveNonGiftChargeAmount(basketObject);
+    amount['currency'] = basketObject.getCurrencyCode();
+
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
+    return amount;
+}
+
+function buildBillingAddressObject(billingAddressObject)
 {
-    let billingAddressObject = OrderMgr.getOrder(orderNo).getBillingAddress();
     if(!billingAddressObject)
         return;
 
@@ -125,17 +144,17 @@ function buildBillingAddressObject()
         "phoneNumber": billingAddressObject.phone
     };
 
-    FiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
     return billingAddress;
 }
 
-function buildCustomerObject()
+function buildCustomerObject(cartInfoContainer)
 {
     let customer = {};
-    let order = OrderMgr.getOrder(orderNo);
-    customer["email"] = order.customerEmail;
+    customer["email"] = cartInfoContainer.customerEmail;
 
-    let customerObject = order.getCustomer();
+    let customerObject = cartInfoContainer.getCustomer();
     let profileObject;
     if(customerObject && (profileObject = customerObject.getProfile()))
     {
@@ -153,11 +172,23 @@ function buildCustomerObject()
         customer["phone"] = phone;
     }
 
-    FiservLogs.logDebug(3, "Customer Data Builder:\n" + JSON.stringify(customer,null,2), orderNo);
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Customer Data Builder:\n" + JSON.stringify(customer,null,2), orderNo);
     return customer;
 }
 
-function buildCardRequest(paymentInstrument, paymentAction)
+function build3DSObject(paymentInstrument)
+{
+    let additionalData3DS = {};
+
+    additionalData3DS['authenticationTransactionId'] = paymentInstrument.paymentTransaction.custom.commercehub3DSAuthenitcationId;
+
+    if(showBuilders)
+        FiservLogs.logDebug(3, "3DS Data Builder:\n" + JSON.stringify(additionalData3DS,null,2), orderNo);
+    return additionalData3DS;
+}
+
+function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
 {
     if(paymentInstrument.creditCardToken)
     {
@@ -170,7 +201,7 @@ function buildCardRequest(paymentInstrument, paymentAction)
 
     let req = {};
     let tokenize = false;
-    if (FiservConfig.getCommerceHubTokenization() && !paymentInstrument.creditCardToken)
+    if(FiservConfig.getCommerceHubTokenization() && !paymentInstrument.creditCardToken)
     {
         if(FiservConfig.getCommerceHubTokenizationStrategy())
         {
@@ -184,16 +215,22 @@ function buildCardRequest(paymentInstrument, paymentAction)
 
     req["amount"] = buildAmountObject(paymentInstrument);
     req["source"] = buildSourceObject(paymentInstrument);
-    req["transactionDetails"] = buildTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, tokenize);
+    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, tokenize);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
-    req["billingAddress"] = buildBillingAddressObject();
-    req["customer"] = buildCustomerObject();
+    let order = OrderMgr.getOrder(orderNo)
+    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["customer"] = buildCustomerObject(order);
+
+    if(FiservConfig.get3DSEnabled())
+    {
+        req['additionalData3DS'] = build3DSObject(paymentInstrument);
+    }
 
     return req;
 }
 
-function buildGiftRequest(paymentInstrument, paymentAction)
+function buildGiftChargesRequest(paymentInstrument, paymentAction)
 {
     FiservLogs.logInfo(1, 'Initiating Gift Card ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
 
@@ -201,25 +238,26 @@ function buildGiftRequest(paymentInstrument, paymentAction)
 
     req["amount"] = buildAmountObject(paymentInstrument);
     req["source"] = buildSourceObject(paymentInstrument);
-    req["transactionDetails"] = buildTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, null);
+    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, null);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
-    req["billingAddress"] = buildBillingAddressObject();
-    req["customer"] = buildCustomerObject();
+    let order = OrderMgr.getOrder(orderNo)
+    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["customer"] = buildCustomerObject(order);
 
     return req;
 }
 
-function buildPrimaryRequest(orderNumber, paymentInstrument)
+function buildChargesRequest(orderNumber, paymentInstrument)
 {
     orderNo = orderNumber;
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
     if(paymentAction === constants.COMMERCEHUB_AUTH_ACTION || paymentAction === constants.COMMERCEHUB_SALE_ACTION)
     {
-        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD)
-            return buildCardRequest(paymentInstrument, paymentAction);
+        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === constants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
+            return buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction);
         else if(paymentInstrument.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
-            return buildGiftRequest(paymentInstrument, paymentAction);
+            return buildGiftChargesRequest(paymentInstrument, paymentAction);
         else
             return {};
     }
@@ -239,10 +277,14 @@ function buildTokenRequest(sessionId)
     return req;
 }
 
-function buildBalanceInquiryRequest(sessionId)
+function buildBalanceInquiryRequest(sessionId, currencyCode)
 {
     FiservLogs.logInfo(1, 'Initiating Balance Inquiry');
     let req = {};
+    req['balance'] = {
+        'currency': currencyCode
+    };
+    FiservLogs.logDebug(3, "Balance Data Builder:\n" + JSON.stringify(req["balance"],null,2), orderNo);
     req['source'] = buildSessionSourceObject(sessionId);
     req['merchantDetails'] = buildMerchantDetailsObject();
     if(FiservConfig.getCommerceHubGiftSecurityEnabled())
@@ -279,7 +321,7 @@ function buildCancelPayload(orderNumber, transactionId)
 function buildRecoveryPayload(orderNumber, merchantTransactionId)
 {
     orderNo = orderNumber;
-    
+
     let req = {};
     req["referenceTransactionDetails"] = {
         "referenceMerchantTransactionId": merchantTransactionId
@@ -290,11 +332,189 @@ function buildRecoveryPayload(orderNumber, merchantTransactionId)
     return req;
 }
 
-module.exports = 
+function buildOrdersTransactionDetailsObject(paymentAction)
 {
-    buildPrimaryRequest : buildPrimaryRequest,
+    let txnDetails = {};
+    txnDetails["operationType"] = paymentAction === constants.COMMERCEHUB_AUTH_ACTION ? "AUTHORIZE" : "CAPTURE";
+    txnDetails["accountVerification"] = false;
+    txnDetails["merchantOrderId"] = orderNo;
+    txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
+
+    if(showBuilders)
+        FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
+    return txnDetails;
+}
+
+function buildOrderRequest(orderNumber, paymentInstrument)
+{
+    orderNo = orderNumber;
+    let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
+    if(paymentAction === constants.COMMERCEHUB_AUTH_ACTION || paymentAction === constants.COMMERCEHUB_SALE_ACTION)
+    {
+        FiservLogs.logInfo(1, 'Initiating Order ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
+        let req = {};
+
+        req["transactionDetails"] = buildOrdersTransactionDetailsObject(paymentAction);
+        req["referenceTransactionDetails"] = {
+            "referenceOrderId": paymentInstrument.paymentTransaction.custom.commercehubOrderId
+        };
+        req["merchantDetails"] = buildMerchantDetailsObject();
+
+        return req;
+    }
+    else
+    {
+        return {};
+    }
+}
+
+function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
+{
+    showBuilders = false;
+
+    let payload = {
+        'domains' : [
+            { 'url': baseUrl }
+        ],
+        'merchantDetails' : {
+            'merchantId' : FiservConfig.getCommerceHubMerchantId(),
+            'terminalId' : FiservConfig.getCommerceHubTerminalId()
+        }
+    };
+
+    let requestPurpose;
+    if(credentialsForm)
+        requestPurpose = credentialsForm.requestPurpose;
+    if(requestPurpose !== "STANDALONE")
+    {
+        var basket = BasketMgr.getCurrentBasket();
+        if(!basket)
+        {
+            throw new Error(Resource.msg('message.error.generic.credentialsFailure', 'error', null));
+        }
+        payload['amount'] = buildAmountObjectFromBasket(basket);
+        payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
+        payload['customer'] = buildCustomerObject(basket);
+        if(FiservConfig.get3DSEnabled() && credentialsForm.threeDSToken)
+        {
+            let profile = basket.getCustomer().getProfile();
+            if(!profile)
+            {
+                throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
+            }
+            let paymentInstruments = profile.getWallet().getPaymentInstruments();
+            let pi;
+            for(let i in paymentInstruments)
+            {
+                if(paymentInstruments[i].UUID === credentialsForm.threeDSToken)
+                {
+                    pi = paymentInstruments[i];
+                    break;
+                }
+            }
+            if(!pi)
+            {
+                throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
+            }
+            payload['source'] = buildTokenSourceObject(pi);
+        }
+        if(FiservConfig.getCommerceHubPayPalEnabled() && FiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)
+        {
+            payload['providerCredentials'] = [
+                {
+                    "credentialType": "PAYPAL",
+                    "attributes": [
+                        {
+                            "key": "customerId",
+                            "value": basket.customer.profile.custom.commercehubCustomerId
+                        }
+                    ]
+                }
+            ]
+        }
+        if(FiservConfig.getCommerceHubApplePayEnabled())
+        {
+            let orderData = {};
+            let basket = BasketMgr.getCurrentBasket();
+            var site = require('dw/system/Site').getCurrent();
+            if(basket)
+            {
+                let itemDetails = [];
+                let itemCount = 0;
+                basket.getAllProductLineItems().toArray().forEach((item) => {
+                    itemCount += item.quantityValue;
+
+                    let itemData = {
+                        itemNumber: item.position,
+                        itemType: "PRODUCT",
+                        itemName: item.productName,
+                        itemDescription: item.lineItemText,
+                        quantity: item.quantityValue,
+                        amountComponents: {
+                            unitPrice: item.basePrice.value,
+                            shippingAmount: 0,
+                            taxAmounts: [
+                                {
+                                    taxType: item.taxClassID,
+                                    taxAmount: item.tax.value
+                                }
+                            ],
+                        }
+                    }
+                    itemDetails.push(itemData)
+                });
+
+                let Resource = require('dw/web/Resource');
+                let shippingData = {
+                    itemNumber: basket.getAllProductLineItems().toArray().length + 1,
+                    itemType: "SHIPPING",
+                    itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                    itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                    quantity: 1,
+                    amountComponents: {
+                        unitPrice: basket.shippingTotalPrice.value,
+                        shippingAmount: 0,
+                        taxAmounts: [
+                            {
+                                taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
+                                taxAmount: basket.shippingTotalTax.value
+                            }
+                        ],
+                    }
+                };
+                itemDetails.push(shippingData);
+
+                orderData['itemCount'] = itemCount;
+                orderData['itemDetails'] = itemDetails;
+                orderData['orderDate'] = basket.getCreationDate().toISOString().substring(0,10);
+            }
+            payload['orderData'] = orderData;
+
+            payload["dynamicDescriptors"] = {
+                "merchantName": site.name,
+                "address": {
+                    "country": site.preferences.custom.countryCode.value
+                }
+            }
+
+            payload["additionalDataCommon"] = {
+                "additionalData": {
+                    "ecomURL": hostURL
+                }
+            }
+        }
+    }
+
+    return payload;
+}
+
+module.exports =
+{
+    buildCredentialsRequest : buildCredentialsRequest,
+    buildChargesRequest : buildChargesRequest,
     buildTokenRequest : buildTokenRequest,
     buildBalanceInquiryRequest : buildBalanceInquiryRequest,
     buildCancelPayload : buildCancelPayload,
-    buildRecoveryPayload : buildRecoveryPayload
+    buildRecoveryPayload : buildRecoveryPayload,
+    buildOrderRequest : buildOrderRequest
 }

@@ -1,19 +1,19 @@
-/* eslint-disable prefer-regex-literals */
-document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
+document.addEventListener("DOMContentLoaded", () => {
     let initialized = false;
-    let getFormConfigUrl = function () 
-    {
-        return $('#fiserv-commercehub-card-form-container').attr('data-commercehub-form-config');
-    }
 
-    let getCredentialsUrl = function () 
-    {
-        return $('#fiserv-commercehub-card-form-container').attr('data-commercehub-credentials');
-    }
+    // detect current stage
+    const checkoutStage = $('#fiserv-commercehub-card-form-init-container').attr('data-initial-checkout-stage');
 
-    let getTokenizationUrl = function () 
+    let extractInitializationData = function()
     {
-        return $('#fiserv-commercehub-card-form-container').attr('data-commercehub-tokenization');
+        let data = {
+            config: $('#fiserv-commercehub-card-form-init-container').data('commercehub-initialization-data'),
+            userLoggedIn: $('#fiserv-commercehub-card-form-init-container').data('user-logged-in'),
+            credentialsUrl: $('#fiserv-commercehub-card-form-init-container').attr('data-commercehub-credentials'),
+            tokenizationUrl: $('#fiserv-commercehub-card-form-init-container').attr('data-commercehub-tokenization')
+        }
+        $('#fiserv-commercehub-card-form-init-container').remove();
+        return data;
     }
 
     let savedPaymentsPresent = function()
@@ -26,10 +26,11 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
         return $('.credit-card-form.checkout-hidden').length
     }
 
-    let form = new CommercehubCheckoutForm(getFormConfigUrl(), getCredentialsUrl(), getTokenizationUrl());
+    let form = new CommercehubCheckoutForm(extractInitializationData());
 
     let clearPaymentForm = function()
     {
+        form.unwatchSubmitButton();
         if (initialized)
         {
             $('input#commercehubSessionIdInput').val('');
@@ -37,7 +38,20 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
             form.resetForm();
             initialized = false;
         }
-    };  
+    };
+
+    let initCreditCardSection = function()
+    {
+        if(!savedPaymentsPresent() || !creditCardFormHidden())
+        {
+            initPaymentForm();
+        }
+        else
+        {
+            form.unwatchSubmitButtonToken();
+            form.watchSubmitButtonToken();
+        }
+    }
 
     let initPaymentForm = function() 
     {
@@ -59,6 +73,9 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
 
     // clear and reinit payment form on payment edit button
     $('.payment-summary .edit-button').on('click', () => {
+        if($(".payment-information").data("payment-method-id") !== "CREDIT_CARD")
+            return;
+
         if (!creditCardFormHidden())
         {
             if(savedPaymentsPresent() && $('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked)
@@ -71,6 +88,10 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
                 initPaymentForm();
             }
         }
+        else
+        {
+            form.watchSubmitButtonToken();
+        }
     });
 
     // set listener for ajax success of shipping submit action
@@ -82,14 +103,18 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
             typeof(xhr.responseJSON.order) !== 'undefined' &&
             typeof(xhr.responseJSON.order.shipping) !== 'undefined' &&
-            !savedPaymentsPresent() && !creditCardFormHidden())
+            $(".payment-information").data("payment-method-id") === "CREDIT_CARD")
         {
-            initPaymentForm();
+            initCreditCardSection();
         }
     });
 
     $('.btn.cancel-new-payment').click(()=> {
-        clearPaymentForm();
+        if($(".payment-information").data("payment-method-id") === "CREDIT_CARD" && $('.credit-card-form.checkout-hidden').length)
+        {
+            form.watchSubmitButtonToken();
+            form.enableSubmitButton();
+        }
     });
 
     $('.btn.add-payment').click(()=> {
@@ -97,19 +122,14 @@ document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
         initPaymentForm();
     });
 
-    // detect current stage
-    const checkoutStage = new RegExp('[?&]stage=([a-zA-Z0-9]+)([^&]*)').exec(
-        window.location.search,
-    );
-
     // if payment stage: instantiate payment form
     // if beyond payment stage: return to payment stage
-    switch (checkoutStage[1]) {
-        case 'payment':
-            if (!savedPaymentsPresent() && !creditCardFormHidden())
-            {
-                initPaymentForm();
-            }
-            break;
+    if($(".payment-information").data("payment-method-id") === "CREDIT_CARD")
+    {
+        switch (checkoutStage) {
+            case 'payment':
+                initCreditCardSection();
+                break;
+        }
     }
 });

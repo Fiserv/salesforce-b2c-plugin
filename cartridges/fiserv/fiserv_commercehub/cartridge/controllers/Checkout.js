@@ -4,14 +4,28 @@ var server = require('server');
 var CustomerMgr = require('dw/customer/CustomerMgr');
 var fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
 let commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+let BasketMgr = require('dw/order/BasketMgr');
+let Transaction = require('dw/system/Transaction');
 
 server.extend(module.superModule);
 
 server.append('Begin', function (req, res, next) {
-    if(!fiservHelper.isFiserv())
+    if(!fiservHelper.isCreditCardFiserv())
     {
         return next();
     }
+
+    if(!commercehubConfig.getCommerceHubGiftEnabled())
+    {
+        let basket = BasketMgr.getCurrentBasket()
+        if(basket && basket.paymentInstruments.length)
+        {
+            Transaction.begin();
+            fiservHelper.removeGiftCardsFromCart(basket);
+            Transaction.commit();
+        }
+    }
+
     if(req.currentCustomer.profile !== undefined)
     {
         let profile = CustomerMgr.getCustomerByCustomerNumber(req.currentCustomer.profile.customerNo).getProfile();

@@ -17,5 +17,13 @@
         <div class="gift-card-item">
             <span>${Resource.msg('display.html.gift.giftListItem', 'display', null)} - ${payment.currencySymbol}${payment.amount}</span>
         </div>
+    <iselseif condition="${payment.paymentMethod === 'PAYPAL'}" />
+        <div class="paypal-item">
+            <span>PayPal</span>
+        </div>
+    <iselseif condition="${payment.paymentMethod === 'APPLEPAY'}" />
+        <div class="applepay-item">
+            <span>Apple Pay</span>
+        </div>
     </isif>
 </isloop>

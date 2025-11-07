@@ -13,7 +13,7 @@ function instantiate()
     instantiationDomElement.remove();
 
     // Basic input tracking
-    jQuery('input.configField, select.configField, textarea.configField').on("input", function() {
+    jQuery('input.configField, select.configField, textarea.textBoxConfigField').on("input", function() {
         let newValue = jQuery(this).val();
         if(jQuery(this).attr('type') === 'checkbox') {
             newValue = jQuery(this).is(':checked');
@@ -35,40 +35,15 @@ function instantiate()
             let dependencies = preferenceValues[key].dependencies;
             for(let i = 0 ; i < dependencies.length; i++)
             {
-                if(dependencyList[dependencies[i].id] === undefined)
-                {
-                    dependencyList[dependencies[i].id] = []
-                }
-                if(dependencyCounter[key] === undefined)
-                {
-                    dependencyCounter[key] = 0;
-                }
-                jQuery('#' + dependencies[i].id).on('input', function() {
-                    if(jQuery(this).is(':checked'))
-                    {
-                        jQuery('#' + key).prop('disabled', false);
-                        dependencyCounter[key]--;
-                        if(dependencyCounter[key] === 0)
-                        {
-                            jQuery('#' + key + 'Item').show();
-                        }
-                    }
-                    else
-                    {
-                        jQuery('#' + key).prop('disabled', true);
-                        if(dependencyCounter[key] === 0)
-                        {
-                            jQuery('#' + key + 'Item').hide();
-                        }
-                        dependencyCounter[key]++;
-                    }
-                });
-                if(!jQuery('#' + dependencies[i].id).is(':checked'))
-                {
-                    jQuery('#' + key).prop('disabled', true);
-                    dependencyCounter[key]++;
-                    jQuery('#' + key + 'Item').hide();
-                }
+                addDependencyEvents(dependencies[i], key);
+            }
+        }
+        if(preferenceValues[key].nonInputDependencies != null)
+        {
+            let nonInputDependencies = preferenceValues[key].nonInputDependencies;
+            for(let i = 0 ; i < nonInputDependencies.length; i++)
+            {
+                addDependencyEvents(key, nonInputDependencies[i]);
             }
         }
     }
@@ -159,6 +134,44 @@ function instantiate()
             }
         });
     });
+}
+
+function addDependencyEvents(dependency, key)
+{
+    if(dependencyList[dependency] === undefined)
+    {
+        dependencyList[dependency] = [];
+    }
+    if(dependencyCounter[key] === undefined)
+    {
+        dependencyCounter[key] = 0;
+    }
+    jQuery('#' + dependency).on('input', function() {
+        if(jQuery(this).is(':checked'))
+        {
+            jQuery('#' + key).prop('disabled', false);
+            dependencyCounter[key]--;
+            if(dependencyCounter[key] === 0)
+            {
+                jQuery('#' + key + 'Item, #' + key).show();
+            }
+        }
+        else
+        {
+            jQuery('#' + key).prop('disabled', true);
+            if(dependencyCounter[key] === 0)
+            {
+                jQuery('#' + key + 'Item, #' + key).hide();
+            }
+            dependencyCounter[key]++;
+        }
+    });
+    if(!jQuery('#' + dependency).is(':checked'))
+    {
+        jQuery('#' + key).prop('disabled', true);
+        dependencyCounter[key]++;
+        jQuery('#' + key + 'Item').hide();
+    }
 }
 
 // Error message function
@@ -279,15 +292,24 @@ function clearChanges()
 {
     Object.keys(configChanges).forEach(key => {
         let queryObject = jQuery('#' + key);
+        let valueChanged = false;
         if(queryObject.attr('type') !== 'checkbox')
         {
-            queryObject.val(preferenceValues[key].currentValue);
+            if(queryObject.val() !== preferenceValues[key].currentValue)
+            {
+                queryObject.val(preferenceValues[key].currentValue);
+                valueChanged = true;
+            }
         }
         else
         {
-            queryObject.prop('checked', preferenceValues[key].currentValue);
+            if(queryObject.prop('checked') !== preferenceValues[key].currentValue)
+            {
+                queryObject.prop('checked', preferenceValues[key].currentValue);
+                valueChanged = true;
+            }
         }
-        if(dependencyList[key])
+        if(valueChanged && dependencyList[key])
         {
             queryObject.trigger('input');
         }

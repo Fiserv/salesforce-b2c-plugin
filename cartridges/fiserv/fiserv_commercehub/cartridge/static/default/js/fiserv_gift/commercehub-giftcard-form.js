@@ -2,25 +2,35 @@
 
 class CommercehubGiftForm
 {
-    constructor(formConfigUrl, credentialsUrl, balanceUrl, applyUrl, giftRemoveUrl, giftLineItemText)
+    constructor(initializationData)
     {
-        if (typeof(formConfigUrl) === "undefined" || typeof(credentialsUrl) === "undefined")
+        if (typeof(initializationData) === "undefined")
         {
-            throw new Error("Credentials endpoint not found. Unable to create CommerceHub Hosted Payment Page.");
+            throw new Error("Initialization Data not found. Unable to initialize gift card form.");
         }
-        this.formConfigUrl = formConfigUrl;
-        this.credsUrl = credentialsUrl;
-        this.balanceUrl = balanceUrl;
-        this.applyUrl = applyUrl;
-        this.giftRemoveUrl = giftRemoveUrl;
-        this.giftLineItemText = giftLineItemText;
+        this.formConfig = initializationData.config;
+        this.configDataGift = initializationData.config.configData;
+        this.credentialsUrl = initializationData.credentialsUrl;
+        this.balanceUrl = initializationData.balanceUrl;
+        this.applyUrl = initializationData.applyUrl;
+        this.giftRemoveUrl = initializationData.giftRemoveUrl;
+        this.recalculateGiftUrl = initializationData.recalculateGiftUrl;
+        $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').on('click', (element) => {this.mask(element);});
 
         this.createAdapter();
         
         // Only run this if loaded in checkout page...
-        if(applyUrl !== null)
+        if(initializationData.applyUrl !== undefined)
         {
             this.showGiftCards();
+            $(document).on("ajaxSuccess", (ev, xhr) => {
+                if (typeof(xhr.responseJSON) !== 'undefined' &&
+                    typeof(xhr.responseJSON.action) !== 'undefined' &&
+                    xhr.responseJSON.action === "CheckoutShippingServices-SelectShippingMethod")
+                {
+                    this.recalculateGiftCards();
+                }
+            });
         }
     }
     
@@ -48,7 +58,7 @@ class CommercehubGiftForm
         let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
         let runFailureCallback = (error) => { this.cardCaptureFailure(error); };
 
-        this.formAdapter = new FiservIframe(
+        this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
             loadFailCallback,
             formReadyCallback,
@@ -64,20 +74,15 @@ class CommercehubGiftForm
     initializeAdapter = function()
     {
         this.clearValidation();
-
-        new Promise((resolve, reject) => {
-            this.formAdapter.backendCall(this.formConfigUrl, resolve, reject);	
-        }).then((formConfig) => 
+        try
         {
-            this.formConfig = formConfig;
-            this.configDataGift = formConfig.configData;
-            this.formAdapter.initSdk(formConfig, 'GIFT');
-            $('#sdc-mask-gift-cardNumber, #sdc-mask-gift-securityCode').on('click', (element) => {this.mask(element);});
-        }).catch((err) => 
+            this.formAdapter.initSdk(this.formConfig, 'GIFT');
+        } 
+        catch(err)
         {
             console.log(err);
             throw new Error(err);
-        });
+        };
     }
 
     clearValidation = function()
@@ -153,7 +158,7 @@ class CommercehubGiftForm
         if(this.getSubmitButton().length && this.buttonClicked === 'applyPrimary')
         {
             this.buttonClicked = 'applySecondary';
-            this.formAdapter.submitForm(this.credsUrl, this.setSecondarySessionIdInput);
+            this.formAdapter.submitForm(this.credentialsUrl, this.setSecondarySessionIdInput);
             return;
         }
 
@@ -161,13 +166,13 @@ class CommercehubGiftForm
             await new Promise((resolve, reject) => {
                 if(this.buttonClicked === 'balance')
                 {
-                    this.formAdapter.backendCall(this.balanceUrl, resolve, reject, { sessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value });
+                    FiservSDKHelper.backendCall(this.balanceUrl, resolve, reject, { sessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value });
                 }
                 else if(this.getSubmitButton().length && this.buttonClicked === 'applySecondary')
                 {
                     // Run in a timeout to avoid velocity
                     setTimeout(() => {
-                        this.formAdapter.backendCall(this.applyUrl, resolve, reject, {
+                        FiservSDKHelper.backendCall(this.applyUrl, resolve, reject, {
                             primarySessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value,
                             secondarySessionId : $('input#commercehubGiftSecondarySessionIdInput')[0].value,
                         })
@@ -177,7 +182,7 @@ class CommercehubGiftForm
             {
                 if(this.buttonClicked === 'balance')
                 {
-                    $('#fiserv-scc-gift-balance-amount').text(response.currencySymbol + response.balance + ' (' + response.currency + ')');
+                    $('#fiserv-scc-gift-balance-amount').text(response.currencySymbol + response.balance);
                     this.getBalanceBlock().removeClass('sdc-hidden');
                 }
                 else if(this.buttonClicked === 'applySecondary')
@@ -260,7 +265,7 @@ class CommercehubGiftForm
     {
         $('<div id="' + giftCardInfo.uuid + '"class="row gift-total leading-lines gift-payment-summary">'
             + '<div class="col-6 start-lines">'
-                + '<p class="order-receipt-label"><span>' + this.giftLineItemText.title + '&nbsp;<button class="btn btn-outline-primary rmv-btn">' + this.giftLineItemText.remove + '</button></span></p>'
+                + '<p class="order-receipt-label"><span>' + this.configDataGift.giftCardLineItemTitle + '&nbsp;<button class="btn btn-outline-primary rmv-btn">' + this.configDataGift.giftCardRemoveText + '</button></span></p>'
             + '</div>'
             + '<div class="col-6 end-lines">'
                 + '<p class="text-right"><span class="gift-total-sum">-' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount + '</span></p>'
@@ -284,7 +289,7 @@ class CommercehubGiftForm
         {
             $('<div class="gift-details"></div>').insertBefore('.payment-details');
         }
-        $('.gift-details').append('<div class="giftDetail' + giftCardInfo.uuid + '">' + this.giftLineItemText.title + '&nbsp;-&nbsp;<span>' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount + '</span></div><br class="giftDetail' + giftCardInfo.uuid + '">');
+        $('.gift-details').append('<div class="giftDetail' + giftCardInfo.uuid + '">' + this.configDataGift.giftCardLineItemTitle + '&nbsp;-&nbsp;<span>' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount + '</span></div><br class="giftDetail' + giftCardInfo.uuid + '">');
     }
 
     removeGiftCard = function(uuid)
@@ -294,7 +299,7 @@ class CommercehubGiftForm
         this.unwatchFormButtons();
         
         let promise = new Promise((resolve, reject) => {
-            this.formAdapter.backendCall(this.giftRemoveUrl, resolve, reject, { uuid: uuid });
+            FiservSDKHelper.backendCall(this.giftRemoveUrl, resolve, reject, { uuid: uuid });
         });
 
         promise.then((response) => 
@@ -333,21 +338,50 @@ class CommercehubGiftForm
     {
         giftCards.forEach((giftCardInfo) => {
             let cardBlockQuery = $('#' + giftCardInfo.oldUuid);
+            let oldClass = 'giftDetail' + giftCardInfo.oldUuid;
+            let cardSummaryQuery = $('.' + oldClass);
+            if(!giftCardInfo.uuid)
+            {
+                cardBlockQuery.remove();
+                cardSummaryQuery.remove();
+                return;
+            }
+
             cardBlockQuery.attr('id', giftCardInfo.uuid);
             cardBlockQuery.find('.gift-total-sum').text('-' + giftCardInfo.currencySymbol + giftCardInfo.paymentAmount);
             cardBlockQuery.find('button').off('click');
             cardBlockQuery.find('button').on('click', () => {this.removeGiftCard(giftCardInfo.uuid);})
 
-            let oldClass = 'giftDetail' + giftCardInfo.oldUuid;
-            let cardSummaryQuery = $('.' + oldClass);
             cardSummaryQuery.removeClass(oldClass).addClass('giftDetail' + giftCardInfo.uuid);
             cardSummaryQuery.children('span').text(giftCardInfo.currencySymbol + giftCardInfo.paymentAmount);
         });
     }
 
+    recalculateGiftCards = function()
+    {
+        new Promise((resolve, reject) => {
+            FiservSDKHelper.backendCall(this.recalculateGiftUrl, resolve, reject);
+        }).then((response) => {
+            this.updateGiftCards(response.updatedGiftCards);
+            $('.grand-total-sum').text(response.currencySymbol + response.amountRemaining);
+
+            if(!response.paymentCovered && $('.payment-information').parent().hasClass('checkout-hidden'))
+            {
+                this.showPaymentBlock();
+            }
+            else if(response.paymentCovered && !$('.payment-information').parent().hasClass('checkout-hidden'))
+            {
+                this.hidePaymentBlock();
+            }
+
+        }).catch((error) => {
+            console.log("An error occured while trying to recalculate gift card amounts")
+        });
+    }
+
     hidePaymentBlock = function()
     {
-        $('input[name=dwfrm_billing_paymentMethod]').val('GIFT_CARD');
+        $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val('GIFT_CARD');
         $('.payment-information').parent().addClass('checkout-hidden');
         $('.payment-details').addClass('checkout-hidden');
         $('.gift-details').children().last().addClass('checkout-hidden');
@@ -361,7 +395,7 @@ class CommercehubGiftForm
 
     showPaymentBlock = function()
     {
-        $('input[name=dwfrm_billing_paymentMethod]').val($(".payment-information").attr("data-payment-method-id"));
+        $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val($(".payment-information").data("payment-method-id"));
         $('.payment-information').parent().removeClass('checkout-hidden');
         $('.payment-details').removeClass('checkout-hidden');
         $('.gift-details').children().last().removeClass('checkout-hidden');
@@ -388,7 +422,7 @@ class CommercehubGiftForm
         this.getBalanceBlock().addClass('sdc-hidden');
         this.unwatchFormButtons();
         this.buttonClicked = "applyPrimary";
-        this.formAdapter.submitForm(this.credsUrl, this.setPrimarySessionIdInput);
+        this.formAdapter.submitForm(this.credentialsUrl, this.setPrimarySessionIdInput);
         return false;
     }
 
@@ -399,7 +433,7 @@ class CommercehubGiftForm
         this.clearAlerts();
         this.unwatchFormButtons();
         this.buttonClicked = "balance";
-        this.formAdapter.submitForm(this.credsUrl, this.setPrimarySessionIdInput);
+        this.formAdapter.submitForm(this.credentialsUrl, this.setPrimarySessionIdInput);
         return false;
     }
 
@@ -429,7 +463,6 @@ class CommercehubGiftForm
     {
         this.formAdapter.destroyIframe('gift');
         this.getFatalNotice().hide();
-        this.getSccContainer().removeClass('initialized-scc-container');
         this.unwatchFormButtons();
     }
 

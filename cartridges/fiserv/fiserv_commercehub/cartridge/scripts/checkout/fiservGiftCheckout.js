@@ -12,7 +12,7 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
     try 
     {
         // build request obj    
-        let transactionPayload = requestBuilder.buildPrimaryRequest(orderNo, paymentInstrument);
+        let transactionPayload = requestBuilder.buildChargesRequest(orderNo, paymentInstrument);
 
         var order = OrderMgr.getOrder(orderNo);
         if (order === null)
