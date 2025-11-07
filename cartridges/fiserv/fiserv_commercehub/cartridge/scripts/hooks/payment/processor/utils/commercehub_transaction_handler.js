@@ -38,14 +38,29 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     Transaction.wrap(function () {
         paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
         let _type = null;
-        if(paymentProcessor.ID === constants.COMMERCEHUB_PROCESSOR)
+        switch(paymentProcessor.ID)
         {
-            _type = FiservConfig.getCommerceHubCreditPaymentType();
-        }
-        else if(paymentProcessor.ID === constants.COMMERCEHUB_GIFT_PROCESSOR)
-        {
-            _type = FiservConfig.getCommerceHubGiftPaymentType();
-            paymentInstrument.paymentTransaction.custom.paymentAction = _type;
+            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
+                _type = FiservConfig.getCommerceHubCreditPaymentType();
+                break;
+            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
+                _type = FiservConfig.getCommerceHubGiftPaymentType();
+                paymentInstrument.paymentTransaction.custom.paymentAction = _type;
+                break;
+            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
+                _type = FiservConfig.getCommerceHubPayPalPaymentType();
+                break;
+            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
+                _type = FiservConfig.getCommerceHubApplePayPaymentType();
+                break;
+            default:
+                FiservLogs.logError(2, 'Invalid Payment Processor somehow made it this far ¯\\_(ツ)_/¯', orderNo);
+                return {
+                    authorized: false,
+                    fieldErrors: [],
+                    serverErrors: ["Invalid Payment Processor"],
+                    error: true
+                };
         }
 
         if (_type !== null)
@@ -57,10 +72,27 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     Transaction.begin();
 
     let res;
-    if(paymentProcessor.ID === constants.COMMERCEHUB_PROCESSOR)
-        res = fiservCheckout.executeCommercehubTransaction(orderNo, paymentInstrument);
-    else
-        res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
+    switch(paymentProcessor.ID)
+    {
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
+            res = fiservCheckout.executeCommercehubChargesTransaction(orderNo, paymentInstrument);
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
+            res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
+            res = fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
+            break;
+        default:
+            FiservLogs.logError(2, 'Invalid Payment Processor somehow made it this far ¯\\_(ツ)_/¯', orderNo);
+            return {
+                authorized: false,
+                fieldErrors: [],
+                serverErrors: ["Invalid Payment Processor"],
+                error: true
+            };
+    }
 
     if (res.error)
     {
@@ -83,14 +115,22 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
         paymentInstrument.paymentTransaction.transactionID = transactionId;
     }
 
-    if(paymentProcessor.ID !== constants.COMMERCEHUB_GIFT_PROCESSOR && !paymentInstrument.creditCardToken)
-    {
+    if((paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR
+        && !paymentInstrument.creditCardToken)
+        || paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR
+    ) {
         paymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_TYPE);
         paymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_INDICATOR);
     }
-    else if(paymentProcessor.ID === constants.COMMERCEHUB_GIFT_PROCESSOR)
+    else if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR)
     {
         paymentInstrument.custom.balance = null;
+    }
+    if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
+    {
+        paymentInstrument.custom.maskedCardNumber = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.LAST_FOUR).padStart(16, '*');
+        paymentInstrument.custom.expireMonth = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.EXP_MONTH);
+        paymentInstrument.custom.expireYear = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.EXP_YEAR);
     }
     
 
@@ -98,11 +138,17 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     let transactionState = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.TRANSACTION_STATE)
     let processorString;
     switch(paymentProcessor.ID) {
-        case constants.COMMERCEHUB_PROCESSOR:
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
             processorString = 'Payment ' + (paymentInstrument.creditCardToken ? 'Token' : 'Card');
             break;
-        case constants.COMMERCEHUB_GIFT_PROCESSOR:
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
             processorString = 'Gift Card';
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
+            processorString = 'PayPal';
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
+            processorString = 'Apple Pay';
             break;
     }
     if(transactionState === constants.TXN_STATES.AUTHORIZED)
@@ -113,7 +159,7 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     {
         FiservLogs.logInfo(1, processorString + ' Sale Transaction Successful', orderNo);
     }
-    FiservLogs.logInfo(1, 'Transaction ID: ' + paymentInstrument.paymentTransaction.transactionID, orderNo);
+    FiservLogs.logInfo(1, 'Transaction ID: ' + transactionId, orderNo);
     return { authorized: true, error: false };
 }
 

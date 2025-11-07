@@ -1,4 +1,5 @@
 let CustomerMgr = require('dw/customer/CustomerMgr');
+let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 
 function getCustomer(customerNo)
 {
@@ -68,6 +69,12 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
     viewData.paymentInformation.commercehubCardType = { value : paymentInstrument.custom.commercehubCardType };
     viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
 
+    let authenticationId3DS = paymentForm.fiservCommercehubPaymentFields.authenticationId3DS
+    if(authenticationId3DS && FiservConfig.get3DSEnabled())
+    {
+        viewData.paymentInformation.authenitcationId3DS = authenticationId3DS.value;
+    }
+
     return viewData;
 }
 
@@ -80,6 +87,7 @@ function getNewCardViewData(viewFormData, paymentForm)
     viewData.paymentInformation.cardType = paymentForm.creditCardFields.cardType;
     viewData.paymentInformation.cardNumber = paymentForm.creditCardFields.cardNumber;
     viewData.paymentInformation.sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
+    viewData.paymentInformation.authenitcationId3DS = paymentForm.fiservCommercehubPaymentFields.authenticationId3DS.value;
     viewData.paymentInformation.maskedCardNumber = paymentForm.creditCardFields.cardNumber.value;
     viewData.paymentInformation.tokenizeCard = paymentForm.creditCardFields.saveCard.selected
     viewData.saveCard = paymentForm.creditCardFields.saveCard.selected;

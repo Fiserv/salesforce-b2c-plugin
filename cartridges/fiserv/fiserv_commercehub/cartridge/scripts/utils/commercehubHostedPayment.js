@@ -1,8 +1,9 @@
 "use strict"
 
-let Resource = require('dw/web/Resource');
 let creds = require("*/cartridge/scripts/credentials/commercehubCredentials");
 let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+let secureRandom = new dw.crypto.SecureRandom;
+let encoder = dw.crypto.Encoding;
 
 function collectSubmitData(credentials)
 {
@@ -16,61 +17,20 @@ function collectSubmitData(credentials)
             'merchantId': FiservConfig.getCommerceHubMerchantId(),
             'terminalId': FiservConfig.getCommerceHubTerminalId()
         },
+        'initConfig' : {
+            'cspNonce': encoder.toBase64(secureRandom.nextBytes(32)),
+            'environment': FiservConfig.getCommerceHubApiEnvironment()
+        },
         'sessionId' : credentials['sessionId']
     }
 }
 
-function prepareFormSubmission()
+function prepareFormSubmission(hostURL, credentialsForm)
 {
-    return collectSubmitData(creds.getCommercehubCredentials());
-}
-
-// Provides the frontend files with config settings needed by the frontend
-function getFrontendConfigData(formId)
-{
-    let configData;
-    switch(formId)
-    {
-        case 'Payment':
-            configData = {
-                'tokenizeEarly': FiservConfig.getEarlyTokenization(),
-                'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null)
-            };
-            break;
-        case 'Tokenization':
-            configData = {
-                'captureFailureMessage': Resource.msg('message.error.scc.captureFailTokenization', 'error', null)
-            }
-            break;
-        case 'Gift':
-            configData = {
-                'captureFailureMessage': Resource.msg('message.error.scc.captureFailGift', 'error', null),
-            }
-            break;
-        default:
-            configData = {};
-            break;
-    }
-    return configData;
-}
-
-function collectInitializationData(formId)
-{
-    return {
-        'environment': FiservConfig.getCommerceHubApiEnvironment(),
-        'formCustomization': FiservConfig.getFormConfig(formId),
-        'invalidFields': FiservConfig.getInvalidFields(formId),
-        'configData': getFrontendConfigData(formId)
-    }
-}
-
-function retrieveFormInitializationData(formId)
-{
-    return collectInitializationData(formId);
+    return collectSubmitData(creds.getCommercehubCredentials(hostURL, credentialsForm));
 }
 
 module.exports = 
 { 
-    prepareFormSubmission : prepareFormSubmission,
-    retrieveFormInitializationData : retrieveFormInitializationData
+    prepareFormSubmission : prepareFormSubmission
 }

@@ -1,13 +1,13 @@
 "use strict"
 
 module.exports = {
-    VERSION : '1.0.0',
+    VERSION : '1.1.0',
     COMMERCEHUB_CERT_ENV : 'CERT',
     COMMERCEHUB_LIVE_ENV : 'PROD',
     ENVIRONMENT_URL_PLACEHOLDER : '[CH_ENVIRONMENT_BASE]',
     COMMERCEHUB_LIVE_BASE : "connect.fiservapis.com",
     COMMERCEHUB_CERT_BASE : "connect-cert.fiservapis.com",
-    COMMERCEHUB_SDK_URL : "https://commercehub-secure-data-capture.fiservapps.com/3.1.21/checkout.js",
+    COMMERCEHUB_SDK_URL : "https://commercehub-secure-data-capture.fiservapps.com/3.6.13/checkout.js",
     COMMERCEHUB_SALE_ACTION : "SALE",
     COMMERCEHUB_AUTH_ACTION : "AUTH",
     ECOM_ORIGIN : "ECOM",
@@ -15,9 +15,16 @@ module.exports = {
     POS_CONDITION_CODE : "CARD_NOT_PRESENT_ECOM",
     SESSION_SOURCE_TYPE : "PaymentSession",
     TOKEN_SOURCE_TYPE : "PaymentToken",
-    COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
-    COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
+    APPLE_VERIFICATION_URL: '/.well-known/apple-developer-merchantid-domain-association',
+    PROCESSOR_ID_LIST : {
+        COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
+        COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
+        COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
+        COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
+    },
     COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
+    COMMERCEHUB_PAYPAL_PAYMENT_METHOD : "PAYPAL",
+    COMMERCEHUB_APPLEPAY_PAYMENT_METHOD : "APPLEPAY",
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",
@@ -31,9 +38,13 @@ module.exports = {
         CARD_INDICATOR: ['cardDetails', 'detailedCardIndicator'],
         CARD_INDICATOR_TOKEN: ['cardDetails', 0, 'detailedCardIndicator'],
         CARD_SOURCE: ['source', 'card'],
+        LAST_FOUR: ['source', 'card', 'last4'],
+        EXP_MONTH: ['source', 'card', 'expirationMonth'],
+        EXP_YEAR: ['source', 'card', 'expirationYear'],
         PAYMENT_TOKEN: ['paymentTokens', 0],
         RESPONSE_MESSAGE: ['paymentReceipt', 'processorResponseDetails', 'responseMessage'],
         SOURCE_TYPE: ['source', 'sourceType'],
+        PAYPAL_CUSTOMER_ID: ['customer', 'providerCustomerId'],
         GIFT_BALANCES: ['paymentReceipt', 'balances'],
         ERROR_MESSAGE: ['error', [0], 'message']
     },
@@ -41,13 +52,13 @@ module.exports = {
     FORM_ID_LIST : [ 'Payment', 'Tokenization', 'Gift' ],
     DEPENDENCY_LIST : { 
         'CommerceHubCreditEnable': [
-            'CommerceHubCreditPaymentMethodTitle',
             'CommerceHubCreditPaymentType',
             'CommerceHubTokenization',
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization',
-            'CommerceHubCreditPrivacyStatement',
+            'CommerceHub3DSEnable',
+            'CommerceHubPayPalFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
         ],
         'CommerceHubTokenization': [
             'CommerceHubTokenizationStrategy',
@@ -58,8 +69,17 @@ module.exports = {
             'CommerceHubGiftPaymentMethodTitle',
             'CommerceHubGiftPaymentType',
             'CommerceHubGiftSecurityEnable',
-            'CommerceHubMaxGiftCards',
-            'CommerceHubGiftPrivacyStatement'
+            'CommerceHubMaxGiftCards'
+        ],
+        'CommerceHubPayPalEnable': [
+            'CommerceHubPayPalPaymentType',
+            'CommerceHubPayPalVaultingEnable',
+            'PayPalButton'
+        ],
+        'CommerceHubApplePayEnable': [
+            'CommerceHubApplePayPaymentType',
+            'CommerceHubApplePayVerification',
+            'ApplePayButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {

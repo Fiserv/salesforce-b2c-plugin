@@ -1,5 +1,6 @@
 const dwSystem = require('dw/system');
 const currentSite = dwSystem.Site.getCurrent();
+let constants = require('*/cartridge/fiservConstants/constants');
 const NO_MASKING = 'NO_MASKING';
 
 function getSitePreference(field)
@@ -88,9 +89,9 @@ const commerceHubExport =
         return getSitePreference('CommerceHubEarlyTokenization');
     },
 
-    getCreditPrivacyStatementEnabled()
+    get3DSEnabled()
     {
-        return getSitePreference('CommerceHubCreditPrivacyStatement');
+        return getSitePreference('CommerceHub3DSEnable');
     },
 
     // This is where the Gift Card settings start
@@ -120,13 +121,50 @@ const commerceHubExport =
         return getSitePreference('CommerceHubMaxGiftCards').value;
     },
 
-    getGiftPrivacyStatementEnabled()
+    // This is where the PayPal settings start
+
+    getCommerceHubPayPalEnabled()
     {
-        return getSitePreference('CommerceHubGiftPrivacyStatement');
+        return getSitePreference('CommerceHubPayPalEnable');
+    },
+
+    getCommerceHubPayPalFastlaneEnabled()
+    {
+        return getSitePreference('CommerceHubPayPalFastlaneEnable');
+    },
+
+    getCommerceHubPayPalPaymentType()
+    {
+        return getSitePreference('CommerceHubPayPalPaymentType').value;
+    },
+
+    getCommerceHubPayPalVaultingEnabled()
+    {
+        return getSitePreference('CommerceHubPayPalVaultingEnable');
+    },
+
+    // This is where the Apple Pay settings start
+
+    getCommerceHubApplePayEnabled()
+    {
+        return getSitePreference('CommerceHubApplePayEnable');
+    },
+
+    getCommerceHubApplePayPaymentType()
+    {
+        return getSitePreference('CommerceHubApplePayPaymentType').value;
+    },
+
+    getCommerceHubApplePayVerification()
+    {
+        return getSitePreference('CommerceHubApplePayVerification');
     },
 
     getFormConfig(formId)
     {
+        if(!constants.FORM_ID_LIST.includes(formId))
+            return;
+
         let config = {};
         config['fields'] = this.buildFormFieldsConfig(formId);
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
@@ -206,6 +244,10 @@ const commerceHubExport =
 
     getInvalidFields(formId)
     {
+        if(!constants.FORM_ID_LIST.includes(formId))
+            return;
+
+
         let invalidFields = {
             'cardNumber': getSitePreference('CommerceHub' + formId + 'FormCardNumberInvalidFieldMessage'),
             'nameOnCard': getSitePreference('CommerceHub' + formId + 'FormNameOnCardInvalidFieldMessage'),
@@ -215,6 +257,56 @@ const commerceHubExport =
         };
 
         return invalidFields;
+    },
+
+    buildPayPalButtonsConfig()
+    {
+        let buttonsConfig = {};
+        if(this.getCommerceHubPayPalEnabled())
+        {
+            buttonsConfig['paypal'] = {
+                'parentElementId': 'fiserv_commercehub-paypal-button',
+                'color': getSitePreference('CommerceHubPayPalButtonColor').value,
+                'shape': getSitePreference('CommerceHubPayPalButtonShape').value,
+                'label': getSitePreference('CommerceHubPayPalButtonLabel').value
+            }
+        }
+
+        let dataConfig = {
+            'enableVaulting': this.getCommerceHubPayPalVaultingEnabled(),
+            'customerConfirmation': 'REVIEW_AND_PAY',
+            'buttons': buttonsConfig
+        };
+
+        return dataConfig;
+    },
+
+    buildAddressFormNamesObject()
+    {
+        return {
+            firstName: "_addressFields_firstName",
+            lastName: "_addressFields_lastName",
+            street: "_addressFields_address1",
+            houseNumberOrName: "_addressFields_address2",
+            city: "_addressFields_city",
+            stateOrProvince: "_addressFields_states_stateCode",
+            postalCode: "_addressFields_postalCode",
+            country: "_addressFields_country"
+        };
+    },
+
+    buildApplePayButtonConfig()
+    {
+        if(!this.getCommerceHubApplePayEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-applepay-button',
+            'color': getSitePreference('CommerceHubApplePayButtonColor').value,
+            'type': getSitePreference('CommerceHubApplePayButtonLabel').value
+        }
+
+        return { 'button': buttonConfig };
     }
 };
 

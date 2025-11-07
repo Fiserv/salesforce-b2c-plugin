@@ -15,6 +15,11 @@
         <user-id></user-id>
         <password/>
     </service-credential>
+    <service-credential service-credential-id="CommercehubOrders">
+        <url>https://[CH_ENVIRONMENT_BASE]/ch/checkouts/v1/orders</url>
+        <user-id></user-id>
+        <password/>
+    </service-credential>
     <service-credential service-credential-id="CommercehubCancel">
         <url>https://[CH_ENVIRONMENT_BASE]/ch/payments/v1/cancels</url>
         <user-id></user-id>
@@ -58,6 +63,15 @@
         <mock-mode-enabled>false</mock-mode-enabled>
         <profile-id>Fiserv</profile-id>
         <credential-id>CommercehubTokenization</credential-id>
+    </service>
+    <service service-id="CommercehubOrders">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>fiserv</log-prefix>
+        <comm-log-enabled>true</comm-log-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Fiserv</profile-id>
+        <credential-id>CommercehubOrders</credential-id>
     </service>
     <service service-id="CommercehubCharges">
         <service-type>HTTP</service-type>

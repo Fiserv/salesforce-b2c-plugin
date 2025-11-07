@@ -1,0 +1,11 @@
+<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+
+<isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
+    <isif condition="${paymentOption.ID === 'CREDIT_CARD' && pdict.commercehubConfig.getCommerceHubCreditEnabled()}">
+        <isinclude template="checkout/billing/paymentOptions/creditCardTab" />
+    <iselseif condition="${paymentOption.ID === 'PAYPAL'&& pdict.commercehubConfig.getCommerceHubPayPalEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/paypalTab" />
+    <iselseif condition="${paymentOption.ID === 'APPLEPAY'&& pdict.commercehubConfig.getCommerceHubApplePayEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/applepayTab" />
+    </isif>
+</isloop>

@@ -1,9 +1,8 @@
 <isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
+<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 <isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
-<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 <isset name="CHGiftEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
 <isset name="CHGiftSecurityEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftSecurityEnabled()}" scope="pdict" />
-<isset name="showPrivacyStatement" value="${pdict.commercehubConfig.getGiftPrivacyStatementEnabled()}" scope="pdict" />
 <isif condition="${pdict.currentStage}">
     <isset name="giftCardInfo" value="${pdict.FiservHelper.retrieveAppliedGiftCards()}" scope="pdict" />
 </isif>
@@ -11,7 +10,8 @@
 <isif condition="${pdict.CHGiftEnabled}">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
-        assets.addJs('/js/fiserv_base/commercehub-hpp-adapter.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+        assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
         assets.addJs('/js/fiserv_gift/commercehub-giftcard-form.js');
         assets.addJs('/js/fiserv_gift/giftcard.js');
         assets.addJs(pdict.chSdkUrl);
@@ -23,18 +23,19 @@
             <isprint value="${pdict.commercehubConfig.getCommerceHubGiftTitle()}" />
         </label>
     </isif>
-    <div id="fiserv-commercehub-gift-form-container"
-        data-commercehub-form-config="${URLUtils.https('Fiserv-InitializationData', 'formId', 'Gift')}"
+
+    <div id="fiserv-commercehub-gift-form-init-container" 
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Gift'))}"
         data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
         data-commercehub-balance-inquiry="${URLUtils.https('FiservGift-BalanceInquiry')}"
+        data-commercehub-recalculate="${URLUtils.https('FiservGift-RecalculateGiftCardAmounts')}"
         <isif condition="${pdict.currentStage}">
             data-commercehub-gift-apply="${URLUtils.https('FiservGift-ApplyGiftCard')}"
             data-commercehub-gift-remove="${URLUtils.https('FiservGift-RemoveGiftCard')}"
             data-initial-checkout-stage="${pdict.currentStage}"
-            data-gift-card-line-item-text="${Resource.msg('display.html.gift.giftListItem', 'display', null)}"
-            data-gift-card-remove-text="${Resource.msg('display.html.gift.removeGiftListItem', 'display', null)}"
-        </isif>>
+        </isif>></div>
 
+    <div id="fiserv-commercehub-gift-form-container">
         <div class="sdc-row">
             <div id="sdc-gift-card-number-frame" class="sdc-field-frame sdc-text">
                 <div id="fiserv_commercehub-gift-card-number" class="sdc-field"></div>
@@ -70,12 +71,10 @@
                 </div>
         </div>
 
-        <isif condition="${pdict.showPrivacyStatement}">
-            <div class="privacyPolicy">
-                <span></span>
-                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
-            </div>
-        </isif>
+        <div class="privacyPolicy">
+            <span></span>
+            Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+        </div>
 
         <isif condition="${pdict.currentStage}">
             <div id="fiserv-scc-gift-card-info-container" data-gift-card-list-json="${JSON.stringify(pdict.giftCardInfo)}"></div>

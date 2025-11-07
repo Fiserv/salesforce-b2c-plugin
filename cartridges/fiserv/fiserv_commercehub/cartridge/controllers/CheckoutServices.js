@@ -5,6 +5,7 @@ var CustomerMgr = require('dw/customer/CustomerMgr');
 var AccountModel = require('*/cartridge/models/account');
 var fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
 var commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+let constants = require('*/cartridge/fiservConstants/constants');
 
 var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 
@@ -12,11 +13,13 @@ server.extend(module.superModule);
 
 server.append('SubmitPayment', function (req, res, next) {
     this.on('route:BeforeComplete', function (req, res) {
+        if(res.viewData.error)
+            return;
 
         // This is here to make sure that the listed payments being sent back to the frontend don't list the gift cards first
         // It is intended to be temporary code that is replaced with a better UI visualization for gift cards being applied to an order
         // If this is here a few months/years down the line from (Thursday, May 13th, 2025), then congratulations on graduating to legacy code
-        if(commercehubConfig.getCommerceHubGiftEnabled() && !res.viewData.error)
+        if(commercehubConfig.getCommerceHubGiftEnabled())
         {
             let selectedPaymentInstruments = res.viewData.order.billing.payment.selectedPaymentInstruments;
             if(selectedPaymentInstruments.length > 1)
@@ -26,19 +29,28 @@ server.append('SubmitPayment', function (req, res, next) {
                 res.viewData.order.billing.payment.selectedPaymentInstruments = selectedPaymentInstruments;
             }
 
-            // Overwrite the grand total value returned to the frontend
-            let appliedGiftCards = fiservHelper.retrieveAppliedGiftCards();
-            if(appliedGiftCards.giftCardList.length)
-            {
-                res.viewData.order.totals.grandTotal = appliedGiftCards.giftCardList[0].currencySymbol + appliedGiftCards.amountRemaining;
-            }
+            fiservHelper.correctGrandTotalResponseIncludingGiftCards(res);
         }
 
-        if(!fiservHelper.isFiserv())
+        let paymentMethod = res.viewData.paymentMethod.value;
+        if(paymentMethod === constants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD && fiservHelper.isApplePayFiserv())
         {
-            return next();
+            // Fake an error to prevent a page load...
+            res.viewData.error = true;
+            res.viewData.fieldErrors = [];
+            res.viewData.serverErrors = [];
+
+            let URLUtils = require('dw/web/URLUtils');
+            res.viewData['placeOrderURL'] = URLUtils.url('CheckoutServices-PlaceOrder').toString();
+            res.viewData['isApplePaySuccess'] = true;
+            return;
         }
-        if(req.currentCustomer.profile !== undefined && !res.viewData.error)
+
+        if(paymentMethod !== "CREDIT_CARD" || !fiservHelper.isCreditCardFiserv())
+        {
+            return;
+        }
+        if(req.currentCustomer.profile !== undefined)
         {
             let profile = CustomerMgr.getCustomerByCustomerNumber(req.currentCustomer.profile.customerNo).getProfile();
             let paymentInstruments = null;

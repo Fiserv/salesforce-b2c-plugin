@@ -1,8 +1,9 @@
 <isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
-<isset name="isFiserv" value="${pdict.FiservHelper.isFiserv()}" scope="pdict" />
+<isset name="isCreditCardFiserv" value="${pdict.FiservHelper.isCreditCardFiserv()}" scope="pdict" />
 <isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 <isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="canTokenizeSpa" value="${pdict.commercehubConfig.getCommerceHubStandaloneSpa()}" scope="pdict" />
+<isset name="creditEnabled" value="${pdict.commercehubConfig.getCommerceHubCreditEnabled()}" scope="pdict" />
 
 <isdecorate template="common/layout/page">
     <isscript>
@@ -31,7 +32,7 @@
                           ${Resource.msg('link.profile.backtomyaccount','account',null)}
                         </a>
                     </div>
-                    <isif condition="${!pdict.isFiserv || (pdict.addPaymentUrl && pdict.canTokenize && pdict.canTokenizeSpa)}">
+                    <isif condition="${!pdict.isCreditCardFiserv || (pdict.addPaymentUrl && pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeSpa)}">
                         <div class="col">
                             <a href="${pdict.addPaymentUrl}" class="btn btn-save btn-block btn-primary" aria-label="${Resource.msg('label.payment.addnewpayment','payment',null)}">${Resource.msg('button.addnew','payment',null)}</a>
                         </div>

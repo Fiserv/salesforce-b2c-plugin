@@ -26,28 +26,30 @@ if(chPreferenceDescriptions != null)
 
 function retrieveCommerceHubPreferences()
 {
-    let chAttributeGroupCH = currentSite.getPreferences().describe().getAttributeGroup(constants.COMMERCEHUB_PROCESSOR);
-    let configListCH = [];
-    if(chAttributeGroupCH)
-    {
-        configListCH = chAttributeGroupCH.getAttributeDefinitions().toArray();
-    }
+    var configList = null;
+    Object.values(constants.PROCESSOR_ID_LIST).forEach((processorID) => {
+        let chAttributeGroup = currentSite.getPreferences().describe().getAttributeGroup(processorID);
+        if(!chAttributeGroup)
+            return;
+    
+        let partialConfigList = chAttributeGroup.getAttributeDefinitions().toArray();
+        if(!partialConfigList)
+            return;
 
-    let chAttributeGroupCHGift = currentSite.getPreferences().describe().getAttributeGroup(constants.COMMERCEHUB_GIFT_PROCESSOR);
-    let configListCHGift = [];
-    if(chAttributeGroupCHGift)
-    {
-        configListCHGift = chAttributeGroupCHGift.getAttributeDefinitions().toArray();
-    }
+        if(!configList)
+        {
+            configList = partialConfigList;
+        }
+        else
+        {
+            configList = configList.concat(partialConfigList);
+        }
+    });
 
-    // Return null if neither groups present...
-    if(!chAttributeGroupCH && !chAttributeGroupCHGift)
-    {
+    if(!configList)
         return null;
-    }
 
-    let configList = configListCH.concat(configListCHGift);
-    let idConfigList = {};
+    var idConfigList = {};
     
     configList.forEach(configDefinition => {
         let id = configDefinition.ID;
@@ -63,7 +65,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = constants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub(Gift)?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(ApplePay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(constants.CONFIG_DESCRIPTIONS[id])
         {
@@ -102,12 +104,17 @@ function retrieveCommerceHubPreferences()
     for(let dependency in dependencyList)
     {
         dependencyList[dependency].forEach((key) => {
+            if(!idConfigList[key])
+            {
+                if(idConfigList[dependency]['nonInputDependencies'] === undefined)
+                    idConfigList[dependency]['nonInputDependencies'] = [];
+                idConfigList[dependency]['nonInputDependencies'].push(key);
+                return;
+            }
+
             if(idConfigList[key]['dependencies'] === undefined)
                 idConfigList[key]['dependencies'] = [];
-            idConfigList[key]['dependencies'].push({
-                'id': dependency,
-                'displayName': idConfigList[dependency].displayName
-            });
+            idConfigList[key]['dependencies'].push(dependency);
         });
     }
 
@@ -119,10 +126,7 @@ function retrieveCommerceHubPreferences()
                 let dependencyId = 'CommerceHub' + formId + 'Form' + dependency;
                 if(idConfigList[keyId]['dependencies'] === undefined)
                     idConfigList[keyId]['dependencies'] = [];
-                idConfigList[keyId]['dependencies'].push({
-                    'id': dependencyId,
-                    'displayName': idConfigList[dependencyId].displayName
-                });
+                idConfigList[keyId]['dependencies'].push(dependencyId);
             });
         });
     }
@@ -269,13 +273,12 @@ function buildConfigList(chPreferenceDescriptions)
         'id': 'CreditDebitCards',
         'items': [
             getPreferenceDescription('CommerceHubCreditEnable'),
-            getPreferenceDescription('CommerceHubCreditPaymentMethodTitle'),
             getPreferenceDescription('CommerceHubCreditPaymentType'),
             getPreferenceDescription('CommerceHubTokenization'),
             getPreferenceDescription('CommerceHubTokenizationStrategy'),
             getPreferenceDescription('CommerceHubStandaloneSPA'),
             getPreferenceDescription('CommerceHubEarlyTokenization'),
-            getPreferenceDescription('CommerceHubCreditPrivacyStatement')
+            getPreferenceDescription('CommerceHub3DSEnable')
         ]
     });
 
@@ -287,9 +290,46 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubGiftPaymentMethodTitle'),
             getPreferenceDescription('CommerceHubGiftPaymentType'),
             getPreferenceDescription('CommerceHubGiftSecurityEnable'),
-            getPreferenceDescription('CommerceHubMaxGiftCards'),
-            getPreferenceDescription('CommerceHubGiftPrivacyStatement')
+            getPreferenceDescription('CommerceHubMaxGiftCards')
         ]
+    });
+
+    configList.push({
+        'label': 'PayPal',
+        'id': 'PayPal',
+        'items': [
+            getPreferenceDescription('CommerceHubPayPalEnable'),
+            getPreferenceDescription('CommerceHubPayPalFastlaneEnable'),
+            getPreferenceDescription('CommerceHubPayPalPaymentType'),
+            getPreferenceDescription('CommerceHubPayPalVaultingEnable')
+        ],
+        'subform': {
+            'label': 'PayPal Button Customization',
+            'id': 'PayPalButton',
+            'items': [
+                getPreferenceDescription('CommerceHubPayPalButtonColor'),
+                getPreferenceDescription('CommerceHubPayPalButtonShape'),
+                getPreferenceDescription('CommerceHubPayPalButtonLabel')
+            ]
+        }
+    });
+
+    configList.push({
+        'label': 'Apple Pay',
+        'id': 'ApplePay',
+        'items': [
+            getPreferenceDescription('CommerceHubApplePayEnable'),
+            getPreferenceDescription('CommerceHubApplePayPaymentType'),
+            getPreferenceDescription('CommerceHubApplePayVerification')
+        ],
+        'subform': {
+            'label': 'Apple Pay Button Customization',
+            'id': 'ApplePayButton',
+            'items': [
+                getPreferenceDescription('CommerceHubApplePayButtonColor'),
+                getPreferenceDescription('CommerceHubApplePayButtonLabel')
+            ]
+        }
     });
 
     let formList = []
@@ -330,6 +370,10 @@ function stripExcessInfo(preferences)
         if(preferences[key].dependencies !== undefined)
         {
             simplifiedList[key]['dependencies'] = preferences[key].dependencies;
+        }
+        if(preferences[key].nonInputDependencies !== undefined)
+        {
+            simplifiedList[key]['nonInputDependencies'] = preferences[key].nonInputDependencies;
         }
     }
 
