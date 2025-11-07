@@ -319,8 +319,7 @@ function buildConfigList(chPreferenceDescriptions)
         'id': 'ApplePay',
         'items': [
             getPreferenceDescription('CommerceHubApplePayEnable'),
-            getPreferenceDescription('CommerceHubApplePayPaymentType'),
-            getPreferenceDescription('CommerceHubApplePayVerification')
+            getPreferenceDescription('CommerceHubApplePayPaymentType')
         ],
         'subform': {
             'label': 'Apple Pay Button Customization',

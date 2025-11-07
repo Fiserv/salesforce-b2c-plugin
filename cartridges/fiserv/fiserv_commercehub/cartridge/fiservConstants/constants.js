@@ -1,7 +1,7 @@
 "use strict"
 
 module.exports = {
-    VERSION : '1.1.0',
+    VERSION : '1.1.1',
     COMMERCEHUB_CERT_ENV : 'CERT',
     COMMERCEHUB_LIVE_ENV : 'PROD',
     ENVIRONMENT_URL_PLACEHOLDER : '[CH_ENVIRONMENT_BASE]',
@@ -15,7 +15,6 @@ module.exports = {
     POS_CONDITION_CODE : "CARD_NOT_PRESENT_ECOM",
     SESSION_SOURCE_TYPE : "PaymentSession",
     TOKEN_SOURCE_TYPE : "PaymentToken",
-    APPLE_VERIFICATION_URL: '/.well-known/apple-developer-merchantid-domain-association',
     PROCESSOR_ID_LIST : {
         COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
         COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
@@ -78,7 +77,6 @@ module.exports = {
         ],
         'CommerceHubApplePayEnable': [
             'CommerceHubApplePayPaymentType',
-            'CommerceHubApplePayVerification',
             'ApplePayButton'
         ]
     },

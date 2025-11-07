@@ -405,13 +405,6 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubApplePayVerification"> 
-                <display-name xml:lang="x-default">Apple Pay Verification Text</display-name>
-                <type>text</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <min-length>0</min-length>
-            </attribute-definition>
             <attribute-definition attribute-id="CommerceHubApplePayButtonColor">
                 <display-name xml:lang="x-default">CommerceHubApplePay Button Color</display-name>
                 <type>enum-of-string</type>
@@ -1412,7 +1405,6 @@
                 <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
                 <attribute attribute-id="CommerceHubApplePayEnable"/>
                 <attribute attribute-id="CommerceHubApplePayPaymentType"/>
-                <attribute attribute-id="CommerceHubApplePayVerification"/>
                 <attribute attribute-id="CommerceHubApplePayButtonColor"/>
                 <attribute attribute-id="CommerceHubApplePayButtonLabel"/>
             </attribute-group>

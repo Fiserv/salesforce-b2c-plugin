@@ -413,9 +413,6 @@
                 <preference preference-id="CommerceHubApplePayPaymentType">
                     <value>AUTH</value>
                 </preference>
-                <preference preference-id="CommerceHubApplePayVerification">
-                    <value></value>
-                </preference>
                 <preference preference-id="CommerceHubApplePayButtonColor">
                     <value>black</value>
                 </preference>

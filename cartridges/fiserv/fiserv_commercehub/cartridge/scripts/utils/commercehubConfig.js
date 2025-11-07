@@ -155,11 +155,6 @@ const commerceHubExport =
         return getSitePreference('CommerceHubApplePayPaymentType').value;
     },
 
-    getCommerceHubApplePayVerification()
-    {
-        return getSitePreference('CommerceHubApplePayVerification');
-    },
-
     getFormConfig(formId)
     {
         if(!constants.FORM_ID_LIST.includes(formId))

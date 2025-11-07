@@ -46,7 +46,7 @@ class FiservFastlaneInitializer
         }
 
         $.spinner().start();
-        if($('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
+        if($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
         {
             toggleSubmitButton(true);
         }
@@ -160,7 +160,7 @@ class FiservFastlaneInitializer
                     xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
                     typeof(xhr.responseJSON.order) !== 'undefined' &&
                     typeof(xhr.responseJSON.order.shipping) !== 'undefined' &&
-                    $('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD' &&
+                    $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD' &&
                     fastlaneGuestCheckout)
                 {
                     formAdapter.resetForm();

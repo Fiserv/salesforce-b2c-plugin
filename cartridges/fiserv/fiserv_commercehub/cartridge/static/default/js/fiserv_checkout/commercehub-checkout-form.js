@@ -85,7 +85,7 @@ class CommercehubCheckoutForm
 
     clearValidation = function()
     {
-        if($('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
+        if($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
         {
             this.getSubmitButton().prop('disabled', true);
         }
@@ -249,7 +249,7 @@ class CommercehubCheckoutForm
 
     submitHandlerForm = (_e) => 
     {
-        if($('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
+        if($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
         {
             _e.preventDefault();
             $.spinner().start();
