@@ -315,6 +315,22 @@ function buildConfigList(chPreferenceDescriptions)
     });
 
     configList.push({
+        'label': 'Venmo',
+        'id': 'Venmo',
+        'items': [
+            getPreferenceDescription('CommerceHubVenmoEnable'),
+            getPreferenceDescription('CommerceHubVenmoPaymentType')
+        ],
+        'subform': {
+            'label': 'Venmo Button Customization',
+            'id': 'VenmoButton',
+            'items': [
+                getPreferenceDescription('CommerceHubVenmoButtonShape')
+            ]
+        }
+    });
+
+    configList.push({
         'label': 'Apple Pay',
         'id': 'ApplePay',
         'items': [

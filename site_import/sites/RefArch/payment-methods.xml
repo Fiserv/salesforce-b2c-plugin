@@ -24,4 +24,10 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>FISERV_COMMERCEHUB_APPLEPAY</processor-id>
     </payment-method>
+    <payment-method method-id="VENMO">
+        <name xml:lang="x-default">Venmo</name>
+        <description xml:lang="x-default">Use this payment method for Venmo</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FISERV_COMMERCEHUB_VENMO</processor-id>
+    </payment-method>
 </payment-settings>

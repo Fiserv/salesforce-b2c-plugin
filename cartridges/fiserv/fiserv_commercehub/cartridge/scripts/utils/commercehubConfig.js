@@ -143,6 +143,18 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalVaultingEnable');
     },
 
+    // This is where the Venmo settings start
+
+    getCommerceHubVenmoEnabled()
+    {
+        return getSitePreference('CommerceHubVenmoEnable');
+    },
+
+    getCommerceHubVenmoPaymentType()
+    {
+        return getSitePreference('CommerceHubVenmoPaymentType').value;
+    }
+
     // This is where the Apple Pay settings start
 
     getCommerceHubApplePayEnabled()
@@ -298,7 +310,22 @@ const commerceHubExport =
         let buttonConfig = {
             'parentElementId': 'fiserv_commercehub-applepay-button',
             'color': getSitePreference('CommerceHubApplePayButtonColor').value,
+            'shape': getSitePreference('CommerceHubApplePayButtonShape').value,
             'type': getSitePreference('CommerceHubApplePayButtonLabel').value
+        }
+
+        return { 'button': buttonConfig };
+    },
+
+    buildVenmoButtonConfig()
+    {
+        if(!this.getCommerceHubVenmoEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-venmo-button',
+            'shape': getSitePreference('CommerceHubVenmoButtonShape').value,
+            'type': getSitePreference('CommerceHubVenmoPaymentType').value
         }
 
         return { 'button': buttonConfig };

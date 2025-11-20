@@ -20,6 +20,7 @@ module.exports = {
         COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
         COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
         COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
+        COMMERCEHUB_VENMO_PROCESSOR : "FISERV_COMMERCEHUB_VENMO"
     },
     COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
     COMMERCEHUB_PAYPAL_PAYMENT_METHOD : "PAYPAL",
@@ -74,6 +75,10 @@ module.exports = {
             'CommerceHubPayPalPaymentType',
             'CommerceHubPayPalVaultingEnable',
             'PayPalButton'
+        ],
+        'CommerceHubVenmoEnable': [
+            'CommerceHubVenmoPaymentType',
+            'VenmoButton'
         ],
         'CommerceHubApplePayEnable': [
             'CommerceHubApplePayPaymentType',
