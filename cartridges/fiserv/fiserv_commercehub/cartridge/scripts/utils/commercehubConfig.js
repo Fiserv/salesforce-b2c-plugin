@@ -153,7 +153,7 @@ const commerceHubExport =
     getCommerceHubVenmoPaymentType()
     {
         return getSitePreference('CommerceHubVenmoPaymentType').value;
-    }
+    },
 
     // This is where the Apple Pay settings start
 
