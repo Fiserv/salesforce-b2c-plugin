@@ -413,6 +413,9 @@
                 <preference preference-id="CommerceHubVenmoPaymentType">
                     <value>AUTH</value>
                 </preference>
+                <preference preference-id="CommerceHubVenmoButtonColor">
+                    <value>gold</value>
+                </preference>
                 <preference preference-id="CommerceHubVenmoButtonShape">
                     <value>rect</value>
                 </preference>

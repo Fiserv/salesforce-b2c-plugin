@@ -325,7 +325,8 @@ function buildConfigList(chPreferenceDescriptions)
             'label': 'Venmo Button Customization',
             'id': 'VenmoButton',
             'items': [
-                getPreferenceDescription('CommerceHubVenmoButtonShape')
+                getPreferenceDescription('CommerceHubVenmoButtonShape'),
+                getPreferenceDescription('CommerceHubVenmoButtonColor'),
             ]
         }
     });
