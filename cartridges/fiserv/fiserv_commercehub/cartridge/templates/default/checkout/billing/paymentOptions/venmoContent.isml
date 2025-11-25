@@ -23,7 +23,7 @@
         >
 
         <div id="fiserv-commercehub-venmo-form-init-container" 
-            data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Venmo'))}"
+            data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('venmo'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
             data-initial-checkout-stage="${pdict.currentStage}"></div>
     

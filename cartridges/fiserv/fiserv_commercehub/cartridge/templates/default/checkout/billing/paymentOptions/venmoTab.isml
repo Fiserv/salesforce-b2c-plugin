@@ -1,7 +1,7 @@
 <li class="nav-item" data-method-id="${paymentOption.ID}">
     <a class="nav-link venmo-tab" data-toggle="tab" href="#venmo-content" role="tab">
         <img class="venmo-option"
-                src="${URLUtils.staticURL('/images/venmo.png')}"
+                src="${URLUtils.staticURL('/images/venmo.svg')}"
                 height="32"
                 alt="${paymentOption.name}"
                 title="${paymentOption.name}"

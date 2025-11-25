@@ -310,25 +310,29 @@ const commerceHubExport =
         let buttonConfig = {
             'parentElementId': 'fiserv_commercehub-applepay-button',
             'color': getSitePreference('CommerceHubApplePayButtonColor').value,
-            'shape': getSitePreference('CommerceHubApplePayButtonShape').value,
             'type': getSitePreference('CommerceHubApplePayButtonLabel').value
         }
 
         return { 'button': buttonConfig };
     },
 
-    buildVenmoButtonConfig()
+    buildVenmoButtonsConfig()
     {
-        if(!this.getCommerceHubVenmoEnabled())
-            return null;
-
-        let buttonConfig = {
-            'parentElementId': 'fiserv_commercehub-venmo-button',
-            'shape': getSitePreference('CommerceHubVenmoButtonShape').value,
-            'type': getSitePreference('CommerceHubVenmoPaymentType').value
+    
+        let buttonsConfig = {};
+        if(this.getCommerceHubVenmoEnabled())
+        {
+            buttonsConfig['venmo'] = {
+                'parentElementId': 'fiserv_commercehub-venmo-button',
+                'shape': getSitePreference('CommerceHubVenmoButtonShape').value,
+                'type': getSitePreference('CommerceHubVenmoPaymentType').value
+            }
         }
-
-        return { 'button': buttonConfig };
+        let dataConfig = {
+            'customerConfirmation': 'REVIEW_AND_PAY',
+            'buttons': buttonsConfig
+        };
+        return dataConfig;
     }
 };
 
