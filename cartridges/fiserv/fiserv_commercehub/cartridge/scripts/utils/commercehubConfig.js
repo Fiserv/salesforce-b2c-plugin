@@ -325,8 +325,7 @@ const commerceHubExport =
             buttonsConfig['venmo'] = {
                 'parentElementId': 'fiserv_commercehub-venmo-button',
                 'color': getSitePreference('CommerceHubVenmoButtonColor').value,
-                'shape': getSitePreference('CommerceHubVenmoButtonShape').value,
-                'type': getSitePreference('CommerceHubVenmoPaymentType').value
+                'shape': getSitePreference('CommerceHubVenmoButtonShape').value
             }
         }
         let dataConfig = {
