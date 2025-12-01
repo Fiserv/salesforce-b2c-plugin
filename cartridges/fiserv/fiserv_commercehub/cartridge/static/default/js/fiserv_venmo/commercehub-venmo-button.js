@@ -61,7 +61,6 @@ class CommercehubVenmo
         {
             let venmoLoadConfig = {};
             venmoLoadConfig['intent'] = this.configDataVenmo.chargeType === 'AUTH' ? 'AUTHORIZE' : 'CAPTURE';
-           // venmoLoadConfig['shippingAddress'] = await FiservSDKHelper.retrieveAddress(this.configDataVenmo.shippingAddressFormNames, 'shipping');
             const venmo = await window.fiserv.components.paypal(venmoLoadConfig);
 
             await venmo.buttons({ data: this.configDataVenmo.buttonsConfig, hooks: this.createCallbacksObject() });

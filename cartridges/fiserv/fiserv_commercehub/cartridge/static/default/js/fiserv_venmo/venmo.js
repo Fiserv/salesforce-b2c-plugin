@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
-    //const checkoutStage = $('#fiserv-commercehub-venmo-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubVenmo(extractInitializationData());
     let initialized = false;
     let postInitPaymentChangeDetected = false;
