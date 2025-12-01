@@ -380,7 +380,81 @@
                 </value-definitions>
             </attribute-definition>
 
-            <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+            <!--THIS IS WHERE THE VENMO SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubVenmoEnable">
+                <display-name xml:lang="x-default">Enable Venmo</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+             <attribute-definition attribute-id="CommerceHubVenmoPaymentType">
+                <display-name xml:lang="x-default">CommerceHubVenmo Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubVenmoButtonColor">
+                <display-name xml:lang="x-default">CommerceHubVenmo Button Color</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Gold</display>
+                        <value>gold</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Blue</display>
+                        <value>blue</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Silver</display>
+                        <value>silver</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>White</display>
+                        <value>white</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Black</display>
+                        <value>black</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubVenmoButtonShape">
+                <display-name xml:lang="x-default">CommerceHubVenmo Button Shape</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Rect</display>
+                        <value>rect</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Pill</display>
+                        <value>pill</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sharp</display>
+                        <value>sharp</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+        
+           <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
 
             <attribute-definition attribute-id="CommerceHubApplePayEnable">
                 <display-name xml:lang="x-default">Enable Apple Pay</display-name>
@@ -1389,6 +1463,26 @@
                 <attribute attribute-id="CommerceHubPayPalButtonShape"/>
                 <attribute attribute-id="CommerceHubPayPalButtonLabel"/>
             </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_VENMO">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Venmo Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+
+                <!--THIS IS WHERE THE VENMO SETTINGS START-->
+                <attribute attribute-id="CommerceHubVenmoEnable"/>
+                <attribute attribute-id="CommerceHubVenmoPaymentType"/>
+                <attribute attribute-id="CommerceHubVenmoButtonShape"/>
+                <attribute attribute-id="CommerceHubVenmoButtonColor"/>
+
+            </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
                 <display-name xml:lang="x-default">Fiserv CommerceHub Apple Pay Settings</display-name>
 
@@ -1612,6 +1706,11 @@
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubOrderId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_VENMO">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubOrderId"/>
                 <attribute attribute-id="paymentAction"/>
