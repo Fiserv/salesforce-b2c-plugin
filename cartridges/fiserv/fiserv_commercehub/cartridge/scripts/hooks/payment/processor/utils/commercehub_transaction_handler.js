@@ -50,6 +50,9 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
             case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
                 _type = FiservConfig.getCommerceHubPayPalPaymentType();
                 break;
+            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_VENMO_PROCESSOR:
+                _type = FiservConfig.getCommerceHubVenmoPaymentType();
+                break;
             case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
                 _type = FiservConfig.getCommerceHubApplePayPaymentType();
                 break;
@@ -82,6 +85,9 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
             res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
             break;
         case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
+            res = fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_VENMO_PROCESSOR:
             res = fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
             break;
         default:
@@ -146,6 +152,9 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
             break;
         case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
             processorString = 'PayPal';
+            break;
+        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_VENMO_PROCESSOR:
+            processorString = 'Venmo';
             break;
         case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
             processorString = 'Apple Pay';

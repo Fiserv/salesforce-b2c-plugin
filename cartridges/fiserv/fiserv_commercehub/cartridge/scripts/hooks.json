@@ -25,6 +25,14 @@
 			"script": "./hooks/payment/processor/fiserv_commercehub_paypal_form_processor"
 		},
 		{
+			"name": "app.payment.processor.fiserv_commercehub_venmo",
+			"script": "./hooks/payment/processor/fiserv_commercehub_venmo"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub_venmo",
+			"script": "./hooks/payment/processor/fiserv_commercehub_venmo_form_processor"
+		},
+		{
 			"name": "app.payment.processor.fiserv_commercehub_applepay",
 			"script": "./hooks/payment/processor/fiserv_commercehub_applepay"
 		},

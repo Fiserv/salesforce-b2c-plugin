@@ -143,6 +143,18 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalVaultingEnable');
     },
 
+    // This is where the Venmo settings start
+
+    getCommerceHubVenmoEnabled()
+    {
+        return getSitePreference('CommerceHubVenmoEnable');
+    },
+
+    getCommerceHubVenmoPaymentType()
+    {
+        return getSitePreference('CommerceHubVenmoPaymentType').value;
+    },
+
     // This is where the Apple Pay settings start
 
     getCommerceHubApplePayEnabled()
@@ -302,6 +314,25 @@ const commerceHubExport =
         }
 
         return { 'button': buttonConfig };
+    },
+
+    buildVenmoButtonsConfig()
+    {
+    
+        let buttonsConfig = {};
+        if(this.getCommerceHubVenmoEnabled())
+        {
+            buttonsConfig['venmo'] = {
+                'parentElementId': 'fiserv_commercehub-venmo-button',
+                'color': getSitePreference('CommerceHubVenmoButtonColor').value,
+                'shape': getSitePreference('CommerceHubVenmoButtonShape').value
+            }
+        }
+        let dataConfig = {
+            'customerConfirmation': 'REVIEW_AND_PAY',
+            'buttons': buttonsConfig
+        };
+        return dataConfig;
     }
 };
 
