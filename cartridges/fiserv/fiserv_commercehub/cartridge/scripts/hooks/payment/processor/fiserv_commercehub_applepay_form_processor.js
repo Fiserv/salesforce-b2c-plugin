@@ -1,5 +1,6 @@
 'use strict';
 
+
 function processForm(req, paymentForm, viewFormData) {
     let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
     if(sessionId === undefined)

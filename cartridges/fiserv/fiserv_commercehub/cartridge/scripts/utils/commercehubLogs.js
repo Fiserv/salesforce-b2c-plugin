@@ -1,13 +1,15 @@
-"use strict";
+'use strict';
 
-var Logger = require('dw/system/Logger');
-const commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
-const lvlMap = {
+const Logger = require('dw/system/Logger');
+
+const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+
+const levelMap = {
     'L1': 1,
     'L2': 2,
     'L3': 3,
 }
-const logLevel = lvlMap[commercehubConfig.getCommerceHubLoggingLevel()];
+const logLevel = levelMap[fiservConfig.getCommerceHubLoggingLevel()];
 
 // For future enhancements...
 function formatMessage(lvl, msg, orderNo)

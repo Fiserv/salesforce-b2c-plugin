@@ -4,6 +4,7 @@ var server = require('server');
 
 server.extend(module.superModule);
 
+
 server.append('Show', function (req, res, next) {
     let paymentInstruments = null;
     if(typeof(req.currentCustomer.wallet) !== "undefined" &&

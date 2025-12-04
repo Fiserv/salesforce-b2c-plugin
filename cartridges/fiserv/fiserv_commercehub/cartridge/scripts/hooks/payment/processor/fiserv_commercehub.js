@@ -1,7 +1,8 @@
 'use strict';
 
-let orderHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_order_handler');
-let transactionHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_transaction_handler');
+const orderHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_order_handler');
+const transactionHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_transaction_handler');
+
 
 function Handle(basket, paymentInformation, methodID) {
     return orderHandler.handleOrder(basket, paymentInformation, methodID);

@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 module.exports = {
     VERSION : '1.1.1',

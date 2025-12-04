@@ -1,7 +1,10 @@
-const dwSystem = require('dw/system');
-const currentSite = dwSystem.Site.getCurrent();
-let constants = require('*/cartridge/fiservConstants/constants');
+'use strict';
+
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+
+const currentSite = require('dw/system').Site.getCurrent();
 const NO_MASKING = 'NO_MASKING';
+
 
 function getSitePreference(field)
 {
@@ -169,7 +172,7 @@ const commerceHubExport =
 
     getFormConfig(formId)
     {
-        if(!constants.FORM_ID_LIST.includes(formId))
+        if(!fiservConstants.FORM_ID_LIST.includes(formId))
             return;
 
         let config = {};
@@ -251,7 +254,7 @@ const commerceHubExport =
 
     getInvalidFields(formId)
     {
-        if(!constants.FORM_ID_LIST.includes(formId))
+        if(!fiservConstants.FORM_ID_LIST.includes(formId))
             return;
 
 

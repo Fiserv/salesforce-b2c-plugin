@@ -1,9 +1,8 @@
-"use strict"
+'use strict';
 
-let FiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
-let FiservLogs = require('*/cartridge/scripts/utils/commercehubLogs');
-const hmac = require('dw/crypto/Mac');
-const encoding = require('dw/crypto/Encoding');
+const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+const fiservLogs = require('*/cartridge/scripts/utils/commercehubLogs');
+
 
 function getNonce(timestamp)
 {
@@ -12,28 +11,31 @@ function getNonce(timestamp)
 
 function createSignature(apiKey, payload, timestamp, nonce, orderNo)
 {
-    let apiSecret = FiservConfig.getCommerceHubApiSecret();
+    const Encoding = require('dw/crypto/Encoding');
+    const HMAC = require('dw/crypto/Mac');
+
+    let apiSecret = fiservConfig.getCommerceHubApiSecret();
     if (apiSecret == null)
     {
-        FiservLogs.logError(2, "Unable to determine CommerceHub API Secret", orderNo);
+        fiservLogs.logError(2, "Unable to determine CommerceHub API Secret", orderNo);
         throw new Error("Unable to determine CommerceHub API Secret");
     }
 
     let rawSignature = apiKey.concat(nonce).concat(timestamp).concat(JSON.stringify(payload));
-    let hash = new hmac(hmac.HMAC_SHA_256);
+    let hash = new HMAC(HMAC.HMAC_SHA_256);
     let computedHash = hash.digest(rawSignature, apiSecret);
-    return encoding.toBase64(computedHash);
+    return Encoding.toBase64(computedHash);
 }
 
 function populateService(service, payload, nonce, orderNo)
 {
-    let apiKey = FiservConfig.getCommerceHubApiKey();
+    let apiKey = fiservConfig.getCommerceHubApiKey();
     let timestamp = Date.now();
     nonce = nonce ? nonce : getNonce(timestamp);
 
     if (apiKey == null)
     {
-        FiservLogs.logError(2, "Unable to determine CommerceHub API Key", orderNo);
+        fiservLogs.logError(2, "Unable to determine CommerceHub API Key", orderNo);
         throw new Error("Unable to determine CommerceHub API Key");
     }
 

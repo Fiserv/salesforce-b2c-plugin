@@ -1,25 +1,27 @@
-"use strict"
+'use strict';
 
-const FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-let constants = require('*/cartridge/fiservConstants/constants');
-const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
-let FiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
-let uuidUtils = require("dw/util/UUIDUtils");
-let OrderMgr = require('dw/order/OrderMgr');
-let BasketMgr = require('dw/order/BasketMgr');
-let Resource = require('dw/web/Resource');
+const BasketMgr = require('dw/order/BasketMgr');
+const OrderMgr = require('dw/order/OrderMgr');
+const Resource = require('dw/web/Resource');
+const UUIDUtils = require("dw/util/UUIDUtils");
+
+const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+
 let orderNo = null;
 let showBuilders = true;
+
 
 function buildMerchantDetailsObject()
 {
     let merchantDetails = {};
-    merchantDetails["merchantId"] = FiservConfig.getCommerceHubMerchantId();
-    merchantDetails["terminalId"] = FiservConfig.getCommerceHubTerminalId();
+    merchantDetails["merchantId"] = fiservConfig.getCommerceHubMerchantId();
+    merchantDetails["terminalId"] = fiservConfig.getCommerceHubTerminalId();
     merchantDetails["merchantPartner"] = buildMerchantPartnerField();
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Merchant Details Data Builder:\n" + JSON.stringify(merchantDetails,null,2), orderNo);
+        fiservLogs.logDebug(3, "Merchant Details Data Builder:\n" + JSON.stringify(merchantDetails,null,2), orderNo);
     return merchantDetails;
 }
 
@@ -31,8 +33,8 @@ function buildMerchantPartnerField()
     merchantPartner["type"] = "PLUGIN";
     merchantPartner["name"] = "Salesforce";
     merchantPartner["productName"] = "Salesforce B2C Commerce";
-    merchantPartner["versionNumber"] = constants.VERSION;
-    merchantPartner["integrator"] = FiservConfig.getCommerceHubMerchantPartnerIntegrator();
+    merchantPartner["versionNumber"] = fiservConstants.VERSION;
+    merchantPartner["integrator"] = fiservConfig.getCommerceHubMerchantPartnerIntegrator();
 
     return merchantPartner;
 }
@@ -40,12 +42,12 @@ function buildMerchantPartnerField()
 function buildTransactionInteractionObject()
 {
     let txnInteraction = {};
-    txnInteraction["origin"] = constants.ECOM_ORIGIN;
-    txnInteraction["eciIndicator"] = constants.ECI_INDICATOR;
-    txnInteraction["posConditionCode"] = constants.POS_CONDITION_CODE;
+    txnInteraction["origin"] = fiservConstants.ECOM_ORIGIN;
+    txnInteraction["eciIndicator"] = fiservConstants.ECI_INDICATOR;
+    txnInteraction["posConditionCode"] = fiservConstants.POS_CONDITION_CODE;
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Transaction Interaction Data Builder:\n" + JSON.stringify(txnInteraction,null,2), orderNo);
+        fiservLogs.logDebug(3, "Transaction Interaction Data Builder:\n" + JSON.stringify(txnInteraction,null,2), orderNo);
     return txnInteraction;
 }
 
@@ -60,10 +62,10 @@ function buildChargesTransactionDetailsObject(capture, tokenize)
     }
     txnDetails["accountVerification"] = false;
     txnDetails["merchantOrderId"] = orderNo;
-    txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
+    txnDetails["merchantTransactionId"] = UUIDUtils.createUUID();
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
+        fiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
     return txnDetails;
 }
 
@@ -75,7 +77,7 @@ function buildSourceObject(paymentInstrument)
 function buildTokenSourceObject(paymentInstrument)
 {
     let source = {};
-    source["sourceType"] = constants.TOKEN_SOURCE_TYPE;
+    source["sourceType"] = fiservConstants.TOKEN_SOURCE_TYPE;
     source["tokenData"] = paymentInstrument.creditCardToken;
     source["tokenSource"] = paymentInstrument.custom.commercehubTokenSource;
     source["declineDuplicates"] = true;
@@ -87,18 +89,18 @@ function buildTokenSourceObject(paymentInstrument)
     }
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Token Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
+        fiservLogs.logDebug(3, "Token Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
     return source;
 }
 
 function buildSessionSourceObject(sessionId)
 {
     let source = {};
-    source["sourceType"] = constants.SESSION_SOURCE_TYPE;
+    source["sourceType"] = fiservConstants.SESSION_SOURCE_TYPE;
     source["sessionId"] = sessionId;
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Session Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
+        fiservLogs.logDebug(3, "Session Source Data Builder:\n" + JSON.stringify(source,null,2), orderNo);
     return source;
 }
 
@@ -109,17 +111,19 @@ function buildAmountObject(paymentInstrument)
     amount["currency"] = paymentInstrument.paymentTransaction.amount.getCurrencyCode();
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
+        fiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
     return amount;
 }
 
 function buildAmountObjectFromBasket(basketObject) {
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+    
     let amount = {}
-    amount['total'] = FiservHelper.retreiveNonGiftChargeAmount(basketObject);
+    amount['total'] = fiservHelper.retreiveNonGiftChargeAmount(basketObject);
     amount['currency'] = basketObject.getCurrencyCode();
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
+        fiservLogs.logDebug(3, "Amount Data Builder:\n" + JSON.stringify(amount,null,2), orderNo);
     return amount;
 }
 
@@ -145,7 +149,7 @@ function buildBillingAddressObject(billingAddressObject)
     };
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
+        fiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
     return billingAddress;
 }
 
@@ -173,7 +177,7 @@ function buildCustomerObject(cartInfoContainer)
     }
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Customer Data Builder:\n" + JSON.stringify(customer,null,2), orderNo);
+        fiservLogs.logDebug(3, "Customer Data Builder:\n" + JSON.stringify(customer,null,2), orderNo);
     return customer;
 }
 
@@ -184,7 +188,7 @@ function build3DSObject(paymentInstrument)
     additionalData3DS['authenticationTransactionId'] = paymentInstrument.paymentTransaction.custom.commercehub3DSAuthenitcationId;
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "3DS Data Builder:\n" + JSON.stringify(additionalData3DS,null,2), orderNo);
+        fiservLogs.logDebug(3, "3DS Data Builder:\n" + JSON.stringify(additionalData3DS,null,2), orderNo);
     return additionalData3DS;
 }
 
@@ -192,22 +196,22 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
 {
     if(paymentInstrument.creditCardToken)
     {
-        FiservLogs.logInfo(1, 'Initiating Token ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
+        fiservLogs.logInfo(1, 'Initiating Token ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
     }
     else
     {
-        FiservLogs.logInfo(1, 'Initiating Session ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
+        fiservLogs.logInfo(1, 'Initiating Session ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
     }
 
     let req = {};
     let tokenize = false;
-    if(FiservConfig.getCommerceHubTokenization() && !paymentInstrument.creditCardToken)
+    if(fiservConfig.getCommerceHubTokenization() && !paymentInstrument.creditCardToken)
     {
-        if(FiservConfig.getCommerceHubTokenizationStrategy())
+        if(fiservConfig.getCommerceHubTokenizationStrategy())
         {
             tokenize = true;
         }
-        else if(!FiservConfig.getEarlyTokenization())
+        else if(!fiservConfig.getEarlyTokenization())
         {
             tokenize = paymentInstrument.paymentTransaction.custom.tokenizeCard;
         }
@@ -215,14 +219,14 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
 
     req["amount"] = buildAmountObject(paymentInstrument);
     req["source"] = buildSourceObject(paymentInstrument);
-    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, tokenize);
+    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION, tokenize);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
     req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
     req["customer"] = buildCustomerObject(order);
 
-    if(FiservConfig.get3DSEnabled())
+    if(fiservConfig.get3DSEnabled())
     {
         req['additionalData3DS'] = build3DSObject(paymentInstrument);
     }
@@ -232,13 +236,13 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
 
 function buildGiftChargesRequest(paymentInstrument, paymentAction)
 {
-    FiservLogs.logInfo(1, 'Initiating Gift Card ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
+    fiservLogs.logInfo(1, 'Initiating Gift Card ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
 
     let req = {};
 
     req["amount"] = buildAmountObject(paymentInstrument);
     req["source"] = buildSourceObject(paymentInstrument);
-    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === constants.COMMERCEHUB_SALE_ACTION, null);
+    req["transactionDetails"] = buildChargesTransactionDetailsObject(paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION, null);
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
@@ -252,11 +256,11 @@ function buildChargesRequest(orderNumber, paymentInstrument)
 {
     orderNo = orderNumber;
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
-    if(paymentAction === constants.COMMERCEHUB_AUTH_ACTION || paymentAction === constants.COMMERCEHUB_SALE_ACTION)
+    if(paymentAction === fiservConstants.COMMERCEHUB_AUTH_ACTION || paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION)
     {
-        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === constants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
+        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === fiservConstants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
             return buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction);
-        else if(paymentInstrument.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        else if(paymentInstrument.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             return buildGiftChargesRequest(paymentInstrument, paymentAction);
         else
             return {};
@@ -269,7 +273,7 @@ function buildChargesRequest(orderNumber, paymentInstrument)
 
 function buildTokenRequest(sessionId)
 {
-    FiservLogs.logInfo(1, 'Initiating Card Tokenization', orderNo);
+    fiservLogs.logInfo(1, 'Initiating Card Tokenization', orderNo);
     let req = {};
     req['source'] = buildSessionSourceObject(sessionId);
     req["merchantDetails"] = buildMerchantDetailsObject();
@@ -279,22 +283,22 @@ function buildTokenRequest(sessionId)
 
 function buildBalanceInquiryRequest(sessionId, currencyCode)
 {
-    FiservLogs.logInfo(1, 'Initiating Balance Inquiry');
+    fiservLogs.logInfo(1, 'Initiating Balance Inquiry');
     let req = {};
     req['balance'] = {
         'currency': currencyCode
     };
-    FiservLogs.logDebug(3, "Balance Data Builder:\n" + JSON.stringify(req["balance"],null,2), orderNo);
+    fiservLogs.logDebug(3, "Balance Data Builder:\n" + JSON.stringify(req["balance"],null,2), orderNo);
     req['source'] = buildSessionSourceObject(sessionId);
     req['merchantDetails'] = buildMerchantDetailsObject();
-    if(FiservConfig.getCommerceHubGiftSecurityEnabled())
+    if(fiservConfig.getCommerceHubGiftSecurityEnabled())
     {
         req['additionalDataCommon'] = {
             "additionalData": {
                 "securityCodeType": "SCV"
             }
         };
-        FiservLogs.logDebug(3, "Additional Data Common Data Builder:\n" + JSON.stringify(req["additionalDataCommon"],null,2), orderNo);
+        fiservLogs.logDebug(3, "Additional Data Common Data Builder:\n" + JSON.stringify(req["additionalDataCommon"],null,2), orderNo);
     }
 
     return req;
@@ -303,16 +307,16 @@ function buildBalanceInquiryRequest(sessionId, currencyCode)
 function buildCancelPayload(orderNumber, transactionId)
 {
     orderNo = orderNumber;
-    FiservLogs.logInfo(1, 'Initiating Cancel Transaction for Transaction ID: ' + transactionId, orderNo);
+    fiservLogs.logInfo(1, 'Initiating Cancel Transaction for Transaction ID: ' + transactionId, orderNo);
     let req = {};
     req["referenceTransactionDetails"] = {
         "referenceTransactionId": transactionId
     };
-    FiservLogs.logDebug(3, "Reference Transaction Details Data Builder:\n" + JSON.stringify(req["referenceTransactionDetails"],null,2), orderNo);
+    fiservLogs.logDebug(3, "Reference Transaction Details Data Builder:\n" + JSON.stringify(req["referenceTransactionDetails"],null,2), orderNo);
     req["transactionDetails"] = {
-        merchantTransactionId: uuidUtils.createUUID()
+        merchantTransactionId: UUIDUtils.createUUID()
     };
-    FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(req["transactionDetails"],null,2), orderNo);
+    fiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(req["transactionDetails"],null,2), orderNo);
     req["merchantDetails"] = buildMerchantDetailsObject();
 
     return req;
@@ -326,7 +330,7 @@ function buildRecoveryPayload(orderNumber, merchantTransactionId)
     req["referenceTransactionDetails"] = {
         "referenceMerchantTransactionId": merchantTransactionId
     };
-    FiservLogs.logDebug(3, "Reference Transaction Details Data Builder:\n" + JSON.stringify(req["referenceTransactionDetails"],null,2), orderNo);
+    fiservLogs.logDebug(3, "Reference Transaction Details Data Builder:\n" + JSON.stringify(req["referenceTransactionDetails"],null,2), orderNo);
     req["merchantDetails"] = buildMerchantDetailsObject();
 
     return req;
@@ -335,13 +339,13 @@ function buildRecoveryPayload(orderNumber, merchantTransactionId)
 function buildOrdersTransactionDetailsObject(paymentAction)
 {
     let txnDetails = {};
-    txnDetails["operationType"] = paymentAction === constants.COMMERCEHUB_AUTH_ACTION ? "AUTHORIZE" : "CAPTURE";
+    txnDetails["operationType"] = paymentAction === fiservConstants.COMMERCEHUB_AUTH_ACTION ? "AUTHORIZE" : "CAPTURE";
     txnDetails["accountVerification"] = false;
     txnDetails["merchantOrderId"] = orderNo;
-    txnDetails["merchantTransactionId"] = uuidUtils.createUUID();
+    txnDetails["merchantTransactionId"] = UUIDUtils.createUUID();
 
     if(showBuilders)
-        FiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
+        fiservLogs.logDebug(3, "Transaction Details Data Builder:\n" + JSON.stringify(txnDetails,null,2), orderNo);
     return txnDetails;
 }
 
@@ -349,9 +353,9 @@ function buildOrderRequest(orderNumber, paymentInstrument)
 {
     orderNo = orderNumber;
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
-    if(paymentAction === constants.COMMERCEHUB_AUTH_ACTION || paymentAction === constants.COMMERCEHUB_SALE_ACTION)
+    if(paymentAction === fiservConstants.COMMERCEHUB_AUTH_ACTION || paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION)
     {
-        FiservLogs.logInfo(1, 'Initiating Order ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
+        fiservLogs.logInfo(1, 'Initiating Order ' + paymentAction[0] + paymentAction.substring(1).toLowerCase() + ' Transaction', orderNo);
         let req = {};
 
         req["transactionDetails"] = buildOrdersTransactionDetailsObject(paymentAction);
@@ -377,8 +381,8 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
             { 'url': baseUrl }
         ],
         'merchantDetails' : {
-            'merchantId' : FiservConfig.getCommerceHubMerchantId(),
-            'terminalId' : FiservConfig.getCommerceHubTerminalId()
+            'merchantId' : fiservConfig.getCommerceHubMerchantId(),
+            'terminalId' : fiservConfig.getCommerceHubTerminalId()
         }
     };
 
@@ -395,7 +399,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         payload['amount'] = buildAmountObjectFromBasket(basket);
         payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
-        if(FiservConfig.get3DSEnabled() && credentialsForm.threeDSToken)
+        if(fiservConfig.get3DSEnabled() && credentialsForm.threeDSToken)
         {
             let profile = basket.getCustomer().getProfile();
             if(!profile)
@@ -418,7 +422,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
             }
             payload['source'] = buildTokenSourceObject(pi);
         }
-        if(FiservConfig.getCommerceHubPayPalEnabled() && FiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)
+        if(fiservConfig.getCommerceHubPayPalEnabled() && fiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)
         {
             payload['providerCredentials'] = [
                 {
@@ -432,7 +436,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                 }
             ]
         }
-        if(FiservConfig.getCommerceHubApplePayEnabled())
+        if(fiservConfig.getCommerceHubApplePayEnabled())
         {
             let orderData = {};
             let basket = BasketMgr.getCurrentBasket();
@@ -464,7 +468,6 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     itemDetails.push(itemData)
                 });
 
-                let Resource = require('dw/web/Resource');
                 let shippingData = {
                     itemNumber: basket.getAllProductLineItems().toArray().length + 1,
                     itemType: "SHIPPING",

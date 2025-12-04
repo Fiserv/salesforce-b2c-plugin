@@ -1,14 +1,17 @@
-let Resource = require('dw/web/Resource');
-let CustomerMgr = require('dw/customer/CustomerMgr');
-let PaymentInstrument = require('dw/order/PaymentInstrument');
-const FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
-let fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
-let constants = require('*/cartridge/fiservConstants/constants');
+'use strict';
+
+const CustomerMgr = require('dw/customer/CustomerMgr');
+const Resource = require('dw/web/Resource');
+
+const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+
 
 function canTokenize(customer) 
 {
-    return FiservConfig.getCommerceHubTokenization() && isValidCustomer(customer);
+    return fiservConfig.getCommerceHubTokenization() && isValidCustomer(customer);
 }
 
 function isValidCustomer(customer) 
@@ -18,14 +21,14 @@ function isValidCustomer(customer)
 
 function shouldSavePaymentInstrument(customerNo, paymentInstrument)
 {
-    return (FiservConfig.getCommerceHubTokenizationStrategy() || paymentInstrument.paymentTransaction.custom.tokenizeCard) &&
+    return (fiservConfig.getCommerceHubTokenizationStrategy() || paymentInstrument.paymentTransaction.custom.tokenizeCard) &&
         customerNo &&
         canTokenize(CustomerMgr.getCustomerByCustomerNumber(customerNo));
 }
 
 function wasTokenizationSuccessful(chResponse)
 {
-    let token = fiservHelper.secureTraversal(chResponse, constants.RESPONSE_PATHS.PAYMENT_TOKEN);
+    let token = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.PAYMENT_TOKEN);
     return token &&
         typeof(token.tokenData) !== "undefined" &&
         token.tokenResponseDescription === "SUCCESS";
@@ -38,7 +41,7 @@ function createMaskedCardNumber(last4)
 
 function validCardSource(chResponse)
 {
-    let card = fiservHelper.secureTraversal(chResponse, constants.RESPONSE_PATHS.CARD_SOURCE);
+    let card = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_SOURCE);
     return card &&
         typeof(card.last4) !== "undefined" &&
         typeof(card.expirationMonth) !== "undefined" &&
@@ -79,6 +82,8 @@ function isDuplicateCard(profile, chResponse)
  */
 function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTokenization, orderNo)
 {
+    const PaymentInstrument = require('dw/order/PaymentInstrument');
+
     var storedPaymentInstrument = profile.getWallet().createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
 
     let name = chResponse.source.card.nameOnCard ? chResponse.source.card.nameOnCard : profile.firstName.concat(" ").concat(profile.lastName);
@@ -102,21 +107,21 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
 
     // custom attributes
     storedPaymentInstrument.custom.forcedTokenization = Boolean(forcedTokenization);
-    storedPaymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(chResponse, constants.RESPONSE_PATHS.CARD_TYPE) ||
-        fiservHelper.secureTraversal(chResponse, constants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
-    storedPaymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(chResponse, constants.RESPONSE_PATHS.CARD_INDICATOR) ||
-        fiservHelper.secureTraversal(chResponse, constants.RESPONSE_PATHS.CARD_INDICATOR_TOKEN);
+    storedPaymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE) ||
+        fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
+    storedPaymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR) ||
+        fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR_TOKEN);
     storedPaymentInstrument.custom.commercehubTokenSource = chResponse.paymentTokens[0].tokenSource;
     storedPaymentInstrument.custom.commercehubTokenResponseCode = chResponse.paymentTokens[0].tokenResponseCode;
     storedPaymentInstrument.custom.commercehubTokenResponseDescription = chResponse.paymentTokens[0].tokenResponseDescription;
 
     if(Boolean(forcedTokenization))
     {
-        FiservLogs.logInfo(1, "New forced token stored", orderNo);
+        fiservLogs.logInfo(1, "New forced token stored", orderNo);
     }
     else
     {
-        FiservLogs.logInfo(1, "New token stored", orderNo);
+        fiservLogs.logInfo(1, "New token stored", orderNo);
     }
 
     return storedPaymentInstrument;
@@ -138,7 +143,7 @@ function savePaymentInstrument(customerNo, paymentInstrument, chResponse, orderN
             );
         }
     } catch (_er) {
-        FiservLogs.logError(2, "Save Payment Instrument handling failed with: ".concat(_er.toString()), orderNo);
+        fiservLogs.logError(2, "Save Payment Instrument handling failed with: ".concat(_er.toString()), orderNo);
     }
 }
 
@@ -158,13 +163,13 @@ function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
 {
     if (!wasTokenizationSuccessful(chResponse))
     {
-        FiservLogs.logError(2, "Failed tokenization by Commerce Hub", orderNo);
+        fiservLogs.logError(2, "Failed tokenization by Commerce Hub", orderNo);
         throw new Error(Resource.msg('message.error.tokenization.failed', 'error', null));
     }
 
     if (!validCardSource(chResponse))
     {
-        FiservLogs.logError(2, "Unable to locate payment card source in Commerce Hub response", orderNo);
+        fiservLogs.logError(2, "Unable to locate payment card source in Commerce Hub response", orderNo);
         throw new Error(Resource.msg('message.error.tokenization.failed', 'error', null));
     }
 
@@ -175,12 +180,12 @@ function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
         if(duplicate.custom.forcedTokenization && !Boolean(forcedTokenization))
         {
             duplicate.custom.forcedTokenization = false;
-            FiservLogs.logInfo(1, "Forced token made visible in user profile", orderNo);
+            fiservLogs.logInfo(1, "Forced token made visible in user profile", orderNo);
             return duplicate;
         }
 
         // Gonna choose to not throw an error here as there should be no issue with no new token being created
-        FiservLogs.logInfo(1, "Duplicate card not stored.", orderNo);
+        fiservLogs.logInfo(1, "Duplicate card not stored.", orderNo);
         return { duplicate: duplicate, errorMessage: Resource.msg('message.error.tokenization.exists', 'error', null) };
     }
 

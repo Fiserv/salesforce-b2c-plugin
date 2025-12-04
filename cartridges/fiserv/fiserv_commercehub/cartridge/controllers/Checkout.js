@@ -1,21 +1,25 @@
 'use strict';
 
 var server = require('server');
-var CustomerMgr = require('dw/customer/CustomerMgr');
-var fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
-let commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
-let BasketMgr = require('dw/order/BasketMgr');
-let Transaction = require('dw/system/Transaction');
 
 server.extend(module.superModule);
 
+
 server.append('Begin', function (req, res, next) {
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+
     if(!fiservHelper.isCreditCardFiserv())
     {
         return next();
     }
 
-    if(!commercehubConfig.getCommerceHubGiftEnabled())
+    const BasketMgr = require('dw/order/BasketMgr');
+    const CustomerMgr = require('dw/customer/CustomerMgr');
+    const Transaction = require('dw/system/Transaction');
+    
+    const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+
+    if(!fiservConfig.getCommerceHubGiftEnabled())
     {
         let basket = BasketMgr.getCurrentBasket()
         if(basket && basket.paymentInstruments.length)
@@ -36,7 +40,7 @@ server.append('Begin', function (req, res, next) {
         ) {
             let displayedPayments = res.viewData.customer.customerPaymentInstruments;
             let UUIDRemoveList = null;
-            if(!commercehubConfig.getCommerceHubTokenization())
+            if(!fiservConfig.getCommerceHubTokenization())
             {
                 UUIDRemoveList = paymentInstruments.toArray().filter((pi) => pi.getPaymentMethod() === "CREDIT_CARD").map((pi) => pi.getUUID());
             }

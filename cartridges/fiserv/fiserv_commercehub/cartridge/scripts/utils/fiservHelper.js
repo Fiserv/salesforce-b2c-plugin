@@ -1,20 +1,13 @@
-"use strict"
+'use strict';
 
-let commercehubConfig = require('*/cartridge/scripts/utils/commercehubConfig');
-let constants = require('*/cartridge/fiservConstants/constants');
-let PaymentMgr = require('dw/order/PaymentMgr');
-let BasketMgr = require('dw/order/BasketMgr');
+const PaymentMgr = require('dw/order/PaymentMgr');
 
-function validSessionId(sessionId)
-{
-    let guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
-    return typeof(sessionId) !== "undefined" &&
-        sessionId.match(guidRegex)
-}
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+
 
 function getCommercehubSDK()
 {
-    return constants.COMMERCEHUB_SDK_URL;
+    return fiservConstants.COMMERCEHUB_SDK_URL;
 }
 
 function getB2cCardType(cardType) {
@@ -41,6 +34,8 @@ function getB2cCardType(cardType) {
 
 function retrieveAppliedGiftCards()
 {
+    const BasketMgr = require('dw/order/BasketMgr');
+
     let basket = BasketMgr.getCurrentBasket();
     if(!basket)
     {
@@ -51,7 +46,7 @@ function retrieveAppliedGiftCards()
     var leftoverTotal = basket.totalGrossPrice.value;
     let paymentInstruments = basket.paymentInstruments;
     paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             let paymentAmount = pi.paymentTransaction.amount.value;
             // Need to account for currency precision and symbol
@@ -78,7 +73,7 @@ function getGiftCardChargeAmount(basket, balance)
     let grossTotal = basket.totalGrossPrice;
     let amountConvered = 0;
     basket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             let paymentAmount = pi.paymentTransaction.amount.value;
             grossTotal -= paymentAmount;
@@ -99,7 +94,7 @@ function recalculateGiftCardAmounts(basket)
     let grossTotal = basket.totalGrossPrice;
     let updatedGiftCards = [];
     basket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             if(grossTotal <= 0.00001)
             {
@@ -116,7 +111,7 @@ function recalculateGiftCardAmounts(basket)
                 basket.removePaymentInstrument(pi);
 
                 let paymentAmount = grossTotal > balance ? balance : Number(grossTotal).toFixed(2);
-                let paymentInstrument = basket.createPaymentInstrument(constants.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
+                let paymentInstrument = basket.createPaymentInstrument(fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
                 paymentInstrument.custom.balance = balance;
                 paymentInstrument.paymentTransaction.custom.commercehubSessionId = sessionId;
 
@@ -157,11 +152,13 @@ function correctGrandTotalResponseIncludingGiftCards(res)
 }
 
 function retreiveNonGiftChargeAmount(currentBasket) {
+    const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+
     let paymentAmount = currentBasket.totalGrossPrice.value;
-    if(commercehubConfig.getCommerceHubGiftEnabled())
+    if(fiservConfig.getCommerceHubGiftEnabled())
     {
         currentBasket.paymentInstruments.toArray().forEach((pi) => {
-            if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+            if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             {
                 paymentAmount -= pi.paymentTransaction.amount.value;
             }
@@ -173,7 +170,7 @@ function retreiveNonGiftChargeAmount(currentBasket) {
 
 function removeGiftCardsFromCart(currentBasket) {
     currentBasket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             currentBasket.removePaymentInstrument(pi);
         }
@@ -184,7 +181,7 @@ function isCreditCardFiserv()
 {
     let method = PaymentMgr.getPaymentMethod('CREDIT_CARD');
     
-    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
+    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
     {
         return method.isActive();
     }
@@ -196,7 +193,7 @@ function isApplePayFiserv()
 {
     let method = PaymentMgr.getPaymentMethod('APPLEPAY');
     
-    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
+    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
     {
         return method.isActive();
     }
@@ -227,7 +224,6 @@ module.exports =
     retreiveNonGiftChargeAmount : retreiveNonGiftChargeAmount,
     correctGrandTotalResponseIncludingGiftCards : correctGrandTotalResponseIncludingGiftCards,
     removeGiftCardsFromCart : removeGiftCardsFromCart,
-    validSessionId : validSessionId,
     isCreditCardFiserv : isCreditCardFiserv,
     isApplePayFiserv : isApplePayFiserv,
     secureTraversal : secureTraversal

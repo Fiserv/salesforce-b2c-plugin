@@ -1,9 +1,9 @@
-let CustomerMgr = require('dw/customer/CustomerMgr');
-let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+'use strict';
+
 
 function getCustomer(customerNo)
 {
-    return (CustomerMgr.getCustomerByCustomerNumber(customerNo));
+    return (require('dw/customer/CustomerMgr').getCustomerByCustomerNumber(customerNo));
 }
 
 function getPaymentInstrument(currentCustomer, storedPaymentMethodId) 
@@ -70,7 +70,9 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
     viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
 
     let authenticationId3DS = paymentForm.fiservCommercehubPaymentFields.authenticationId3DS
-    if(authenticationId3DS && FiservConfig.get3DSEnabled())
+
+    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+    if(authenticationId3DS && fiservConfig.get3DSEnabled())
     {
         viewData.paymentInformation.authenitcationId3DS = authenticationId3DS.value;
     }

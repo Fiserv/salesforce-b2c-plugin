@@ -1,13 +1,12 @@
 'use strict';
 
 var server = require('server');
-var fsGift = require('*/cartridge/scripts/gift/fiservGift.js');
-let Resource = require('dw/web/Resource');
-var FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-var fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+
+const fiservGift = require('*/cartridge/scripts/gift/fiservGift.js');
+
 
 server.post('BalanceInquiry', function(req, res, next) {
-    let balanceResponse = fsGift.executeBalanceInquiry(req.form.sessionId);
+    let balanceResponse = fiservGift.executeBalanceInquiry(req.form.sessionId);
     if(balanceResponse.error)
     {
         res.setStatusCode(400);
@@ -25,6 +24,11 @@ server.post('BalanceInquiry', function(req, res, next) {
 });
 
 server.post('ApplyGiftCard', function(req, res, next) {
+    const Resource = require('dw/web/Resource');
+
+    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+
     // Check to see if gift card count is set to max number...
     let appliedGiftCards;
     try
@@ -36,14 +40,14 @@ server.post('ApplyGiftCard', function(req, res, next) {
         return next();
     }
 
-    if(appliedGiftCards.giftCardList.length >= FiservConfig.getCommerceHubGiftMaxCards())
+    if(appliedGiftCards.giftCardList.length >= fiservConfig.getCommerceHubGiftMaxCards())
     {
         res.setStatusCode(400);
         res.json({ error: Resource.msg('message.error.gift.maxGiftCards', 'error', null) });
         return next();
     }
 
-    let balanceResponse = fsGift.executeBalanceInquiry(req.form.primarySessionId);
+    let balanceResponse = fiservGift.executeBalanceInquiry(req.form.primarySessionId);
     if(balanceResponse.error)
     {
         res.setStatusCode(400);
@@ -59,7 +63,7 @@ server.post('ApplyGiftCard', function(req, res, next) {
             return next();
         }
 
-        let applyResponse = fsGift.applyGiftCard(balanceResponse, req.form.secondarySessionId);
+        let applyResponse = fiservGift.applyGiftCard(balanceResponse, req.form.secondarySessionId);
         if(applyResponse.error)
         {
             res.setStatusCode(400);
@@ -70,7 +74,7 @@ server.post('ApplyGiftCard', function(req, res, next) {
 });
 
 server.post('RemoveGiftCard', function(req, res, next) {
-    let removeResponse = fsGift.removeGiftCard(req.form.uuid);
+    let removeResponse = fiservGift.removeGiftCard(req.form.uuid);
     if(removeResponse.error)
     {
         res.setStatusCode(400);
@@ -80,7 +84,7 @@ server.post('RemoveGiftCard', function(req, res, next) {
 });
 
 server.post('RecalculateGiftCardAmounts', function(req, res, next) {
-    let recalculateResponse = fsGift.recalculateGiftCards();
+    let recalculateResponse = fiservGift.recalculateGiftCards();
     if(recalculateResponse.error)
     {
         res.setStatusCode(400);

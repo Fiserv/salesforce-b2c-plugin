@@ -1,25 +1,28 @@
-"use strict"
+'use strict';
 
-let creds = require("*/cartridge/scripts/credentials/commercehubCredentials");
-let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-let secureRandom = new dw.crypto.SecureRandom;
-let encoder = dw.crypto.Encoding;
+const Encoding = require("dw/crypto/Encoding");
+
+const fiservCredentials = require("*/cartridge/scripts/credentials/commercehubCredentials");
+const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+
+const secureRandom = new (require("dw/crypto/SecureRandom"));
+
 
 function collectSubmitData(credentials)
 {
     return {
         'submitConfig' : {
-            'apiKey' : FiservConfig.getCommerceHubApiKey(),
+            'apiKey' : fiservConfig.getCommerceHubApiKey(),
             'accessToken': credentials['accessToken'],
             'createToken': false,
             'publicKey': credentials['publicKey'],
             'keyId': credentials['keyId'],
-            'merchantId': FiservConfig.getCommerceHubMerchantId(),
-            'terminalId': FiservConfig.getCommerceHubTerminalId()
+            'merchantId': fiservConfig.getCommerceHubMerchantId(),
+            'terminalId': fiservConfig.getCommerceHubTerminalId()
         },
         'initConfig' : {
-            'cspNonce': encoder.toBase64(secureRandom.nextBytes(32)),
-            'environment': FiservConfig.getCommerceHubApiEnvironment()
+            'cspNonce': Encoding.toBase64(secureRandom.nextBytes(32)),
+            'environment': fiservConfig.getCommerceHubApiEnvironment()
         },
         'sessionId' : credentials['sessionId']
     }
@@ -27,7 +30,7 @@ function collectSubmitData(credentials)
 
 function prepareFormSubmission(hostURL, credentialsForm)
 {
-    return collectSubmitData(creds.getCommercehubCredentials(hostURL, credentialsForm));
+    return collectSubmitData(fiservCredentials.getCommercehubCredentials(hostURL, credentialsForm));
 }
 
 module.exports = 
