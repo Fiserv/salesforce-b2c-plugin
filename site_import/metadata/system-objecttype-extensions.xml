@@ -412,24 +412,12 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
                     <value-definition default="true">
-                        <display>Gold</display>
-                        <value>gold</value>
-                    </value-definition>
-                    <value-definition>
                         <display>Blue</display>
                         <value>blue</value>
                     </value-definition>
                     <value-definition>
-                        <display>Silver</display>
-                        <value>silver</value>
-                    </value-definition>
-                    <value-definition>
                         <display>White</display>
                         <value>white</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Black</display>
-                        <value>black</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
