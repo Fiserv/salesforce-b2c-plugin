@@ -258,9 +258,9 @@ function buildChargesRequest(orderNumber, paymentInstrument)
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
     if(paymentAction === fiservConstants.COMMERCEHUB_AUTH_ACTION || paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION)
     {
-        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === fiservConstants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
+        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
             return buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction);
-        else if(paymentInstrument.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        else if(paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             return buildGiftChargesRequest(paymentInstrument, paymentAction);
         else
             return {};

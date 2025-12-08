@@ -31,7 +31,7 @@ server.append('SubmitPayment', function (req, res, next) {
         }
 
         let paymentMethod = res.viewData.paymentMethod.value;
-        if(paymentMethod === fiservConstants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD && fiservHelper.isApplePayFiserv())
+        if(paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD && fiservHelper.isApplePayFiserv())
         {
             // Fake an error to prevent a page load...
             res.viewData.error = true;

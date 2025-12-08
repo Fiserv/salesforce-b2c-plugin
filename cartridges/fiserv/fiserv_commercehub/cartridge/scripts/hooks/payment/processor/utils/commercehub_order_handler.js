@@ -8,7 +8,7 @@ const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 function removeNonGiftPaymentInstruments(currentBasket) {
     const collections = require('*/cartridge/scripts/util/collections');
     collections.forEach(currentBasket.getPaymentInstruments(), function (item) {
-        if(item.getPaymentMethod() !== fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(item.getPaymentMethod() !== fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             currentBasket.removePaymentInstrument(item);
         }
@@ -81,13 +81,13 @@ function handleOrder(basket, paymentInformation, methodID) {
             case PaymentInstrument.METHOD_CREDIT_CARD:
                 convertToB2cCardTypeCredit(paymentInformation, paymentInstrument);
                 break;
-            case fiservConstants.COMMERCEHUB_PAYPAL_PAYMENT_METHOD:
+            case fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_PAYPAL_PAYMENT_METHOD:
                 convertToB2cCardTypePayPal(paymentInformation, paymentInstrument);
                 break;
-            case fiservConstants.COMMERCEHUB_VENMO_PAYMENT_METHOD:
+            case fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_VENMO_PAYMENT_METHOD:
                 convertToB2cCardTypeVenmo(paymentInformation, paymentInstrument);
                 break;
-            case fiservConstants.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD:
+            case fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD:
                 convertToB2cCardTypeApplePay(paymentInformation, paymentInstrument);
                 break;
             default:

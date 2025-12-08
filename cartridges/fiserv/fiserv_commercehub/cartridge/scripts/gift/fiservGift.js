@@ -88,7 +88,7 @@ function applyGiftCard(balanceObject, sessionId)
                 paymentCovered = true;
             }
 
-            let paymentInstrument = basket.createPaymentInstrument(fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
+            let paymentInstrument = basket.createPaymentInstrument(fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
             paymentInstrument.custom.balance = balance;
             paymentInstrument.paymentTransaction.custom.commercehubSessionId = sessionId;
             UUID = paymentInstrument.UUID;
@@ -101,7 +101,7 @@ function applyGiftCard(balanceObject, sessionId)
     Transaction.wrap(function () {
         let paymentInstruments = basket.paymentInstruments;
         paymentInstruments.toArray().forEach((pi) => {
-            if(pi.paymentMethod !== fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+            if(pi.paymentMethod !== fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             {
                 basket.removePaymentInstrument(pi);
             }

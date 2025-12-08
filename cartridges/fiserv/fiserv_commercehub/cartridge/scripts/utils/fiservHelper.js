@@ -46,7 +46,7 @@ function retrieveAppliedGiftCards()
     var leftoverTotal = basket.totalGrossPrice.value;
     let paymentInstruments = basket.paymentInstruments;
     paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             let paymentAmount = pi.paymentTransaction.amount.value;
             // Need to account for currency precision and symbol
@@ -73,7 +73,7 @@ function getGiftCardChargeAmount(basket, balance)
     let grossTotal = basket.totalGrossPrice;
     let amountConvered = 0;
     basket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             let paymentAmount = pi.paymentTransaction.amount.value;
             grossTotal -= paymentAmount;
@@ -94,7 +94,7 @@ function recalculateGiftCardAmounts(basket)
     let grossTotal = basket.totalGrossPrice;
     let updatedGiftCards = [];
     basket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             if(grossTotal <= 0.00001)
             {
@@ -111,7 +111,7 @@ function recalculateGiftCardAmounts(basket)
                 basket.removePaymentInstrument(pi);
 
                 let paymentAmount = grossTotal > balance ? balance : Number(grossTotal).toFixed(2);
-                let paymentInstrument = basket.createPaymentInstrument(fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
+                let paymentInstrument = basket.createPaymentInstrument(fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
                 paymentInstrument.custom.balance = balance;
                 paymentInstrument.paymentTransaction.custom.commercehubSessionId = sessionId;
 
@@ -158,7 +158,7 @@ function retreiveNonGiftChargeAmount(currentBasket) {
     if(fiservConfig.getCommerceHubGiftEnabled())
     {
         currentBasket.paymentInstruments.toArray().forEach((pi) => {
-            if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+            if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             {
                 paymentAmount -= pi.paymentTransaction.amount.value;
             }
@@ -170,7 +170,7 @@ function retreiveNonGiftChargeAmount(currentBasket) {
 
 function removeGiftCardsFromCart(currentBasket) {
     currentBasket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             currentBasket.removePaymentInstrument(pi);
         }

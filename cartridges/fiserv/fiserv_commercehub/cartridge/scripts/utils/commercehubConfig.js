@@ -291,34 +291,6 @@ const commerceHubExport =
         return dataConfig;
     },
 
-    buildAddressFormNamesObject()
-    {
-        return {
-            firstName: "_addressFields_firstName",
-            lastName: "_addressFields_lastName",
-            street: "_addressFields_address1",
-            houseNumberOrName: "_addressFields_address2",
-            city: "_addressFields_city",
-            stateOrProvince: "_addressFields_states_stateCode",
-            postalCode: "_addressFields_postalCode",
-            country: "_addressFields_country"
-        };
-    },
-
-    buildApplePayButtonConfig()
-    {
-        if(!this.getCommerceHubApplePayEnabled())
-            return null;
-
-        let buttonConfig = {
-            'parentElementId': 'fiserv_commercehub-applepay-button',
-            'color': getSitePreference('CommerceHubApplePayButtonColor').value,
-            'type': getSitePreference('CommerceHubApplePayButtonLabel').value
-        }
-
-        return { 'button': buttonConfig };
-    },
-
     buildVenmoButtonsConfig()
     {
     
@@ -336,7 +308,35 @@ const commerceHubExport =
             'buttons': buttonsConfig
         };
         return dataConfig;
-    }
+    },
+
+    buildApplePayButtonConfig()
+    {
+        if(!this.getCommerceHubApplePayEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-applepay-button',
+            'color': getSitePreference('CommerceHubApplePayButtonColor').value,
+            'type': getSitePreference('CommerceHubApplePayButtonLabel').value
+        }
+
+        return { 'button': buttonConfig };
+    },
+
+    buildAddressFormNamesObject()
+    {
+        return {
+            firstName: "_addressFields_firstName",
+            lastName: "_addressFields_lastName",
+            street: "_addressFields_address1",
+            houseNumberOrName: "_addressFields_address2",
+            city: "_addressFields_city",
+            stateOrProvince: "_addressFields_states_stateCode",
+            postalCode: "_addressFields_postalCode",
+            country: "_addressFields_country"
+        };
+    },
 };
 
 module.exports = commerceHubExport;

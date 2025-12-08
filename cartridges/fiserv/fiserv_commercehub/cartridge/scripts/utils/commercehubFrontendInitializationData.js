@@ -45,7 +45,7 @@ function getFrontendConfigData(formId)
                 'paypalFailureMessage': Resource.msg('message.error.paypal.failure', 'error', null),
             }
             break;
-            case 'venmo':
+        case 'Venmo':
             configData = {
                 'buttonsConfig': fiservConfig.buildVenmoButtonsConfig(),
                 'chargeType': fiservConfig.getCommerceHubVenmoPaymentType(),

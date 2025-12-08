@@ -87,8 +87,6 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
             res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
             break;
         case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
-            res = fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
-            break;
         case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_VENMO_PROCESSOR:
             res = fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
             break;
@@ -184,7 +182,7 @@ function rollbackGiftCards(order, orderNo)
     let giftFound = 0;
     let giftReversed = 0;
     order.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === fiservConstants.COMMERCEHUB_GIFT_PAYMENT_METHOD && pi.paymentTransaction.transactionID)
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD && pi.paymentTransaction.transactionID)
         {
             giftFound++;
             let transactionId = pi.paymentTransaction.transactionID;
