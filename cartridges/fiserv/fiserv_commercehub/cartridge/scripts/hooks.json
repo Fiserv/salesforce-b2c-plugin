@@ -2,43 +2,43 @@
 	"hooks": [
 		{
 			"name": "app.payment.processor.fiserv_commercehub",
-			"script": "./hooks/payment/processor/fiserv_commercehub"
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_credit"
 		},
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub",
-			"script": "./hooks/payment/processor/fiserv_commercehub_form_processor"
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_credit_form_processor"
 		},
 		{
 			"name": "app.payment.processor.fiserv_commercehub_gift",
-			"script": "./hooks/payment/processor/fiserv_commercehub_gift"
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_gift"
 		},
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub_gift",
-			"script": "./hooks/payment/processor/fiserv_commercehub_gift_form_processor"
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_gift_form_processor"
 		},
 		{
 			"name": "app.payment.processor.fiserv_commercehub_paypal",
-			"script": "./hooks/payment/processor/fiserv_commercehub_paypal"
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_paypal"
 		},
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub_paypal",
-			"script": "./hooks/payment/processor/fiserv_commercehub_paypal_form_processor"
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_paypal_form_processor"
 		},
 		{
 			"name": "app.payment.processor.fiserv_commercehub_venmo",
-			"script": "./hooks/payment/processor/fiserv_commercehub_venmo"
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_venmo"
 		},
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub_venmo",
-			"script": "./hooks/payment/processor/fiserv_commercehub_venmo_form_processor"
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_venmo_form_processor"
 		},
 		{
 			"name": "app.payment.processor.fiserv_commercehub_applepay",
-			"script": "./hooks/payment/processor/fiserv_commercehub_applepay"
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_applepay"
 		},
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub_applepay",
-			"script": "./hooks/payment/processor/fiserv_commercehub_applepay_form_processor"
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_applepay_form_processor"
 		}
 	]
 }

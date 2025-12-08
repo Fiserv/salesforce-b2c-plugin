@@ -8,11 +8,11 @@ server.extend(module.superModule);
 server.append('SubmitShipping', function (req, res, next) {
     this.on('route:BeforeComplete', function (req, res) {
         const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
-        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+        const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
 
         if(fiservConfig.getCommerceHubGiftEnabled() && !res.viewData.error)
         {
-            fiservHelper.correctGrandTotalResponseIncludingGiftCards(res);
+            fiservGiftHelper.correctGrandTotalResponseIncludingGiftCards(res);
         }
     });
 

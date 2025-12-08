@@ -1,10 +1,10 @@
-<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
-<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
-<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
-<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
-<isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
-<isset name="canTokenizeSpa" value="${pdict.commercehubConfig.getCommerceHubStandaloneSpa()}" scope="pdict" />
-<isset name="creditEnabled" value="${pdict.commercehubConfig.getCommerceHubCreditEnabled()}" scope="pdict" />
+<isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+
+<isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
+<isset name="canTokenizeSpa" value="${pdict.FiservConfig.getCommerceHubStandaloneSpa()}" scope="pdict" />
+<isset name="creditEnabled" value="${pdict.FiservConfig.getCommerceHubCreditEnabled()}" scope="pdict" />
 
 <isif condition="${pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeSpa}">
     <isscript>
@@ -13,12 +13,12 @@
         assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
         assets.addJs('/js/fiserv_account/commercehub-tokenize-form.js');
         assets.addJs('/js/fiserv_account/tokenize.js');
-        assets.addJs(pdict.chSdkUrl);
+        assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
         assets.addCss('css/fiservScc.css');
     </isscript>
 
     <div id="fiserv-commercehub-tokenize-form-init-container" 
-        data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Tokenization'))}"
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Tokenization'))}"
         data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"></div>
 
     <div id="fiserv-commercehub-tokenize-form-container">

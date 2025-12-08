@@ -5,7 +5,7 @@ const OrderMgr = require('dw/order/OrderMgr');
 const Resource = require('dw/web/Resource');
 
 const fiservConstants = require('*/cartridge/fiservConstants/constants');
-const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
 const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
 const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');

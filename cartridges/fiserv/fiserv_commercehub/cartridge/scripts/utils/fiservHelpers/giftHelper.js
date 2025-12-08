@@ -1,36 +1,7 @@
 'use strict';
 
-const PaymentMgr = require('dw/order/PaymentMgr');
-
 const fiservConstants = require('*/cartridge/fiservConstants/constants');
 
-
-function getCommercehubSDK()
-{
-    return fiservConstants.COMMERCEHUB_SDK_URL;
-}
-
-function getB2cCardType(cardType) {
-    switch (cardType.value.toLowerCase()) {
-        case 'visa':
-            return 'Visa';
-        case 'mastercard':
-        case 'master card':
-            return 'Master Card';
-        case 'amex':
-            return 'Amex';
-        case 'maestro':
-        case 'maestrouk':
-            return 'Maestro';
-        case 'diners':
-        case 'jcb':
-        case 'union':
-        case 'discover':
-            return 'Discover';
-    }
-
-    throw new Error('Unable to determine Salesforce B2C card type for: '.concat(cardType));
-}
 
 function retrieveAppliedGiftCards()
 {
@@ -65,27 +36,6 @@ function retrieveAppliedGiftCards()
         giftCardList: giftCardList,
         amountRemaining: Number(Math.abs(leftoverTotal)).toFixed(2),
         paymentCovered: Number(Math.abs(leftoverTotal)).toFixed(2) === Number(0).toFixed(2)
-    };
-}
-
-function getGiftCardChargeAmount(basket, balance)
-{
-    let grossTotal = basket.totalGrossPrice;
-    let amountConvered = 0;
-    basket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
-        {
-            let paymentAmount = pi.paymentTransaction.amount.value;
-            grossTotal -= paymentAmount;
-            amountConvered += paymentAmount;
-        }
-    })
-
-    // Will need to update later to abide by currency precisions
-    return {
-        paymentAmount: Number(Math.max(0, Math.min(grossTotal, balance)).toFixed(2)),
-        amountConvered: Number(amountConvered + Math.min(grossTotal, balance)).toFixed(2),
-        amountRemaining: Number(grossTotal - Math.min(grossTotal, balance)).toFixed(2)
     };
 }
 
@@ -168,63 +118,10 @@ function retreiveNonGiftChargeAmount(currentBasket) {
     return paymentAmount;
 }
 
-function removeGiftCardsFromCart(currentBasket) {
-    currentBasket.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
-        {
-            currentBasket.removePaymentInstrument(pi);
-        }
-    });
-}
-
-function isCreditCardFiserv()
-{
-    let method = PaymentMgr.getPaymentMethod('CREDIT_CARD');
-    
-    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR)
-    {
-        return method.isActive();
-    }
-
-    return false;
-}
-
-function isApplePayFiserv()
-{
-    let method = PaymentMgr.getPaymentMethod('APPLEPAY');
-    
-    if (method !== null && method.paymentProcessor !== null && method.paymentProcessor.ID == fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
-    {
-        return method.isActive();
-    }
-
-    return false;
-}
-
-function secureTraversal(object, path)
-{
-    if(object == null)
-        return null;
-    for(let i in path)
-    {
-        object = object[path[i]];
-        if(typeof(object) === "undefined")
-            return null;
-    }
-    return object;
-}
-
 module.exports =
 {
-    getCommercehubSDK : getCommercehubSDK,
-    getB2cCardType : getB2cCardType,
     retrieveAppliedGiftCards : retrieveAppliedGiftCards,
-    getGiftCardChargeAmount : getGiftCardChargeAmount,
     recalculateGiftCardAmounts : recalculateGiftCardAmounts,
     retreiveNonGiftChargeAmount : retreiveNonGiftChargeAmount,
     correctGrandTotalResponseIncludingGiftCards : correctGrandTotalResponseIncludingGiftCards,
-    removeGiftCardsFromCart : removeGiftCardsFromCart,
-    isCreditCardFiserv : isCreditCardFiserv,
-    isApplePayFiserv : isApplePayFiserv,
-    secureTraversal : secureTraversal
 }

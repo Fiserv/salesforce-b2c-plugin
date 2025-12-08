@@ -5,7 +5,7 @@ const Resource = require('dw/web/Resource');
 const Transaction = require('dw/system/Transaction');
 
 const fiservConstants = require('*/cartridge/fiservConstants/constants');
-const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
 const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
 
 
@@ -13,6 +13,7 @@ function executeBalanceInquiry(sessionId)
 {
     try
     {
+        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
         const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
         const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
 
@@ -75,7 +76,7 @@ function applyGiftCard(balanceObject, sessionId)
     let paymentCovered = false;
     try {
         Transaction.wrap(function () {
-            let chargeAmountResponse = fiservHelper.getGiftCardChargeAmount(basket, balance);
+            let chargeAmountResponse = getGiftCardChargeAmount(basket, balance);
             paymentAmount = chargeAmountResponse.paymentAmount;
             amountRemaining = chargeAmountResponse.amountRemaining;
 
@@ -136,7 +137,7 @@ function removeGiftCard(uuid)
             let updatedGiftCards;
             Transaction.wrap(function () {
                 basket.removePaymentInstrument(paymentInstruments[i]);
-                updatedGiftCards = fiservHelper.recalculateGiftCardAmounts(basket);
+                updatedGiftCards = fiservGiftHelper.recalculateGiftCardAmounts(basket);
             });
             updatedGiftCards['successMessage'] = Resource.msg('message.success.gift.removed', 'success', null);
             return updatedGiftCards;
@@ -156,9 +157,30 @@ function recalculateGiftCards()
 
     let updatedGiftCards;
     Transaction.wrap(function () {
-        updatedGiftCards = fiservHelper.recalculateGiftCardAmounts(basket);
+        updatedGiftCards = fiservGiftHelper.recalculateGiftCardAmounts(basket);
     });
     return updatedGiftCards;
+}
+
+function getGiftCardChargeAmount(basket, balance)
+{
+    let grossTotal = basket.totalGrossPrice;
+    let amountConvered = 0;
+    basket.paymentInstruments.toArray().forEach((pi) => {
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        {
+            let paymentAmount = pi.paymentTransaction.amount.value;
+            grossTotal -= paymentAmount;
+            amountConvered += paymentAmount;
+        }
+    })
+
+    // Will need to update later to abide by currency precisions
+    return {
+        paymentAmount: Number(Math.max(0, Math.min(grossTotal, balance)).toFixed(2)),
+        amountConvered: Number(amountConvered + Math.min(grossTotal, balance)).toFixed(2),
+        amountRemaining: Number(grossTotal - Math.min(grossTotal, balance)).toFixed(2)
+    };
 }
 
 module.exports = 

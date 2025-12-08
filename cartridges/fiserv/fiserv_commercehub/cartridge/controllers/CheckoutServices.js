@@ -12,7 +12,8 @@ server.append('SubmitPayment', function (req, res, next) {
 
         const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
         const fiservConstants = require('*/cartridge/fiservConstants/constants');
-        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+        const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
 
         // This is here to make sure that the listed payments being sent back to the frontend don't list the gift cards first
         // It is intended to be temporary code that is replaced with a better UI visualization for gift cards being applied to an order
@@ -27,7 +28,7 @@ server.append('SubmitPayment', function (req, res, next) {
                 res.viewData.order.billing.payment.selectedPaymentInstruments = selectedPaymentInstruments;
             }
 
-            fiservHelper.correctGrandTotalResponseIncludingGiftCards(res);
+            fiservGiftHelper.correctGrandTotalResponseIncludingGiftCards(res);
         }
 
         let paymentMethod = res.viewData.paymentMethod.value;

@@ -6,7 +6,7 @@ const BasketMgr = require('dw/order/BasketMgr');
 const Transaction = require('dw/system/Transaction');
 
 const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
 
 server.extend(module.superModule);
 
@@ -22,7 +22,7 @@ server.append('AddProduct', function (req, res, next) {
         }
 
         Transaction.begin();
-        fiservHelper.recalculateGiftCardAmounts(basket);
+        fiservGiftHelper.recalculateGiftCardAmounts(basket);
         Transaction.commit();
     }
 
@@ -41,7 +41,7 @@ server.append('RemoveProductLineItem', function (req, res, next) {
         }
 
         Transaction.begin();
-        fiservHelper.recalculateGiftCardAmounts(basket);
+        fiservGiftHelper.recalculateGiftCardAmounts(basket);
         Transaction.commit();
     }
 
@@ -58,7 +58,7 @@ server.append('UpdateQuantity', function (req, res, next) {
         }
 
         Transaction.begin();
-        fiservHelper.recalculateGiftCardAmounts(basket);
+        fiservGiftHelper.recalculateGiftCardAmounts(basket);
         Transaction.commit();
     }
 

@@ -7,6 +7,4 @@ function processForm(req, paymentForm, viewFormData) {
     return formHandler.processForm(req, paymentForm, viewFormData);
 }
 
-// 'savePaymentInformation' not required here
-
 exports.processForm = processForm;

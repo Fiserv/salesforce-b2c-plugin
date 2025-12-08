@@ -4,15 +4,13 @@ const fiservConstants = require('*/cartridge/fiservConstants/constants');
 const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
 
 
-function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
+function handleTransaction(orderNo, paymentInstrument, paymentProcessor, paymentMethodModel)
 {
     const OrderMgr = require('dw/order/OrderMgr');
     const Transaction = require('dw/system/Transaction');
 
-    const fiservCheckout = require('*/cartridge/scripts/checkout/fiservCheckout');
     const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-    const fiservGiftCheckout = require('*/cartridge/scripts/checkout/fiservGiftCheckout');
-    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 
     let order = OrderMgr.getOrder(orderNo);
     var totalCovered = order.totalGrossPrice.value;
@@ -38,34 +36,9 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
 
     Transaction.wrap(function () {
         paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
-        let _type = null;
-        switch(paymentProcessor.ID)
-        {
-            case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
-                _type = fiservConfig.getCommerceHubCreditPaymentType();
-                break;
-            case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
-                _type = fiservConfig.getCommerceHubGiftPaymentType();
-                paymentInstrument.paymentTransaction.custom.paymentAction = _type;
-                break;
-            case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
-                _type = fiservConfig.getCommerceHubPayPalPaymentType();
-                break;
-            case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_VENMO_PROCESSOR:
-                _type = fiservConfig.getCommerceHubVenmoPaymentType();
-                break;
-            case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
-                _type = fiservConfig.getCommerceHubApplePayPaymentType();
-                break;
-            default:
-                fiservLogs.logError(2, 'Invalid Payment Processor somehow made it this far ¯\\_(ツ)_/¯', orderNo);
-                return {
-                    authorized: false,
-                    fieldErrors: [],
-                    serverErrors: ["Invalid Payment Processor"],
-                    error: true
-                };
-        }
+
+        let _type = paymentMethodModel.getCommercehubPaymentType();
+        paymentInstrument.paymentTransaction.custom.paymentAction = _type;
 
         if (_type !== null)
         {
@@ -76,29 +49,7 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     });
     Transaction.begin();
 
-    let res;
-    switch(paymentProcessor.ID)
-    {
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
-            res = fiservCheckout.executeCommercehubChargesTransaction(orderNo, paymentInstrument);
-            break;
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
-            res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
-            break;
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_VENMO_PROCESSOR:
-            res = fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
-            break;
-        default:
-            fiservLogs.logError(2, 'Invalid Payment Processor somehow made it this far ¯\\_(ツ)_/¯', orderNo);
-            return {
-                authorized: false,
-                fieldErrors: [],
-                serverErrors: ["Invalid Payment Processor"],
-                error: true
-            };
-    }
+    let res = paymentMethodModel.executeCommercehubTransaction(orderNo, paymentInstrument);
 
     if (res.error)
     {
@@ -121,45 +72,12 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
         paymentInstrument.paymentTransaction.transactionID = transactionId;
     }
 
-    if((paymentProcessor.ID === fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR
-        && !paymentInstrument.creditCardToken)
-        || paymentProcessor.ID === fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR
-    ) {
-        paymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.CARD_TYPE);
-        paymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR);
-    }
-    else if(paymentProcessor.ID === fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR)
-    {
-        paymentInstrument.custom.balance = null;
-    }
-    if(paymentProcessor.ID === fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
-    {
-        paymentInstrument.custom.maskedCardNumber = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.LAST_FOUR).padStart(16, '*');
-        paymentInstrument.custom.expireMonth = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.EXP_MONTH);
-        paymentInstrument.custom.expireYear = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.EXP_YEAR);
-    }
-    
+    paymentMethodModel.associateDataPostTransaction(res, paymentInstrument);
+
 
     Transaction.commit();
     let transactionState = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE)
-    let processorString;
-    switch(paymentProcessor.ID) {
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
-            processorString = 'Payment ' + (paymentInstrument.creditCardToken ? 'Token' : 'Card');
-            break;
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
-            processorString = 'Gift Card';
-            break;
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
-            processorString = 'PayPal';
-            break;
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_VENMO_PROCESSOR:
-            processorString = 'Venmo';
-            break;
-        case fiservConstants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
-            processorString = 'Apple Pay';
-            break;
-    }
+    let processorString = paymentMethodModel.getProcessorString(paymentInstrument);
     if(transactionState === fiservConstants.TXN_STATES.AUTHORIZED)
     {
         fiservLogs.logInfo(1, processorString + ' Auth Transaction Successful', orderNo);

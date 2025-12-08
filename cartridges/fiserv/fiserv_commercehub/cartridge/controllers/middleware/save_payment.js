@@ -55,7 +55,7 @@ function savePayment(req, res, next) {
 
 function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
 {
-    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
     
     if(!fiservHelper.isCreditCardFiserv() || !fiservConfig.getCommerceHubTokenization())
     {
@@ -99,7 +99,8 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
         // We are retrieving the card type either from the form or the request body in the case of early tokens, but we still prefer the value from CH if possible
         cardType = cardProduct ? cardProduct : cardType;
 
-        let savedCard = fiservSavePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiservHelper.getB2cCardType({ value : cardType }), tokenResponse);
+        const fiserveCreditCardModel = require('*/cartridge/models/fiservCreditCardModel')
+        let savedCard = fiservSavePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiserveCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
 
         if('duplicate' in savedCard)
         {

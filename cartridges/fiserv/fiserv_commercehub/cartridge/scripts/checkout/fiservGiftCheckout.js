@@ -44,7 +44,7 @@ function sendChargesRequest(order, chargesRequest, orderNo)
         const fiservConstants = require('*/cartridge/fiservConstants/constants');
 
         const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
-        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 
         let chargesService = fiservServices.getService('CommercehubCharges', orderNo);
         let parsedResponse = fiservServices.callService(chargesService, chargesRequest, orderNo);

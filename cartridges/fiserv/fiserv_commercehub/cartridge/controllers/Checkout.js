@@ -6,7 +6,7 @@ server.extend(module.superModule);
 
 
 server.append('Begin', function (req, res, next) {
-    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 
     if(!fiservHelper.isCreditCardFiserv())
     {
@@ -18,15 +18,21 @@ server.append('Begin', function (req, res, next) {
     const Transaction = require('dw/system/Transaction');
     
     const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
+    const fiservConstants = require('*/cartridge/fiservConstants/constants');
 
     if(!fiservConfig.getCommerceHubGiftEnabled())
     {
         let basket = BasketMgr.getCurrentBasket()
         if(basket && basket.paymentInstruments.length)
         {
-            Transaction.begin();
-            fiservHelper.removeGiftCardsFromCart(basket);
-            Transaction.commit();
+            Transaction.wrap(function () {
+                basket.paymentInstruments.toArray().forEach((pi) => {
+                    if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+                    {
+                        basket.removePaymentInstrument(pi);
+                    }
+                });
+            });
         }
     }
 

@@ -15,4 +15,13 @@
             <br/>
         </isif>
     </isloop>
+
+    <input type="hidden" class="form-control" id="cardType" name="${pdict.forms.billingForm.creditCardFields.cardType.htmlName}" value="" />
+    <input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
+    <select style="display:none;" id="expirationMonth" name="${pdict.forms.billingForm.creditCardFields.expirationMonth.htmlName}">
+        <option id="expirationMonthValue" value=""></option>
+    </select>
+    <select style="display:none;" id="expirationYear" name="${pdict.forms.billingForm.creditCardFields.expirationYear.htmlName}">
+        <option id="expirationYearValue" value=""></option>
+    </select>
 </div>

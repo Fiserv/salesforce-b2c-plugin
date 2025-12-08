@@ -5,7 +5,7 @@ const Resource = require('dw/web/Resource');
 const fiservLogs = require('*/cartridge/scripts/utils/commercehubLogs');
 const fiservHttpAdapter = require('*/cartridge/scripts/utils/commercehubHttpAdapter');
 const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
-const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 const fiservConstants = require('*/cartridge/fiservConstants/constants');
 
 

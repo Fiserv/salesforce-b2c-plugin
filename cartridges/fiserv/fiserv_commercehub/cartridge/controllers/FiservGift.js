@@ -27,13 +27,13 @@ server.post('ApplyGiftCard', function(req, res, next) {
     const Resource = require('dw/web/Resource');
 
     const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+    const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
 
     // Check to see if gift card count is set to max number...
     let appliedGiftCards;
     try
     {
-        appliedGiftCards = fiservHelper.retrieveAppliedGiftCards();
+        appliedGiftCards = fiservGiftHelper.retrieveAppliedGiftCards();
     } catch(e) {
         res.setStatusCode(400);
         res.json({ error: Resource.msg('message.error.gift.genericApply', 'error', null) });
