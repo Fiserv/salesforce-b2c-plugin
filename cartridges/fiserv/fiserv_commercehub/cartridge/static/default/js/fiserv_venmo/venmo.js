@@ -1,3 +1,5 @@
+'use strict';
+
 document.addEventListener("DOMContentLoaded", () => {
     let extractInitializationData = function()
     {
@@ -50,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             initVenmo();
     })
 
-    let grandTotalUpdated = function(context)
+    let grandTotalUpdated = function()
     {
         if(window.fiservPluginSDKInitRan)
         {

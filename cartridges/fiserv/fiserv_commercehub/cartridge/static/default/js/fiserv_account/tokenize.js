@@ -1,5 +1,6 @@
-/* eslint-disable prefer-regex-literals */
-document.addEventListener("DOMContentLoaded", () => { // eslint-disable-line
+'use strict';
+
+document.addEventListener("DOMContentLoaded", () => {
     let extractInitializationData = function()
     {
         let data = {

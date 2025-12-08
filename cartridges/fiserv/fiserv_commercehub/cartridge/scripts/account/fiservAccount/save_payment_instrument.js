@@ -115,7 +115,7 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
     storedPaymentInstrument.custom.commercehubTokenResponseCode = chResponse.paymentTokens[0].tokenResponseCode;
     storedPaymentInstrument.custom.commercehubTokenResponseDescription = chResponse.paymentTokens[0].tokenResponseDescription;
 
-    if(Boolean(forcedTokenization))
+    if(forcedTokenization)
     {
         fiservLogs.logInfo(1, "New forced token stored", orderNo);
     }
@@ -174,10 +174,10 @@ function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
     }
 
     let duplicate = null;
-    if(duplicate = isDuplicateCard(profile, chResponse))
+    if((duplicate = isDuplicateCard(profile, chResponse)))
     {
         // Updated and return duplicate card if new request was not forced...
-        if(duplicate.custom.forcedTokenization && !Boolean(forcedTokenization))
+        if(duplicate.custom.forcedTokenization && !forcedTokenization)
         {
             duplicate.custom.forcedTokenization = false;
             fiservLogs.logInfo(1, "Forced token made visible in user profile", orderNo);

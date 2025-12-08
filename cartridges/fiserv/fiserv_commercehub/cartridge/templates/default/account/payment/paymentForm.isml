@@ -11,7 +11,7 @@
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
         assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
-        assets.addJs('/js/fiserv_account/commercehub_tokenize_form.js');
+        assets.addJs('/js/fiserv_account/commercehub-tokenize-form.js');
         assets.addJs('/js/fiserv_account/tokenize.js');
         assets.addJs(pdict.chSdkUrl);
         assets.addCss('css/fiservScc.css');

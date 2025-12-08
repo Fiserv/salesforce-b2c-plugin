@@ -1,3 +1,5 @@
+'use strict';
+
 document.addEventListener("DOMContentLoaded", () => {
     let extractInitializationData = function()
     {
@@ -52,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             initApplePay();
     })
 
-    let grandTotalUpdated = function(context)
+    let grandTotalUpdated = function()
     {
         if(window.fiservPluginSDKInitRan)
         {

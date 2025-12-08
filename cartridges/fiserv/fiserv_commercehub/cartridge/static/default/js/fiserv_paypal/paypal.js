@@ -1,3 +1,5 @@
+'use strict';
+
 document.addEventListener("DOMContentLoaded", () => {
     let extractInitializationData = function()
     {
@@ -51,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
             initPayPal();
     })
 
-    let grandTotalUpdated = function(context)
+    let grandTotalUpdated = function()
     {
         if(window.fiservPluginSDKInitRan)
         {

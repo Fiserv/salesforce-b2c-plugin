@@ -52,7 +52,7 @@ class CommercehubGiftForm
         let formReadyCallback = () => { this.sdkInitialized() };
         let formValidCallback = () => { this.enableFormButtons(); };
         let formInvalidCallback = () => { this.disableFormButtons(); };
-        let cardBrandHandler = (brand) => { null };
+        let cardBrandHandler = () => { null };
         let fieldValidityHandler = (data) => { this.fieldValidityHandler(data); };
         let fieldFocusHandler = (data) => { this.fieldFocusHandler(data) };
         let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
@@ -153,7 +153,7 @@ class CommercehubGiftForm
         throw new Error("Unable to load CommerceHub SDK.")
     }
 
-    cardCaptureSuccess = async function(responseBody)
+    cardCaptureSuccess = async function()
     {
         if(this.getSubmitButton().length && this.buttonClicked === 'applyPrimary')
         {
