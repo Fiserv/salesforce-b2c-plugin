@@ -5,7 +5,7 @@
         <isinclude template="checkout/billing/paymentOptions/creditCardContent" />
     <iselseif condition="${paymentOption.ID === 'PAYPAL' && pdict.FiservConfig.getCommerceHubPayPalEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/paypalContent" />
-        <iselseif condition="${paymentOption.ID === 'VENMO' && pdict.FiservConfig.getCommerceHubVenmoEnabled()}" />
+    <iselseif condition="${paymentOption.ID === 'VENMO' && pdict.FiservConfig.getCommerceHubVenmoEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/venmoContent" />
     <iselseif condition="${paymentOption.ID === 'APPLEPAY' && pdict.FiservConfig.getCommerceHubApplePayEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/applepayContent" />
