@@ -1,6 +1,6 @@
 'use strict';
 
-var server = require('server');
+const server = require('server');
 
 
 server.post('Credentials', function(req, res, next) {

@@ -391,7 +391,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         requestPurpose = credentialsForm.requestPurpose;
     if(requestPurpose !== "STANDALONE")
     {
-        var basket = BasketMgr.getCurrentBasket();
+        let basket = BasketMgr.getCurrentBasket();
         if(!basket)
         {
             throw new Error(Resource.msg('message.error.generic.credentialsFailure', 'error', null));
@@ -440,7 +440,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         {
             let orderData = {};
             let basket = BasketMgr.getCurrentBasket();
-            var site = require('dw/system/Site').getCurrent();
+            let site = require('dw/system/Site').getCurrent();
             if(basket)
             {
                 let itemDetails = [];

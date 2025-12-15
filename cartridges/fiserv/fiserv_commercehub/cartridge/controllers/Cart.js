@@ -1,6 +1,6 @@
 'use strict';
 
-var server = require('server');
+const server = require('server');
 
 const BasketMgr = require('dw/order/BasketMgr');
 const Transaction = require('dw/system/Transaction');

@@ -13,7 +13,7 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor, payment
     const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 
     let order = OrderMgr.getOrder(orderNo);
-    var totalCovered = order.totalGrossPrice.value;
+    let totalCovered = order.totalGrossPrice.value;
     order.paymentInstruments.toArray().forEach((pi) => {
         totalCovered -= pi.paymentTransaction.amount.value;
     });

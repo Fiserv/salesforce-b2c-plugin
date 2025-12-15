@@ -14,7 +14,7 @@ function retrieveAppliedGiftCards()
     }
 
     let giftCardList = [];
-    var leftoverTotal = basket.totalGrossPrice.value;
+    let leftoverTotal = basket.totalGrossPrice.value;
     let paymentInstruments = basket.paymentInstruments;
     paymentInstruments.toArray().forEach((pi) => {
         if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)

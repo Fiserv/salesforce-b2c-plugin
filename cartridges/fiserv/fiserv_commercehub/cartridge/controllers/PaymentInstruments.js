@@ -1,6 +1,6 @@
 'use strict';
 
-var server = require('server');
+const server = require('server');
 
 const csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 const userLoggedIn = require('*/cartridge/scripts/middleware/userLoggedIn');

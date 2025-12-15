@@ -1,6 +1,6 @@
 'use strict';
 
-var server = require('server');
+const server = require('server');
 
 const fiservGift = require('*/cartridge/scripts/gift/fiservGift.js');
 

@@ -16,7 +16,7 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
         // build request obj    
         let transactionPayload = fiservRequestBuilder.buildChargesRequest(orderNo, paymentInstrument);
 
-        var order = OrderMgr.getOrder(orderNo);
+        let order = OrderMgr.getOrder(orderNo);
         if (order === null)
         {
             fiservLogs.logFatal(2, "Unable to retrieve order object for number: ".concat(orderNo), orderNo);

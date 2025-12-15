@@ -1,6 +1,6 @@
 'use strict';
 
-var server = require('server');
+const server = require('server');
 
 const csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 const fiservConstants = require('*/cartridge/fiservConstants/constants');
@@ -20,7 +20,7 @@ if(chPreferenceDescriptions != null)
 
 function retrieveCommerceHubPreferences()
 {
-    var configList = null;
+    let configList = null;
     Object.values(fiservConstants.PROCESSOR_ID_LIST).forEach((processorID) => {
         let chAttributeGroup = currentSite.getPreferences().describe().getAttributeGroup(processorID);
         if(!chAttributeGroup)
@@ -43,7 +43,7 @@ function retrieveCommerceHubPreferences()
     if(!configList)
         return null;
 
-    var idConfigList = {};
+    let idConfigList = {};
     
     configList.forEach(configDefinition => {
         let id = configDefinition.ID;
@@ -364,7 +364,7 @@ function buildConfigList(chPreferenceDescriptions)
 // This isn't technically necessary, but I want to do this to prevent sending excess information to the frontend...
 function stripExcessInfo(preferences)
 {
-    var simplifiedList = {};
+    let simplifiedList = {};
 
     for (let key in preferences)
     {

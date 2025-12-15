@@ -31,13 +31,13 @@ function executeBalanceInquiry(sessionId)
 
         if(fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === 'CHECKED')
         {
-            var balanceList = fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.GIFT_BALANCES);
+            let balanceList = fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.GIFT_BALANCES);
             fiservLogs.logInfo(1, 'Balance Inquiry Success');
             for(let i = 0; i < balanceList.length; i++)
             {
                 if(balanceList[i].currency == currencyCode)
                 {
-                    var balanceObject = balanceList[i];
+                    let balanceObject = balanceList[i];
                     // Need to account for currency precision
                     balanceObject['remainingBalance'] = Number((balanceObject.beginningBalance - balanceObject.lockAmount).toFixed(2));
                     return balanceObject;

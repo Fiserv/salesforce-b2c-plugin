@@ -5,7 +5,7 @@ function processForm(req, paymentForm, viewFormData) {
     let orderId = paymentForm.fiservCommercehubPaymentFields.commercehubOrderId.value;
     if(orderId === undefined)
     {
-        var errors = [];
+        let errors = [];
         errors.push("There was an error validating your PayPal execution");
         return { fieldErrors: [], serverErrors: errors, error: true };    
     }

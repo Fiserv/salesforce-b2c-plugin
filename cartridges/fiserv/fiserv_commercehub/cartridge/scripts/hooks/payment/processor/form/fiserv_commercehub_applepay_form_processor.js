@@ -5,7 +5,7 @@ function processForm(req, paymentForm, viewFormData) {
     let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
     if(sessionId === undefined)
     {
-        var errors = [];
+        let errors = [];
         errors.push("There was an error validating your Apple Pay execution");
         return { fieldErrors: [], serverErrors: errors, error: true };    
     }

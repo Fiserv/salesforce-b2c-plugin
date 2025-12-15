@@ -116,7 +116,7 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
     try 
     {
         // build request obj    
-        var transactionPayload = fiservRequestBuilder.buildOrderRequest(orderNo, paymentInstrument);
+        let transactionPayload = fiservRequestBuilder.buildOrderRequest(orderNo, paymentInstrument);
 
         let order = OrderMgr.getOrder(orderNo);
         if (order === null)

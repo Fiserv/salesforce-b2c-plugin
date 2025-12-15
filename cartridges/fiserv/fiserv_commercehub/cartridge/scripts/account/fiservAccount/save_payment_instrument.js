@@ -84,7 +84,7 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
 {
     const PaymentInstrument = require('dw/order/PaymentInstrument');
 
-    var storedPaymentInstrument = profile.getWallet().createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
+    let storedPaymentInstrument = profile.getWallet().createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
 
     let name = chResponse.source.card.nameOnCard ? chResponse.source.card.nameOnCard : profile.firstName.concat(" ").concat(profile.lastName);
     storedPaymentInstrument.setCreditCardHolder(
