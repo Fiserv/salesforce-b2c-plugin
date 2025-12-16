@@ -1,11 +1,12 @@
 'use strict';
 
+
 function processForm(req, paymentForm, viewFormData) {
-    let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
-    if(sessionId === undefined)
+    let orderId = paymentForm.fiservCommercehubPaymentFields.commercehubOrderId.value;
+    if(orderId === undefined)
     {
-        var errors = [];
-        errors.push("There was an error validating your Apple Pay execution");
+        let errors = [];
+        errors.push("There was an error validating your PayPal execution");
         return { fieldErrors: [], serverErrors: errors, error: true };    
     }
 
@@ -20,7 +21,7 @@ function processForm(req, paymentForm, viewFormData) {
             phone: viewFormData.phone,
             paymentInformation: {
                 isCreditCard: false,
-                sessionId: sessionId
+                orderId: orderId
             }
         }
     }

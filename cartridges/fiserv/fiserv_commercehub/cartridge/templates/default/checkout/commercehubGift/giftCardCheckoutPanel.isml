@@ -1,10 +1,11 @@
-<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
-<isset name="CHGiftEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
+<isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+
+<isset name="CHGiftEnabled" value="${pdict.FiservConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
 
 <isif condition="${pdict.CHGiftEnabled}">
     <div id="ch-gift-panel" class="card">
         <div class="card-header">
-            <h2 class="card-header-custom"><isprint value="${pdict.commercehubConfig.getCommerceHubGiftTitle()}" /></h2>
+            <h2 class="card-header-custom"><isprint value="${pdict.FiservConfig.getCommerceHubGiftTitle()}" /></h2>
         </div>
         <div class="card-body order-total-summary">
             <isset name="CHGiftPanelTitlePresent" value="${true}" scope="pdict"/>

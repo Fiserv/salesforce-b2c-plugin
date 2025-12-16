@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 class FiservFastlaneInitializer
 {
@@ -151,7 +151,7 @@ class FiservFastlaneInitializer
             });
 
             $('.customer-summary .edit-button, #fastlane-re-enable-form-button').on('click', (e) => {
-                FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter, fastlaneObject);
+                FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter);
             });
 
             $(document).on("ajaxSuccess", (ev, xhr) => {
@@ -176,7 +176,7 @@ class FiservFastlaneInitializer
         });
     }
 
-    static async resetFastlane(formConfig, formAdapter, fastlaneObject)
+    static async resetFastlane(formConfig, formAdapter)
     {
         formAdapter.resetForm();
         $('#fastlane-re-enable-form-button').addClass('checkout-hidden');

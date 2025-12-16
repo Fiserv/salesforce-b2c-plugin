@@ -1,26 +1,28 @@
-"use strict"
+'use strict';
 
-let Resource = require('dw/web/Resource');
-let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+
 
 // Provides the frontend files with config settings needed by the frontend
 function getFrontendConfigData(formId)
 {
+    const Resource = require('dw/web/Resource');
+
     let configData;
     switch(formId)
     {
         case 'Payment':
             configData = {
-                'tokenizeEarly': FiservConfig.getEarlyTokenization(),
-                'use3DS': FiservConfig.get3DSEnabled(),
-                'fastlaneEnabled': FiservConfig.getCommerceHubPayPalFastlaneEnabled(),
+                'tokenizeEarly': fiservConfig.getEarlyTokenization(),
+                'use3DS': fiservConfig.get3DSEnabled(),
+                'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
                 'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
             };
             if(configData.fastlaneEnabled)
             {
-                configData['fastlaneAddressFormNames'] = FiservConfig.buildAddressFormNamesObject();
+                configData['fastlaneAddressFormNames'] = fiservConfig.buildAddressFormNamesObject();
             }
             break;
         case 'Tokenization':
@@ -37,24 +39,24 @@ function getFrontendConfigData(formId)
             break;
         case 'PayPal':
             configData = {
-                'buttonsConfig': FiservConfig.buildPayPalButtonsConfig(),
-                'chargeType': FiservConfig.getCommerceHubPayPalPaymentType(),
-                'shippingAddressFormNames': FiservConfig.buildAddressFormNamesObject(),
+                'buttonsConfig': fiservConfig.buildPayPalButtonsConfig(),
+                'chargeType': fiservConfig.getCommerceHubPayPalPaymentType(),
+                'shippingAddressFormNames': fiservConfig.buildAddressFormNamesObject(),
                 'paypalFailureMessage': Resource.msg('message.error.paypal.failure', 'error', null),
             }
             break;
-            case 'venmo':
+        case 'Venmo':
             configData = {
-                'buttonsConfig': FiservConfig.buildVenmoButtonsConfig(),
-                'chargeType': FiservConfig.getCommerceHubVenmoPaymentType(),
-                'shippingAddressFormNames': FiservConfig.buildAddressFormNamesObject(),
+                'buttonsConfig': fiservConfig.buildVenmoButtonsConfig(),
+                'chargeType': fiservConfig.getCommerceHubVenmoPaymentType(),
+                'shippingAddressFormNames': fiservConfig.buildAddressFormNamesObject(),
                 'venmoFailureMessage': Resource.msg('message.error.venmo.failure', 'error', null),
             }
             break;
         case 'ApplePay':
             configData = {
-                'buttonConfig': FiservConfig.buildApplePayButtonConfig(),
-                'billingAddressFormNames': FiservConfig.buildAddressFormNamesObject(),
+                'buttonConfig': fiservConfig.buildApplePayButtonConfig(),
+                'billingAddressFormNames': fiservConfig.buildAddressFormNamesObject(),
                 'applepayFailureMessage': Resource.msg('message.error.applepay.failure', 'error', null),
             }
             break;
@@ -68,9 +70,9 @@ function getFrontendConfigData(formId)
 function retrieveFrontendInitializationData(formId)
 {
     return {
-        'environment': FiservConfig.getCommerceHubApiEnvironment(),
-        'formCustomization': FiservConfig.getFormConfig(formId),
-        'invalidFields': FiservConfig.getInvalidFields(formId),
+        'environment': fiservConfig.getCommerceHubApiEnvironment(),
+        'formCustomization': fiservConfig.getFormConfig(formId),
+        'invalidFields': fiservConfig.getInvalidFields(formId),
         'configData': getFrontendConfigData(formId)
     }
 }

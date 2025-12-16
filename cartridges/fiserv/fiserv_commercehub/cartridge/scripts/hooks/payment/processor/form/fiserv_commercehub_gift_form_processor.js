@@ -1,14 +1,8 @@
 'use strict';
 
-function processForm(req, paymentForm, viewFormData) {
-    let orderId = paymentForm.fiservCommercehubPaymentFields.commercehubOrderId.value;
-    if(orderId === undefined)
-    {
-        var errors = [];
-        errors.push("There was an error validating your PayPal execution");
-        return { fieldErrors: [], serverErrors: errors, error: true };    
-    }
 
+// Does nothing. Used to bypass payment method for a covered cart in checkout flow
+function processForm(req, paymentForm, viewFormData) {
     return {
         error: false,
         viewData: {
@@ -20,7 +14,6 @@ function processForm(req, paymentForm, viewFormData) {
             phone: viewFormData.phone,
             paymentInformation: {
                 isCreditCard: false,
-                orderId: orderId
             }
         }
     }

@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 // This class is for sdk form constructions
 class FiservSDKIframe

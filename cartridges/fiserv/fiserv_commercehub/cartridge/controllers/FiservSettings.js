@@ -1,18 +1,12 @@
 'use strict';
 
-let server = require('server');
-const dwSystem = require('dw/system');
-const csrfProtection = require('*/cartridge/scripts/middleware/csrf');
-const Transaction = require('dw/system/Transaction');
-const currentSite = dwSystem.Site.getCurrent();
+const server = require('server');
 
-// Additional assisting variables.
-const constants = require('*/cartridge/fiservConstants/constants');
-const formIdList = constants.FORM_ID_LIST;
-const dependencyList = constants.DEPENDENCY_LIST;
-const formDependencyList = constants.FORM_DEPENDENCY_LIST;
-const validationRegex = constants.CONFIG_VALIDATIONS.CONFIG_REGEX;
-const jsonList = constants.CONFIG_VALIDATIONS.JSON_LIST;
+const csrfProtection = require('*/cartridge/scripts/middleware/csrf');
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+
+const currentSite = require('dw/system').Site.getCurrent();
+
 
 // Instantiating Preferences
 const chPreferenceDescriptions = retrieveCommerceHubPreferences();
@@ -26,8 +20,8 @@ if(chPreferenceDescriptions != null)
 
 function retrieveCommerceHubPreferences()
 {
-    var configList = null;
-    Object.values(constants.PROCESSOR_ID_LIST).forEach((processorID) => {
+    let configList = null;
+    Object.values(fiservConstants.PROCESSOR_ID_LIST).forEach((processorID) => {
         let chAttributeGroup = currentSite.getPreferences().describe().getAttributeGroup(processorID);
         if(!chAttributeGroup)
             return;
@@ -49,7 +43,7 @@ function retrieveCommerceHubPreferences()
     if(!configList)
         return null;
 
-    var idConfigList = {};
+    let idConfigList = {};
     
     configList.forEach(configDefinition => {
         let id = configDefinition.ID;
@@ -62,14 +56,14 @@ function retrieveCommerceHubPreferences()
         idConfigList[id] = {};
         idConfigList[id]['id'] = id;
         idConfigList[id]['valueType'] = configDefinition.valueTypeCode;
-        idConfigList[id]['mandatory'] = constants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
+        idConfigList[id]['mandatory'] = fiservConstants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
         displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(ApplePay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
-        if(constants.CONFIG_DESCRIPTIONS[id])
+        if(fiservConstants.CONFIG_DESCRIPTIONS[id])
         {
-            idConfigList[id]['description'] = constants.CONFIG_DESCRIPTIONS[id];
+            idConfigList[id]['description'] = fiservConstants.CONFIG_DESCRIPTIONS[id];
         }
 
         let currentValue = currentSite.getCustomPreferenceValue(id);
@@ -101,6 +95,7 @@ function retrieveCommerceHubPreferences()
         }
     });
 
+    const dependencyList = fiservConstants.DEPENDENCY_LIST;
     for(let dependency in dependencyList)
     {
         dependencyList[dependency].forEach((key) => {
@@ -118,10 +113,11 @@ function retrieveCommerceHubPreferences()
         });
     }
 
+    const formDependencyList = fiservConstants.FORM_DEPENDENCY_LIST;
     for(let dependency in formDependencyList)
     {
         formDependencyList[dependency].forEach((key) => {
-            formIdList.forEach((formId) => {
+            fiservConstants.FORM_ID_LIST.forEach((formId) => {
                 let keyId = 'CommerceHub' + formId + 'Form' + key;
                 let dependencyId = 'CommerceHub' + formId + 'Form' + dependency;
                 if(idConfigList[keyId]['dependencies'] === undefined)
@@ -349,7 +345,7 @@ function buildConfigList(chPreferenceDescriptions)
     });
 
     let formList = []
-    formIdList.forEach(formId => {
+    fiservConstants.FORM_ID_LIST.forEach(formId => {
         formList.push({
             'label': formId + " Form",
             'id': formId + "Form",
@@ -368,7 +364,7 @@ function buildConfigList(chPreferenceDescriptions)
 // This isn't technically necessary, but I want to do this to prevent sending excess information to the frontend...
 function stripExcessInfo(preferences)
 {
-    var simplifiedList = {};
+    let simplifiedList = {};
 
     for (let key in preferences)
     {
@@ -408,6 +404,8 @@ server.get('Config', csrfProtection.validateAjaxRequest, function (req, res, nex
  * Allows users to save config changes
  */
 server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware.https, function (req, res, next) {
+    const Transaction = require('dw/system/Transaction');
+
     let form = req.form;
     let error = false;
     let errorString = '[ ';
@@ -443,12 +441,13 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
 
                 configValue = Number(configValue);
 
-                let intRestraint = constants.CONFIG_VALIDATIONS.INT_CONSTRAINTS[configId];
+                let intRestraint = fiservConstants.CONFIG_VALIDATIONS.INT_CONSTRAINTS[configId];
                 if(intRestraint && ((intRestraint.max && configValue > intRestraint.max) || (intRestraint.min && configValue < intRestraint.min)))
                 {
                     throw new Error(intRestraint.message);
                 }
             }
+            
             if(configValue === '\0')
             {
                 if(chPreferenceDescriptions[configId].mandatory)
@@ -457,11 +456,14 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
                 }
                 configValue = '';
             }
+
+            const validationRegex = fiservConstants.CONFIG_VALIDATIONS.CONFIG_REGEX;
             if(validationRegex[configId] !== undefined && configValue.match(validationRegex[configId].regex) === null)
             {
                 throw new Error(validationRegex[configId].message);
             }
-            if(configValue !== '' && jsonList.includes(configId))
+
+            if(configValue !== '' && fiservConstants.CONFIG_VALIDATIONS.JSON_LIST.includes(configId))
             {
                 try {
                     JSON.parse(configValue);
@@ -517,9 +519,9 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
     let warn = false;
     let warnList = [];
     let warnString = '[ ';
-    for(let i = 0; i < constants.CONFIG_VALIDATIONS.MANDATORY.length; i++)
+    for(let i = 0; i < fiservConstants.CONFIG_VALIDATIONS.MANDATORY.length; i++)
     {
-        let id = constants.CONFIG_VALIDATIONS.MANDATORY[i];
+        let id = fiservConstants.CONFIG_VALIDATIONS.MANDATORY[i];
         let displayName = chPreferenceDescriptions[id]['displayName'];
         if(currentSite.getCustomPreferenceValue(id) === null)
         {

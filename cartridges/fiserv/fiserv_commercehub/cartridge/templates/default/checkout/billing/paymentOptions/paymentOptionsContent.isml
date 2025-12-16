@@ -1,13 +1,13 @@
-<isset name="commercehubConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+<isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 
 <isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
-    <isif condition="${paymentOption.ID === 'CREDIT_CARD' && pdict.commercehubConfig.getCommerceHubCreditEnabled()}">
+    <isif condition="${paymentOption.ID === 'CREDIT_CARD' && pdict.FiservConfig.getCommerceHubCreditEnabled()}">
         <isinclude template="checkout/billing/paymentOptions/creditCardContent" />
-    <iselseif condition="${paymentOption.ID === 'PAYPAL' && pdict.commercehubConfig.getCommerceHubPayPalEnabled()}" />
+    <iselseif condition="${paymentOption.ID === 'PAYPAL' && pdict.FiservConfig.getCommerceHubPayPalEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/paypalContent" />
-        <iselseif condition="${paymentOption.ID === 'VENMO' && pdict.commercehubConfig.getCommerceHubVenmoEnabled()}" />
+    <iselseif condition="${paymentOption.ID === 'VENMO' && pdict.FiservConfig.getCommerceHubVenmoEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/venmoContent" />
-    <iselseif condition="${paymentOption.ID === 'APPLEPAY' && pdict.commercehubConfig.getCommerceHubApplePayEnabled()}" />
+    <iselseif condition="${paymentOption.ID === 'APPLEPAY' && pdict.FiservConfig.getCommerceHubApplePayEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/applepayContent" />
     </isif>
 </isloop>

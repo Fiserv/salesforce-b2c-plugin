@@ -1,7 +1,10 @@
-const dwSystem = require('dw/system');
-const currentSite = dwSystem.Site.getCurrent();
-let constants = require('*/cartridge/fiservConstants/constants');
+'use strict';
+
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+
+const currentSite = require('dw/system').Site.getCurrent();
 const NO_MASKING = 'NO_MASKING';
+
 
 function getSitePreference(field)
 {
@@ -169,7 +172,7 @@ const commerceHubExport =
 
     getFormConfig(formId)
     {
-        if(!constants.FORM_ID_LIST.includes(formId))
+        if(!fiservConstants.FORM_ID_LIST.includes(formId))
             return;
 
         let config = {};
@@ -251,7 +254,7 @@ const commerceHubExport =
 
     getInvalidFields(formId)
     {
-        if(!constants.FORM_ID_LIST.includes(formId))
+        if(!fiservConstants.FORM_ID_LIST.includes(formId))
             return;
 
 
@@ -288,34 +291,6 @@ const commerceHubExport =
         return dataConfig;
     },
 
-    buildAddressFormNamesObject()
-    {
-        return {
-            firstName: "_addressFields_firstName",
-            lastName: "_addressFields_lastName",
-            street: "_addressFields_address1",
-            houseNumberOrName: "_addressFields_address2",
-            city: "_addressFields_city",
-            stateOrProvince: "_addressFields_states_stateCode",
-            postalCode: "_addressFields_postalCode",
-            country: "_addressFields_country"
-        };
-    },
-
-    buildApplePayButtonConfig()
-    {
-        if(!this.getCommerceHubApplePayEnabled())
-            return null;
-
-        let buttonConfig = {
-            'parentElementId': 'fiserv_commercehub-applepay-button',
-            'color': getSitePreference('CommerceHubApplePayButtonColor').value,
-            'type': getSitePreference('CommerceHubApplePayButtonLabel').value
-        }
-
-        return { 'button': buttonConfig };
-    },
-
     buildVenmoButtonsConfig()
     {
     
@@ -333,7 +308,35 @@ const commerceHubExport =
             'buttons': buttonsConfig
         };
         return dataConfig;
-    }
+    },
+
+    buildApplePayButtonConfig()
+    {
+        if(!this.getCommerceHubApplePayEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-applepay-button',
+            'color': getSitePreference('CommerceHubApplePayButtonColor').value,
+            'type': getSitePreference('CommerceHubApplePayButtonLabel').value
+        }
+
+        return { 'button': buttonConfig };
+    },
+
+    buildAddressFormNamesObject()
+    {
+        return {
+            firstName: "_addressFields_firstName",
+            lastName: "_addressFields_lastName",
+            street: "_addressFields_address1",
+            houseNumberOrName: "_addressFields_address2",
+            city: "_addressFields_city",
+            stateOrProvince: "_addressFields_states_stateCode",
+            postalCode: "_addressFields_postalCode",
+            country: "_addressFields_country"
+        };
+    },
 };
 
 module.exports = commerceHubExport;

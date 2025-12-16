@@ -1,29 +1,32 @@
-const Resource = require('dw/web/Resource');
+'use strict';
+
 const Order = require('dw/order/Order');
 const OrderMgr = require('dw/order/OrderMgr');
-const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
-let constants = require('*/cartridge/fiservConstants/constants');
-let requestBuilder = require('*/cartridge/scripts/requests/request_builder');
-let FiservServices = require('*/cartridge/scripts/utils/commercehubServices');
-var fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
-let savePayment = require('*/cartridge/scripts/account/fiservAccount/save_payment_instrument');
+const Resource = require('dw/web/Resource');
+
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
+const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
 
 const okStates = [
-    constants.TXN_STATES.AUTHORIZED,
-    constants.TXN_STATES.CAPTURED
+    fiservConstants.TXN_STATES.AUTHORIZED,
+    fiservConstants.TXN_STATES.CAPTURED
 ];
+
 
 function executeCommercehubChargesTransaction(orderNo, paymentInstrument) 
 {
     try 
     {
         // build request obj    
-        let transactionPayload = requestBuilder.buildChargesRequest(orderNo, paymentInstrument);
+        let transactionPayload = fiservRequestBuilder.buildChargesRequest(orderNo, paymentInstrument);
 
         let order = OrderMgr.getOrder(orderNo);
         if (order === null)
         {
-            FiservLogs.logFatal(2, "Unable to retrieve order object for number: ".concat(orderNo), orderNo);
+            fiservLogs.logFatal(2, "Unable to retrieve order object for number: ".concat(orderNo), orderNo);
             throw new Error(Resource.msg('message.error.order.retrieval', 'error', null).concat(orderNo));
         }
 
@@ -31,23 +34,24 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
         let chargesResult = sendChargesRequest(order, transactionPayload, orderNo);
 
         //Check PIN_ONLY status
-        if(fiservHelper.secureTraversal(chargesResult, constants.RESPONSE_PATHS.CARD_TYPE) === 'PIN_ONLY')
+        if(fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.CARD_TYPE) === 'PIN_ONLY')
         {
             let transactionId = chargesResult.gatewayResponse.transactionProcessingDetails.transactionId;
-            let cancelPayload = requestBuilder.buildCancelPayload(orderNo, transactionId);
-            let cancelService = FiservServices.getService('CommercehubCancel', orderNo);
-            FiservServices.callService(cancelService, cancelPayload, orderNo);
+            let cancelPayload = fiservRequestBuilder.buildCancelPayload(orderNo, transactionId);
+            let cancelService = fiservServices.getService('CommercehubCancel', orderNo);
+            fiservServices.callService(cancelService, cancelPayload, orderNo);
             throw new Error(Resource.msg('message.error.payment.pinonly', 'error', null));
         }
 
         // Handle Saved Payment Instrument
         if (!chargesResult.error && !paymentInstrument.creditCardToken)
         {
-            savePayment.savePaymentInstrument(order.getCustomerNo(), paymentInstrument, chargesResult, orderNo);
+            const fiservSavePaymentInstrument = require('*/cartridge/scripts/account/fiservAccount/save_payment_instrument');
+            fiservSavePaymentInstrument.savePaymentInstrument(order.getCustomerNo(), paymentInstrument, chargesResult, orderNo);
         }
 
         // Handle Capture
-        if (fiservHelper.secureTraversal(chargesResult, constants.RESPONSE_PATHS.TRANSACTION_STATE) === constants.TXN_STATES.CAPTURED.toString())
+        if (fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
         {
             order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
             //order.invoices[0].addCaptureTransaction(paymentInstrument, paymentInstrument.paymentTransaction.amount);
@@ -56,7 +60,7 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
         return chargesResult;
 
     } catch (e) {
-        FiservLogs.logError(2,
+        fiservLogs.logError(2,
           'Error processing payment. Error message: '.concat(e.message).concat(' more details: ').concat(e.toString()),
           orderNo
         );
@@ -67,13 +71,13 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
 function sendChargesRequest(order, chargesRequest, orderNo)
 {
     try {
-        let chargesService = FiservServices.getService('CommercehubCharges', orderNo);
-        let parsedResponse = FiservServices.callService(chargesService, chargesRequest, orderNo);
+        let chargesService = fiservServices.getService('CommercehubCharges', orderNo);
+        let parsedResponse = fiservServices.callService(chargesService, chargesRequest, orderNo);
 
         order.setPaymentStatus(Order.PAYMENT_STATUS_NOTPAID);
 
         // transaction OK
-        if (okStates.indexOf(fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE)) !== -1)
+        if (okStates.indexOf(fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE)) !== -1)
         {
             order.setExportStatus(Order.EXPORT_STATUS_READY);
         }
@@ -81,16 +85,16 @@ function sendChargesRequest(order, chargesRequest, orderNo)
         else
         {
             order.setExportStatus(Order.EXPORT_STATUS_NOTEXPORTED);
-            FiservLogs.logInfo(1, 'Response returned with unsuccessful state', orderNo);
-            FiservLogs.logError(1, 'Transaction state failure: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE), orderNo);
-            FiservLogs.logError(2, 'Response message: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.RESPONSE_MESSAGE), orderNo);
-            FiservLogs.logError(2, 'Payment Source Type: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.SOURCE_TYPE), orderNo);
-            FiservLogs.logError(2, 'Transaction ID: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_ID), orderNo);
+            fiservLogs.logInfo(1, 'Response returned with unsuccessful state', orderNo);
+            fiservLogs.logError(1, 'Transaction state failure: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE), orderNo);
+            fiservLogs.logError(2, 'Response message: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.RESPONSE_MESSAGE), orderNo);
+            fiservLogs.logError(2, 'Payment Source Type: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.SOURCE_TYPE), orderNo);
+            fiservLogs.logError(2, 'Transaction ID: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_ID), orderNo);
             parsedResponse.error = parsedResponse.error ? parsedResponse.error : { message : "failed with state: ".concat(parsedResponse.gatewayResponse.transactionState)};
         }
         return parsedResponse;
     } catch (_e) {
-        FiservLogs.logError(2,
+        fiservLogs.logError(2,
             'Fiserv: '.concat(_e.toString()).concat(' in ').concat(_e.fileName).concat(':').concat(_e.lineNumber),
             orderNo
         );
@@ -112,12 +116,12 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
     try 
     {
         // build request obj    
-        var transactionPayload = requestBuilder.buildOrderRequest(orderNo, paymentInstrument);
+        let transactionPayload = fiservRequestBuilder.buildOrderRequest(orderNo, paymentInstrument);
 
         let order = OrderMgr.getOrder(orderNo);
         if (order === null)
         {
-            FiservLogs.logFatal(2, "Unable to retrieve order object for number: ".concat(orderNo), orderNo);
+            fiservLogs.logFatal(2, "Unable to retrieve order object for number: ".concat(orderNo), orderNo);
             throw new Error(Resource.msg('message.error.order.retrieval', 'error', null).concat(orderNo));
         }
 
@@ -125,14 +129,14 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
         let chargesResult = sendOrdersRequest(order, transactionPayload, orderNo);
 
         // Handle Capture
-        if (fiservHelper.secureTraversal(chargesResult, constants.RESPONSE_PATHS.TRANSACTION_STATE) === constants.TXN_STATES.CAPTURED.toString())
+        if (fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
         {
             order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
             //order.invoices[0].addCaptureTransaction(paymentInstrument, paymentInstrument.paymentTransaction.amount);
         }
 
         let customerId = null;
-        if(order.customer.profile && (customerId = fiservHelper.secureTraversal(chargesResult, constants.RESPONSE_PATHS.PAYPAL_CUSTOMER_ID)))
+        if(order.customer.profile && (customerId = fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.PAYPAL_CUSTOMER_ID)))
         {
             order.customer.profile.custom.commercehubCustomerId = customerId;
         }
@@ -140,7 +144,7 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
         return chargesResult;
 
     } catch (e) {
-        FiservLogs.logError(2,
+        fiservLogs.logError(2,
           'Error processing payment. Error message: '.concat(e.message).concat(' more details: ').concat(e.toString()),
           orderNo
         );
@@ -151,13 +155,13 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
 function sendOrdersRequest(order, ordersRequest, orderNo)
 {
     try {
-        let chargesService = FiservServices.getService('CommercehubOrders', orderNo);
-        let parsedResponse = FiservServices.callService(chargesService, ordersRequest, orderNo);
+        let chargesService = fiservServices.getService('CommercehubOrders', orderNo);
+        let parsedResponse = fiservServices.callService(chargesService, ordersRequest, orderNo);
 
         order.setPaymentStatus(Order.PAYMENT_STATUS_NOTPAID);
 
         // transaction OK
-        if (okStates.indexOf(fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE)) !== -1)
+        if (okStates.indexOf(fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE)) !== -1)
         {
             order.setExportStatus(Order.EXPORT_STATUS_READY);
         }
@@ -165,15 +169,15 @@ function sendOrdersRequest(order, ordersRequest, orderNo)
         else
         {
             order.setExportStatus(Order.EXPORT_STATUS_NOTEXPORTED);
-            FiservLogs.logInfo(1, 'Response returned with unsuccessful state', orderNo);
-            FiservLogs.logError(1, 'Transaction state failure: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE), orderNo);
-            // FiservLogs.logError(2, 'Response message: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.RESPONSE_MESSAGE), orderNo); I don't know what the error message routing is, lol
-            FiservLogs.logError(2, 'Transaction ID: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_ID), orderNo);
+            fiservLogs.logInfo(1, 'Response returned with unsuccessful state', orderNo);
+            fiservLogs.logError(1, 'Transaction state failure: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE), orderNo);
+            // fiservLogs.logError(2, 'Response message: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.RESPONSE_MESSAGE), orderNo); I don't know what the error message routing is, lol
+            fiservLogs.logError(2, 'Transaction ID: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_ID), orderNo);
             parsedResponse.error = parsedResponse.error ? parsedResponse.error : { message : "failed with state: ".concat(parsedResponse.gatewayResponse.transactionState)};
         }
         return parsedResponse;
     } catch (_e) {
-        FiservLogs.logError(2,
+        fiservLogs.logError(2,
             'Fiserv: '.concat(_e.toString()).concat(' in ').concat(_e.fileName).concat(':').concat(_e.lineNumber),
             orderNo
         );

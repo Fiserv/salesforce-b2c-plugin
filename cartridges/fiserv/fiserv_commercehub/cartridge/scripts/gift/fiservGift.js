@@ -1,17 +1,22 @@
-let Resource = require('dw/web/Resource');
-let FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
-let requestBuilder = require('*/cartridge/scripts/requests/request_builder');
-let FiservServices = require('*/cartridge/scripts/utils/commercehubServices');
-let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-let constants = require('*/cartridge/fiservConstants/constants');
-let FiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
-let BasketMgr = require('dw/order/BasketMgr');
-let Transaction = require('dw/system/Transaction');
+'use strict';
+
+const BasketMgr = require('dw/order/BasketMgr');
+const Resource = require('dw/web/Resource');
+const Transaction = require('dw/system/Transaction');
+
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
+const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+
 
 function executeBalanceInquiry(sessionId) 
 {
     try
     {
+        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+        const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
+        const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
+
         let basket = BasketMgr.getCurrentBasket();
         if(!basket)
         {
@@ -19,20 +24,20 @@ function executeBalanceInquiry(sessionId)
         }
 
         let currencyCode = basket.getCurrencyCode();
-        let balanceInquiryRequest = requestBuilder.buildBalanceInquiryRequest(sessionId, currencyCode);
+        let balanceInquiryRequest = fiservRequestBuilder.buildBalanceInquiryRequest(sessionId, currencyCode);
 
-        let balanceInquiryService = FiservServices.getService('CommercehubBalanceInquiry');
-        let parsedResponse = FiservServices.callService(balanceInquiryService, balanceInquiryRequest);
+        let balanceInquiryService = fiservServices.getService('CommercehubBalanceInquiry');
+        let parsedResponse = fiservServices.callService(balanceInquiryService, balanceInquiryRequest);
 
-        if(FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE) === 'CHECKED')
+        if(fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === 'CHECKED')
         {
-            var balanceList = FiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.GIFT_BALANCES);
-            FiservLogs.logInfo(1, 'Balance Inquiry Success');
+            let balanceList = fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.GIFT_BALANCES);
+            fiservLogs.logInfo(1, 'Balance Inquiry Success');
             for(let i = 0; i < balanceList.length; i++)
             {
                 if(balanceList[i].currency == currencyCode)
                 {
-                    var balanceObject = balanceList[i];
+                    let balanceObject = balanceList[i];
                     // Need to account for currency precision
                     balanceObject['remainingBalance'] = Number((balanceObject.beginningBalance - balanceObject.lockAmount).toFixed(2));
                     return balanceObject;
@@ -46,8 +51,10 @@ function executeBalanceInquiry(sessionId)
         }
 
     } catch (e) {
-        FiservLogs.logError(2, 'Error executing balance inquiry');
-        if(FiservConfig.getCommerceHubGiftSecurityEnabled())
+        fiservLogs.logError(2, 'Error executing balance inquiry');
+
+        const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+        if(fiservConfig.getCommerceHubGiftSecurityEnabled())
             return { error: Resource.msg('message.error.gift.invalidCredentialsAll', 'error', null) };
         else
             return { error: Resource.msg('message.error.gift.invalidCredentialsCard', 'error', null) };
@@ -69,7 +76,7 @@ function applyGiftCard(balanceObject, sessionId)
     let paymentCovered = false;
     try {
         Transaction.wrap(function () {
-            let chargeAmountResponse = FiservHelper.getGiftCardChargeAmount(basket, balance);
+            let chargeAmountResponse = getGiftCardChargeAmount(basket, balance);
             paymentAmount = chargeAmountResponse.paymentAmount;
             amountRemaining = chargeAmountResponse.amountRemaining;
 
@@ -82,7 +89,7 @@ function applyGiftCard(balanceObject, sessionId)
                 paymentCovered = true;
             }
 
-            let paymentInstrument = basket.createPaymentInstrument(constants.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
+            let paymentInstrument = basket.createPaymentInstrument(fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD, new dw.value.Money(paymentAmount, 'USD'));
             paymentInstrument.custom.balance = balance;
             paymentInstrument.paymentTransaction.custom.commercehubSessionId = sessionId;
             UUID = paymentInstrument.UUID;
@@ -95,7 +102,7 @@ function applyGiftCard(balanceObject, sessionId)
     Transaction.wrap(function () {
         let paymentInstruments = basket.paymentInstruments;
         paymentInstruments.toArray().forEach((pi) => {
-            if(pi.paymentMethod !== constants.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+            if(pi.paymentMethod !== fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             {
                 basket.removePaymentInstrument(pi);
             }
@@ -130,7 +137,7 @@ function removeGiftCard(uuid)
             let updatedGiftCards;
             Transaction.wrap(function () {
                 basket.removePaymentInstrument(paymentInstruments[i]);
-                updatedGiftCards = FiservHelper.recalculateGiftCardAmounts(basket);
+                updatedGiftCards = fiservGiftHelper.recalculateGiftCardAmounts(basket);
             });
             updatedGiftCards['successMessage'] = Resource.msg('message.success.gift.removed', 'success', null);
             return updatedGiftCards;
@@ -150,9 +157,30 @@ function recalculateGiftCards()
 
     let updatedGiftCards;
     Transaction.wrap(function () {
-        updatedGiftCards = FiservHelper.recalculateGiftCardAmounts(basket);
+        updatedGiftCards = fiservGiftHelper.recalculateGiftCardAmounts(basket);
     });
     return updatedGiftCards;
+}
+
+function getGiftCardChargeAmount(basket, balance)
+{
+    let grossTotal = basket.totalGrossPrice;
+    let amountConvered = 0;
+    basket.paymentInstruments.toArray().forEach((pi) => {
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
+        {
+            let paymentAmount = pi.paymentTransaction.amount.value;
+            grossTotal -= paymentAmount;
+            amountConvered += paymentAmount;
+        }
+    })
+
+    // Will need to update later to abide by currency precisions
+    return {
+        paymentAmount: Number(Math.max(0, Math.min(grossTotal, balance)).toFixed(2)),
+        amountConvered: Number(amountConvered + Math.min(grossTotal, balance)).toFixed(2),
+        amountRemaining: Number(grossTotal - Math.min(grossTotal, balance)).toFixed(2)
+    };
 }
 
 module.exports = 

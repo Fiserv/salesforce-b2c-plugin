@@ -1,3 +1,5 @@
+'use strict';
+
 var configChanges = {};
 var preferenceValues;
 var dependencyList = {};
@@ -256,7 +258,7 @@ function applyChanges()
             jQuery('.headerContainer')[0].scrollIntoView({ block: 'start', behavior: 'smooth'});
         },
         error: function(err) {
-            response = err.responseJSON;
+            let response = err.responseJSON;
             if(response.success)
             {
                 // Partial success, need to update and remove successful fields in configChanges...

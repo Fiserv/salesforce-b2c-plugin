@@ -1,6 +1,5 @@
-<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
-<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
-<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
@@ -8,7 +7,7 @@
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
     assets.addJs('/js/fiserv_venmo/commercehub-venmo-button.js');
     assets.addJs('/js/fiserv_venmo/venmo.js');
-    assets.addJs(pdict.chSdkUrl);
+    assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
     assets.addCss('css/fiservScc.css');
 </isscript>
 
@@ -23,7 +22,7 @@
         >
 
         <div id="fiserv-commercehub-venmo-form-init-container" 
-            data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('venmo'))}"
+            data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Venmo'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
             data-initial-checkout-stage="${pdict.currentStage}"></div>
     
@@ -42,17 +41,9 @@
         <!--- Hidden input for order ID --->
         <input id="commercehubOrderIdInputVenmo" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
 
-        <!-- These fields are required for the Payment method to function without Debit Cards enabled -->
-        <isif condition="${!pdict.commercehubConfig.getCommerceHubCreditEnabled()}">
-            <input type="hidden" class="form-control" id="cardType" name="${pdict.forms.billingForm.creditCardFields.cardType.htmlName}" value="" />
-            <input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
-            <select style="display:none;" id="expirationMonth" name="${pdict.forms.billingForm.creditCardFields.expirationMonth.htmlName}">
-                <option id="expirationMonthValue" value=""></option>
-            </select>
-            <select style="display:none;" id="expirationYear" name="${pdict.forms.billingForm.creditCardFields.expirationYear.htmlName}">
-                <option id="expirationYearValue" value=""></option>
-            </select>
+        <iscomment> This field needs to be here when Credit Card is not enabled </iscomment>
+        <isif condition="${!pdict.FiservConfig.getCommerceHubCreditEnabled()}">
+            <input id="commercehubOrderIdInputPayPal" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
         </isif>
-        
     </fieldset>
 </div>
