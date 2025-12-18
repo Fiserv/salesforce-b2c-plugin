@@ -25,11 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         
-        if (!initialized)
-        {
+       $('#fiserv_commercehub-paypal-button').children().remove();
             await form.initialize();
             initialized = true;
-        }
+        
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
