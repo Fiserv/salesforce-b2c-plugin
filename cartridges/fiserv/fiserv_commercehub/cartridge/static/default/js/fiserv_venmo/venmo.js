@@ -23,11 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
             location.reload();
             return;
         }
+
         $('#fiserv_commercehub-venmo-button').children().remove();
-       
-            await form.initialize();
-            initialized = true;
-       
+        await form.initialize();
+        initialized = true;
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
