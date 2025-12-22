@@ -39,7 +39,7 @@ server.append('SubmitPayment', function (req, res, next) {
             res.viewData.fieldErrors = [];
             res.viewData.serverErrors = [];
 
-            let URLUtils = require('dw/web/URLUtils');
+            const URLUtils = require('dw/web/URLUtils');
             res.viewData['placeOrderURL'] = URLUtils.url('CheckoutServices-PlaceOrder').toString();
             res.viewData['isApplePaySuccess'] = true;
             return;
@@ -80,6 +80,25 @@ server.append('SubmitPayment', function (req, res, next) {
                     }
                 };
                 res.viewData.renderedPaymentInstruments = RenderTemplateHelper.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
+            }
+        }
+        else if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest())
+        {
+            const BasketMgr = require('dw/order/BasketMgr');
+            const RenderTemplateHelperGuest = require('*/cartridge/scripts/renderTemplateHelper');
+
+            res.viewData.customer.customerPaymentInstruments = [];
+            let basket = BasketMgr.getCurrentBasket();
+            if(basket && basket.custom.commercehubGuestToken)
+            {
+                let displayedPayments = [fiservHelper.buildRenderedGuestTokenField(basket)]
+                res.viewData.customer.customerPaymentInstruments = displayedPayments.length;
+                let context = {
+                    customer: {
+                        customerPaymentInstruments: displayedPayments
+                    }
+                };
+                res.viewData.renderedPaymentInstruments = RenderTemplateHelperGuest.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }
         }
     });

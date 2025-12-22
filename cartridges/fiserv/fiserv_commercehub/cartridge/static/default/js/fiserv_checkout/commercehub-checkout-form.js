@@ -12,11 +12,12 @@ class CommercehubCheckoutForm
         this.configDataPaymentCard = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
         this.tokenizationUrl = initializationData.tokenizationUrl;
+        this.isGuest = !initializationData.userLoggedIn;
         this.createAdapter();
 
         $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
 
-        if(this.configDataPaymentCard.fastlaneEnabled && !initializationData.userLoggedIn)
+        if(this.configDataPaymentCard.fastlaneEnabled && this.isGuest)
         {
             this.formAdapter.setFastlaneInitStatus(true);
             FiservFastlaneInitializer.initFastlane(this.credentialsUrl, this.formAdapter, this.formConfig);
@@ -159,7 +160,9 @@ class CommercehubCheckoutForm
         }
 
         let earlyFlowExecuted = false;
-        if(this.configDataPaymentCard.tokenizeEarly && $('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked)
+        if(this.configDataPaymentCard.tokenizeEarly && 
+            (($('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked) ||
+            (this.configDataPaymentCard.tokenizeEarlyGuest && this.isGuest)))
         {
             try {
                 await new Promise((resolve, reject) => {
@@ -174,6 +177,7 @@ class CommercehubCheckoutForm
                     $('.selected-payment').removeClass('selected-payment');
                     $('#earlyTokenizeInjectedForm').data('uuid', response.uuid);
                     $('#earlyTokenizeInjectedForm').addClass('selected-payment');
+                    this.setSessionIdInput(null);
 
                     earlyFlowExecuted = true;
                 }).catch((err) => 
@@ -261,6 +265,8 @@ class CommercehubCheckoutForm
 
     submitHandlerToken = (_e) =>
     {
+        this.setSessionIdInput(null);
+
         if(!this.configDataPaymentCard.use3DS)
             return;
 

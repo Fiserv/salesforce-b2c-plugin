@@ -11,7 +11,7 @@ server.extend(module.superModule);
 
 server.prepend('SavePayment', userLoggedIn.validateLoggedIn, csrfProtection.validateAjaxRequest, fiservPaymentSaver.savePayment);
 
-server.post('EarlyTokenization', userLoggedIn.validateLoggedIn, fiservPaymentSaver.savePaymentEarly);
+server.post('EarlyTokenization', fiservPaymentSaver.savePaymentEarly);
 
 server.append('List', function (req, res, next) {
     const AccountModel = require('*/cartridge/models/account');

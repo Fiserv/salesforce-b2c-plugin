@@ -3,7 +3,7 @@
 
 <isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
-<isset name="earlyTokenization" value="${pdict.FiservConfig.getEarlyTokenization()}" scope="pdict" />
+<isset name="earlyTokenization" value="${pdict.FiservConfig.getCommerceHubTokenization() && pdict.FiservConfig.getEarlyTokenization()}" scope="pdict" />
 <isset name="fastlaneEnabled" value="${pdict.FiservConfig.getCommerceHubPayPalFastlaneEnabled()}" scope="pdict" />
 
 <isscript>
