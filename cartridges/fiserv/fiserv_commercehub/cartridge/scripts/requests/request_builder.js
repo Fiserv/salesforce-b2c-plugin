@@ -399,27 +399,43 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         payload['amount'] = buildAmountObjectFromBasket(basket);
         payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
-        if(fiservConfig.get3DSEnabled() && credentialsForm.threeDSToken)
+        if(fiservConfig.get3DSEnabled() && fiservConfig.getCommerceHubTokenization() && credentialsForm.threeDSToken)
         {
-            let profile = basket.getCustomer().getProfile();
-            if(!profile)
-            {
-                throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
-            }
-            let paymentInstruments = profile.getWallet().getPaymentInstruments();
             let pi;
-            for(let i in paymentInstruments)
+            let profile = basket.getCustomer().getProfile();
+            if(profile)
             {
-                if(paymentInstruments[i].UUID === credentialsForm.threeDSToken)
+                let paymentInstruments = profile.getWallet().getPaymentInstruments();
+                for(let i in paymentInstruments)
                 {
-                    pi = paymentInstruments[i];
-                    break;
+                    if(paymentInstruments[i].UUID === credentialsForm.threeDSToken)
+                    {
+                        pi = paymentInstruments[i];
+                        break;
+                    }
                 }
             }
+            else if(fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest() && basket.custom.commercehubGuestToken)
+            {
+                let guestPI = JSON.parse(basket.custom.commercehubGuestToken);
+                if(guestPI.UUID === credentialsForm.threeDSToken)
+                {
+                    pi = {
+                        creditCardToken: guestPI.tokenData,
+                        creditCardExpirationMonth: guestPI.expirationMonth,
+                        creditCardExpirationYear: guestPI.expirationYear,
+                        custom: {
+                            commercehubTokenSource: guestPI.tokenSource
+                        }
+                    }
+                }
+            }
+
             if(!pi)
             {
                 throw new Error(Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null));
             }
+            
             payload['source'] = buildTokenSourceObject(pi);
         }
         if(fiservConfig.getCommerceHubPayPalEnabled() && fiservConfig.getCommerceHubPayPalVaultingEnabled() && basket.customer.profile)

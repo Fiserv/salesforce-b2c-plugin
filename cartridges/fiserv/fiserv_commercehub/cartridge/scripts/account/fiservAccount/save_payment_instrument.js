@@ -84,8 +84,12 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
 {
     const PaymentInstrument = require('dw/order/PaymentInstrument');
 
-    let storedPaymentInstrument = profile.getWallet().createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
+    if(!profile)
+    {
+        return attachGuestTokenToBasket(chResponse, cardType, orderNo);
+    }
 
+    let storedPaymentInstrument = profile.getWallet().createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
     let name = chResponse.source.card.nameOnCard ? chResponse.source.card.nameOnCard : profile.firstName.concat(" ").concat(profile.lastName);
     storedPaymentInstrument.setCreditCardHolder(
         name
@@ -106,7 +110,6 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
     storedPaymentInstrument.setCreditCardToken(chResponse.paymentTokens[0].tokenData);
 
     // custom attributes
-    storedPaymentInstrument.custom.forcedTokenization = Boolean(forcedTokenization);
     storedPaymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE) ||
         fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
     storedPaymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR) ||
@@ -114,15 +117,49 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
     storedPaymentInstrument.custom.commercehubTokenSource = chResponse.paymentTokens[0].tokenSource;
     storedPaymentInstrument.custom.commercehubTokenResponseCode = chResponse.paymentTokens[0].tokenResponseCode;
     storedPaymentInstrument.custom.commercehubTokenResponseDescription = chResponse.paymentTokens[0].tokenResponseDescription;
-
+    storedPaymentInstrument.custom.forcedTokenization = Boolean(forcedTokenization);
+    
     if(forcedTokenization)
     {
-        fiservLogs.logInfo(1, "New forced token stored", orderNo);
+        fiservLogs.logInfo(1, "New forced token stored in customer profile", orderNo);
     }
     else
     {
-        fiservLogs.logInfo(1, "New token stored", orderNo);
+        fiservLogs.logInfo(1, "New token stored in customer profile", orderNo);
     }
+
+    return storedPaymentInstrument;
+}
+
+function attachGuestTokenToBasket(chResponse, cardType, orderNo)
+{
+    const BasketMgr = require('dw/order/BasketMgr');
+    const UUIDUtils = require("dw/util/UUIDUtils");
+
+    let basket = BasketMgr.getCurrentBasket();
+    if(!basket)
+    {
+        throw new Error(Resource.msg('message.error.tokenization.failed', 'error', null));
+    }
+
+    let storedPaymentInstrument = {
+        name: chResponse.source.card.nameOnCard ? chResponse.source.card.nameOnCard : Resource.msg('display.html.token.guest.default', 'display', null),
+        cardNumber: createMaskedCardNumber(chResponse.source.card.last4),
+        cardType: cardType,
+        commercehubCardType: fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE) ||
+            fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN),
+        expirationMonth: parseInt(chResponse.source.card.expirationMonth),
+        expirationYear: parseInt(chResponse.source.card.expirationYear),
+        cardIndicator: fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR) ||
+            fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR_TOKEN),
+        tokenData: chResponse.paymentTokens[0].tokenData,
+        tokenSource: chResponse.paymentTokens[0].tokenSource,
+        UUID: UUIDUtils.createUUID()
+    }
+
+    basket.custom.commercehubGuestToken = JSON.stringify(storedPaymentInstrument);
+
+    fiservLogs.logInfo(1, "New guest token attached to basket", orderNo);
 
     return storedPaymentInstrument;
 }
@@ -149,16 +186,23 @@ function savePaymentInstrument(customerNo, paymentInstrument, chResponse, orderN
 
 function saveTokenizedCard(customerNo, cardType, chResponse)
 {
-        if (!canTokenize(CustomerMgr.getCustomerByCustomerNumber(customerNo)))
-        {
-            throw new Error(Resource.msg('message.error.tokenization.invalidState', 'error', null));
-        }
-        
-        // customer isn't null here--already checked in canTokenize()
-        let customer = CustomerMgr.getCustomerByCustomerNumber(customerNo);
-        return saveCard(customer.getProfile(), cardType, chResponse)
+    if (!canTokenize(CustomerMgr.getCustomerByCustomerNumber(customerNo)))
+    {
+        throw new Error(Resource.msg('message.error.tokenization.invalidState', 'error', null));
+    }
+    
+    // customer isn't null here--already checked in canTokenize()
+    let customer = CustomerMgr.getCustomerByCustomerNumber(customerNo);
+    return saveCard(customer.getProfile(), cardType, chResponse);
 }
 
+function saveTokenizedCardGuest(cardType, chResponse)
+{
+    // Passing in null for the profile in the case that this is a guest early token
+    return saveCard(null, cardType, chResponse);
+}
+
+// A null profile indicates that we are in a guest early tokenization flow
 function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
 {
     if (!wasTokenizationSuccessful(chResponse))
@@ -174,7 +218,7 @@ function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
     }
 
     let duplicate = null;
-    if((duplicate = isDuplicateCard(profile, chResponse)))
+    if(profile && (duplicate = isDuplicateCard(profile, chResponse)))
     {
         // Updated and return duplicate card if new request was not forced...
         if(duplicate.custom.forcedTokenization && !forcedTokenization)
@@ -195,5 +239,6 @@ function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
 module.exports = 
 {
     savePaymentInstrument : savePaymentInstrument,
-    saveTokenizedCard : saveTokenizedCard
+    saveTokenizedCard : saveTokenizedCard,
+    saveTokenizedCardGuest : saveTokenizedCardGuest
 }

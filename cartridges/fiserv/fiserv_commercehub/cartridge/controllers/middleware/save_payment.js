@@ -36,7 +36,7 @@ function savePaymentEarly(req, res, next)
 {
     let sessionId = req.form.sessionId;
     let cardType = req.form.cardType;
-    if(sessionId !== null && fiservConfig.getEarlyTokenization())
+    if(sessionId !== null && fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization())
     {
         fiservLogs.logInfo(1, 'Initiating Early Tokenization call');
         return executeSavePaymentTransaction.call(this, req, res, next, sessionId, cardType);
@@ -99,8 +99,16 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
         // We are retrieving the card type either from the form or the request body in the case of early tokens, but we still prefer the value from CH if possible
         cardType = cardProduct ? cardProduct : cardType;
 
-        const fiserveCreditCardModel = require('*/cartridge/models/fiservCreditCardModel')
-        let savedCard = fiservSavePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiserveCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+        const fiservCreditCardModel = require('*/cartridge/models/fiservCreditCardModel')
+        let savedCard;
+        if(req.currentCustomer.profile)
+        {
+            savedCard = fiservSavePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+        }
+        else
+        {
+            savedCard = fiservSavePaymentInstrument.saveTokenizedCardGuest(fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+        }
 
         if('duplicate' in savedCard)
         {
@@ -114,7 +122,7 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
             }
         }
 
-        let uuid = savedCard ? savedCard.getUUID() : null;
+        let uuid = savedCard && savedCard.UUID ? savedCard.UUID : null;
         
         Transaction.commit();
         fiservLogs.logInfo(1, 'Tokenization Request Successful');

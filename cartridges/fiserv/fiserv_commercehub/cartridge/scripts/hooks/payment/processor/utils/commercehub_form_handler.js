@@ -8,7 +8,8 @@ function getCustomer(customerNo)
 
 function getPaymentInstrument(currentCustomer, storedPaymentMethodId) 
 {
-    let array = require('*/cartridge/scripts/util/array');
+    const array = require('*/cartridge/scripts/util/array');
+    
     let paymentInstruments = currentCustomer.getProfile().getWallet().getPaymentInstruments();
     let findById = (item) => 
     {
@@ -37,8 +38,46 @@ function getStoredCardFormResult(currentCustomer, storedPaymentUUID, paymentForm
     }
     
     let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm);
-    return { error: false, viewData: viewData };    
+    return { error: false, viewData: viewData };
+}
 
+function getGuestCardFormResult(paymentForm, viewFormData)
+{
+    const BasketMgr = require('dw/order/BasketMgr');
+
+    let basket = BasketMgr.getCurrentBasket();
+    if(!basket)
+    {
+        return  { error: true };
+    }
+
+    let storedPaymentInstrumentString = basket.custom.commercehubGuestToken;
+    if(!storedPaymentInstrumentString)
+    {
+        return  { error: true };
+    }
+    let storedPaymentInstrument = JSON.parse(storedPaymentInstrumentString);
+    if(!storedPaymentInstrument)
+    {
+        return  { error: true };
+    }
+
+    let custom = {
+        commercehubTokenSource: storedPaymentInstrument.tokenSource,
+        commercehubCardType: storedPaymentInstrument.commercehubCardType,
+        commercehubCardIndicator: storedPaymentInstrument.cardIndicator
+    };
+    let paymentInstrument = {
+        custom: custom,
+        creditCardType: storedPaymentInstrument.cardType,
+        creditCardNumber: storedPaymentInstrument.cardNumber,
+        creditCardExpirationMonth: storedPaymentInstrument.expirationMonth,
+        creditCardExpirationYear: storedPaymentInstrument.expirationYear,
+        creditCardToken: storedPaymentInstrument.tokenData
+    };
+
+    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm);
+    return { error: false, viewData: viewData };
 }
 
 function getBaseViewData(viewFormData, paymentForm)
@@ -123,7 +162,9 @@ function getNewCardFormResult(paymentForm, viewFormData)
 
 function processForm(req, paymentForm, viewFormData) 
 {
-    let viewData = req.form.storedPaymentUUID ? getStoredCardFormResult(req.currentCustomer, req.form.storedPaymentUUID, paymentForm, viewFormData) : getNewCardFormResult(paymentForm, viewFormData)
+    let viewData = req.form.storedPaymentUUID ? getStoredCardFormResult(req.currentCustomer, req.form.storedPaymentUUID, paymentForm, viewFormData) :
+        (paymentForm.fiservCommercehubPaymentFields.sessionId ? getNewCardFormResult(paymentForm, viewFormData) :
+        getGuestCardFormResult(paymentForm, viewFormData));
     return viewData;
 }
 

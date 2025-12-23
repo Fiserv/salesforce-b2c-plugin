@@ -92,6 +92,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubEarlyTokenization');
     },
 
+    getEarlyTokenizationGuest()
+    {
+        return getSitePreference('CommerceHubEarlyTokenizationGuest');
+    },
+
     get3DSEnabled()
     {
         return getSitePreference('CommerceHub3DSEnable');
