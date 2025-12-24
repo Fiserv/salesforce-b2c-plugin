@@ -46,6 +46,9 @@
                 <preference preference-id="CommerceHub3DSEnable">
                     <value>false</value>
                 </preference>
+                <preference preference-id="CommerceHubCVVEnable">
+                    <value>false</value>
+                </preference>
 
                 <!--THIS IS WHERE THE PAYMENT FORM CUSTOMIZATION STARTS-->
 

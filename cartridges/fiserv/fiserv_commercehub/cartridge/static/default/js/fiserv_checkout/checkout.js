@@ -115,13 +115,100 @@ document.addEventListener("DOMContentLoaded", () => {
         if($(".payment-information").data("payment-method-id") === "CREDIT_CARD" && $('.credit-card-form.checkout-hidden').length)
         {
             form.watchSubmitButtonToken();
-            form.enableSubmitButton();
+            validateSavedPaymentCVV();
         }
     });
 
     $('.btn.add-payment').click(()=> {
         clearPaymentForm();
         initPaymentForm();
+    });
+
+    // CVV validation for saved payment instruments
+    let validateSavedPaymentCVV = function(showEmptyError) {
+        let selectedPayment = $('.saved-payment-instrument.selected-payment');
+        if (selectedPayment.length) {
+            let cvvInput = selectedPayment.find('.saved-payment-security-code');
+            
+            // If CVV field doesn't exist (tokenization disabled), enable submit button
+            if (!cvvInput.length) {
+                form.enableSubmitButton();
+                return;
+            }
+            
+            let cvvValue = cvvInput.val();
+            let isValid = cvvValue && cvvValue.length >= 3 && cvvValue.length <= 4 && /^[0-9]{3,4}$/.test(cvvValue);
+            let errorMsg = cvvInput.closest('.col').find('.invalid-feedback');
+            
+            if (isValid) {
+                form.enableSubmitButton();
+                cvvInput.removeClass('is-invalid').addClass('is-valid');
+                errorMsg.hide();
+            } else {
+                form.disableSubmitButton();
+                // Show error if value is invalid or if field was cleared after having a value
+                if ((cvvValue && cvvValue.length > 0) || showEmptyError) {
+                    cvvInput.removeClass('is-valid').addClass('is-invalid');
+                    errorMsg.show().css('display', 'block');
+                } else {
+                    cvvInput.removeClass('is-valid is-invalid');
+                    errorMsg.hide();
+                }
+            }
+        }
+    };
+
+    // Watch for CVV input on saved payment instruments
+    $(document).on('input', '.saved-payment-security-code', function() {
+        let wasValid = $(this).hasClass('is-valid');
+        validateSavedPaymentCVV(wasValid && $(this).val().length === 0);
+    });
+
+    // Watch for CVV field blur to show error if empty
+    $(document).on('blur', '.saved-payment-security-code', function() {
+        if ($(this).val().length === 0) {
+            validateSavedPaymentCVV(true);
+        }
+    });
+
+    // Prevent CVV field clicks from bubbling to parent
+    $(document).on('click', '.saved-payment-security-code, .saved-cvv-mask-toggle', function(e) {
+        e.stopPropagation();
+    });
+
+    // Watch for saved payment selection changes
+    $(document).on('click', '.saved-payment-instrument', function(e) {
+        // Only change selection if not clicking on CVV field or its controls
+        if (!$(e.target).closest('.saved-payment-security-code, .saved-cvv-mask-toggle, .input-group').length) {
+            $('.saved-payment-instrument').removeClass('selected-payment');
+            $(this).addClass('selected-payment');
+            validateSavedPaymentCVV();
+        }
+    });
+
+    // Initial validation on page load
+    if (savedPaymentsPresent() && creditCardFormHidden()) {
+        validateSavedPaymentCVV();
+    }
+
+    // CVV masking toggle for saved payment instruments
+    $(document).on('click', '.saved-cvv-mask-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        let targetId = $(this).data('target');
+        let input = $('#' + targetId);
+        let icon = $(this).find('i');
+        
+        if (input.length > 0) {
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                input.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        }
     });
 
     // if payment stage: instantiate payment form

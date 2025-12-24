@@ -264,18 +264,26 @@ function buildConfigList(chPreferenceDescriptions)
         ]
     });
 
+    // Build Credit/Debit Cards items dynamically based on tokenization setting
+    let creditCardItems = [
+        getPreferenceDescription('CommerceHubCreditEnable'),
+        getPreferenceDescription('CommerceHubCreditPaymentType'),
+        getPreferenceDescription('CommerceHubTokenization'),
+        getPreferenceDescription('CommerceHubTokenizationStrategy'),
+        getPreferenceDescription('CommerceHubStandaloneSPA'),
+        getPreferenceDescription('CommerceHubEarlyTokenization'),
+        getPreferenceDescription('CommerceHub3DSEnable')
+    ];
+    
+    // Only show CVV option if tokenization is enabled
+    if (currentSite.getCustomPreferenceValue('CommerceHubTokenization')) {
+        creditCardItems.push(getPreferenceDescription('CommerceHubCVVEnable'));
+    }
+    
     configList.push({
-        'label': 'Credit/Debit Cards',
-        'id': 'CreditDebitCards',
-        'items': [
-            getPreferenceDescription('CommerceHubCreditEnable'),
-            getPreferenceDescription('CommerceHubCreditPaymentType'),
-            getPreferenceDescription('CommerceHubTokenization'),
-            getPreferenceDescription('CommerceHubTokenizationStrategy'),
-            getPreferenceDescription('CommerceHubStandaloneSPA'),
-            getPreferenceDescription('CommerceHubEarlyTokenization'),
-            getPreferenceDescription('CommerceHub3DSEnable')
-        ]
+        'label': 'Credit / Debit Cards',
+        'id': 'CreditCards',
+        'items': creditCardItems
     });
 
     configList.push({

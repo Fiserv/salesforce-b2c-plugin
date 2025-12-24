@@ -173,6 +173,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubCVVEnable">
+                <display-name xml:lang="x-default">Enable CVV for Tokenized Cards</display-name>
+                <description xml:lang="x-default">Require CVV entry when using tokenized payment cards</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
             <attribute-definition attribute-id="CommerceHub3DSEnable">
                 <display-name xml:lang="x-default">Enable 3DS</display-name>
                 <type>boolean</type>
@@ -1331,6 +1339,7 @@
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
+                <attribute attribute-id="CommerceHubCVVEnable"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
                 <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>

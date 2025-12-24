@@ -9,6 +9,7 @@ var saveURL;
 
 function instantiate()
 {
+    console.log('[Form Manager] instantiate() called');
     let instantiationDomElement = jQuery('#instantiationParams');
     preferenceValues = JSON.parse(instantiationDomElement.attr('preference-values'));
     saveURL = instantiationDomElement.attr('save-url');
@@ -27,6 +28,82 @@ function instantiate()
 
         configChanges[jQuery(this).attr('id')] = newValue;
         jQuery('#saveButton').prop('disabled', false);
+    });
+
+    // Handle CVV field visibility based on tokenization checkbox
+    function toggleCVVField() {
+        console.log('[CVV Toggle] Function called');
+        let tokenizationCheckbox = jQuery('#CommerceHubTokenization');
+        console.log('[CVV Toggle] Tokenization checkbox found:', tokenizationCheckbox.length > 0);
+        console.log('[CVV Toggle] Tokenization checked:', tokenizationCheckbox.is(':checked'));
+        
+        // Try multiple strategies to find the CVV field container
+        let cvvField = jQuery('#CommerceHubCVVEnable');
+        console.log('[CVV Toggle] CVV field found:', cvvField.length > 0);
+        
+        let cvvFieldContainer = null;
+        
+        // Strategy 1: Try closest with configFieldContainer class
+        cvvFieldContainer = cvvField.closest('.configFieldContainer');
+        console.log('[CVV Toggle] Strategy 1 (.configFieldContainer):', cvvFieldContainer.length);
+        
+        // Strategy 2: Try parent's parent (field -> container -> row)
+        if (!cvvFieldContainer.length) {
+            cvvFieldContainer = cvvField.parent().parent();
+            console.log('[CVV Toggle] Strategy 2 (parent.parent):', cvvFieldContainer.length);
+        }
+        
+        // Strategy 3: Find by ID if it exists
+        if (!cvvFieldContainer.length) {
+            cvvFieldContainer = jQuery('#CommerceHubCVVEnableItem');
+            console.log('[CVV Toggle] Strategy 3 (#CommerceHubCVVEnableItem):', cvvFieldContainer.length);
+        }
+        
+        // Strategy 4: Find the label and get its parent container
+        if (!cvvFieldContainer.length) {
+            let label = jQuery('label[for="CommerceHubCVVEnable"]');
+            if (label.length) {
+                cvvFieldContainer = label.closest('div').parent();
+                console.log('[CVV Toggle] Strategy 4 (label parent):', cvvFieldContainer.length);
+            }
+        }
+        
+        if (tokenizationCheckbox.length && cvvFieldContainer && cvvFieldContainer.length) {
+            console.log('[CVV Toggle] Container HTML:', cvvFieldContainer.prop('outerHTML').substring(0, 200));
+            if (tokenizationCheckbox.is(':checked')) {
+                console.log('[CVV Toggle] Showing CVV field');
+                cvvFieldContainer.show();
+                cvvFieldContainer.css('display', '');
+            } else {
+                console.log('[CVV Toggle] Hiding CVV field');
+                cvvFieldContainer.hide();
+                cvvFieldContainer.css('display', 'none');
+            }
+        } else {
+            console.log('[CVV Toggle] ERROR: Could not find required elements');
+            console.log('[CVV Toggle] Tokenization checkbox:', tokenizationCheckbox.length);
+            console.log('[CVV Toggle] CVV container:', cvvFieldContainer ? cvvFieldContainer.length : 0);
+        }
+    }
+    
+    // Initial check on page load with longer delay
+    setTimeout(function() {
+        console.log('[CVV Toggle] Initial load toggle');
+        toggleCVVField();
+    }, 500);
+    
+    // Watch for changes to tokenization checkbox
+    jQuery('#CommerceHubTokenization').on('change', function() {
+        console.log('[CVV Toggle] Change event fired');
+        toggleCVVField();
+    });
+    jQuery('#CommerceHubTokenization').on('input', function() {
+        console.log('[CVV Toggle] Input event fired');
+        toggleCVVField();
+    });
+    jQuery('#CommerceHubTokenization').on('click', function() {
+        console.log('[CVV Toggle] Click event fired');
+        setTimeout(toggleCVVField, 50);
     });
 
     // Dependency code

@@ -59,6 +59,7 @@ module.exports = {
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization',
             'CommerceHub3DSEnable',
+            'CommerceHubCVVEnable',
             'CommerceHubPayPalFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
         ],
         'CommerceHubTokenization': [

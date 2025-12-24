@@ -1,3 +1,6 @@
+<isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
+<isset name="cvvEnabled" value="${pdict.FiservConfig.getCVVEnabled()}" scope="pdict" />
+
 <isloop items="${pdict.customer.customerPaymentInstruments}" var="paymentInstrument" status="loopState">
     <div class="row saved-payment-instrument ${loopState.first ? 'selected-payment' : ''}" data-uuid="${paymentInstrument.UUID}">
         <div class="form-group col-6 col-md-3" >
@@ -21,6 +24,38 @@
                     ${paymentInstrument.creditCardExpirationMonth}/${paymentInstrument.creditCardExpirationYear}
                 </span>
             </div>
+            <isif condition="${pdict.canTokenize && pdict.cvvEnabled}">
+                <div class="form-group">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <label class="form-control-label mb-0" for="saved-payment-security-code-${paymentInstrument.UUID}">
+                                ${Resource.msg('field.credit.card.security.code','creditCard',null)}
+                            </label>
+                        </div>
+                        <div class="col">
+                            <div class="input-group">
+                                <input type="password" 
+                                       class="form-control saved-payment-security-code" 
+                                       id="saved-payment-security-code-${paymentInstrument.UUID}"
+                                       name="dwfrm_billing_creditCardFields_securityCode"
+                                       maxlength="3"
+                                       pattern="[0-9]{3}"
+                                       required
+                                       data-uuid="${paymentInstrument.UUID}"
+                                       autocomplete="off">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary saved-cvv-mask-toggle" data-target="saved-payment-security-code-${paymentInstrument.UUID}">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback">
+                                ${Resource.msg('message.error.security.code.required','error',null)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </isif>
         </div>
     </div>
 </isloop>
