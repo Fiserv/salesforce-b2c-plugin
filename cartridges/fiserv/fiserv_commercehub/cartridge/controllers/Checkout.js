@@ -20,9 +20,9 @@ server.append('Begin', function (req, res, next) {
     const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
     const fiservConstants = require('*/cartridge/fiservConstants/constants');
 
+    let basket = BasketMgr.getCurrentBasket()
     if(!fiservConfig.getCommerceHubGiftEnabled())
     {
-        let basket = BasketMgr.getCurrentBasket()
         if(basket && basket.paymentInstruments.length)
         {
             Transaction.wrap(function () {
@@ -55,6 +55,14 @@ server.append('Begin', function (req, res, next) {
                 UUIDRemoveList = paymentInstruments.toArray().filter((pi) => pi.custom.forcedTokenization).map((pi) => pi.getUUID());
             }
             res.viewData.customer.customerPaymentInstruments = displayedPayments.filter((pi) => !UUIDRemoveList.includes(pi.UUID));
+        }
+    }
+    else if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest())
+    {
+        res.viewData.customer.customerPaymentInstruments = [];
+        if(basket && basket.custom.commercehubGuestToken)
+        {
+            res.viewData.customer.customerPaymentInstruments = [fiservHelper.buildRenderedGuestTokenField(basket)];
         }
     }
 

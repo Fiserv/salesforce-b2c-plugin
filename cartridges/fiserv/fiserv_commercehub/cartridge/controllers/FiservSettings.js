@@ -263,7 +263,7 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubAcceptedCountries')
         ]
     });
-
+    
     // Build Credit/Debit Cards items dynamically based on tokenization setting
     let creditCardItems = [
         getPreferenceDescription('CommerceHubCreditEnable'),
@@ -272,6 +272,7 @@ function buildConfigList(chPreferenceDescriptions)
         getPreferenceDescription('CommerceHubTokenizationStrategy'),
         getPreferenceDescription('CommerceHubStandaloneSPA'),
         getPreferenceDescription('CommerceHubEarlyTokenization'),
+        getPreferenceDescription('CommerceHubEarlyTokenizationGuest'),
         getPreferenceDescription('CommerceHub3DSEnable')
     ];
     
@@ -279,10 +280,10 @@ function buildConfigList(chPreferenceDescriptions)
     if (currentSite.getCustomPreferenceValue('CommerceHubTokenization')) {
         creditCardItems.push(getPreferenceDescription('CommerceHubCVVEnable'));
     }
-    
+
     configList.push({
-        'label': 'Credit / Debit Cards',
-        'id': 'CreditCards',
+        'label': 'Credit/Debit Cards',
+        'id': 'CreditDebitCards',
         'items': creditCardItems
     });
 

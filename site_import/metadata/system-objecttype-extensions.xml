@@ -181,6 +181,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubEarlyTokenizationGuest">
+                <display-name xml:lang="x-default">Early Tokenization For Guests</display-name>
+                <description xml:lang="x-default">Allow guest customers to tokenize payment information on credit card capture in the checkout flow</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
             <attribute-definition attribute-id="CommerceHub3DSEnable">
                 <display-name xml:lang="x-default">Enable 3DS</display-name>
                 <type>boolean</type>
@@ -1338,6 +1346,7 @@
                 <attribute attribute-id="CommerceHubTokenizationStrategy"/>
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
+                <attribute attribute-id="CommerceHubEarlyTokenizationGuest"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
                 <attribute attribute-id="CommerceHubCVVEnable"/>
 
@@ -1735,6 +1744,23 @@
             <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubCustomerId"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="Basket">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubGuestToken">
+                <display-name xml:lang="x-default">Guest Token</display-name>
+                <description xml:lang="x-default">JSON string representing the token data of a card added by a guest user</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubGuestToken"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

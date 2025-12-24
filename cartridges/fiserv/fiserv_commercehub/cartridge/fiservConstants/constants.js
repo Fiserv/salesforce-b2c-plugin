@@ -58,6 +58,7 @@ module.exports = {
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization',
+            'CommerceHubEarlyTokenizationGuest',
             'CommerceHub3DSEnable',
             'CommerceHubCVVEnable',
             'CommerceHubPayPalFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
@@ -66,6 +67,9 @@ module.exports = {
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization'
+        ],
+        'CommerceHubEarlyTokenization': [
+            'CommerceHubEarlyTokenizationGuest'
         ],
         'CommerceHubGiftEnable': [
             'CommerceHubGiftPaymentMethodTitle',
@@ -122,6 +126,7 @@ module.exports = {
         'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
         'CommerceHubTimeout': "Default: 30 seconds",
         'CommerceHubTokenizationStrategy': "Enable this option to tokenize all payment cards submitted at checkout, regardless of consumer choice.",
-        'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow"
+        'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow",
+        'CommerceHubEarlyTokenizationGuest': "Enable to allow for guest users to only need to input their card data once in their checkout flow"
     }
 };

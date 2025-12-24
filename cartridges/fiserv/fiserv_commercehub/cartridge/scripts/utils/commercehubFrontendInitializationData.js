@@ -13,13 +13,17 @@ function getFrontendConfigData(formId)
     {
         case 'Payment':
             configData = {
-                'tokenizeEarly': fiservConfig.getEarlyTokenization(),
+                'tokenizeEarly': fiservConfig.getCommerceHubTokenization() ? fiservConfig.getEarlyTokenization() : false,
                 'use3DS': fiservConfig.get3DSEnabled(),
                 'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
                 'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
             };
+            if(configData.tokenizeEarly)
+            {
+                configData['tokenizeEarlyGuest'] = fiservConfig.getEarlyTokenizationGuest();
+            }
             if(configData.fastlaneEnabled)
             {
                 configData['fastlaneAddressFormNames'] = fiservConfig.buildAddressFormNamesObject();

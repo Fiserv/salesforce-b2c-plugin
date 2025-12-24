@@ -42,9 +42,34 @@ function secureTraversal(object, path)
     return object;
 }
 
+function buildRenderedGuestTokenField(basket)
+{
+    const URLUtils = require('dw/web/URLUtils');
+
+    let paymentInstrument = JSON.parse(basket.custom.commercehubGuestToken);
+    var renderedGuestPayment = {
+        creditCardHolder: paymentInstrument.name,
+        maskedCreditCardNumber: paymentInstrument.cardNumber,
+        creditCardType: paymentInstrument.cardType,
+        creditCardExpirationMonth: paymentInstrument.expirationMonth,
+        creditCardExpirationYear: paymentInstrument.expirationYear,
+        UUID: paymentInstrument.UUID
+    };
+
+    renderedGuestPayment.cardTypeImage = {
+        src: URLUtils.staticURL('/images/'
+            + paymentInstrument.cardType.toLowerCase().replace(/\s/g, '')
+            + '-dark.svg'),
+        alt: paymentInstrument.cardType
+    };
+
+    return renderedGuestPayment;
+}
+
 module.exports =
 {
     isCreditCardFiserv : isCreditCardFiserv,
     isApplePayFiserv : isApplePayFiserv,
-    secureTraversal : secureTraversal
+    secureTraversal : secureTraversal,
+    buildRenderedGuestTokenField : buildRenderedGuestTokenField
 }
