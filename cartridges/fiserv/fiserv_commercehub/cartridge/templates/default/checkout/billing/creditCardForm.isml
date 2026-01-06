@@ -10,6 +10,7 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
+    assets.addJs('/js/fiserv_checkout/saved-cvv-handler.js');
     assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
     assets.addJs('/js/fiserv_checkout/checkout.js');
     if(!pdict.customer.registeredUser && pdict.fastlaneEnabled)
