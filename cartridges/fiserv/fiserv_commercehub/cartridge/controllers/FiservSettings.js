@@ -10,6 +10,7 @@ const currentSite = require('dw/system').Site.getCurrent();
 
 // Instantiating Preferences
 const chPreferenceDescriptions = retrieveCommerceHubPreferences();
+const breakDelimiter = "___br___"
 var configList;
 var simplifiedPreferences;
 if(chPreferenceDescriptions != null)
@@ -492,7 +493,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
     {
         resJson = {
             success: true,
-            successMessage: 'Successfully saved config settings for...<br>' + successString + ' ]'
+            successMessage: 'Successfully saved config settings for...' + breakDelimiter + successString + ' ]'
         };
     }
     else if(error && success)
@@ -502,8 +503,8 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
             success: true,
             error: true,
             errorList: errorList,
-            successMessage: 'Successfully saved config settings for...<br>' + successString + ' ]',
-            errorMessage: 'Config settings only partially saved...<br>Failures: ' + errorString + ' ]'
+            successMessage: 'Successfully saved config settings for...' + breakDelimiter + successString + ' ]',
+            errorMessage: 'Config settings only partially saved...' + breakDelimiter + 'Failures: ' + errorString + ' ]'
         };
     }
     else
@@ -512,7 +513,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
         resJson = {
             error: true,
             errorList: errorList,
-            errorMessage: 'Failed to save config settings for...<br>' + errorString + ' ]'
+            errorMessage: 'Failed to save config settings for...' + breakDelimiter + errorString + ' ]'
         };
     }
 
@@ -540,7 +541,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
     {
         resJson['warn'] = true;
         resJson['warnList'] = warnList;
-        resJson['warnMessage'] = 'Mandatory fields have not been set. You will not be able to process payments<br>' + warnString + ' ]';
+        resJson['warnMessage'] = 'Mandatory fields have not been set. You will not be able to process payments' + breakDelimiter + warnString + ' ]';
     }
     
     res.json(resJson);

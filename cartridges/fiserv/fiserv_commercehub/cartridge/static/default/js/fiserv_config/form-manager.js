@@ -196,6 +196,7 @@ function showMessage(msg, status)
     	class: `messageBlock ${ statusClass }`,
 		role: 'alert'
 	}).text(msg);
+    msgDiv.html(msgDiv.html().replace(/___br___/g,'<br>'));
 
   	const msgContainer = jQuery('#messageContainer');
 	msgContainer.prepend(msgDiv);
