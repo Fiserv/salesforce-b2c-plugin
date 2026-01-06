@@ -30,6 +30,13 @@ class CommercehubCheckoutForm
     initialize = function()
     {
         try {
+            if(this.formAdapter.getFastlaneInitStatus())
+            {
+                setTimeout(() => {
+                    this.initialize();
+                }, 1000);
+                return;
+            }
             if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
             {
                 $.spinner().start();

@@ -139,7 +139,8 @@ class FiservSDKIframe
 
     resetForm = function()
     {
-        this.form.reset();
+        if(this.form)
+            this.form.reset();
     }
 
     unmask = function(field)

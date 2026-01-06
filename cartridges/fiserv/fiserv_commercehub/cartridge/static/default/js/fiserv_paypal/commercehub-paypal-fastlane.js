@@ -173,7 +173,12 @@ class FiservFastlaneInitializer
 
             $.spinner().stop();
         }).catch((error) => {
-            console.log("Failed to instantiate Fastlane")
+            FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter);
+            $('#fastlane-email-watermark').find('paypal-watermark').remove();
+            formAdapter.destroyIframe('card');
+            formAdapter.setFastlaneStatus(false);
+            formAdapter.setFastlaneInitStatus(false);
+            console.log("Failed to instantiate Fastlane");
             $.spinner().stop();
         });
     }
