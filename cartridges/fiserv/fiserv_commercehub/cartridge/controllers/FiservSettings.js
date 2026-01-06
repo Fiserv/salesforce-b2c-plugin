@@ -492,7 +492,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
     {
         resJson = {
             success: true,
-            successMessage: 'Successfully saved config settings for...<br>' + successString + ' ]'
+            successMessage: 'Successfully saved config settings for...' + successString + ' ]'
         };
     }
     else if(error && success)
@@ -502,8 +502,8 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
             success: true,
             error: true,
             errorList: errorList,
-            successMessage: 'Successfully saved config settings for...<br>' + successString + ' ]',
-            errorMessage: 'Config settings only partially saved...<br>Failures: ' + errorString + ' ]'
+            successMessage: 'Successfully saved config settings for...' + successString + ' ]',
+            errorMessage: 'Config settings only partially saved...Failures: ' + errorString + ' ]'
         };
     }
     else
@@ -512,7 +512,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
         resJson = {
             error: true,
             errorList: errorList,
-            errorMessage: 'Failed to save config settings for...<br>' + errorString + ' ]'
+            errorMessage: 'Failed to save config settings for...' + errorString + ' ]'
         };
     }
 
@@ -540,7 +540,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
     {
         resJson['warn'] = true;
         resJson['warnList'] = warnList;
-        resJson['warnMessage'] = 'Mandatory fields have not been set. You will not be able to process payments<br>' + warnString + ' ]';
+        resJson['warnMessage'] = 'Mandatory fields have not been set. You will not be able to process payments' + warnString + ' ]';
     }
     
     res.json(resJson);
