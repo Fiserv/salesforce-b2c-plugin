@@ -179,7 +179,8 @@ function addDependencyEvents(dependency, key)
 // Error message function
 function showMessage(msg, status)
 {
-    let statusClass = 'Message';
+    const escapedMsg = msg.replace(/[^a-z0-9]/gi, "");
+	let statusClass = 'Message';
     switch(status) {
         case 0:
             statusClass = 'fail' + statusClass;
@@ -191,10 +192,9 @@ function showMessage(msg, status)
             statusClass = 'warn' + statusClass;
             break;
     }
-    //let messageQuery = jQuery("#messageContainer").prepend('<div class="messageBlock ' + statusClass + '">' + msg + '</div>').children(':first-child');
-	//const div = document.createElement("div");
+
 	div.classList.add("messageBlock", statusClass);
-	div.textContent = msg;
+	div.textContent = escapedMsg;
 	jQuery("#messageContainer").prepend(div).children(':first-child');
 
     setTimeout(function() {
