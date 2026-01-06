@@ -191,7 +191,7 @@ function showMessage(msg, status)
             statusClass = 'warn' + statusClass;
             break;
     }
-    let messageQuery = jQuery("#messageContainer").prepend('<div class="messageBlock ' + statusClass + '">' + msg + '</div>').children(':first-child');
+    let messageQuery = jQuery("#messageContainer").prepend('<div class="messageBlock ' + statusClass + '" role="alert">' + msg + '</div>').children(':first-child');
     setTimeout(function() {
         messageQuery.addClass('removeMessage');
         setTimeout(function() {
