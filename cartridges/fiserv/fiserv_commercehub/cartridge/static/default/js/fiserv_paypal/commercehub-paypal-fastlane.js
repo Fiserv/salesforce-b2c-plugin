@@ -99,7 +99,7 @@ class FiservFastlaneInitializer
                         let shippingObject = createAddressObject(shippingResponse.address, shippingResponse.name);
                         FiservSDKHelper.populateAddress(shippingObject, formConfig.configData.fastlaneAddressFormNames, 'shipping');
                         
-                        $('select[name="dwfrm_shipping_shippingAddress_addressFields_states_stateCode"]').trigger('change');
+                        $('select#shippingStatedefault[name="dwfrm_shipping_shippingAddress_addressFields_states_stateCode"]').trigger('change');
                            
                         insertWatermarkBeforeElement(fastlane, 'shipping-address-block', 'fastlane-shipping-address-watermark');
                         insertWatermarkBeforeElement(fastlane, 'billing-address', 'fastlane-billing-address-watermark');
