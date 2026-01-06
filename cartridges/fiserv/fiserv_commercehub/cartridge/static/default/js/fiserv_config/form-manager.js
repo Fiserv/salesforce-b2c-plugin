@@ -179,7 +179,7 @@ function addDependencyEvents(dependency, key)
 // Error message function
 function showMessage(msg, status)
 {
-    const escapedMsg = msg.replace(/[^a-z0-9]/gi, "");
+	const sanitizedMsg = msg ? msg.replace(/[^a-z0-9]/gi, "") : "";
 	let statusClass = 'Message';
     switch(status) {
         case 0:
@@ -194,7 +194,7 @@ function showMessage(msg, status)
     }
 
 	div.classList.add("messageBlock", statusClass);
-	div.textContent = escapedMsg;
+	div.textContent = sanitizedMsg;
 	jQuery("#messageContainer").prepend(div).children(':first-child');
 
     setTimeout(function() {
