@@ -195,7 +195,6 @@ function showMessage(msg, status)
 
 	div.classList.add("messageBlock", statusClass);
 	div.textContent = sanitizedMsg;
-	jQuery("#messageContainer").prepend(div).children(':first-child');
 
     setTimeout(function() {
         messageQuery.addClass('removeMessage');
