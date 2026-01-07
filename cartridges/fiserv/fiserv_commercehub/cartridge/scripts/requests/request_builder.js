@@ -383,6 +383,9 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
         'merchantDetails' : {
             'merchantId' : fiservConfig.getCommerceHubMerchantId(),
             'terminalId' : fiservConfig.getCommerceHubTerminalId()
+        },
+        'checkoutInteractions': {
+            'expiresInMinutes': fiservConfig.getCommercehubSessionLifetime()
         }
     };
 

@@ -101,9 +101,11 @@ module.exports = {
             'CommerceHubTerminalID',
             'CommerceHubAPIKey',
             'CommerceHubAPISecret',
+            'CommerceHubSessionLifetime',
             'CommerceHubTimeout'
         ],
         INT_CONSTRAINTS : {
+            'CommerceHubSessionLifetime': { min: 30, max: 240, message: 'Valid lifetime value required (240 ≥ value ≥ 30)' },
             'CommerceHubTimeout': { min: 5, max: 30, message: 'Valid timeout value required (30 ≥ value ≥ 5)' },
             'CommerceHubPaymentFormCardNumberMaskLength': { min: 0, message: 'Valid mask length required (value ≥ 4)' },
             'CommerceHubTokenizationFormCardNumberMaskLength': { min: 0, message: 'Valid mask length required (value ≥ 4)' }
@@ -123,8 +125,9 @@ module.exports = {
         ]
     },
     CONFIG_DESCRIPTIONS : {
-        'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
+        'CommerceHubSessionLifetime': 'This field identifies the lifetime of applied payment instruments to the basket (Default: 30 minutes)',
         'CommerceHubTimeout': "Default: 30 seconds",
+        'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
         'CommerceHubTokenizationStrategy': "Enable this option to tokenize all payment cards submitted at checkout, regardless of consumer choice.",
         'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow",
         'CommerceHubEarlyTokenizationGuest': "Enable to allow for guest users to only need to input their card data once in their checkout flow"
