@@ -46,7 +46,7 @@ class FiservFastlaneInitializer
         }
 
         $.spinner().start();
-        if($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
+        if($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD' && !$('.credit-card-form.checkout-hidden').length)
         {
             toggleSubmitButton(true);
         }
@@ -89,6 +89,12 @@ class FiservFastlaneInitializer
                 }).then(async (authResponse) => {
                     fastlaneGuestCheckout = authResponse.isGuestCheckout;
                     if(!fastlaneGuestCheckout) {
+                        formAdapter.setValidity(true);
+                        if($('.add-payment').length && !$('.add-payment.checkout-hidden').length)
+                        {
+                            $('.add-payment').trigger('click');
+                        }
+
                         authValues = authResponse[Object.getOwnPropertySymbols(authResponse)[0]];
 
                         let paymentFieldWatermarkId = 'paypal-fastlane-payment-form-watermark';
@@ -167,7 +173,10 @@ class FiservFastlaneInitializer
                 {
                     formAdapter.resetForm();
                     FiservFastlaneInitializer.clearValidation();
-                    toggleSubmitButton(true);
+                    if(!$('.credit-card-form.checkout-hidden').length)
+                    {
+                        toggleSubmitButton(true);
+                    }
                 }
             });
 
@@ -178,6 +187,10 @@ class FiservFastlaneInitializer
             formAdapter.destroyIframe('card');
             formAdapter.setFastlaneStatus(false);
             formAdapter.setFastlaneInitStatus(false);
+            if(!$('.credit-card-form.checkout-hidden').length)
+            {
+                toggleSubmitButton(true);
+            }
             console.log("Failed to instantiate Fastlane");
             $.spinner().stop();
         });
@@ -198,7 +211,10 @@ class FiservFastlaneInitializer
 
     static clearValidation()
     {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        if(!$('.credit-card-form.checkout-hidden').length)
+        {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        }
         $('#sdc-card-brand-icon').removeClass().addClass('sdc-card-brand-icon');
         $('#sdc-card-number-frame, #sdc-card-name-frame, #sdc-security-code-frame, #sdc-exp-month-frame, #sdc-exp-year-frame')
             .removeClass('sdc-valid-field sdc-error-field sdc-focused-field');
