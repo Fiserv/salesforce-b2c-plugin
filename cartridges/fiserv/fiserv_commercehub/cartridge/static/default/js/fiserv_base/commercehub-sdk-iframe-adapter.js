@@ -39,6 +39,7 @@ class FiservSDKIframe
         this.runSuccessCallback = runSuccessCallback;
         this.runFailureCallback = runFailureCallback;
 
+        this.validity = false;
         this.fastlaneStatus = false;
         this.fastlaneInitStatus = false;
         this.fastlaneAuthResponse = null;
@@ -120,6 +121,7 @@ class FiservSDKIframe
     destroyIframe = function(formId)
     {
         $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
+        this.validity = false;
     }
 
     reactivateIframe = function(formId)
@@ -140,7 +142,10 @@ class FiservSDKIframe
     resetForm = function()
     {
         if(this.form)
+        {
             this.form.reset();
+            this.validity = false;
+        }
     }
 
     unmask = function(field)
@@ -151,6 +156,16 @@ class FiservSDKIframe
     mask = function(field)
     {
         this.form.mask(field, true);
+    }
+
+    isValid = function()
+    {
+        return this.validity;
+    }
+
+    setValidity = function(val)
+    {
+        this.validity = val;
     }
 
     getFastlaneStatus = function()

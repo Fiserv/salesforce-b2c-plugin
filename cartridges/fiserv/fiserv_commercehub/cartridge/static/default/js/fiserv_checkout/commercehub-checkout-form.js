@@ -37,10 +37,14 @@ class CommercehubCheckoutForm
                 }, 1000);
                 return;
             }
-            if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
+            if(!this.formAdapter.getFastlaneStatus())
             {
                 $.spinner().start();
                 this.initializeAdapter();
+            }
+            else if(!this.formAdapter.isValid())
+            {
+                this.getSubmitButton().prop('disabled', true);
             }
             if($('.nav-link.credit-card-tab.active').length)
             {
@@ -186,6 +190,7 @@ class CommercehubCheckoutForm
                     $('#earlyTokenizeInjectedForm').addClass('selected-payment');
                     this.setSessionIdInput(null);
 
+                    $('.cancel-new-payment').removeClass('checkout-hidden');
                     earlyFlowExecuted = true;
                 }).catch((err) => 
                 {
@@ -539,17 +544,20 @@ class CommercehubCheckoutForm
                 frame.removeClass('sdc-error-field');
                 frame.addClass('sdc-valid-field');
                 mess.addClass('sdc-hidden');
+                this.formAdapter.setValidity(true);
             } else if (data["shouldShowError"] === true)
             {
                 mess.text(this.getSdcInvalidFieldMessageText(data["field"]));
                 frame.removeClass('sdc-valid-field');
                 frame.addClass('sdc-error-field');
                 mess.removeClass('sdc-hidden');
+                this.formAdapter.setValidity(false);
             } else
             {       
                 frame.removeClass('sdc-valid-field');
                 frame.removeClass('sdc-error-field');
                 mess.addClass('sdc-hidden');
+                this.formAdapter.setValidity(false);
             }
         }
     }
