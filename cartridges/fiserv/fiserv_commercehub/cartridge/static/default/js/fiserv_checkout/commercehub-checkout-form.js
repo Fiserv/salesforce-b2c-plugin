@@ -267,6 +267,37 @@ class CommercehubCheckoutForm
     {
         this.setSessionIdInput(null);
 
+        // Check if CVV collector is active and validate CVV first
+        if (window.cvvCollectorInstance && window.cvvCollectorInstance.cvvIframeActive)
+        {
+            _e.preventDefault();
+            $.spinner().start();
+            this.unwatchSubmitButtonToken();
+
+            // Validate and capture CVV before proceeding
+            window.cvvCollectorInstance.submitCVVForValidation((error) => {
+                if (error)
+                {
+                    this.showError(error);
+                    this.watchSubmitButtonToken();
+                    $.spinner().stop();
+                    return;
+                }
+
+                // CVV validated, proceed with 3DS if enabled
+                if (this.configDataPaymentCard.use3DS)
+                {
+                    this.perform3DSToken();
+                }
+                else
+                {
+                    $.spinner().stop();
+                    this.getSubmitButton().trigger('click');
+                }
+            });
+            return false;
+        }
+
         if(!this.configDataPaymentCard.use3DS)
             return;
 

@@ -81,7 +81,7 @@ function buildTokenSourceObject(paymentInstrument)
     source["tokenData"] = paymentInstrument.creditCardToken;
     source["tokenSource"] = paymentInstrument.custom.commercehubTokenSource;
     source["declineDuplicates"] = true;
-
+    source["sessionId"] = paymentInstrument.paymentTransaction.custom.commercehubSessionId;
     source["card"] = {
         // month must be two digits
         "expirationMonth": paymentInstrument.creditCardExpirationMonth.toString().padStart(2, '0'),

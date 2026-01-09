@@ -33,7 +33,15 @@ function prepareFormSubmission(hostURL, credentialsForm)
     return collectSubmitData(fiservCredentials.getCommercehubCredentials(hostURL, credentialsForm));
 }
 
-module.exports = 
+function prepareCVVSubmission(hostURL, credentialsForm)
+{
+    // For CVV-only validation on stored cards, we use the same credential flow
+    // but indicate it's for CVV verification only
+    return collectSubmitData(fiservCredentials.getCommercehubCredentials(hostURL, credentialsForm));
+}
+
+module.exports =
 { 
-    prepareFormSubmission : prepareFormSubmission
+    prepareFormSubmission : prepareFormSubmission,
+    prepareCVVSubmission : prepareCVVSubmission
 }

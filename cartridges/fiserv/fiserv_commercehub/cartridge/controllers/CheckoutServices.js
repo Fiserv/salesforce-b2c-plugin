@@ -77,7 +77,8 @@ server.append('SubmitPayment', function (req, res, next) {
                 let context = {
                     customer: {
                         customerPaymentInstruments: displayedPayments
-                    }
+                    },
+                    cvvEnabled: fiservConfig.getCVVEnabled()
                 };
                 res.viewData.renderedPaymentInstruments = RenderTemplateHelper.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }
@@ -96,7 +97,8 @@ server.append('SubmitPayment', function (req, res, next) {
                 let context = {
                     customer: {
                         customerPaymentInstruments: displayedPayments
-                    }
+                    },
+                    cvvEnabled: fiservConfig.getCVVEnabled()
                 };
                 res.viewData.renderedPaymentInstruments = RenderTemplateHelperGuest.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }

@@ -107,6 +107,7 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
     viewData.paymentInformation.tokenSource = { value : paymentInstrument.custom.commercehubTokenSource };
     viewData.paymentInformation.commercehubCardType = { value : paymentInstrument.custom.commercehubCardType };
     viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
+    viewData.paymentInformation.sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
 
     let authenticationId3DS = paymentForm.fiservCommercehubPaymentFields.authenticationId3DS
 

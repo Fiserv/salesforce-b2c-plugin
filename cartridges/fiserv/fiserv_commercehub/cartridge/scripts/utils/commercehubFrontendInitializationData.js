@@ -18,7 +18,8 @@ function getFrontendConfigData(formId)
                 'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
-                'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
+                'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null),
+                'cvvEnabled': fiservConfig.getCVVEnabled()
             };
             if(configData.tokenizeEarly)
             {
