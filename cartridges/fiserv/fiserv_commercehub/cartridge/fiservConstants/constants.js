@@ -65,7 +65,8 @@ module.exports = {
         'CommerceHubTokenization': [
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
-            'CommerceHubEarlyTokenization'
+            'CommerceHubEarlyTokenization',
+            'CommerceHubEarlyTokenizationGuest'
         ],
         'CommerceHubEarlyTokenization': [
             'CommerceHubEarlyTokenizationGuest'
