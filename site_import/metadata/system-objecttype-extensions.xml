@@ -65,11 +65,14 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubMerchantPartnerIntegrator">
-                <display-name xml:lang="x-default">CommerceHub Merchant Partner Integrator</display-name>
-                <type>string</type>
-                <mandatory-flag>false</mandatory-flag>
+            <attribute-definition attribute-id="CommerceHubSessionLifetime">
+                <display-name xml:lang="x-default">CommerceHub Session Lifetime (in minutes)</display-name>
+                <type>int</type>
+                <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
+                <min-value>30</min-value>
+                <max-value>240</max-value>
+                <default-value>30</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubTimeout">
                 <display-name xml:lang="x-default">CommerceHub API Request Timeouts (in seconds)</display-name>
@@ -79,6 +82,12 @@
                 <min-value>5</min-value>
                 <max-value>30</max-value>
                 <default-value>30</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubMerchantPartnerIntegrator">
+                <display-name xml:lang="x-default">CommerceHub Merchant Partner Integrator</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
 
             <!--THIS IS WHERE THE PAYMENT ACCEPTANCE SETTINGS START-->
@@ -1324,8 +1333,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE PAYMENT ACCEPTANCE SETTINGS START-->
                 <attribute attribute-id="CommerceHubAcceptedCurrency"/>
@@ -1407,8 +1417,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
                 <attribute attribute-id="CommerceHubGiftEnable"/>
@@ -1448,8 +1459,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
                 <attribute attribute-id="CommerceHubPayPalEnable"/>
@@ -1470,8 +1482,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE VENMO SETTINGS START-->
                 <attribute attribute-id="CommerceHubVenmoEnable"/>
@@ -1490,8 +1503,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
                 <attribute attribute-id="CommerceHubApplePayEnable"/>

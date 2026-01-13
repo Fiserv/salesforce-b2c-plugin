@@ -50,14 +50,19 @@ const commerceHubExport =
         return getSitePreference('CommerceHubLogLevel').value;
     },
 
-    getCommerceHubMerchantPartnerIntegrator()
+    getCommercehubSessionLifetime()
     {
-        return getSitePreference('CommerceHubMerchantPartnerIntegrator');
+        return getSitePreference('CommerceHubSessionLifetime');
     },
 
     getCommerceHubTimeout()
     {
         return getSitePreference('CommerceHubTimeout');
+    },
+    
+    getCommerceHubMerchantPartnerIntegrator()
+    {
+        return getSitePreference('CommerceHubMerchantPartnerIntegrator');
     },
 
     // This is where the Credit/Debit Cards settings start

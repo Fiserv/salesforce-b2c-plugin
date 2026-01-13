@@ -13,6 +13,9 @@
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
                 </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>
                 </preference>
@@ -258,6 +261,9 @@
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
                 </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>
                 </preference>
@@ -358,6 +364,9 @@
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
                 </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>
                 </preference>
@@ -404,6 +413,9 @@
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
                 </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>
                 </preference>
@@ -440,6 +452,9 @@
                 </preference>
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
                 </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>

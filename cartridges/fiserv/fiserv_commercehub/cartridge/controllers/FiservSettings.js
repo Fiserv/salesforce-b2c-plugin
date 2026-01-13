@@ -251,8 +251,9 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubAPISecret'),
             getPreferenceDescription('CommerceHubAPIEnvironment'),
             getPreferenceDescription('CommerceHubLogLevel'),
-            getPreferenceDescription('CommerceHubMerchantPartnerIntegrator'),
-            getPreferenceDescription('CommerceHubTimeout')
+            getPreferenceDescription('CommerceHubSessionLifetime'),
+            getPreferenceDescription('CommerceHubTimeout'),
+            getPreferenceDescription('CommerceHubMerchantPartnerIntegrator')
         ]
     });
 
