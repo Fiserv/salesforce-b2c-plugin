@@ -11,7 +11,6 @@
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
     assets.addJs('/js/fiserv_base/commercehub-cvv-iframe-adapter.js');
-    assets.addJs('/js/fiserv_checkout/commercehub-cvv-collector.js');
     assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
     assets.addJs('/js/fiserv_checkout/checkout.js');
     if(!pdict.customer.registeredUser && pdict.fastlaneEnabled)

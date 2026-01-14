@@ -10,24 +10,26 @@ class FiservSDKIframe
     // form invalid callback fires when form is marked invalid
     // run success callback fires when card is successfully tokenized
     // run failure callback fires when card fails to tokenize
+    // cardUUID: optional parameter for CVV-only mode (single field for stored cards)
     constructor(
-        loadSuccessCallback, 
+        loadSuccessCallback,
         loadFailCallback,
-        sdkReadyCallback, 
-        formValidCallback, 
+        sdkReadyCallback,
+        formValidCallback,
         formInvalidCallback,
         cardBrandHandler,
         fieldValidityHandler,
         fieldFocusHandler,
         runSuccessCallback,
-        runFailureCallback
+        runFailureCallback,
+        cardUUID = null
     ) {
         // CommerceHub SDK loaded separately by B2C SFRA assets.js
         if (typeof(window.fiserv) === "undefined")
         {
             throw new Error("CommerceHub SDK not found. Unable to create CommerceHub Hosted Payment Page.")
         }
-        
+
         this.loadSuccessCallback = loadSuccessCallback;
         this.loadFailCallback = loadFailCallback;
         this.sdkReadyCallback = sdkReadyCallback;
@@ -42,6 +44,10 @@ class FiservSDKIframe
         this.fastlaneStatus = false;
         this.fastlaneInitStatus = false;
         this.fastlaneAuthResponse = null;
+
+        // CVV-only mode properties
+        this.cardUUID = cardUUID;
+        this.isSingleFieldMode = cardUUID !== null;
     }
 
     initSdk = function(formConfig, formType, fastlaneObject)
@@ -62,8 +68,27 @@ class FiservSDKIframe
 
     buildFormConfig = function(formConfigInput, formType, fastlaneObject)
     {
+        // In single field mode (CVV-only), modify the config for single field
+        let formCustomization;
+        if (this.isSingleFieldMode && formConfigInput['formCustomization']) {
+            // Deep clone to avoid modifying original config
+            formCustomization = JSON.parse(JSON.stringify(formConfigInput['formCustomization']));
+            // Update parentElementId for CVV field with card UUID
+            if (formCustomization.fields && formCustomization.fields.securityCode) {
+                formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${this.cardUUID}`;
+            }
+            // Keep only securityCode field
+            if (formCustomization.fields) {
+                formCustomization.fields = {
+                    securityCode: formCustomization.fields.securityCode
+                };
+            }
+        } else {
+            formCustomization = formConfigInput['formCustomization'];
+        }
+
         let formConfig = {
-            "data" : formConfigInput['formCustomization'],
+            "data" : formCustomization,
             "hooks" : {
                 "onFormValid" : () => { this.formValidCb(); },
                 "onFormNoLongerValid" : () => { this.formInvalidCb(); },
@@ -74,10 +99,21 @@ class FiservSDKIframe
             }
         };
 
+        // In single field mode, use default hooks without card brand handler
+        if (this.isSingleFieldMode) {
+            formConfig.hooks = {
+                "onFormValid" : () => { this.formValidCb(); },
+                "onFormNoLongerValid" : () => { this.formInvalidCb(); },
+                "onFieldValidityChange" : (data) => { this.fieldValidityHandler(data, this.cardUUID); },
+                "onFocus" : (data) => { this.fieldFocusHandler(data, this.cardUUID); },
+                "onLostFocus" : (data) => { this.fieldFocusHandler(data, this.cardUUID); }
+            };
+        }
+
         formConfig["data"]["environment"] =  formConfigInput['environment'];
-        
+
         // Useful for Valuelink form differential (not necessary rn)
-        formConfig["data"]["paymentMethod"] = formType;
+        formConfig["data"]["paymentMethod"] = formType || "CREDIT_CARD";
 
         if(fastlaneObject)
         {
@@ -117,9 +153,36 @@ class FiservSDKIframe
         }
     }
 
+    // Method for CVV-only submission (single field mode)
+    submitSingleField = function(credentialsResponse, successCallback, failureCallback)
+    {
+        if (typeof this.form === "undefined" || !this.form)
+        {
+            failureCallback('Form not initialized');
+            return;
+        }
+
+        this.form.submit(credentialsResponse['submitConfig'])
+            .then((response) => {
+                if (response && response.source)
+                {
+                    successCallback(response);
+                }
+            })
+            .catch((error) => {
+                console.log('Single field submission error:', error);
+                failureCallback(error);
+            });
+    }
+
     destroyIframe = function(formId)
     {
-        $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
+        if (this.isSingleFieldMode && this.cardUUID) {
+            // For CVV-only mode, target the specific card container
+            $(`#fiserv_commercehub-cvv-security-code-${this.cardUUID}`).find("iframe").remove();
+        } else {
+            $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
+        }
     }
 
     reactivateIframe = function(formId)
@@ -150,6 +213,23 @@ class FiservSDKIframe
     mask = function(field)
     {
         this.form.mask(field, true);
+    }
+
+    // CVV-only masking methods
+    maskCVV = function()
+    {
+        if (this.form && this.isSingleFieldMode)
+        {
+            this.form.mask('securityCode', true);
+        }
+    }
+
+    unmaskCVV = function()
+    {
+        if (this.form && this.isSingleFieldMode)
+        {
+            this.form.mask('securityCode', false);
+        }
     }
 
     getFastlaneStatus = function()

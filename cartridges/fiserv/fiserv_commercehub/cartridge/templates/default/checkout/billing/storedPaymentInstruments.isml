@@ -40,6 +40,3 @@
         </div>
     </div>
 </isloop>
-
-<!--- Hidden input for CVV data --->
-<input id="storedCardCVVInput" type="hidden" name="storedCardCVV" value=""/>

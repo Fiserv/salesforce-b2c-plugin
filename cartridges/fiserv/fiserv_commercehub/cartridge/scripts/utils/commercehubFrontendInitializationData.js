@@ -16,10 +16,10 @@ function getFrontendConfigData(formId)
                 'tokenizeEarly': fiservConfig.getCommerceHubTokenization() ? fiservConfig.getEarlyTokenization() : false,
                 'use3DS': fiservConfig.get3DSEnabled(),
                 'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
+                'cvvEnabled': fiservConfig.getTokenSecurityEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
-                'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null),
-                'cvvEnabled': fiservConfig.getCVVEnabled()
+                'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
             };
             if(configData.tokenizeEarly)
             {

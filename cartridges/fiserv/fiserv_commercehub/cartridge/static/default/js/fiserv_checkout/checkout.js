@@ -3,7 +3,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let initialized = false;
     let guestTokenFlowEnabled = false;
-    let cvvCollector = null;
 
     // detect current stage
     const checkoutStage = $('#fiserv-commercehub-card-form-init-container').attr('data-initial-checkout-stage');
@@ -19,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $('#fiserv-commercehub-card-form-init-container').remove();
 
         guestTokenFlowEnabled = data.config.configData.tokenizeEarlyGuest;
-        
+
         return data;
     }
 
@@ -34,13 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let initializationData = extractInitializationData();
+    // CommercehubCheckoutForm now handles both new card entry and stored card CVV
     let form = new CommercehubCheckoutForm(initializationData);
-
-    // Initialize CVV collector for stored payment instruments (only if CVV is enabled)
-    if (savedPaymentsPresent() && initializationData.config.configData.cvvEnabled)
-    {
-        cvvCollector = new CommercehubCVVCollector(initializationData);
-    }
 
     let clearPaymentForm = function()
     {
@@ -67,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    let initPaymentForm = function() 
+    let initPaymentForm = function()
     {
         if (!initialized)
         {
@@ -114,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // set listener for ajax success of shipping submit action
     // after which we init payment form
     // if saved payment menu is active, do not init form
-    $(document).on("ajaxSuccess", (ev, xhr) => { 
+    $(document).on("ajaxSuccess", (ev, xhr) => {
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&

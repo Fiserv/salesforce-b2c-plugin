@@ -83,7 +83,6 @@
 <iscomment>I could not telly you why isscript is not working but this works fine so screw it</iscomment>
 <link rel="stylesheet" href="${URLUtils.httpsStatic('/css/fiservBm.css')}">
 <script src="${URLUtils.httpsStatic('/js/fiserv_config/form-manager.js')}"></script>
-<script src="${URLUtils.httpsStatic('/js/fiserv_config/cvv-toggle.js')}"></script>
 <div style="display:none;" id="instantiationParams"
     preference-values="${JSON.stringify(pdict.SimplifiedPreferences)}"
     save-url="${URLUtils.https('FiservSettings-SaveChanges')}"></div>

@@ -56,7 +56,7 @@ server.append('Begin', function (req, res, next) {
             }
             res.viewData.customer.customerPaymentInstruments = displayedPayments.filter((pi) => !UUIDRemoveList.includes(pi.UUID));
         }
-        res.viewData.cvvEnabled = fiservConfig.getCVVEnabled();
+        res.viewData.cvvEnabled = fiservConfig.getTokenSecurityEnabled();
     }
     else if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest())
     {
@@ -65,7 +65,7 @@ server.append('Begin', function (req, res, next) {
         {
             res.viewData.customer.customerPaymentInstruments = [fiservHelper.buildRenderedGuestTokenField(basket)];
         }
-        res.viewData.cvvEnabled = fiservConfig.getCVVEnabled();
+        res.viewData.cvvEnabled = fiservConfig.getTokenSecurityEnabled();
     }
 
     return next();

@@ -78,7 +78,7 @@ server.append('SubmitPayment', function (req, res, next) {
                     customer: {
                         customerPaymentInstruments: displayedPayments
                     },
-                    cvvEnabled: fiservConfig.getCVVEnabled()
+                    cvvEnabled: fiservConfig.getTokenSecurityEnabled()
                 };
                 res.viewData.renderedPaymentInstruments = RenderTemplateHelper.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }
@@ -98,7 +98,7 @@ server.append('SubmitPayment', function (req, res, next) {
                     customer: {
                         customerPaymentInstruments: displayedPayments
                     },
-                    cvvEnabled: fiservConfig.getCVVEnabled()
+                    cvvEnabled: fiservConfig.getTokenSecurityEnabled()
                 };
                 res.viewData.renderedPaymentInstruments = RenderTemplateHelperGuest.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }
