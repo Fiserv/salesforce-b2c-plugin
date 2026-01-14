@@ -168,7 +168,7 @@ function getNewCardFormResult(paymentForm, viewFormData)
 function processForm(req, paymentForm, viewFormData) 
 {
     let viewData = req.form.storedPaymentUUID ? getStoredCardFormResult(req.currentCustomer, req.form.storedPaymentUUID, paymentForm, viewFormData) :
-        (paymentForm.fiservCommercehubPaymentFields.sessionId ? getNewCardFormResult(paymentForm, viewFormData) :
+        (paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value ? getNewCardFormResult(paymentForm, viewFormData) :
         getGuestCardFormResult(paymentForm, viewFormData));
     return viewData;
 }

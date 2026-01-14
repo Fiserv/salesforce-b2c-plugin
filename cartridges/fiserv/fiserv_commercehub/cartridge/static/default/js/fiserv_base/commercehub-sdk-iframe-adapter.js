@@ -41,6 +41,7 @@ class FiservSDKIframe
         this.runSuccessCallback = runSuccessCallback;
         this.runFailureCallback = runFailureCallback;
 
+        this.validity = false;
         this.fastlaneStatus = false;
         this.fastlaneInitStatus = false;
         this.fastlaneAuthResponse = null;
@@ -183,6 +184,7 @@ class FiservSDKIframe
         } else {
             $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
         }
+        this.validity = false;
     }
 
     reactivateIframe = function(formId)
@@ -202,7 +204,11 @@ class FiservSDKIframe
 
     resetForm = function()
     {
-        this.form.reset();
+        if(this.form)
+        {
+            this.form.reset();
+            this.validity = false;
+        }
     }
 
     unmask = function(field)
@@ -230,6 +236,16 @@ class FiservSDKIframe
         {
             this.form.mask('securityCode', false);
         }
+    }
+
+    isValid = function()
+    {
+        return this.validity;
+    }
+
+    setValidity = function(val)
+    {
+        this.validity = val;
     }
 
     getFastlaneStatus = function()

@@ -10,6 +10,7 @@ const currentSite = require('dw/system').Site.getCurrent();
 
 // Instantiating Preferences
 const chPreferenceDescriptions = retrieveCommerceHubPreferences();
+const breakDelimiter = "___br___"
 var configList;
 var simplifiedPreferences;
 if(chPreferenceDescriptions != null)
@@ -59,7 +60,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = fiservConstants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(ApplePay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(fiservConstants.CONFIG_DESCRIPTIONS[id])
         {
@@ -250,8 +251,9 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubAPISecret'),
             getPreferenceDescription('CommerceHubAPIEnvironment'),
             getPreferenceDescription('CommerceHubLogLevel'),
-            getPreferenceDescription('CommerceHubMerchantPartnerIntegrator'),
-            getPreferenceDescription('CommerceHubTimeout')
+            getPreferenceDescription('CommerceHubSessionLifetime'),
+            getPreferenceDescription('CommerceHubTimeout'),
+            getPreferenceDescription('CommerceHubMerchantPartnerIntegrator')
         ]
     });
 
@@ -493,7 +495,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
     {
         resJson = {
             success: true,
-            successMessage: 'Successfully saved config settings for...<br>' + successString + ' ]'
+            successMessage: 'Successfully saved config settings for...' + breakDelimiter + successString + ' ]'
         };
     }
     else if(error && success)
@@ -503,8 +505,8 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
             success: true,
             error: true,
             errorList: errorList,
-            successMessage: 'Successfully saved config settings for...<br>' + successString + ' ]',
-            errorMessage: 'Config settings only partially saved...<br>Failures: ' + errorString + ' ]'
+            successMessage: 'Successfully saved config settings for...' + breakDelimiter + successString + ' ]',
+            errorMessage: 'Config settings only partially saved...' + breakDelimiter + 'Failures: ' + errorString + ' ]'
         };
     }
     else
@@ -513,7 +515,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
         resJson = {
             error: true,
             errorList: errorList,
-            errorMessage: 'Failed to save config settings for...<br>' + errorString + ' ]'
+            errorMessage: 'Failed to save config settings for...' + breakDelimiter + errorString + ' ]'
         };
     }
 
@@ -541,7 +543,7 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
     {
         resJson['warn'] = true;
         resJson['warnList'] = warnList;
-        resJson['warnMessage'] = 'Mandatory fields have not been set. You will not be able to process payments<br>' + warnString + ' ]';
+        resJson['warnMessage'] = 'Mandatory fields have not been set. You will not be able to process payments' + breakDelimiter + warnString + ' ]';
     }
     
     res.json(resJson);

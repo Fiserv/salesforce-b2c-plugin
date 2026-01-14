@@ -50,14 +50,19 @@ const commerceHubExport =
         return getSitePreference('CommerceHubLogLevel').value;
     },
 
-    getCommerceHubMerchantPartnerIntegrator()
+    getCommercehubSessionLifetime()
     {
-        return getSitePreference('CommerceHubMerchantPartnerIntegrator');
+        return getSitePreference('CommerceHubSessionLifetime');
     },
 
     getCommerceHubTimeout()
     {
         return getSitePreference('CommerceHubTimeout');
+    },
+    
+    getCommerceHubMerchantPartnerIntegrator()
+    {
+        return getSitePreference('CommerceHubMerchantPartnerIntegrator');
     },
 
     // This is where the Credit/Debit Cards settings start
@@ -189,6 +194,10 @@ const commerceHubExport =
         config['fields'] = this.buildFormFieldsConfig(formId);
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
         config['font'] = this.buildFormFontConfig(formId);
+        config['contextualCssClassNames'] = {
+            valid: "validSdcInput",
+            invalid: "invalidSdcInput"
+        };
         return config;
     },
 
