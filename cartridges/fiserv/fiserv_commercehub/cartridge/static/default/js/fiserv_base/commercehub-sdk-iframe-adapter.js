@@ -92,29 +92,25 @@ class FiservSDKIframe
             "data" : formCustomization,
             "hooks" : {
                 "onFormValid" : () => { this.formValidCb(); },
-                "onFormNoLongerValid" : () => { this.formInvalidCb(); },
-                "onCardBrandChange" : (data) => { this.cardBrandHandler(data); },
-                "onFieldValidityChange" : (data) => { this.fieldValidityHandler(data); },
-                "onFocus" : (data) => { this.fieldFocusHandler(data); },
-                "onLostFocus" : (data) => { this.fieldFocusHandler(data); }
+                "onFormNoLongerValid" : () => { this.formInvalidCb(); }
             }
         };
 
-        // In single field mode, use default hooks without card brand handler
         if (this.isSingleFieldMode) {
-            formConfig.hooks = {
-                "onFormValid" : () => { this.formValidCb(); },
-                "onFormNoLongerValid" : () => { this.formInvalidCb(); },
-                "onFieldValidityChange" : (data) => { this.fieldValidityHandler(data, this.cardUUID); },
-                "onFocus" : (data) => { this.fieldFocusHandler(data, this.cardUUID); },
-                "onLostFocus" : (data) => { this.fieldFocusHandler(data, this.cardUUID); }
-            };
+            formConfig.hooks["onFieldValidityChange"] = (data) => { this.fieldValidityHandler(data, this.cardUUID); };
+            formConfig.hooks["onFocus"] = (data) => { this.fieldFocusHandler(data, this.cardUUID); };
+            formConfig.hooks["onLostFocus"] = (data) => { this.fieldFocusHandler(data, this.cardUUID); };
+        } else {
+            formConfig.hooks["onCardBrandChange"] = (data) => { this.cardBrandHandler(data); };
+            formConfig.hooks["onFieldValidityChange"] = (data) => { this.fieldValidityHandler(data); };
+            formConfig.hooks["onFocus"] = (data) => { this.fieldFocusHandler(data); };
+            formConfig.hooks["onLostFocus"] = (data) => { this.fieldFocusHandler(data); };
         }
 
         formConfig["data"]["environment"] =  formConfigInput['environment'];
 
         // Useful for Valuelink form differential (not necessary rn)
-        formConfig["data"]["paymentMethod"] = formType || "CREDIT_CARD";
+        formConfig["data"]["paymentMethod"] = formType;
 
         if(fastlaneObject)
         {

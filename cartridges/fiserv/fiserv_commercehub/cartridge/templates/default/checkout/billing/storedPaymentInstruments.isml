@@ -1,4 +1,5 @@
-<isloop items="${pdict.customer.customerPaymentInstruments}" var="paymentInstrument" status="loopState">
+ <isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+    <isloop items="${pdict.customer.customerPaymentInstruments}" var="paymentInstrument" status="loopState">
     <div class="row saved-payment-instrument ${loopState.first ? 'selected-payment' : ''}" data-uuid="${paymentInstrument.UUID}">
         <div class="form-group col-6 col-md-3" >
             <img class="cc-type-image"
@@ -23,8 +24,7 @@
             </div>
 
             <!--- CVV Field for this specific card (only show when CVV is enabled) --->
-            <isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
-            <isif condition="${pdict.FiservConfig.getTokenSecurityEnabled()}">
+           <isif condition="${pdict.FiservConfig.getTokenSecurityEnabled()}">
                 <div class="cvv-collector-container" data-card-uuid="${paymentInstrument.UUID}">
                     <div class="sdc-row cvv-row">
                         <div id="cvv-security-code-frame-${paymentInstrument.UUID}" class="sdc-field-frame sdc-text cvv-field-frame">

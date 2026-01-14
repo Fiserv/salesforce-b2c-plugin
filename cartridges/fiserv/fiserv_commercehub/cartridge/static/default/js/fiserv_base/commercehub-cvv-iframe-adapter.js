@@ -63,9 +63,6 @@ class FiservCVVIframeAdapter extends FiservSDKIframe
         this.destroyIframe('cvv');
     }
 
-    getCardUUID = function()
-    {
-        return this.cardUUID;
-    }
+
 }
 
