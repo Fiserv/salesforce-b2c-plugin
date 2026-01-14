@@ -16,6 +16,7 @@ class CommercehubCheckoutForm
 
         // CVV collector for stored payment instruments
         this.cvvAdapters = {};
+        this.cvvSubmitCallbacks = {};
         this.currentSelectedPaymentUUID = null;
         this.cvvEnabled = this.configDataPaymentCard.cvvEnabled;
 
@@ -35,7 +36,7 @@ class CommercehubCheckoutForm
 
         this.watchSubmitResponse();
         this.watchPaymentMethods();
-        this.watchCVVPaymentSelection();
+        this.watchSavedCardSelection();
         this.initializeMaskingIcons();
         this.initializeSelectedCardCVV();
     }
@@ -651,15 +652,25 @@ class CommercehubCheckoutForm
 
     initializeSelectedCardCVV = function()
     {
-        // Initialize CVV for the initially selected payment instrument (only if CVV is enabled)
+        // Initialize CVV for all saved payment instruments (only if CVV is enabled)
         if (!this.cvvEnabled) return;
 
+        const self = this;
+
+        // First, determine the selected card
         const selectedPayment = $('.saved-payment-instrument.selected-payment');
         if (selectedPayment.length > 0)
         {
-            const paymentUUID = selectedPayment.data('uuid');
-            this.initializeCVVForCard(paymentUUID);
+            this.currentSelectedPaymentUUID = selectedPayment.data('uuid');
         }
+
+        // Initialize CVV fields for ALL saved cards
+        $('.saved-payment-instrument').each(function() {
+            const paymentUUID = $(this).data('uuid');
+            if (paymentUUID) {
+                self.initializeCVVForCard(paymentUUID);
+            }
+        });
     }
 
     initializeCVVForCard = function(cardUUID)
@@ -669,15 +680,17 @@ class CommercehubCheckoutForm
         // Check if already initialized
         if (this.cvvAdapters[cardUUID])
         {
-            this.currentSelectedPaymentUUID = cardUUID;
             console.log(`CVV adapter already exists for card ${cardUUID}`);
             return;
         }
 
         try
         {
-            $.spinner().start();
-            this.currentSelectedPaymentUUID = cardUUID;
+            // Only show spinner for the currently selected card
+            const isSelectedCard = (this.currentSelectedPaymentUUID === cardUUID);
+            if (isSelectedCard) {
+                $.spinner().start();
+            }
 
             // Create callbacks specific to this card
             const loadSuccessCallback = () => {
@@ -687,7 +700,7 @@ class CommercehubCheckoutForm
                 this.cvvLoadFailure(error, cardUUID);
             };
             const formReadyCallback = () => {
-                this.cvvInitialized(cardUUID);
+                this.cvvInitialized(cardUUID, isSelectedCard);
             };
             const formValidCallback = () => {
                 this.cvvValid(cardUUID);
@@ -701,21 +714,40 @@ class CommercehubCheckoutForm
             const fieldFocusHandler = (data) => {
                 this.cvvFieldFocusHandler(data, cardUUID);
             };
+            const runSuccessCallback = (response) => {
+                console.log(`CVV submitted successfully for card ${cardUUID}`, response);
+                $.spinner().stop();
+                if (this.cvvSubmitCallbacks[cardUUID]) {
+                    this.cvvSubmitCallbacks[cardUUID](null);
+                    delete this.cvvSubmitCallbacks[cardUUID];
+                }
+            };
+            const runFailureCallback = (error) => {
+                console.log(`CVV submission failed for card ${cardUUID}`, error);
+                $.spinner().stop();
+                if (this.cvvSubmitCallbacks[cardUUID]) {
+                    this.cvvSubmitCallbacks[cardUUID](error || 'CVV validation failed');
+                    delete this.cvvSubmitCallbacks[cardUUID];
+                }
+            };
 
-            // Create adapter for this specific card using FiservCVVIframeAdapter
-            const adapter = new FiservCVVIframeAdapter(
-                cardUUID,
+            // Create adapter for this specific card using FiservSDKIframe directly
+            const adapter = new FiservSDKIframe(
                 loadSuccessCallback,
                 loadFailCallback,
                 formReadyCallback,
                 formValidCallback,
                 formInvalidCallback,
+                null, // cardBrandHandler - not needed for CVV-only
                 fieldValidityHandler,
-                fieldFocusHandler
+                fieldFocusHandler,
+                runSuccessCallback,
+                runFailureCallback,
+                cardUUID // Enables single field mode
             );
 
             this.cvvAdapters[cardUUID] = adapter;
-            adapter.initCVVField(this.formConfig);
+            adapter.initSdk(this.formConfig, "CREDIT_CARD", null);
         }
         catch(err)
         {
@@ -724,28 +756,12 @@ class CommercehubCheckoutForm
         }
     }
 
-    destroyCVVForCard = function(cardUUID)
+    cvvInitialized = function(cardUUID, isSelectedCard)
     {
-        if (this.cvvAdapters[cardUUID])
-        {
-            this.cvvAdapters[cardUUID].destroyCVVIframe();
-            delete this.cvvAdapters[cardUUID];
-            this.clearCVVValidation(cardUUID);
+        if (isSelectedCard) {
+            $.spinner().stop();
+            this.getSubmitButton().prop('disabled', true); // Disable until CVV is valid
         }
-    }
-
-    clearCVVValidation = function(cardUUID)
-    {
-        $(`#cvv-security-code-frame-${cardUUID}`)
-            .removeClass('sdc-valid-field sdc-error-field sdc-focused-field');
-        $(`#cvv-security-code-invalid-message-${cardUUID}`)
-            .addClass('sdc-hidden');
-    }
-
-    cvvInitialized = function(cardUUID)
-    {
-        $.spinner().stop();
-        this.getSubmitButton().prop('disabled', true); // Disable until CVV is valid
         console.log(`CVV field initialized for card ${cardUUID}`);
     }
 
@@ -820,68 +836,48 @@ class CommercehubCheckoutForm
         }
     }
 
-    watchCVVPaymentSelection = function()
+    watchSavedCardSelection = function()
     {
         const self = this;
-
         // Watch for saved payment instrument selection
         $(document).on('click', '.saved-payment-instrument', function() {
             const clickedPayment = $(this);
             const paymentUUID = clickedPayment.data('uuid');
 
-            // Don't reinitialize if clicking the same card
-            if (self.currentSelectedPaymentUUID === paymentUUID) {
-                return;
-            }
-
+            // Update selected payment styling
             $('.saved-payment-instrument').removeClass('selected-payment');
             clickedPayment.addClass('selected-payment');
 
-            // Update current selected payment BEFORE disabling button
+            // Update current selected payment UUID
             self.currentSelectedPaymentUUID = paymentUUID;
 
-            // If card already has adapter (was previously selected), check if it's valid
-            if (self.cvvAdapters[paymentUUID]) {
-                console.log(`Reusing existing CVV adapter for card ${paymentUUID}`);
-
-                // Check if the CVV field for this card has valid state
+            // Check if CVV is valid for this card and enable/disable submit button accordingly
+            if (self.cvvEnabled && self.cvvAdapters[paymentUUID]) {
                 const frame = $(`#cvv-security-code-frame-${paymentUUID}`);
                 const hasValidClass = frame.hasClass('sdc-valid-field');
-
                 if (hasValidClass) {
-                    // CVV was previously entered and is still valid
-                    console.log(`CVV already valid for card ${paymentUUID}, enabling button`);
                     self.getSubmitButton().prop('disabled', false);
                 } else {
-                    // CVV not valid yet, disable button
                     self.getSubmitButton().prop('disabled', true);
                 }
-            } else if (self.cvvEnabled) {
-                // New adapter needed, disable button until CVV is entered
-                self.getSubmitButton().prop('disabled', true);
-                self.initializeCVVForCard(paymentUUID);
             }
         });
 
-        // Watch for "Add Payment" button - hide all CVV collectors
+        // Watch for "Add Payment" button - reset selected payment
         $(document).on('click', '.btn.add-payment', function() {
-            $('.cvv-collector-container').hide();
             self.currentSelectedPaymentUUID = null;
-            // Enable button for new card entry (no CVV needed)
-            self.getSubmitButton().prop('disabled', false);
+            $('.saved-payment-instrument').removeClass('selected-payment');
         });
 
-        // Watch for "Cancel New Payment" button - show CVV collector for selected payment
+        // Watch for "Cancel New Payment" button - restore selected payment
         $(document).on('click', '.btn.cancel-new-payment', function() {
             const selectedPayment = $('.saved-payment-instrument.selected-payment');
-            if (selectedPayment.length > 0)
-            {
+            if (selectedPayment.length > 0) {
                 const paymentUUID = selectedPayment.data('uuid');
                 self.currentSelectedPaymentUUID = paymentUUID;
-                $('.cvv-collector-container').show();
 
-                // Check if CVV is already valid for this card
-                if (self.cvvAdapters[paymentUUID]) {
+                // Check CVV validity and update button state
+                if (self.cvvEnabled && self.cvvAdapters[paymentUUID]) {
                     const frame = $(`#cvv-security-code-frame-${paymentUUID}`);
                     const hasValidClass = frame.hasClass('sdc-valid-field');
 
@@ -890,10 +886,6 @@ class CommercehubCheckoutForm
                     } else {
                         self.getSubmitButton().prop('disabled', true);
                     }
-                } else if (self.cvvEnabled) {
-                    // Disable button until CVV is validated
-                    self.getSubmitButton().prop('disabled', true);
-                    self.initializeCVVForCard(paymentUUID);
                 }
             }
         });
@@ -902,42 +894,23 @@ class CommercehubCheckoutForm
     submitCVVForValidation = function(callback)
     {
         const currentCardUUID = this.currentSelectedPaymentUUID;
-
         if (!currentCardUUID || !this.cvvAdapters[currentCardUUID])
         {
             // No CVV needed for new card entry
             callback(null);
             return;
         }
-
         $.spinner().start();
-
-        new Promise((resolve, reject) => {
-            FiservSDKHelper.backendCall(
-                this.credentialsUrl,
-                resolve,
-                reject,
-                {
-                    requestPurpose: "CVV",
-                    paymentUUID: currentCardUUID
-                }
-            );
-        })
-        .then((credentialsResponse) => {
-            this.cvvAdapters[currentCardUUID].submitCVV(credentialsResponse, (encryptedCVV) => {
-                this.setSessionIdInput(credentialsResponse['sessionId']);
-                $.spinner().stop();
-                callback(null);
-            }, (error) => {
-                $.spinner().stop();
-                callback(error || 'CVV validation failed');
-            });
-        })
-        .catch((error) => {
-            console.log(error);
-            $.spinner().stop();
-            callback('Failed to get CVV credentials');
-        });
+        // Store callback so it can be called from runSuccessCallback/runFailureCallback
+        this.cvvSubmitCallbacks[currentCardUUID] = callback;
+        // Use submitForm which handles credential fetching internally
+        this.cvvAdapters[currentCardUUID].submitForm(
+            this.credentialsUrl,
+            (sessionId) => {
+                this.setSessionIdInput(sessionId);
+            },
+            "CVV"
+        );
     }
 
     get cvvIframeActive()
@@ -949,37 +922,32 @@ class CommercehubCheckoutForm
     {
         const self = this;
         // Use event delegation to handle dynamically created masking icons
-        $(document).on('click', '[id^="cvv-mask-securityCode-"]', function(element) {
-            self.maskCVV(element);
+        $(document).on('click', '[id^="cvv-mask-securityCode-"]', function(event) {
+            event.preventDefault();
+
+            let field = event.target;
+            let id = field.id.replace(/cvv-mask-securityCode-/, "");
+            let jQueryObject = $('#' + field.id);
+
+            // Get the adapter for this specific card
+            const adapter = self.cvvAdapters[id];
+            if (!adapter) {
+                console.warn('No CVV adapter found for card:', id);
+                return;
+            }
+
+            if(jQueryObject.hasClass('sdc-unmasking-icon'))
+            {
+                jQueryObject.removeClass('sdc-unmasking-icon');
+                jQueryObject.addClass('sdc-masking-icon');
+                adapter.unmask('securityCode');
+            }
+            else
+            {
+                jQueryObject.removeClass('sdc-masking-icon');
+                jQueryObject.addClass('sdc-unmasking-icon');
+                adapter.mask('securityCode');
+            }
         });
-    }
-
-    maskCVV = function(element)
-    {
-        element.preventDefault();
-
-        let field = element.target;
-        let id = field.id.replace(/cvv-mask-securityCode-/, "");
-        let jQueryObject = $('#' + field.id);
-
-        // Get the adapter for this specific card
-        const adapter = this.cvvAdapters[id];
-        if (!adapter) {
-            console.warn('No CVV adapter found for card:', id);
-            return;
-        }
-
-        if(jQueryObject.hasClass('sdc-unmasking-icon'))
-        {
-            jQueryObject.removeClass('sdc-unmasking-icon');
-            jQueryObject.addClass('sdc-masking-icon');
-            adapter.unmaskCVV();
-        }
-        else
-        {
-            jQueryObject.removeClass('sdc-masking-icon');
-            jQueryObject.addClass('sdc-unmasking-icon');
-            adapter.maskCVV();
-        }
     }
 }

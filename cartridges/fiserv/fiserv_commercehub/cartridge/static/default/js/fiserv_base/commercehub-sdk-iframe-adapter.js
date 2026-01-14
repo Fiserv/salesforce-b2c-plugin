@@ -120,12 +120,23 @@ class FiservSDKIframe
         return formConfig;
     }
 
-    submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null)
+    submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null, additionalParams = {})
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
+            // Build parameters object
+            let params = { requestPurpose: requestPurpose };
+
+            // Add paymentUUID if in single field mode (CVV-only)
+            if (this.isSingleFieldMode && this.cardUUID) {
+                params.paymentUUID = this.cardUUID;
+            }
+
+            // Merge any additional parameters
+            params = { ...params, ...additionalParams };
+
             let promise = new Promise((resolve, reject) => {
-                FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
+                FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, params);
             });
 
             promise.then(async (credentialsResponse) => {
@@ -217,22 +228,6 @@ class FiservSDKIframe
         this.form.mask(field, true);
     }
 
-    // CVV-only masking methods
-    maskCVV = function()
-    {
-        if (this.form && this.isSingleFieldMode)
-        {
-            this.form.mask('securityCode', true);
-        }
-    }
-
-    unmaskCVV = function()
-    {
-        if (this.form && this.isSingleFieldMode)
-        {
-            this.form.mask('securityCode', false);
-        }
-    }
 
     isValid = function()
     {
