@@ -21,8 +21,7 @@ class FiservSDKIframe
         fieldValidityHandler,
         fieldFocusHandler,
         runSuccessCallback,
-        runFailureCallback,
-        cardUUID = null
+        runFailureCallback
     ) {
         // CommerceHub SDK loaded separately by B2C SFRA assets.js
         if (typeof(window.fiserv) === "undefined")
@@ -47,8 +46,8 @@ class FiservSDKIframe
         this.fastlaneAuthResponse = null;
 
         // CVV-only mode properties
-        this.cardUUID = cardUUID;
-        this.isSingleFieldMode = cardUUID !== null;
+        // this.cardUUID = cardUUID;
+        // this.isSingleFieldMode = cardUUID !== null;
     }
 
     initSdk = function(formConfig, formType, fastlaneObject)

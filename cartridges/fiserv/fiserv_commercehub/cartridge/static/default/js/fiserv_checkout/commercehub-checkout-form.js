@@ -742,8 +742,7 @@ class CommercehubCheckoutForm
                 fieldValidityHandler,
                 fieldFocusHandler,
                 runSuccessCallback,
-                runFailureCallback,
-                cardUUID // Enables single field mode
+                runFailureCallback
             );
 
             const updatedFormConfig = JSON.parse(JSON.stringify(this.formConfig));
