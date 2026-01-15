@@ -32,9 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return $('.credit-card-form.checkout-hidden').length
     }
 
-    let initializationData = extractInitializationData();
-    // CommercehubCheckoutForm now handles both new card entry and stored card CVV
-    let form = new CommercehubCheckoutForm(initializationData);
+    let form = new CommercehubCheckoutForm(extractInitializationData());
 
     let clearPaymentForm = function()
     {

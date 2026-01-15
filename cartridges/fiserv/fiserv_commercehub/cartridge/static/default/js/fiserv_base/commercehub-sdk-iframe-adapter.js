@@ -92,20 +92,13 @@ class FiservSDKIframe
             "data" : formCustomization,
             "hooks" : {
                 "onFormValid" : () => { this.formValidCb(); },
-                "onFormNoLongerValid" : () => { this.formInvalidCb(); }
+                "onFormNoLongerValid" : () => { this.formInvalidCb(); },
+                "onCardBrandChange" : (data) => { this.cardBrandHandler(data); },
+                "onFieldValidityChange" : (data) => { this.fieldValidityHandler(data); },
+                "onFocus" : (data) => { this.fieldFocusHandler(data); },
+                "onLostFocus" : (data) => { this.fieldFocusHandler(data); }
             }
         };
-
-        if (this.isSingleFieldMode) {
-            formConfig.hooks["onFieldValidityChange"] = (data) => { this.fieldValidityHandler(data, this.cardUUID); };
-            formConfig.hooks["onFocus"] = (data) => { this.fieldFocusHandler(data, this.cardUUID); };
-            formConfig.hooks["onLostFocus"] = (data) => { this.fieldFocusHandler(data, this.cardUUID); };
-        } else {
-            formConfig.hooks["onCardBrandChange"] = (data) => { this.cardBrandHandler(data); };
-            formConfig.hooks["onFieldValidityChange"] = (data) => { this.fieldValidityHandler(data); };
-            formConfig.hooks["onFocus"] = (data) => { this.fieldFocusHandler(data); };
-            formConfig.hooks["onLostFocus"] = (data) => { this.fieldFocusHandler(data); };
-        }
 
         formConfig["data"]["environment"] =  formConfigInput['environment'];
 
@@ -120,23 +113,12 @@ class FiservSDKIframe
         return formConfig;
     }
 
-    submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null, additionalParams = {})
+    submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null)
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
-            // Build parameters object
-            let params = { requestPurpose: requestPurpose };
-
-            // Add paymentUUID if in single field mode (CVV-only)
-            if (this.isSingleFieldMode && this.cardUUID) {
-                params.paymentUUID = this.cardUUID;
-            }
-
-            // Merge any additional parameters
-            params = { ...params, ...additionalParams };
-
             let promise = new Promise((resolve, reject) => {
-                FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, params);
+                FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
             });
 
             promise.then(async (credentialsResponse) => {
@@ -159,28 +141,6 @@ class FiservSDKIframe
                 this.runFailureCallback();
             });
         }
-    }
-
-    // Method for CVV-only submission (single field mode)
-    submitSingleField = function(credentialsResponse, successCallback, failureCallback)
-    {
-        if (typeof this.form === "undefined" || !this.form)
-        {
-            failureCallback('Form not initialized');
-            return;
-        }
-
-        this.form.submit(credentialsResponse['submitConfig'])
-            .then((response) => {
-                if (response && response.source)
-                {
-                    successCallback(response);
-                }
-            })
-            .catch((error) => {
-                console.log('Single field submission error:', error);
-                failureCallback(error);
-            });
     }
 
     destroyIframe = function(formId)
