@@ -43,10 +43,6 @@ class FiservSDKIframe
         this.fastlaneStatus = false;
         this.fastlaneInitStatus = false;
         this.fastlaneAuthResponse = null;
-
-        // CVV-only mode properties
-        // this.cardUUID = cardUUID;
-        // this.isSingleFieldMode = cardUUID !== null;
     }
 
     initSdk = function(formConfig, formType, fastlaneObject)
