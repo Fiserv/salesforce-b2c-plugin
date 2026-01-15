@@ -120,7 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $('.btn.cancel-new-payment').click(()=> {
         form.watchSubmitButtonToken();
-        form.enableSubmitButton();
+        if (form.shouldEnableSubmitButtonOnCancelNewPayment())
+        {
+            form.enableSubmitButton();
+        }
     });
 
     $('.btn.add-payment').click(()=> {
