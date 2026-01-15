@@ -69,27 +69,8 @@ class FiservSDKIframe
 
     buildFormConfig = function(formConfigInput, formType, fastlaneObject)
     {
-        // In single field mode (CVV-only), modify the config for single field
-        let formCustomization;
-        if (this.isSingleFieldMode && formConfigInput['formCustomization']) {
-            // Deep clone to avoid modifying original config
-            formCustomization = JSON.parse(JSON.stringify(formConfigInput['formCustomization']));
-            // Update parentElementId for CVV field with card UUID
-            if (formCustomization.fields && formCustomization.fields.securityCode) {
-                formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${this.cardUUID}`;
-            }
-            // Keep only securityCode field
-            if (formCustomization.fields) {
-                formCustomization.fields = {
-                    securityCode: formCustomization.fields.securityCode
-                };
-            }
-        } else {
-            formCustomization = formConfigInput['formCustomization'];
-        }
-
         let formConfig = {
-            "data" : formCustomization,
+            "data" : formConfigInput['formCustomization'],
             "hooks" : {
                 "onFormValid" : () => { this.formValidCb(); },
                 "onFormNoLongerValid" : () => { this.formInvalidCb(); },
@@ -145,12 +126,7 @@ class FiservSDKIframe
 
     destroyIframe = function(formId)
     {
-        if (this.isSingleFieldMode && this.cardUUID) {
-            // For CVV-only mode, target the specific card container
-            $(`#fiserv_commercehub-cvv-security-code-${this.cardUUID}`).find("iframe").remove();
-        } else {
-            $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
-        }
+       $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
         this.validity = false;
     }
 

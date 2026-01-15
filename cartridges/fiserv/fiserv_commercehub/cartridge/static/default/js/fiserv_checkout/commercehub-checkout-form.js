@@ -746,8 +746,21 @@ class CommercehubCheckoutForm
                 cardUUID // Enables single field mode
             );
 
+            const updatedFormConfig = JSON.parse(JSON.stringify(this.formConfig));
+            if (updatedFormConfig.formCustomization && 
+                updatedFormConfig.formCustomization.fields && 
+                updatedFormConfig.formCustomization.fields.securityCode) {
+                updatedFormConfig.formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${cardUUID}`;
+               if (!updatedFormConfig.formCustomization.fields.securityCode.fields) {
+                    updatedFormConfig.formCustomization.fields.securityCode.fields = {};
+                }
+                const securityCodeField = updatedFormConfig.formCustomization.fields.securityCode;
+                updatedFormConfig.formCustomization.fields = {
+                    securityCode: securityCodeField
+                };
+            }
             this.cvvAdapters[cardUUID] = adapter;
-            adapter.initSdk(this.formConfig, "CREDIT_CARD", null);
+            adapter.initSdk(updatedFormConfig, "CREDIT_CARD", null);
         }
         catch(err)
         {
