@@ -275,8 +275,8 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubTokenization'),
             getPreferenceDescription('CommerceHubTokenizationStrategy'),
             getPreferenceDescription('CommerceHubStandaloneSPA'),
-            getPreferenceDescription('CommerceHubEarlyTokenization'),
             getPreferenceDescription('CommerceHubTokenSecurityEnable'),
+            getPreferenceDescription('CommerceHubEarlyTokenization'),
             getPreferenceDescription('CommerceHubEarlyTokenizationGuest'),
             getPreferenceDescription('CommerceHub3DSEnable')
         ]

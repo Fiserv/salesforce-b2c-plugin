@@ -1,5 +1,6 @@
- <isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
-    <isloop items="${pdict.customer.customerPaymentInstruments}" var="paymentInstrument" status="loopState">
+<isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+
+<isloop items="${pdict.customer.customerPaymentInstruments}" var="paymentInstrument" status="loopState">
     <div class="row saved-payment-instrument ${loopState.first ? 'selected-payment' : ''}" data-uuid="${paymentInstrument.UUID}">
         <div class="form-group col-6 col-md-3" >
             <img class="cc-type-image"
