@@ -10,7 +10,6 @@ class FiservSDKIframe
     // form invalid callback fires when form is marked invalid
     // run success callback fires when card is successfully tokenized
     // run failure callback fires when card fails to tokenize
-    // cardUUID: optional parameter for CVV-only mode (single field for stored cards)
     constructor(
         loadSuccessCallback,
         loadFailCallback,
