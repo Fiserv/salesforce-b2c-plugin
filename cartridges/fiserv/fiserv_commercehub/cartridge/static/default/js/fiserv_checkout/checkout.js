@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         else
         {
+            if (form.cvvEnabled) form.initializeTokenCVVForms();
             form.watchSubmitButtonToken();
         }
     });
@@ -132,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // if payment stage: instantiate payment form
-    // if beyond payment stage: return to payment stage
     if($(".payment-information").data("payment-method-id") === "CREDIT_CARD")
     {
         switch (checkoutStage) {
