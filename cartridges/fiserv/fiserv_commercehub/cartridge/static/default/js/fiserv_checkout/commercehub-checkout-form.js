@@ -640,7 +640,7 @@ class CommercehubCheckoutForm
             $(this).empty();
         });
 
-       this.watchSavedCardSelection();
+        this.watchSavedCardSelection();
         this.initializeMaskingIcons();
         this.initializeSelectedCardCVV();
     }
