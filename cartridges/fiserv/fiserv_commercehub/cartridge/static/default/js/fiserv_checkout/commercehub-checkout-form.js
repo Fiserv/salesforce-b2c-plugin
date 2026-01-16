@@ -644,39 +644,30 @@ class CommercehubCheckoutForm
 
     initializeSelectedCardCVV = function()
     {
-        const self = this;
-
-        // First, determine the selected card
-        const selectedPayment = $('.saved-payment-instrument.selected-payment');
-        if (selectedPayment.length > 0)
+        const tokens = $('.saved-payment-instrument');
+        if (tokens.length > 0)
         {
-            this.currentSelectedPaymentUUID = selectedPayment.data('uuid');
-        }
-
-         $.spinner().start();
-
-        // Initialize CVV fields for ALL saved cards
-        $('.saved-payment-instrument').each(function() {
-            const paymentUUID = $(this).data('uuid');
-            if (paymentUUID) {
-                self.initializeCVVForCard(paymentUUID);
+            $.spinner().start();
+                        
+            tokens.each((idx, storedPayment) => {
+                const paymentUUID = $(storedPayment).data('uuid');
+                if (paymentUUID) this.initializeCVVForCard(paymentUUID);
+            });
+            $(".cvv-collector-container").hide();
+            
+            const selectedPayment = $('.saved-payment-instrument.selected-payment');
+            if (selectedPayment.length > 0)
+            {
+                this.currentSelectedPaymentUUID = selectedPayment.data('uuid');
+                selectedPayment.find(".cvv-collector-container").show();
+                this.handleTokenFormValidity(this.currentSelectedPaymentUUID, false);
             }
-        });
-
-        $(".cvv-collector-container").hide();
-        selectedPayment.find(".cvv-collector-container")?.show();
+        }
     }
 
     initializeCVVForCard = function(cardUUID)
     {
-        if (!cardUUID || !this.cvvEnabled) return;
-
-        // Check if already initialized
-        if (this.cvvAdapters[cardUUID])
-        {
-            console.log(`CVV adapter already exists for card ${cardUUID}`);
-            return;
-        }
+        if (!this.cvvEnabled || !cardUUID || this.cvvAdapters[cardUUID]) return;
 
         try
         {
@@ -685,7 +676,7 @@ class CommercehubCheckoutForm
                 console.log(`CommerceHub CVV SDK loaded for card ${cardUUID}`);
             };
             const loadFailCallback = (error) => {
-                this.sdkLoadFailure(error, `#cvv-fatal-notice-${cardUUID}`);
+                this.sdkLoadFailure(error, `#cvv-fatal-notice-${ cardUUID }`);
             };
             const formReadyCallback = () => {
                 this.sdkInitialized();
@@ -703,7 +694,7 @@ class CommercehubCheckoutForm
                 this.fieldValidityHandler(data, frame, mess);
             };
             const fieldFocusHandler = () => {
-                let frame = $(`#cvv-security-code-frame-${cardUUID}`);
+                let frame = $(`#cvv-security-code-frame-${ cardUUID }`);
                 this.fieldFocusHandler(frame);
             };
             const runSuccessCallback = (response) => {
@@ -727,17 +718,10 @@ class CommercehubCheckoutForm
                 runFailureCallback
             );
 
-            const updatedFormConfig = JSON.parse(JSON.stringify(this.formConfig));
-            if (updatedFormConfig?.formCustomization?.fields?.securityCode) {
-                updatedFormConfig.formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${cardUUID}`;
-               if (!updatedFormConfig.formCustomization.fields.securityCode.fields) {
-                    updatedFormConfig.formCustomization.fields.securityCode.fields = {};
-                }
-                const securityCodeField = updatedFormConfig.formCustomization.fields.securityCode;
-                updatedFormConfig.formCustomization.fields = {
-                    securityCode: securityCodeField
-                };
-            }
+            const updatedFormConfig = structuredClone(this.formConfig);
+            updatedFormConfig.formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${ cardUUID }`;
+            updatedFormConfig.formCustomization.fields = { securityCode: updatedFormConfig.formCustomization.fields.securityCode }
+
             this.cvvAdapters[cardUUID] = adapter;
             adapter.initSdk(updatedFormConfig, "CREDIT_CARD", null);
         }
@@ -799,9 +783,7 @@ class CommercehubCheckoutForm
 
     initializeMaskingIcons = function()
     {
-        const self = this;
-        // Use event delegation to handle dynamically created masking icons
-        $(document).on('click', '[id^="cvv-mask-securityCode-"]', function(event) {
+        $(document).on('click', '[id^="cvv-mask-securityCode-"]', (event) => {
             event.preventDefault();
 
             let field = event.target;
@@ -809,13 +791,13 @@ class CommercehubCheckoutForm
             let jQueryObject = $('#' + field.id);
 
             // Get the adapter for this specific card
-            const adapter = self.cvvAdapters[id];
+            const adapter = this.cvvAdapters[id];
             if (!adapter) {
                 console.warn('No CVV adapter found for card:', id);
                 return;
             }
 
-            if(jQueryObject.hasClass('sdc-unmasking-icon'))
+            if (jQueryObject.hasClass('sdc-unmasking-icon'))
             {
                 jQueryObject.removeClass('sdc-unmasking-icon');
                 jQueryObject.addClass('sdc-masking-icon');
