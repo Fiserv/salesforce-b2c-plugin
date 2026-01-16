@@ -445,7 +445,7 @@ class CommercehubCheckoutForm
     {
         if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
             this.formAdapter.destroyIframe('card');
-        this.getFatalNotice().hide();
+        $('#fiserv-scc-fatal-notice').hide();
     }
 
     execute3DS = async function(isToken = false)
@@ -662,6 +662,9 @@ class CommercehubCheckoutForm
                 self.initializeCVVForCard(paymentUUID);
             }
         });
+
+        $(".cvv-collector-container").hide();
+        selectedPayment.find(".cvv-collector-container")?.show();
     }
 
     initializeCVVForCard = function(cardUUID)
@@ -745,21 +748,24 @@ class CommercehubCheckoutForm
         }
     }
 
+    handleTokenFormValidity = function(cardUUID, valid)
+    {
+        this.cvvAdapters[cardUUID]?.setValidity(valid);
+        this.getSubmitButton().prop('disabled', !valid);
+    }
+
     watchSavedCardSelection = function()
     {
         // Watch for saved payment instrument selection
-        $(document).on('click', '.saved-payment-instrument', () => {
-            const paymentUUID = clickedPayment.data('uuid');
+        $(document).on('click', '.saved-payment-instrument', (clickedPayment) => {
+            const paymentUUID = $(clickedPayment.currentTarget).data('uuid');
 
-            // hide all non-active CVV forms
             $(".cvv-collector-container").hide();
-            $(this).find(".cvv-collector-container").show();
+            $(clickedPayment.currentTarget).find(".cvv-collector-container").show();
 
             // Update current selected payment UUID
             this.currentSelectedPaymentUUID = paymentUUID;
-            const frame = $(`#cvv-security-code-frame-${ paymentUUID }`);
-            const hasValidClass = frame.hasClass('sdc-valid-field');
-            this.getSubmitButton().prop('disabled', hasValidClass);
+            this.getSubmitButton().prop('disabled', !this.cvvAdapters[this.currentSelectedPaymentUUID]?.isValid());
         });
     }
 
@@ -784,7 +790,7 @@ class CommercehubCheckoutForm
         $.spinner().start();
 
         // Use submitForm which handles credential fetching internally
-        this.cvvAdapters[currentCardUUID].submitForm(
+        this.cvvAdapters[this.currentSelectedPaymentUUID].submitForm(
             this.credentialsUrl,
             (sessionId) => {
                 this.setSessionIdInput(sessionId);
