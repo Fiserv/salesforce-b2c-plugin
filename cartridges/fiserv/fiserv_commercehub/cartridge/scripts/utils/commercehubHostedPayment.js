@@ -33,7 +33,7 @@ function prepareFormSubmission(hostURL, credentialsForm)
     return collectSubmitData(fiservCredentials.getCommercehubCredentials(hostURL, credentialsForm));
 }
 
-module.exports =
+module.exports = 
 { 
     prepareFormSubmission : prepareFormSubmission
 }
