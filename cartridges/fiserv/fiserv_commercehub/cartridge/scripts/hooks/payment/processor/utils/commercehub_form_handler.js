@@ -107,10 +107,15 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
     viewData.paymentInformation.tokenSource = { value : paymentInstrument.custom.commercehubTokenSource };
     viewData.paymentInformation.commercehubCardType = { value : paymentInstrument.custom.commercehubCardType };
     viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
+    
+    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+    if(fiservConfig.getTokenSecurityEnabled())
+    {
+        viewData.paymentInformation.sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
+    }
 
     let authenticationId3DS = paymentForm.fiservCommercehubPaymentFields.authenticationId3DS
 
-    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
     if(authenticationId3DS && fiservConfig.get3DSEnabled())
     {
         viewData.paymentInformation.authenitcationId3DS = authenticationId3DS.value;
@@ -162,8 +167,12 @@ function getNewCardFormResult(paymentForm, viewFormData)
 
 function processForm(req, paymentForm, viewFormData) 
 {
+    const isLoggedIn = !!(req.currentCustomer
+        && req.currentCustomer.raw
+        && req.currentCustomer.raw.authenticated);
+
     let viewData = req.form.storedPaymentUUID ? getStoredCardFormResult(req.currentCustomer, req.form.storedPaymentUUID, paymentForm, viewFormData) :
-        (paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value ? getNewCardFormResult(paymentForm, viewFormData) :
+        (isLoggedIn ? getNewCardFormResult(paymentForm, viewFormData) :
         getGuestCardFormResult(paymentForm, viewFormData));
     return viewData;
 }

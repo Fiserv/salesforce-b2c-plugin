@@ -182,6 +182,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenSecurityEnable">
+                <display-name xml:lang="x-default">Enable CVV for Tokenized Cards</display-name>
+                <description xml:lang="x-default">Require CVV entry when using tokenized payment cards</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
             <attribute-definition attribute-id="CommerceHubEarlyTokenizationGuest">
                 <display-name xml:lang="x-default">Early Tokenization For Guests</display-name>
                 <description xml:lang="x-default">Allow guest customers to tokenize payment information on credit card capture in the checkout flow</description>
@@ -1350,6 +1358,7 @@
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
                 <attribute attribute-id="CommerceHubEarlyTokenizationGuest"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
+                <attribute attribute-id="CommerceHubTokenSecurityEnable"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
                 <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>

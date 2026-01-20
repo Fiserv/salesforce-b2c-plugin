@@ -107,6 +107,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHub3DSEnable');
     },
 
+    getTokenSecurityEnabled()
+    {
+        return getSitePreference('CommerceHubTokenSecurityEnable');
+    },
+
     // This is where the Gift Card settings start
 
     getCommerceHubGiftEnabled()

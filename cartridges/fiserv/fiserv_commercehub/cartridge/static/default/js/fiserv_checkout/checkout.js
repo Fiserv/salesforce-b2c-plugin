@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $('#fiserv-commercehub-card-form-init-container').remove();
 
         guestTokenFlowEnabled = data.config.configData.tokenizeEarlyGuest;
-        
+
         return data;
     }
 
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    let initPaymentForm = function() 
+    let initPaymentForm = function()
     {
         if (!initialized)
         {
@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 guestTokenFlowEnabled))
             {
                 $('.cancel-new-payment').trigger('click');
+                if (form.cvvEnabled) form.initializeTokenCVVForms();
             }
             else
             {
@@ -99,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         else
         {
+            if (form.cvvEnabled) form.initializeTokenCVVForms();
             form.watchSubmitButtonToken();
         }
     });
@@ -106,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // set listener for ajax success of shipping submit action
     // after which we init payment form
     // if saved payment menu is active, do not init form
-    $(document).on("ajaxSuccess", (ev, xhr) => { 
+    $(document).on("ajaxSuccess", (ev, xhr) => {
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
@@ -120,7 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $('.btn.cancel-new-payment').click(()=> {
         form.watchSubmitButtonToken();
-        form.enableSubmitButton();
+        if (form.shouldEnableSubmitButtonOnCancelNewPayment()) form.enableSubmitButton();
+        else form.disableSubmitButton();
     });
 
     $('.btn.add-payment').click(()=> {
@@ -129,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // if payment stage: instantiate payment form
-    // if beyond payment stage: return to payment stage
     if($(".payment-information").data("payment-method-id") === "CREDIT_CARD")
     {
         switch (checkoutStage) {
