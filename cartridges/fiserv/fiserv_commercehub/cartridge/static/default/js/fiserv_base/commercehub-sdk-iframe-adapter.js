@@ -120,7 +120,7 @@ class FiservSDKIframe
 
     destroyIframe = function(formId)
     {
-       $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
+        $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
         this.validity = false;
     }
 
