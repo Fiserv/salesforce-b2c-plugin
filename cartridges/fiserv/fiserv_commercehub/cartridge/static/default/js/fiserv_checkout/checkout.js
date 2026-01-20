@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 guestTokenFlowEnabled))
             {
                 $('.cancel-new-payment').trigger('click');
+                if (form.cvvEnabled) form.initializeTokenCVVForms();
             }
             else
             {
@@ -121,10 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $('.btn.cancel-new-payment').click(()=> {
         form.watchSubmitButtonToken();
-        if (form.shouldEnableSubmitButtonOnCancelNewPayment())
-        {
-            form.enableSubmitButton();
-        }
+        if (form.shouldEnableSubmitButtonOnCancelNewPayment()) form.enableSubmitButton();
+        else form.disableSubmitButton();
     });
 
     $('.btn.add-payment').click(()=> {

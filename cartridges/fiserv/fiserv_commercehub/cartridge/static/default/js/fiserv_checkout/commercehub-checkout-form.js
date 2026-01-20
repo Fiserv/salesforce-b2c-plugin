@@ -193,7 +193,7 @@ class CommercehubCheckoutForm
                     }
                     $('.payment-information').data('is-new-payment', false);
                     $('.selected-payment').removeClass('selected-payment');
-                    $('#earlyTokenizeInjectedForm').data('uuid', response.uuid);
+                    $('#earlyTokenizeInjectedForm').attr('data-uuid', response.uuid);
                     $('#earlyTokenizeInjectedForm').addClass('selected-payment');
                     this.setSessionIdInput(null);
 
@@ -419,15 +419,18 @@ class CommercehubCheckoutForm
         if (selectedPayment.length > 0) 
         {
             const tokenForm = this.cvvAdapters[this.currentSelectedPaymentUUID ];
-            if (typeof(tokenForm) === "undefined") throw new Error(`Unable to locate selected payment token form: ${ paymentUUID }`);
-            
-            this.getSubmitButton().prop('disabled', !tokenForm.isValid());
-        }        
+            return typeof(tokenForm) === "undefined" ? false : tokenForm.isValid();
+        }
     }
     
     enableSubmitButton = function ()
     {
         this.getSubmitButton().prop('disabled', false);
+    }
+
+    disableSubmitButton = function ()
+    {
+        this.getSubmitButton().prop('disabled', true);
     }
 
     resetForm = function()
@@ -648,7 +651,7 @@ class CommercehubCheckoutForm
     initializeSelectedCardCVV = function()
     {
         const tokens = $('.saved-payment-instrument');
-        if (tokens.length > 0)
+        if (tokens.filter('[data-uuid]:not([data-uuid=""])').length > 0)
         {
             $.spinner().start();
                         
@@ -743,17 +746,18 @@ class CommercehubCheckoutForm
 
     watchSavedCardSelection = function()
     {
-        // Watch for saved payment instrument selection
-        $(document).on('click', '.saved-payment-instrument', (clickedPayment) => {
-            const paymentUUID = $(clickedPayment.currentTarget).data('uuid');
+        $(document).on('click', '.saved-payment-instrument', this.savedCardSelectionClickHandler);
+    }
 
-            $(".cvv-collector-container").hide();
-            $(clickedPayment.currentTarget).find(".cvv-collector-container").show();
+    savedCardSelectionClickHandler = (clickedPayment) => {
+        const paymentUUID = $(clickedPayment.currentTarget).data('uuid');
 
-            // Update current selected payment UUID
-            this.currentSelectedPaymentUUID = paymentUUID;
-            this.getSubmitButton().prop('disabled', !this.cvvAdapters[this.currentSelectedPaymentUUID]?.isValid());
-        });
+        $(".cvv-collector-container").hide();
+        $(clickedPayment.currentTarget).find(".cvv-collector-container").show();
+
+        // Update current selected payment UUID
+        this.currentSelectedPaymentUUID = paymentUUID;
+        this.getSubmitButton().prop('disabled', !this.cvvAdapters[this.currentSelectedPaymentUUID]?.isValid());
     }
 
     handleCVVTokenFormSubmit = function(error) 
