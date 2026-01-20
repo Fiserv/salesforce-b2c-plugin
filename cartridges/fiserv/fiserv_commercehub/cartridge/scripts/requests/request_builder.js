@@ -71,19 +71,20 @@ function buildChargesTransactionDetailsObject(capture, tokenize)
 
 function buildSourceObject(paymentInstrument)
 {
-    return paymentInstrument.creditCardToken ? buildTokenSourceObject(paymentInstrument) : buildSessionSourceObject(paymentInstrument.paymentTransaction.custom.commercehubSessionId);
+    let sessionId = paymentInstrument.paymentTransaction.custom.commercehubSessionId;
+    return paymentInstrument.creditCardToken ? buildTokenSourceObject(paymentInstrument, sessionId) : buildSessionSourceObject(sessionId);
 }
 
-function buildTokenSourceObject(paymentInstrument)
+function buildTokenSourceObject(paymentInstrument, sessionId)
 {
     let source = {};
     source["sourceType"] = fiservConstants.TOKEN_SOURCE_TYPE;
     source["tokenData"] = paymentInstrument.creditCardToken;
     source["tokenSource"] = paymentInstrument.custom.commercehubTokenSource;
     source["declineDuplicates"] = true;
-    if(paymentInstrument.paymentTransaction && paymentInstrument.paymentTransaction.custom.commercehubSessionId)
+    if(sessionId)
     {
-        source["sessionId"] = paymentInstrument.paymentTransaction.custom.commercehubSessionId;
+        source["sessionId"] = sessionId;
     }
     source["card"] = {
         // month must be two digits

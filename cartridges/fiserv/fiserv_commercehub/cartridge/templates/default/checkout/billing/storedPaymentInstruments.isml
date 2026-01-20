@@ -30,7 +30,7 @@
                     <div class="sdc-row cvv-row">
                         <div id="cvv-security-code-frame-${paymentInstrument.UUID}" class="sdc-field-frame sdc-text cvv-field-frame">
                             <div id="fiserv_commercehub-cvv-security-code-${paymentInstrument.UUID}" class="sdc-field cvv-field"></div>
-                            <button id="cvv-mask-securityCode-${paymentInstrument.UUID}" class="btn sdc-unmasking-icon cvv-mask-button"></button>
+                            <button id="cvv-mask-securityCode-${paymentInstrument.UUID}" class="btn sdc-unmasking-icon cvv-mask-button ${paymentInstrument.UUID}"></button>
                         </div>
                         <span id="cvv-security-code-invalid-message-${paymentInstrument.UUID}" class="sdc-error-message sdc-hidden cvv-error-message"></span>
                     </div>
