@@ -642,7 +642,7 @@ class CommercehubCheckoutForm
         $('[id^="fiserv_commercehub-cvv-security-code-"]').each(function () {
             $(this).empty();
         });
-
+        this.unwatchSavedCardSelection();
         this.watchSavedCardSelection();
         this.initializeMaskingIcons();
         this.initializeSelectedCardCVV();
@@ -747,6 +747,11 @@ class CommercehubCheckoutForm
     watchSavedCardSelection = function()
     {
         $(document).on('click', '.saved-payment-instrument', this.savedCardSelectionClickHandler);
+    }
+
+    unwatchSavedCardSelection = function()
+    {
+        $(document).off('click', '.saved-payment-instrument', this.savedCardSelectionClickHandler);
     }
 
     savedCardSelectionClickHandler = (clickedPayment) => {
