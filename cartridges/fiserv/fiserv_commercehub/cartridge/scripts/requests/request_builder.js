@@ -422,17 +422,17 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     }
                 }
             }
-            else if(fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest() && basket.custom.commercehubGuestToken)
+            else if(fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest() && basket.custom.commercehubBasketToken)
             {
-                let guestPI = JSON.parse(basket.custom.commercehubGuestToken);
-                if(guestPI.UUID === credentialsForm.threeDSToken)
+                let basketPI = JSON.parse(basket.custom.commercehubBasketToken);
+                if(basketPI.UUID === credentialsForm.threeDSToken)
                 {
                     pi = {
-                        creditCardToken: guestPI.tokenData,
-                        creditCardExpirationMonth: guestPI.expirationMonth,
-                        creditCardExpirationYear: guestPI.expirationYear,
+                        creditCardToken: basketPI.tokenData,
+                        creditCardExpirationMonth: basketPI.expirationMonth,
+                        creditCardExpirationYear: basketPI.expirationYear,
                         custom: {
-                            commercehubTokenSource: guestPI.tokenSource
+                            commercehubTokenSource: basketPI.tokenSource
                         }
                     }
                 }

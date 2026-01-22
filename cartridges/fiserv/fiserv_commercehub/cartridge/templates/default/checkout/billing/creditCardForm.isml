@@ -10,7 +10,7 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
-    assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
+    assets.addJs('/js/fiserv_checkout/commercehub-credit-form.js');
     assets.addJs('/js/fiserv_checkout/checkout.js');
     if(!pdict.customer.registeredUser && pdict.fastlaneEnabled)
     {
@@ -93,6 +93,7 @@
 <!--- Hidden input for credit card type --->
 <input id="commercehubSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
 <input id="authenticationId3DSInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.authenticationId3DS.htmlName}"/>
+<input id="commercehubTokenUUIDInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubTokenUUID.htmlName}"/>
 <isif condition="${pdict.earlyTokenization}">
     <div style="display:none;" id="earlyTokenizeInjectedForm" class="saved-payment-instrument" data-uuid=""></div>
 </isif>

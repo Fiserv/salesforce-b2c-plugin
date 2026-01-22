@@ -107,7 +107,7 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
         }
         else
         {
-            savedCard = fiservSavePaymentInstrument.saveTokenizedCardGuest(fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+            savedCard = fiservSavePaymentInstrument.saveTokenizedCardBasket(fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
         }
 
         if('duplicate' in savedCard)
