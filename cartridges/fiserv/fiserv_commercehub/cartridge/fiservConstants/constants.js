@@ -21,6 +21,7 @@ module.exports = {
         COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
         COMMERCEHUB_VENMO_PROCESSOR : "FISERV_COMMERCEHUB_VENMO",
         COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
+        COMMERCEHUB_AFFIRM_PROCESSOR : "FISERV_COMMERCEHUB_AFFIRM",
     },
     PAYMENT_METHOD_LIST : {
         COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
@@ -57,17 +58,17 @@ module.exports = {
             'CommerceHubTokenization',
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
+            'CommerceHubTokenSecurityEnable',
             'CommerceHubEarlyTokenization',
             'CommerceHubEarlyTokenizationGuest',
             'CommerceHub3DSEnable',
-            'CommerceHubTokenSecurityEnable',
             'CommerceHubPayPalFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
         ],
         'CommerceHubTokenization': [
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
-            'CommerceHubEarlyTokenization',
             'CommerceHubTokenSecurityEnable',
+            'CommerceHubEarlyTokenization',
             'CommerceHubEarlyTokenizationGuest'
         ],
         'CommerceHubEarlyTokenization': [
@@ -91,6 +92,11 @@ module.exports = {
         'CommerceHubApplePayEnable': [
             'CommerceHubApplePayPaymentType',
             'ApplePayButton'
+        ],
+
+        'CommerceHubAffirmEnable': [
+            'CommerceHubAffirmPaymentType',
+            'AffirmButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {
