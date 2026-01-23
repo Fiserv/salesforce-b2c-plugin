@@ -86,7 +86,7 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
 
     if(!profile)
     {
-        return attachGuestTokenToBasket(chResponse, cardType, orderNo);
+        return attachBasketTokenToBasket(chResponse, cardType, orderNo);
     }
 
     let storedPaymentInstrument = profile.getWallet().createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
@@ -131,7 +131,7 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
     return storedPaymentInstrument;
 }
 
-function attachGuestTokenToBasket(chResponse, cardType, orderNo)
+function attachBasketTokenToBasket(chResponse, cardType, orderNo)
 {
     const BasketMgr = require('dw/order/BasketMgr');
     const UUIDUtils = require("dw/util/UUIDUtils");
@@ -157,7 +157,7 @@ function attachGuestTokenToBasket(chResponse, cardType, orderNo)
         UUID: UUIDUtils.createUUID()
     }
 
-    basket.custom.commercehubGuestToken = JSON.stringify(storedPaymentInstrument);
+    basket.custom.commercehubBasketToken = JSON.stringify(storedPaymentInstrument);
 
     fiservLogs.logInfo(1, "New guest token attached to basket", orderNo);
 
@@ -196,7 +196,7 @@ function saveTokenizedCard(customerNo, cardType, chResponse)
     return saveCard(customer.getProfile(), cardType, chResponse);
 }
 
-function saveTokenizedCardGuest(cardType, chResponse)
+function saveTokenizedCardBasket(cardType, chResponse)
 {
     // Passing in null for the profile in the case that this is a guest early token
     return saveCard(null, cardType, chResponse);
@@ -240,5 +240,5 @@ module.exports =
 {
     savePaymentInstrument : savePaymentInstrument,
     saveTokenizedCard : saveTokenizedCard,
-    saveTokenizedCardGuest : saveTokenizedCardGuest
+    saveTokenizedCardBasket : saveTokenizedCardBasket
 }

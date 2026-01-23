@@ -60,9 +60,9 @@ server.append('Begin', function (req, res, next) {
     else if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest())
     {
         res.viewData.customer.customerPaymentInstruments = [];
-        if(basket && basket.custom.commercehubGuestToken)
+        if(basket && basket.custom.commercehubBasketToken)
         {
-            res.viewData.customer.customerPaymentInstruments = [fiservHelper.buildRenderedGuestTokenField(basket)];
+            res.viewData.customer.customerPaymentInstruments = [fiservHelper.buildRenderedBasketTokenField(basket)];
         }
     }
 

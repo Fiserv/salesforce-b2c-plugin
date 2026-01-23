@@ -85,20 +85,20 @@ server.append('SubmitPayment', function (req, res, next) {
         else if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest())
         {
             const BasketMgr = require('dw/order/BasketMgr');
-            const RenderTemplateHelperGuest = require('*/cartridge/scripts/renderTemplateHelper');
+            const RenderTemplateHelperBasket = require('*/cartridge/scripts/renderTemplateHelper');
 
             res.viewData.customer.customerPaymentInstruments = [];
             let basket = BasketMgr.getCurrentBasket();
-            if(basket && basket.custom.commercehubGuestToken)
+            if(basket && basket.custom.commercehubBasketToken)
             {
-                let displayedPayments = [fiservHelper.buildRenderedGuestTokenField(basket)]
+                let displayedPayments = [fiservHelper.buildRenderedBasketTokenField(basket)]
                 res.viewData.customer.customerPaymentInstruments = displayedPayments.length;
                 let context = {
                     customer: {
                         customerPaymentInstruments: displayedPayments
                     }
                 };
-                res.viewData.renderedPaymentInstruments = RenderTemplateHelperGuest.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
+                res.viewData.renderedPaymentInstruments = RenderTemplateHelperBasket.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }
         }
     });

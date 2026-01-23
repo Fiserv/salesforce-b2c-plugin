@@ -137,6 +137,11 @@ class CommercehubCheckoutForm
         $('input#commercehubSessionIdInput').val(sessionId);
     }
 
+    setTokenUUIDInput = function(uuid)
+    {
+        $('input#commercehubTokenUUIDInput').val(uuid);
+    }
+
     getSubmitButton = function() 
     {
         return $('button.btn.btn-primary.btn-block.submit-payment');
@@ -197,6 +202,7 @@ class CommercehubCheckoutForm
                     $('#earlyTokenizeInjectedForm').data('uuid', response.uuid);
                     $('#earlyTokenizeInjectedForm').addClass('selected-payment');
                     this.setSessionIdInput(null);
+                    this.setTokenUUIDInput(response.uuid);
 
                     $('.cancel-new-payment').removeClass('checkout-hidden');
                     earlyFlowExecuted = true;
@@ -278,6 +284,7 @@ class CommercehubCheckoutForm
             _e.preventDefault();
             $.spinner().start();
             this.unwatchSubmitButton();
+            this.setTokenUUIDInput(null);
             this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS ? "3DS" : null);
             return false;
         }
@@ -286,6 +293,7 @@ class CommercehubCheckoutForm
     submitHandlerToken = (_e) =>
     {
         this.setSessionIdInput(null);
+        this.setTokenUUIDInput($('.saved-payment-instrument.selected-payment').data('uuid'));
 
         if (this.cvvEnabled)
         {

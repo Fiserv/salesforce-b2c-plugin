@@ -42,12 +42,12 @@ function secureTraversal(object, path)
     return object;
 }
 
-function buildRenderedGuestTokenField(basket)
+function buildRenderedBasketTokenField(basket)
 {
     const URLUtils = require('dw/web/URLUtils');
 
-    let paymentInstrument = JSON.parse(basket.custom.commercehubGuestToken);
-    var renderedGuestPayment = {
+    let paymentInstrument = JSON.parse(basket.custom.commercehubBasketToken);
+    var renderedBasketPayment = {
         creditCardHolder: paymentInstrument.name,
         maskedCreditCardNumber: paymentInstrument.cardNumber,
         creditCardType: paymentInstrument.cardType,
@@ -56,14 +56,14 @@ function buildRenderedGuestTokenField(basket)
         UUID: paymentInstrument.UUID
     };
 
-    renderedGuestPayment.cardTypeImage = {
+    renderedBasketPayment.cardTypeImage = {
         src: URLUtils.staticURL('/images/'
             + paymentInstrument.cardType.toLowerCase().replace(/\s/g, '')
             + '-dark.svg'),
         alt: paymentInstrument.cardType
     };
 
-    return renderedGuestPayment;
+    return renderedBasketPayment;
 }
 
 module.exports =
@@ -71,5 +71,5 @@ module.exports =
     isCreditCardFiserv : isCreditCardFiserv,
     isApplePayFiserv : isApplePayFiserv,
     secureTraversal : secureTraversal,
-    buildRenderedGuestTokenField : buildRenderedGuestTokenField
+    buildRenderedBasketTokenField : buildRenderedBasketTokenField
 }
