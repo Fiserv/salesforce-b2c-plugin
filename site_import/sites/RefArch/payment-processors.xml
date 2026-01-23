@@ -43,6 +43,9 @@
                 <preference preference-id="CommerceHubStandaloneSPA">
                     <value>false</value>
                 </preference>
+                <preference preference-id="CommerceHubTokenSecurityEnable">
+                    <value>false</value>
+                </preference>
                 <preference preference-id="CommerceHubEarlyTokenization">
                     <value>false</value>
                 </preference>
@@ -50,9 +53,6 @@
                     <value>false</value>
                 </preference>
                 <preference preference-id="CommerceHub3DSEnable">
-                    <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHubTokenSecurityEnable">
                     <value>false</value>
                 </preference>
 
@@ -476,6 +476,43 @@
                 </preference>
                 <preference preference-id="CommerceHubApplePayButtonLabel">
                     <value>pay</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_AFFIRM">
+        <description>Fiserv Commerce Hub Affirm processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+
+                <preference preference-id="CommerceHubAffirmEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubAffirmPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubAffirmButtonColor">
+                    <value>default</value>
                 </preference>
             </all-instances>
             <development/>

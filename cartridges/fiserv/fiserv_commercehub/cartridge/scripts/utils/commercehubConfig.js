@@ -92,6 +92,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubStandaloneSPA');
     },
 
+    getTokenSecurityEnabled()
+    {
+        return getSitePreference('CommerceHubTokenSecurityEnable');
+    },
+
     getEarlyTokenization()
     {
         return getSitePreference('CommerceHubEarlyTokenization');
@@ -105,11 +110,6 @@ const commerceHubExport =
     get3DSEnabled()
     {
         return getSitePreference('CommerceHub3DSEnable');
-    },
-
-    getTokenSecurityEnabled()
-    {
-        return getSitePreference('CommerceHubTokenSecurityEnable');
     },
 
     // This is where the Gift Card settings start
@@ -184,6 +184,20 @@ const commerceHubExport =
     {
         return getSitePreference('CommerceHubApplePayPaymentType').value;
     },
+
+    // This is where the Affirm settngs start
+
+    getCommerceHubAffirmEnabled()
+    {
+        return getSitePreference('CommerceHubAffirmEnable');
+    },
+
+    getCommerceHubAffirmPaymentType()
+    {
+        return getSitePreference('getCommerceHubAffirmPaymentType');
+    },
+
+    // This is where frontend config object building start
 
     getFormConfig(formId)
     {
