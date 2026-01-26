@@ -3,6 +3,39 @@ include:
   - project: 'na/gbs/carat-digital-ecommerce/commercehub/SRE/gitlab-ci'
     ref: COM-18980-v2
     file: '/template-salesforce.yml'
+
 variables:
   ARTIFACT_TYPE : "React"
   APM_ID: "0011801"
+
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+
+# JavaScript and CSS Linting Job
+lint:js-css:
+  stage: lint
+  image: node:18
+  before_script:
+    - cd cartridges/fiserv/fiserv_commercehub
+    - npm ci
+  script:
+    - echo "Running ESLint for JavaScript files..."
+    - npm run lint:eslint
+    - echo "Running Stylelint for CSS files..."
+    - npm run lint:stylelint
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"'
+  allow_failure: true  # Set to false once all linting issues are resolved
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - cartridges/fiserv/fiserv_commercehub/node_modules/
+  artifacts:
+    when: always
+    reports:
+      junit: cartridges/fiserv/fiserv_commercehub/lint-results.xml
+    expire_in: 1 week

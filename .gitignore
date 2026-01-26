@@ -4,6 +4,3 @@ dw.json
 site_import.zip
 *.code-workspace
 node_modules
-package.json
-package-lock.json
-eslint.config.mjs
