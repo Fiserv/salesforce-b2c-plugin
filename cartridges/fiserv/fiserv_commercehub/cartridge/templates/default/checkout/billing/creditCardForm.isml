@@ -11,7 +11,7 @@
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
     assets.addJs('/js/fiserv_checkout/commercehub-credit-form.js');
-    assets.addJs('/js/fiserv_checkout/checkout.js');
+    assets.addJs('/js/fiserv_checkout/credit.js');
     if(!pdict.customer.registeredUser && pdict.fastlaneEnabled)
     {
         assets.addJs('/js/fiserv_paypal/commercehub-paypal-fastlane.js');
