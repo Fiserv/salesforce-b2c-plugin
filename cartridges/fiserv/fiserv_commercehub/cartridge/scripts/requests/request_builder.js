@@ -131,29 +131,29 @@ function buildAmountObjectFromBasket(basketObject) {
     return amount;
 }
 
-function buildBillingAddressObject(billingAddressObject)
+function buildAddressObject(addressObject)
 {
-    if(!billingAddressObject)
+    if(!addressObject)
         return;
 
     let address = {};
-    address["street"] = billingAddressObject.address1;
-    address["city"] = billingAddressObject.city;
-    address["stateOrProvince"] = billingAddressObject.stateCode;
-    address["postalCode"] = billingAddressObject.postalCode;
-    address["stateOrProvince"] = billingAddressObject.stateCode;
-    address["country"] = billingAddressObject.countryCode.value;
+    address["street"] = addressObject.address1;
+    address["city"] = addressObject.city;
+    address["stateOrProvince"] = addressObject.stateCode;
+    address["postalCode"] = addressObject.postalCode;
+    address["stateOrProvince"] = addressObject.stateCode;
+    address["country"] = addressObject.countryCode.value;
 
     let billingAddress = {};
-    billingAddress["firstName"] = billingAddressObject.firstName;
-    billingAddress["lastName"] = billingAddressObject.lastName;
+    billingAddress["firstName"] = addressObject.firstName;
+    billingAddress["lastName"] = addressObject.lastName;
     billingAddress["address"] = address;
     billingAddress["phone"] = {
-        "phoneNumber": billingAddressObject.phone
+        "phoneNumber": addressObject.phone
     };
 
     if(showBuilders)
-        fiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
+        fiservLogs.logDebug(3, "Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
     return billingAddress;
 }
 
@@ -227,7 +227,7 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
-    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["billingAddress"] = buildAddressObject(order.getBillingAddress());
     req["customer"] = buildCustomerObject(order);
 
     if(fiservConfig.get3DSEnabled())
@@ -250,7 +250,7 @@ function buildGiftChargesRequest(paymentInstrument, paymentAction)
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
-    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["billingAddress"] = buildAddressObject(order.getBillingAddress());
     req["customer"] = buildCustomerObject(order);
 
     return req;
@@ -404,8 +404,15 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
             throw new Error(Resource.msg('message.error.generic.credentialsFailure', 'error', null));
         }
         payload['amount'] = buildAmountObjectFromBasket(basket);
-        payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
+        payload['billingAddress'] = buildAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
+        
+        let shipment = basket.getDefaultShipment();
+        if(shipment)
+        {
+            payload['shippingAddress'] = buildAddressObject(shipment.getShippingAddress());
+        }
+
         if(fiservConfig.get3DSEnabled() && fiservConfig.getCommerceHubTokenization() && credentialsForm.threeDSToken)
         {
             let pi;
@@ -459,7 +466,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                 }
             ]
         }
-        if(fiservConfig.getCommerceHubApplePayEnabled())
+        if(fiservConfig.getCommerceHubApplePayEnabled() || fiservConfig.getCommerceHubAffirmEnabled())
         {
             let orderData = {};
             let basket = BasketMgr.getCurrentBasket();
@@ -477,6 +484,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                         itemName: item.productName,
                         itemDescription: item.lineItemText,
                         quantity: item.quantityValue,
+                        productSKU: item.productID,
                         amountComponents: {
                             unitPrice: item.basePrice.value,
                             shippingAmount: 0,
@@ -497,6 +505,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
                     itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
                     quantity: 1,
+                    productSKU: basket.getDefaultShipment().getShippingMethodID(),
                     amountComponents: {
                         unitPrice: basket.shippingTotalPrice.value,
                         shippingAmount: 0,

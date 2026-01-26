@@ -43,7 +43,7 @@
 
         <iscomment> This field needs to be here when Credit Card is not enabled </iscomment>
         <isif condition="${!pdict.FiservConfig.getCommerceHubCreditEnabled()}">
-            <input id="commercehubOrderIdInputPayPal" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
+            <input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
         </isif>
     </fieldset>
 </div>

@@ -10,6 +10,8 @@
             <isinclude template="checkout/billing/paymentOptions/venmoSummary" />
         <iselseif condition="${payment.paymentMethod === 'APPLEPAY'}" />
             <isinclude template="checkout/billing/paymentOptions/applepaySummary" />
+        <iselseif condition="${payment.paymentMethod === 'AFFIRM'}" />
+            <isinclude template="checkout/billing/paymentOptions/affirmSummary" />
         </isif>
         <isif condition="${!status.last}">
             <br/>
