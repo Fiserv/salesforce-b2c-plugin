@@ -24,6 +24,12 @@ export default getEslintConfig({
         {
             include: ["cartridge/**/*.js", "*.js"],
             config: {
+                languageOptions: {
+                    globals: {
+                        "$": "readonly",
+                        "jQuery": "readonly"
+                    }
+                },
                 rules: {
                     "commercehub/no-pointless-if-for": "off",
                     "commercehub/no-string-to-string": "off",
