@@ -3,7 +3,7 @@ import { getEslintConfig } from "@commercehub/frontend-node-tools/index.mjs";
 export default getEslintConfig({
     include: {
         JS: [
-            "cartridge/**/*.js",
+            "cartridges/**/cartridge/**/*.js",
             "*.js"
         ],
         CSS: ["**/*.css"],
@@ -22,7 +22,7 @@ export default getEslintConfig({
     ],
     overrides: [
         {
-            include: ["cartridge/**/*.js", "*.js"],
+            include: ["cartridges/**/cartridge/**/*.js", "*.js"],
             config: {
                 languageOptions: {
                     globals: {
@@ -51,7 +51,7 @@ export default getEslintConfig({
             }
         },
         {
-            include: ["cartridge/scripts/*.js", "cartridge/scripts/**/*.js"],
+            include: ["cartridges/**/cartridge/scripts/*.js", "cartridges/**/cartridge/scripts/**/*.js"],
             config: {
                 rules: {
                     "import/no-unused-modules": "off",
