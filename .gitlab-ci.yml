@@ -34,8 +34,3 @@ lint:js-css:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - cartridges/fiserv/fiserv_commercehub/node_modules/
-  artifacts:
-    when: always
-    reports:
-      junit: cartridges/fiserv/fiserv_commercehub/lint-results.xml
-    expire_in: 1 week
