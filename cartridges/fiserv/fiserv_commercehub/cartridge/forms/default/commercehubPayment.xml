@@ -2,6 +2,6 @@
 <form xmlns="http://www.demandware.com/xml/form/2008-04-19">
     <field formid="commercehubSessionId" type="string" mandatory="true" />
     <field formid="commercehubOrderId" type="string" mandatory="true" />
-    <field formid="commercehubTokenUUID" type="string" mandatory="false" />
+    <field formid="commercehubTokenUUID" type="string" mandatory="true" />
     <field formid="authenticationId3DS" type="string" mandatory="false" />
 </form>

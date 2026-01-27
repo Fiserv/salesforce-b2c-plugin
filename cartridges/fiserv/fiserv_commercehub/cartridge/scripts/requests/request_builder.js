@@ -141,20 +141,19 @@ function buildAddressObject(addressObject)
     address["city"] = addressObject.city;
     address["stateOrProvince"] = addressObject.stateCode;
     address["postalCode"] = addressObject.postalCode;
-    address["stateOrProvince"] = addressObject.stateCode;
     address["country"] = addressObject.countryCode.value;
 
-    let billingAddress = {};
-    billingAddress["firstName"] = addressObject.firstName;
-    billingAddress["lastName"] = addressObject.lastName;
-    billingAddress["address"] = address;
-    billingAddress["phone"] = {
+    let payloadAddressObject = {};
+    payloadAddressObject["firstName"] = addressObject.firstName;
+    payloadAddressObject["lastName"] = addressObject.lastName;
+    payloadAddressObject["address"] = address;
+    payloadAddressObject["phone"] = {
         "phoneNumber": addressObject.phone
     };
 
     if(showBuilders)
-        fiservLogs.logDebug(3, "Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
-    return billingAddress;
+        fiservLogs.logDebug(3, "Address Data Builder:\n" + JSON.stringify(payloadAddressObject,null,2), orderNo);
+    return payloadAddressObject;
 }
 
 function buildCustomerObject(cartInfoContainer)
