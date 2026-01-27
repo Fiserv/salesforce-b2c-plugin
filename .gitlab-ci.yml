@@ -12,6 +12,7 @@ stages:
   - lint
   - build
   - test
+  - scan_lifecycle
   - deploy
 
 # JavaScript and CSS Linting Job
