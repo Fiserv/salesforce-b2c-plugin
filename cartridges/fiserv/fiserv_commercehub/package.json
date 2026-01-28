@@ -1,4 +1,4 @@
 {
-    "hooks": "./cartridge/scripts/hooks.json"
+  "hooks": "./cartridge/scripts/hooks.json"
 }
-  
+
