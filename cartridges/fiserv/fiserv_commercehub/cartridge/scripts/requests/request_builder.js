@@ -498,25 +498,28 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     itemDetails.push(itemData)
                 });
 
-                let shippingData = {
-                    itemNumber: basket.getAllProductLineItems().toArray().length + 1,
-                    itemType: "SHIPPING",
-                    itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
-                    itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
-                    quantity: 1,
-                    productSKU: basket.getDefaultShipment().getShippingMethodID(),
-                    amountComponents: {
-                        unitPrice: basket.shippingTotalPrice.value,
-                        shippingAmount: 0,
-                        taxAmounts: [
-                            {
-                                taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
-                                taxAmount: basket.shippingTotalTax.value
-                            }
-                        ],
-                    }
-                };
-                itemDetails.push(shippingData);
+                if(basket.shippingTotalPrice.value > 0)
+                {
+                    let shippingData = {
+                        itemNumber: basket.getAllProductLineItems().toArray().length + 1,
+                        itemType: "SHIPPING",
+                        itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                        itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                        quantity: 1,
+                        productSKU: basket.getDefaultShipment().getShippingMethodID(),
+                        amountComponents: {
+                            unitPrice: basket.shippingTotalPrice.value,
+                            shippingAmount: 0,
+                            taxAmounts: [
+                                {
+                                    taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
+                                    taxAmount: basket.shippingTotalTax.value
+                                }
+                            ],
+                        }
+                    };
+                    itemDetails.push(shippingData);
+                }
 
                 orderData['itemCount'] = itemCount;
                 orderData['itemDetails'] = itemDetails;
