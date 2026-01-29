@@ -34,12 +34,12 @@ function sendTokenizationRequest(tokenizationRequest)
 // Because the early tokenization call gets ran before form submission occurs, we pass the card type and session ID through as body parameters...
 function savePaymentEarly(req, res, next)
 {
-    let sessionId = req.form.sessionId;
-    let cardType = req.form.cardType;
+    let earlyTokenPayload = req.form;
+    let sessionId = earlyTokenPayload.sessionId;
     if(sessionId !== null && fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization())
     {
         fiservLogs.logInfo(1, 'Initiating Early Tokenization call');
-        return executeSavePaymentTransaction.call(this, req, res, next, sessionId, cardType);
+        return executeSavePaymentTransaction.call(this, req, res, next, earlyTokenPayload);
     }
     return next();
 }
@@ -53,7 +53,7 @@ function savePayment(req, res, next) {
     return next();
 }
 
-function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
+function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
 {
     const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
     
@@ -74,8 +74,14 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
     Transaction.begin();
     let tokenResponse = null;
     try {
-        let early = sessionId != undefined;
-        if(!early)
+        let sessionId;
+        let cardType;
+        if(earlyTokenPayload)
+        {
+            sessionId = earlyTokenPayload.sessionId;
+            cardType = earlyTokenPayload.cardType;
+        }
+        else
         {
             let paymentForm = server.forms.getForm('creditCard');
             if (!validForm(paymentForm))
@@ -85,8 +91,6 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
             sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
             cardType = paymentForm.cardType.value;
         }
-
-        // Get the actual sessionId here
 
         let tokenRequest = fiservRequestBuilder.buildTokenRequest(sessionId);
         tokenResponse = sendTokenizationRequest(tokenRequest);
@@ -103,16 +107,23 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
         let savedCard;
         if(req.currentCustomer.profile)
         {
-            savedCard = fiservSavePaymentInstrument.saveTokenizedCard(req.currentCustomer.profile.customerNo, fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+            if(!earlyTokenPayload || earlyTokenPayload.customerTokenizeChoice === 'true')
+            {
+                savedCard = fiservSavePaymentInstrument.saveTokenizedCardWallet(req.currentCustomer.profile.customerNo, fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+            }
+            else
+            {
+                savedCard = fiservSavePaymentInstrument.saveTokenizedCardBasket(req.currentCustomer.profile.customerNo, fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+            }
         }
         else
         {
-            savedCard = fiservSavePaymentInstrument.saveTokenizedCardBasket(fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
+            savedCard = fiservSavePaymentInstrument.saveTokenizedCardBasket(null, fiservCreditCardModel.getB2cCardType({ value : cardType }), tokenResponse);
         }
 
         if('duplicate' in savedCard)
         {
-            if(early)
+            if(earlyTokenPayload)
             {
                 savedCard = savedCard.duplicate;
             }
@@ -136,7 +147,7 @@ function executeSavePaymentTransaction(req, res, next, sessionId, cardType)
             uuid: uuid,
             redirectUrl: URLUtils.url('PaymentInstruments-List').toString()
         });
-        if(!early)
+        if(!earlyTokenPayload)
         {
             return this.emit('route:Complete', req, res);
         }

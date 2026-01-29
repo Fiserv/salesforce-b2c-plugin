@@ -49,6 +49,8 @@ server.append('SubmitPayment', function (req, res, next) {
         {
             return;
         }
+
+        let displayedPayments = [];
         if(req.currentCustomer.profile !== undefined)
         {
             const AccountModel = require('*/cartridge/models/account');
@@ -61,7 +63,7 @@ server.append('SubmitPayment', function (req, res, next) {
                 typeof(paymentInstruments = profile.getWallet().getPaymentInstruments()) !== "undefined" &&
                 paymentInstruments.length !== 0
             ) {
-                let displayedPayments = new AccountModel(req.currentCustomer).customerPaymentInstruments;
+                displayedPayments = new AccountModel(req.currentCustomer).customerPaymentInstruments;
                 let UUIDRemoveList = null;
                 if(!fiservConfig.getCommerceHubTokenization())
                 {
@@ -82,16 +84,21 @@ server.append('SubmitPayment', function (req, res, next) {
                 res.viewData.renderedPaymentInstruments = RenderTemplateHelper.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }
         }
-        else if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest())
+        if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && (fiservConfig.getEarlyTokenizationGuest() || fiservConfig.getBasketTokenization()))
         {
             const BasketMgr = require('dw/order/BasketMgr');
             const RenderTemplateHelperBasket = require('*/cartridge/scripts/renderTemplateHelper');
+            
+            if(!req.currentCustomer.profile)
+            {
+                res.viewData.customer.customerPaymentInstruments = 0;
+            }
 
-            res.viewData.customer.customerPaymentInstruments = [];
             let basket = BasketMgr.getCurrentBasket();
             if(basket && basket.custom.commercehubBasketToken)
             {
-                let displayedPayments = [fiservHelper.buildRenderedBasketTokenField(basket)]
+                displayedPayments = [fiservHelper.buildRenderedBasketTokenField(basket)].concat(displayedPayments);
+
                 res.viewData.customer.customerPaymentInstruments = displayedPayments.length;
                 let context = {
                     customer: {

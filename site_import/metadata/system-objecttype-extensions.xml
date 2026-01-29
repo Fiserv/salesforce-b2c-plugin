@@ -190,6 +190,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubBasketTokenization">
+                <display-name xml:lang="x-default">Enable Basket Tokenization</display-name>
+                <description xml:lang="x-default">Stores payment tokens on the basket when customer chooses not to save the token to their wallet</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
             <attribute-definition attribute-id="CommerceHubEarlyTokenizationGuest">
                 <display-name xml:lang="x-default">Early Tokenization For Guests</display-name>
                 <description xml:lang="x-default">Allow guest customers to tokenize payment information on credit card capture in the checkout flow</description>
@@ -1356,6 +1364,7 @@
                 <attribute attribute-id="CommerceHubTokenizationStrategy"/>
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
+                <attribute attribute-id="CommerceHubBasketTokenization"/>
                 <attribute attribute-id="CommerceHubEarlyTokenizationGuest"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
                 <attribute attribute-id="CommerceHubTokenSecurityEnable"/>

@@ -209,13 +209,13 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
 
     let req = {};
     let tokenize = false;
-    if(fiservConfig.getCommerceHubTokenization() && !paymentInstrument.creditCardToken)
+    if(fiservConfig.getCommerceHubTokenization())
     {
         if(fiservConfig.getCommerceHubTokenizationStrategy())
         {
             tokenize = true;
         }
-        else if(!fiservConfig.getEarlyTokenization())
+        else if(!paymentInstrument.creditCardToken && !fiservConfig.getEarlyTokenization())
         {
             tokenize = paymentInstrument.paymentTransaction.custom.tokenizeCard;
         }

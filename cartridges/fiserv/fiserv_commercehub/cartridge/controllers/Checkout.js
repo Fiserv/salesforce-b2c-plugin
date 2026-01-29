@@ -57,12 +57,16 @@ server.append('Begin', function (req, res, next) {
             res.viewData.customer.customerPaymentInstruments = displayedPayments.filter((pi) => !UUIDRemoveList.includes(pi.UUID));
         }
     }
-    else if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest())
+    if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && (fiservConfig.getEarlyTokenizationGuest() || fiservConfig.getBasketTokenization()))
     {
-        res.viewData.customer.customerPaymentInstruments = [];
+        if(!req.currentCustomer.profile)
+        {
+            res.viewData.customer.customerPaymentInstruments = [];
+        }
+
         if(basket && basket.custom.commercehubBasketToken)
         {
-            res.viewData.customer.customerPaymentInstruments = [fiservHelper.buildRenderedBasketTokenField(basket)];
+            res.viewData.customer.customerPaymentInstruments = [fiservHelper.buildRenderedBasketTokenField(basket)].concat(res.viewData.customer.customerPaymentInstruments);
         }
     }
 
