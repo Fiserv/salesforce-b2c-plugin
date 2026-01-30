@@ -422,7 +422,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     }
                 }
             }
-            else if(fiservConfig.getEarlyTokenization() && fiservConfig.getEarlyTokenizationGuest() && basket.custom.commercehubBasketToken)
+            if(!pi && fiservConfig.getEarlyTokenization() && (fiservConfig.getEarlyTokenizationGuest() || fiservConfig.getBasketTokenization()) && basket.custom.commercehubBasketToken)
             {
                 let basketPI = JSON.parse(basket.custom.commercehubBasketToken);
                 if(basketPI.UUID === credentialsForm.threeDSToken)
