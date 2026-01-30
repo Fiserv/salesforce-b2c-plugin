@@ -18,6 +18,8 @@ const okStates = [
 
 function executeCommercehubChargesTransaction(orderNo, paymentInstrument) 
 {
+    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+
     try 
     {
         // build request obj    
@@ -44,7 +46,7 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
         }
 
         // Handle Saved Payment Instrument
-        if (!chargesResult.error && !paymentInstrument.creditCardToken)
+        if (!chargesResult.error && (!paymentInstrument.creditCardToken || fiservConfig.getCommerceHubTokenizationStrategy()))
         {
             const fiservSavePaymentInstrument = require('*/cartridge/scripts/account/fiservAccount/save_payment_instrument');
             fiservSavePaymentInstrument.savePaymentInstrument(order.getCustomerNo(), paymentInstrument, chargesResult, orderNo);

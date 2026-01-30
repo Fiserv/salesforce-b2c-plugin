@@ -58,6 +58,7 @@ module.exports = {
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization',
+            'CommerceHubBasketTokenization',
             'CommerceHubEarlyTokenizationGuest',
             'CommerceHub3DSEnable',
             'CommerceHubTokenSecurityEnable',
@@ -68,9 +69,11 @@ module.exports = {
             'CommerceHubStandaloneSPA',
             'CommerceHubEarlyTokenization',
             'CommerceHubTokenSecurityEnable',
+            'CommerceHubBasketTokenization',
             'CommerceHubEarlyTokenizationGuest'
         ],
         'CommerceHubEarlyTokenization': [
+            'CommerceHubBasketTokenization',
             'CommerceHubEarlyTokenizationGuest'
         ],
         'CommerceHubGiftEnable': [
@@ -132,6 +135,7 @@ module.exports = {
         'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
         'CommerceHubTokenizationStrategy': "Enable this option to tokenize all payment cards submitted at checkout, regardless of consumer choice.",
         'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow",
+        'CommerceHubBasketTokenization': "Stores payment tokens on the basket when customer chooses not to save the token to their wallet",
         'CommerceHubEarlyTokenizationGuest': "Enable to allow for guest users to only need to input their card data once in their checkout flow"
     }
 };

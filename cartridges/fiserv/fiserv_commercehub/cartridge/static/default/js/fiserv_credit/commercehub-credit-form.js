@@ -184,12 +184,24 @@ class CommercehubCheckoutForm
 
         let earlyFlowExecuted = false;
         if(this.configDataPaymentCard.tokenizeEarly && 
-            (($('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked) ||
+            (($('input#saveCreditCard').length && 
+                ($('input#saveCreditCard')[0].checked || this.configDataPaymentCard.basketTokenization)) ||
             (this.configDataPaymentCard.tokenizeEarlyGuest && this.isGuest)))
         {
             try {
                 await new Promise((resolve, reject) => {
-                    FiservSDKHelper.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value, cardType: $('#cardType')[0].value })
+                    let tokenizationPayload = {
+                        sessionId : $('input#commercehubSessionIdInput')[0].value,
+                        cardType: $('#cardType')[0].value
+                    };
+
+                    let saveCardCheckbox = $('input#saveCreditCard');
+                    if(saveCardCheckbox.length && this.configDataPaymentCard.basketTokenization)
+                    {
+                        tokenizationPayload.customerTokenizeChoice = saveCardCheckbox[0].checked;
+                    }
+
+                    FiservSDKHelper.backendCall(this.tokenizationUrl, resolve, reject, tokenizationPayload);
                 }).then((response) => 
                 {
                     if(response.error)

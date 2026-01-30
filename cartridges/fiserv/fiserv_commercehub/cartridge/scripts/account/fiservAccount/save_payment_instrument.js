@@ -1,5 +1,6 @@
 'use strict';
 
+const BasketMgr = require('dw/order/BasketMgr');
 const CustomerMgr = require('dw/customer/CustomerMgr');
 const Resource = require('dw/web/Resource');
 
@@ -48,7 +49,7 @@ function validCardSource(chResponse)
         typeof(card.expirationYear) !== "undefined";
 }
 
-function isDuplicateCard(profile, chResponse)
+function isDuplicateCard(profile, chResponse, isBasket)
 {
     // Don't need to null check for token data as response was already a success
     let tokenData = chResponse.paymentTokens[0].tokenData;
@@ -64,6 +65,11 @@ function isDuplicateCard(profile, chResponse)
     }
 
     for(let i in paymentInstruments) {
+        if(isBasket && paymentInstruments[i].custom.forcedTokenization)
+        {
+            continue;
+        }
+
         if(paymentInstruments[i].getCreditCardToken() === tokenData &&
             paymentInstruments[i].getCreditCardExpirationMonth() === expMonth &&
             paymentInstruments[i].getCreditCardExpirationYear() === expYear
@@ -80,11 +86,11 @@ function isDuplicateCard(profile, chResponse)
  * @param {dw.order.OrderPaymentInstrument} paymentInstrument - the payment instrument associated with the order
  * @param {Object} chResponse - Charges Response from Commerce Hub
  */
-function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTokenization, orderNo)
+function createCustomerPaymentInstrument(profile, cardType, chResponse, isBasket, forcedTokenization, orderNo)
 {
     const PaymentInstrument = require('dw/order/PaymentInstrument');
 
-    if(!profile)
+    if(isBasket)
     {
         return attachBasketTokenToBasket(chResponse, cardType, orderNo);
     }
@@ -133,7 +139,6 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTo
 
 function attachBasketTokenToBasket(chResponse, cardType, orderNo)
 {
-    const BasketMgr = require('dw/order/BasketMgr');
     const UUIDUtils = require("dw/util/UUIDUtils");
 
     let basket = BasketMgr.getCurrentBasket();
@@ -175,6 +180,7 @@ function savePaymentInstrument(customerNo, paymentInstrument, chResponse, orderN
                 customer.getProfile(),
                 paymentInstrument.getCreditCardType(),
                 chResponse,
+                false,
                 !paymentInstrument.paymentTransaction.custom.tokenizeCard,
                 orderNo
             );
@@ -184,7 +190,7 @@ function savePaymentInstrument(customerNo, paymentInstrument, chResponse, orderN
     }
 }
 
-function saveTokenizedCard(customerNo, cardType, chResponse)
+function saveTokenizedCardWallet(customerNo, cardType, chResponse)
 {
     if (!canTokenize(CustomerMgr.getCustomerByCustomerNumber(customerNo)))
     {
@@ -196,14 +202,20 @@ function saveTokenizedCard(customerNo, cardType, chResponse)
     return saveCard(customer.getProfile(), cardType, chResponse);
 }
 
-function saveTokenizedCardBasket(cardType, chResponse)
+function saveTokenizedCardBasket(customerNo, cardType, chResponse)
 {
-    // Passing in null for the profile in the case that this is a guest early token
-    return saveCard(null, cardType, chResponse);
+    let profile = null;
+    if(customerNo)
+    {
+        profile = CustomerMgr.getCustomerByCustomerNumber(customerNo).getProfile();
+    }
+
+    // Passes in null for the profile in the case that it is a guest early token
+    return saveCard(profile, cardType, chResponse, true);
 }
 
 // A null profile indicates that we are in a guest early tokenization flow
-function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
+function saveCard(profile, cardType, chResponse, isBasket, forcedTokenization, orderNo)
 {
     if (!wasTokenizationSuccessful(chResponse))
     {
@@ -217,8 +229,23 @@ function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
         throw new Error(Resource.msg('message.error.tokenization.failed', 'error', null));
     }
 
+    let basket = BasketMgr.getCurrentBasket();
+
+    if(!isBasket && !forcedTokenization && basket && basket.custom.commercehubBasketToken)
+    {
+        let basketToken = JSON.parse(basket.custom.commercehubBasketToken);
+        let tokenData = chResponse.paymentTokens[0].tokenData;
+        let expMonth = Number(chResponse.source.card.expirationMonth);
+        let expYear = Number(chResponse.source.card.expirationYear);
+
+        if(basketToken.tokenData === tokenData && basketToken.expirationMonth === expMonth && basketToken.expirationYear === expYear)
+        {
+            basket.custom.commercehubBasketToken = null;
+        }
+    }
+
     let duplicate = null;
-    if(profile && (duplicate = isDuplicateCard(profile, chResponse)))
+    if(profile && (duplicate = isDuplicateCard(profile, chResponse, isBasket)))
     {
         // Updated and return duplicate card if new request was not forced...
         if(duplicate.custom.forcedTokenization && !forcedTokenization)
@@ -228,17 +255,22 @@ function saveCard(profile, cardType, chResponse, forcedTokenization, orderNo)
             return duplicate;
         }
 
+        if(isBasket && basket)
+        {
+            basket.custom.commercehubBasketToken = null;
+        }
+
         // Gonna choose to not throw an error here as there should be no issue with no new token being created
         fiservLogs.logInfo(1, "Duplicate card not stored.", orderNo);
         return { duplicate: duplicate, errorMessage: Resource.msg('message.error.tokenization.exists', 'error', null) };
     }
 
-    return createCustomerPaymentInstrument(profile, cardType, chResponse, forcedTokenization, orderNo)
+    return createCustomerPaymentInstrument(profile, cardType, chResponse, isBasket, forcedTokenization, orderNo)
 }
 
 module.exports = 
 {
     savePaymentInstrument : savePaymentInstrument,
-    saveTokenizedCard : saveTokenizedCard,
+    saveTokenizedCardWallet : saveTokenizedCardWallet,
     saveTokenizedCardBasket : saveTokenizedCardBasket
 }

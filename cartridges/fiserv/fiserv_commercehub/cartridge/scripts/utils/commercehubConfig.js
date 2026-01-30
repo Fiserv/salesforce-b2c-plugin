@@ -97,6 +97,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubEarlyTokenization');
     },
 
+    getBasketTokenization()
+    {
+        return getSitePreference('CommerceHubBasketTokenization');
+    },
+
     getEarlyTokenizationGuest()
     {
         return getSitePreference('CommerceHubEarlyTokenizationGuest');
