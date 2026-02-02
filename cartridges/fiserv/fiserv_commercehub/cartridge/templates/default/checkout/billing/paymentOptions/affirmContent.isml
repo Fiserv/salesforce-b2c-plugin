@@ -5,41 +5,41 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
-    assets.addJs('/js/fiserv_venmo/commercehub-venmo-button.js');
-    assets.addJs('/js/fiserv_venmo/venmo.js');
+    assets.addJs('/js/fiserv_affirm/commercehub-affirm-button.js');
+    assets.addJs('/js/fiserv_affirm/affirm.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
     assets.addCss('css/fiservScc.css');
 </isscript>
 
-<div class="tab-pane venmo-content" id="venmo-content" role="tabpanel">
+<div class="tab-pane affirm-content" id="affirm-content" role="tabpanel">
 
     <fieldset class="payment-form-fields">
         
-        <!--- payment method is Venmo --->
+        <!--- payment method is Affirm --->
         <input type="hidden" class="form-control"
                name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-               value="VENMO"
+               value="AFFIRM"
         >
 
-        <div id="fiserv-commercehub-venmo-form-init-container" 
-            data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Venmo'))}"
+        <div id="fiserv-commercehub-affirm-form-init-container" 
+            data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Affirm'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
             data-initial-checkout-stage="${pdict.currentStage}"></div>
     
-        <div id="fiserv-commercehub-venmo-form-container">
-            <div id="fiserv_commercehub-venmo-button" class="sdc-button"></div>
+        <div id="fiserv-commercehub-affirm-form-container">
+            <div id="fiserv_commercehub-affirm-button" class="sdc-button"></div>
 
             <div class="privacyPolicy">
                 <span></span>
                 Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
             </div>
-            <div id="fiserv-venmo-fatal-notice" class="alert alert-danger">
-                <p>${Resource.msg('message.error.venmo.fatal','error',null)}</p>            
+            <div id="fiserv-affirm-fatal-notice" class="alert alert-danger">
+                <p>${Resource.msg('message.error.affirm.fatal','error',null)}</p>            
             </div>
         </div>
 
         <!--- Hidden input for order ID --->
-        <input id="commercehubOrderIdInputVenmo" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
+        <input id="commercehubOrderIdInputAffirm" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
 
         <iscomment> This field needs to be here when Credit Card is not enabled </iscomment>
         <isif condition="${!pdict.FiservConfig.getCommerceHubCreditEnabled()}">

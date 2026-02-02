@@ -194,7 +194,7 @@ const commerceHubExport =
 
     getCommerceHubAffirmPaymentType()
     {
-        return getSitePreference('getCommerceHubAffirmPaymentType');
+        return getSitePreference('CommerceHubAffirmPaymentType').value;
     },
 
     // This is where frontend config object building start
@@ -326,7 +326,6 @@ const commerceHubExport =
 
     buildVenmoButtonsConfig()
     {
-    
         let buttonsConfig = {};
         if(this.getCommerceHubVenmoEnabled())
         {
@@ -355,6 +354,20 @@ const commerceHubExport =
         }
 
         return { 'button': buttonConfig };
+    },
+
+    buildAffirmButtonConfig()
+    {
+        let buttonConfig;
+        if(this.getCommerceHubAffirmEnabled())
+        {
+            buttonConfig = {
+                'parentElementId': 'fiserv_commercehub-affirm-button',
+                'color': getSitePreference('CommerceHubAffirmButtonColor').value
+            }
+        }
+
+        return buttonConfig;
     },
 
     buildAddressFormNamesObject()
