@@ -29,5 +29,9 @@
         <div class="applepay-item">
             <span>Apple Pay</span>
         </div>
+    <iselseif condition="${payment.paymentMethod === 'AFFIRM'}" />
+        <div class="affirm-item">
+            <span>Affirm</span>
+        </div>
     </isif>
 </isloop>
