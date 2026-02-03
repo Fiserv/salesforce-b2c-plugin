@@ -66,6 +66,13 @@ function getFrontendConfigData(formId)
                 'applepayFailureMessage': Resource.msg('message.error.applepay.failure', 'error', null),
             }
             break;
+        case 'SamsungPay':
+            configData = {
+                'buttonConfig': fiservConfig.buildSamsungPayButtonConfig(),
+                'billingAddressFormNames': fiservConfig.buildAddressFormNamesObject(),
+                'samsungpayFailureMessage': Resource.msg('message.error.samsungpay.failure', 'error', null),
+            }
+            break;
         default:
             configData = {};
             break;

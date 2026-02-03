@@ -39,6 +39,14 @@
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub_applepay",
 			"script": "./hooks/payment/processor/form/fiserv_commercehub_applepay_form_processor"
+		},
+		{
+			"name": "app.payment.processor.fiserv_commercehub_samsungpay",
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_samsungpay"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub_samsungpay",
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_samsungpay_form_processor"
 		}
 	]
 }

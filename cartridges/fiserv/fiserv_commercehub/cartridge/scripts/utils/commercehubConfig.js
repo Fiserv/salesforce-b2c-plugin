@@ -190,6 +190,18 @@ const commerceHubExport =
         return getSitePreference('CommerceHubApplePayPaymentType').value;
     },
 
+    // This is where the Samsung Pay settings start
+    
+    getCommerceHubSamsungPayEnabled()
+    {
+        return getSitePreference('CommerceHubSamsungPayEnable');
+    },
+
+    getCommerceHubSamsungPayPaymentType()
+    {
+        return getSitePreference('CommerceHubSamsungPayPaymentType').value;
+    },
+
     getFormConfig(formId)
     {
         if(!fiservConstants.FORM_ID_LIST.includes(formId))
@@ -347,6 +359,20 @@ const commerceHubExport =
 
         return { 'button': buttonConfig };
     },
+
+     buildSamsungPayButtonConfig()
+     {
+        if(!this.getCommerceHubSamsungPayEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-samsungpay-button',
+            'color': getSitePreference('CommerceHubSamsungPayButtonColor').value,
+            'type': getSitePreference('CommerceHubSamsungPayPaymentType').value
+        }
+
+        return { 'button': buttonConfig };
+     },
 
     buildAddressFormNamesObject()
     {

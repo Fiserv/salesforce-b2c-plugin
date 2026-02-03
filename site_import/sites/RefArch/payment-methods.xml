@@ -30,4 +30,10 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>FISERV_COMMERCEHUB_APPLEPAY</processor-id>
     </payment-method>
+    <payment-method method-id="SAMSUNGPAY">
+        <name xml:lang="x-default">Samsung Pay</name>
+        <description xml:lang="x-default">Use this payment method for Samsung Pay</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FISERV_COMMERCEHUB_SAMSUNGPAY</processor-id>
+    </payment-method>
 </payment-settings>
