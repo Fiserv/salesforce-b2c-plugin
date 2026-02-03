@@ -23,9 +23,13 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
     return fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
 }
 
-function associateDataPostTransaction()
+function postTransactionDataProcessing(res, paymentInstrument)
 {
-    // Do Nothing
+    const fiservConstants = require('*/cartridge/fiservConstants/constants');
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+
+    paymentInstrument.paymentTransaction.custom.inquiryRequired = 
+        (fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.PROCESSING);
 }
 
 function getProcessorString()
@@ -39,6 +43,6 @@ module.exports =
     convertToB2cCardType : convertToB2cCardType,
     getCommercehubPaymentType : getCommercehubPaymentType,
     executeCommercehubTransaction : executeCommercehubTransaction,
-    associateDataPostTransaction : associateDataPostTransaction,
+    postTransactionDataProcessing : postTransactionDataProcessing,
     getProcessorString : getProcessorString,
 };
