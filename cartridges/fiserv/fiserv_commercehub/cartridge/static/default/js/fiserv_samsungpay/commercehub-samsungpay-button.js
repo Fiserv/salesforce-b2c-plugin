@@ -73,8 +73,7 @@ class CommercehubSamsungPay
         }
         $.spinner().stop();
     }
-
-
+    
     sdkLoadFailure = function (err)
     {
         console.log(err);
@@ -82,7 +81,7 @@ class CommercehubSamsungPay
         $.spinner().stop();
         throw new Error("Unable to load CommerceHub SDK.")
     }
-
+    
     samsungpayApproval = async function(response)
     {
         this.completePayment = response.completePayment;
