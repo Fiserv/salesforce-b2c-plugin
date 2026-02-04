@@ -517,12 +517,6 @@
                 <preference preference-id="CommerceHubSamsungPayButtonColor">
                     <value>black</value>
                 </preference>
-                <preference preference-id="CommerceHubSamsungPaySupportedCardBrands">
-                    <value>visa</value>
-                    <value>mastercard</value>
-                    <value>amex</value>
-                    <value>discover</value>
-                </preference>
             </all-instances>
             <development/>
             <staging/>
