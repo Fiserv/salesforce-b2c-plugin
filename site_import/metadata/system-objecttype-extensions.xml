@@ -1818,7 +1818,6 @@
                 <attribute attribute-id="commercehubSessionId"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
-            
         </group-definitions>
     </type-extension>
     <type-extension type-id="Profile">

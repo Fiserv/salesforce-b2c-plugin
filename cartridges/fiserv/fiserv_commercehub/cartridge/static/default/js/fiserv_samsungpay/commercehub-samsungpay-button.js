@@ -1,6 +1,3 @@
-//samsung button.js
-
-
 'use strict';
 
 class CommercehubSamsungPay
@@ -15,9 +12,7 @@ class CommercehubSamsungPay
         this.formConfig = initializationData.config;
         this.configDataSamsungPay = initializationData.config.configData;
 
-        this.configDataSamsungPay.buttonConfig.button['locale'] = initializationData.locale.replace('_', '-');
         this.credentialsUrl = initializationData.credentialsUrl;
-
         this.createAdapter();
 
         this.watchButtonLoadLag();
@@ -59,30 +54,6 @@ class CommercehubSamsungPay
         };
     }
 
-    createAddressObject = function(responseAddress)
-    {
-        // Defensive check: ensure responseAddress exists
-        if (!responseAddress) {
-            return null;
-        }
-
-        // Defensive check: ensure responseAddress.address exists
-        if (!responseAddress.address) {
-            return null;
-        }
-
-        return {
-            firstName: responseAddress.firstName || '',
-            lastName: responseAddress.lastName || '',
-            street: responseAddress.address.street || '',
-            houseNumberOrName: responseAddress.address.houseNumberOrName || '',
-            city: responseAddress.address.city || '',
-            stateOrProvince: responseAddress.address.stateOrProvince || '',
-            postalCode: responseAddress.address.postalCode || '',
-            country: responseAddress.address.country || ''
-        };
-    }
-
     sdkInitialized = async function()
     {
         try
@@ -91,16 +62,10 @@ class CommercehubSamsungPay
                 data: this.configDataSamsungPay.buttonConfig,
                 hooks: this.createCallbacksObject()
             });
-            setTimeout(() => {
-                const buttonContainer = document.querySelector('#fiserv_commercehub-samsungpay-button');
-                const button = buttonContainer ? buttonContainer.querySelector('button') : null;
-                if (button) {
-                    // Ensure button type is "button" not "submit" to prevent form submission
-                    if (button.type === 'submit') {
-                        button.type = 'button';
-                    }
-                }
-            }, 300);
+            $('#fiserv_commercehub-samsungpay-button').on('click', 'button', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
         }
         catch(e)
         {
@@ -121,17 +86,7 @@ class CommercehubSamsungPay
     samsungpayApproval = async function(response)
     {
         this.completePayment = response.completePayment;
-        $('.address-selector-block').find('.btn-show-details').trigger('click');
-        
-        // Create address object with defensive checks
-        let addressObject = this.createAddressObject(response.billingAddress);
-        
-        // Only populate address if we have a valid address object
-        if (addressObject) {
-            await FiservSDKHelper.populateAddress(addressObject, this.configDataSamsungPay.billingAddressFormNames, 'billing');
-        }
 
-  
         // Mark button as approved before triggering submission
         $('button.btn.btn-primary.btn-block.submit-payment').data('samsung-pay-approved', true);
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
@@ -179,14 +134,7 @@ class CommercehubSamsungPay
 
     samsungpayFailure = function(message)
     {
-        if (message) {
-            console.error("[Samsung Pay] Error:", message);
-        }
-
         $('#fiserv_commercehub-samsungpay-button').children().remove();
-
-        // Reset approval flag
-        $('button.btn.btn-primary.btn-block.submit-payment').data('samsung-pay-approved', false);
 
         if(message)
         this.showError(message);
@@ -196,31 +144,12 @@ class CommercehubSamsungPay
 
     samsungpaySuccess = function(data)
     {
-
+        // Notify Samsung Pay SDK that the payment was successful
         this.completePayment('SUCCESS');
 
-        var redirect = $('<form>')
-            .appendTo(document.body)
-            .attr({
-                method: 'POST',
-                action: data.continueUrl
-            });
-
-        $('<input>')
-            .appendTo(redirect)
-            .attr({
-                name: 'orderID',
-                value: data.orderID
-            });
-
-        $('<input>')
-            .appendTo(redirect)
-            .attr({
-                name: 'orderToken',
-                value: data.orderToken
-            });
-
-        redirect.submit();
+        // Redirect to order confirmation page
+        // The backend has already placed the order and the session contains the order details
+        window.location.href = data.continueUrl;
     }
 
     samsungpayCancel = function()

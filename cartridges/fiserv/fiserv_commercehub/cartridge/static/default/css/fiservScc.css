@@ -26,12 +26,7 @@
     margin-bottom: 1rem;
 }
 
-#fiserv_commercehub-applepay-button {
-    margin-bottom: 0.5rem;
-    display: flex;
-    justify-content: center;
-}
-
+#fiserv_commercehub-applepay-button,
 #fiserv_commercehub-samsungpay-button {
     margin-bottom: 0.5rem;
     display: flex;
