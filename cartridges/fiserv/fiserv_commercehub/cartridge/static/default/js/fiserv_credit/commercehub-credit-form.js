@@ -196,7 +196,7 @@ class CommercehubCheckoutForm
                     };
 
                     let saveCardCheckbox = $('input#saveCreditCard');
-                    if(saveCardCheckbox.length && this.configDataPaymentCard.basketTokenization)
+                    if(saveCardCheckbox.length)
                     {
                         tokenizationPayload.customerTokenizeChoice = saveCardCheckbox[0].checked;
                     }
