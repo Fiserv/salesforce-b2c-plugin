@@ -486,4 +486,41 @@
             <production/>
         </preferences>
     </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_SAMSUNGPAY">
+        <description>Fiserv Commerce Hub Samsung Pay processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE SAMSUNG PAY SETTINGS START-->
+
+                <preference preference-id="CommerceHubSamsungPayEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubSamsungPayPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubSamsungPayButtonColor">
+                    <value>black</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
 </payment-processors>

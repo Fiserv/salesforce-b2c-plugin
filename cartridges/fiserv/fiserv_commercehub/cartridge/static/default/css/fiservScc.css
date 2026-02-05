@@ -1,7 +1,8 @@
 #fiserv-scc-fatal-notice,
 #fiserv-scc-gift-fatal-notice,
 #fiserv-paypal-fatal-notice,
-#fiserv-applepay-fatal-notice {
+#fiserv-applepay-fatal-notice,
+#fiserv-samsungpay-fatal-notice {
     display: none;
 }
 
@@ -25,7 +26,8 @@
     margin-bottom: 1rem;
 }
 
-#fiserv_commercehub-applepay-button {
+#fiserv_commercehub-applepay-button,
+#fiserv_commercehub-samsungpay-button {
     margin-bottom: 0.5rem;
     display: flex;
     justify-content: center;

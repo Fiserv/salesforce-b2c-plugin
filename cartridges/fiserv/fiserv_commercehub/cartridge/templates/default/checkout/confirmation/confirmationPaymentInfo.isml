@@ -29,5 +29,9 @@
         <div class="applepay-item">
             <span>Apple Pay</span>
         </div>
+    <iselseif condition="${payment.paymentMethod === 'SAMSUNGPAY'}" />
+        <div class="samsungpay-item">
+            <span>Samsung Pay</span>
+        </div>
     </isif>
 </isloop>

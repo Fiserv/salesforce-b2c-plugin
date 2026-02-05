@@ -9,5 +9,7 @@
         <isinclude template="checkout/billing/paymentOptions/venmoTab" />
     <iselseif condition="${paymentOption.ID === 'APPLEPAY'&& pdict.FiservConfig.getCommerceHubApplePayEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/applepayTab" />
+    <iselseif condition="${paymentOption.ID === 'SAMSUNGPAY'&& pdict.FiservConfig.getCommerceHubSamsungPayEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/samsungpayTab" />
     </isif>
 </isloop>

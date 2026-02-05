@@ -597,6 +597,48 @@
                 </value-definitions>
             </attribute-definition>
 
+            <!--THIS IS WHERE THE SAMSUNG PAY SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubSamsungPayEnable">
+                <display-name xml:lang="x-default">Enable Samsung Pay</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubSamsungPayPaymentType">
+                <display-name xml:lang="x-default">CommerceHubSamsungPay Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubSamsungPayButtonColor">
+                <display-name xml:lang="x-default">CommerceHubSamsungPay Button Color</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Black</display>
+                        <value>black</value>
+                    </value-definition>
+                     <value-definition >
+                        <display>White</display>
+                        <value>white</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
 
             <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberPlaceholder">
@@ -1531,6 +1573,25 @@
                 <attribute attribute-id="CommerceHubApplePayButtonColor"/>
                 <attribute attribute-id="CommerceHubApplePayButtonLabel"/>
             </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_SAMSUNGPAY">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Samsung Pay Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+
+                <!--THIS IS WHERE THE SAMSUNG PAY SETTINGS START-->
+                <attribute attribute-id="CommerceHubSamsungPayEnable"/>
+                <attribute attribute-id="CommerceHubSamsungPayPaymentType"/>
+                <attribute attribute-id="CommerceHubSamsungPayButtonColor"/>
+            </attribute-group>
         </group-definitions>
     </type-extension>
     <type-extension type-id="OrderPaymentInstrument">
@@ -1605,6 +1666,14 @@
                 <attribute attribute-id="balance"/>
             </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="maskedCardNumber"/>
+                <attribute attribute-id="expireMonth"/>
+                <attribute attribute-id="expireYear"/>
+                <attribute attribute-id="commercehubCardType"/>
+                <attribute attribute-id="commercehubCardIndicator"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_SAMSUNGPAY">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="maskedCardNumber"/>
                 <attribute attribute-id="expireMonth"/>
@@ -1745,6 +1814,11 @@
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_SAMSUNGPAY">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
                 <attribute attribute-id="paymentAction"/>
