@@ -30,6 +30,7 @@ module.exports = {
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",
+        PROCESSING: "PROCESSING",
         DECLINED: "DECLINED"
     },
     RESPONSE_PATHS : {

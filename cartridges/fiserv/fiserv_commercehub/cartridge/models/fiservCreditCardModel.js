@@ -54,7 +54,7 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
     return fiservCheckout.executeCommercehubChargesTransaction(orderNo, paymentInstrument);
 }
 
-function associateDataPostTransaction(res, paymentInstrument)
+function postTransactionDataProcessing(res, paymentInstrument)
 {
     if(paymentInstrument.creditCardToken)
         return;
@@ -100,7 +100,7 @@ module.exports =
     convertToB2cCardType : convertToB2cCardType,
     getCommercehubPaymentType : getCommercehubPaymentType,
     executeCommercehubTransaction : executeCommercehubTransaction,
-    associateDataPostTransaction : associateDataPostTransaction,
+    postTransactionDataProcessing : postTransactionDataProcessing,
     getProcessorString : getProcessorString,
     getB2cCardType : getB2cCardType
 };

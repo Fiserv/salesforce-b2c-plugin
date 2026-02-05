@@ -1749,7 +1749,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="commercehubOrderId">
                 <display-name xml:lang="x-default">Commerce Hub Order ID</display-name>
-                <description xml:lang="x-default">CommerceHub Session ID used as payment source</description>
+                <description xml:lang="x-default">CommerceHub Order ID used as payment source</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1771,6 +1771,13 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
                 <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="inquiryRequired">
+                <display-name xml:lang="x-default">Inquiry Required</display-name>
+                <description xml:lang="x-default">Flag to indicate if an inquiry request is required to determine the status of the transaction (Used for asynchronous payment methods)</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
@@ -1805,6 +1812,7 @@
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubOrderId"/>
                 <attribute attribute-id="paymentAction"/>
+                <attribute attribute-id="inquiryRequired"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

@@ -17,7 +17,7 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
     return fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
 }
 
-function associateDataPostTransaction(res, paymentInstrument)
+function postTransactionDataProcessing(res, paymentInstrument)
 {
     paymentInstrument.custom.balance = null;
 }
@@ -32,6 +32,6 @@ module.exports =
     methodID : METHOD_ID,
     getCommercehubPaymentType : getCommercehubPaymentType,
     executeCommercehubTransaction : executeCommercehubTransaction,
-    associateDataPostTransaction : associateDataPostTransaction,
+    postTransactionDataProcessing : postTransactionDataProcessing,
     getProcessorString : getProcessorString,
 };
