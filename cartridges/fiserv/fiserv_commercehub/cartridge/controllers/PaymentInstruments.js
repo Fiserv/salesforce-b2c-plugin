@@ -13,7 +13,8 @@ server.prepend('SavePayment', userLoggedIn.validateLoggedIn, csrfProtection.vali
 
 server.post('EarlyTokenization', fiservPaymentSaver.savePaymentEarly);
 
-server.append('List', function (req, res, next) {
+server.append('List', function (req, res, next)
+{
     const AccountModel = require('*/cartridge/models/account');
 
     let paymentInstruments = req.currentCustomer.wallet.paymentInstruments;
@@ -31,8 +32,10 @@ server.append('List', function (req, res, next) {
     next();
 });
 
-server.append('DeletePayment', function (req, res, next) {
-    this.on('route:BeforeComplete', function () {
+server.append('DeletePayment', function (req, res, next)
+{
+    this.on('route:BeforeComplete', function ()
+    {
         const CustomerMgr = require('dw/customer/CustomerMgr');
         const Resource = require('dw/web/Resource');
 
@@ -40,8 +43,8 @@ server.append('DeletePayment', function (req, res, next) {
         let paymentInstruments = [];
         if(typeof(customer.getProfile().getWallet()) !== "undefined" &&
             typeof(paymentInstruments = customer.getProfile().getWallet().getPaymentInstruments()) !== "undefined" &&
-            paymentInstruments.length !== 0
-        ) {
+            paymentInstruments.length !== 0)
+        {
             paymentInstruments = paymentInstruments.toArray().filter((pi) => !pi.custom.forcedTokenization);
         }
 

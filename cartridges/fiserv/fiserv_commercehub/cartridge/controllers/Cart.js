@@ -12,7 +12,8 @@ server.extend(module.superModule);
 
 
 // Update gift card values attached to basket if an item is added to the cart
-server.append('AddProduct', function (req, res, next) {
+server.append('AddProduct', function (req, res, next)
+{
     if(fiservConfig.getCommerceHubGiftEnabled())
     {
         let basket = BasketMgr.getCurrentBasket()
@@ -31,7 +32,8 @@ server.append('AddProduct', function (req, res, next) {
 
 // Remove all gift card payment instruments from basket if Item is removed from cart
 // This is done to avoid situations where applied gift cards may be over-charged based on the initial predicted transaction amount
-server.append('RemoveProductLineItem', function (req, res, next) {
+server.append('RemoveProductLineItem', function (req, res, next)
+{
     if(fiservConfig.getCommerceHubGiftEnabled())
     {
         let basket = BasketMgr.getCurrentBasket()
@@ -48,7 +50,8 @@ server.append('RemoveProductLineItem', function (req, res, next) {
     return next();
 });
 
-server.append('UpdateQuantity', function (req, res, next) {
+server.append('UpdateQuantity', function (req, res, next)
+{
     if(fiservConfig.getCommerceHubGiftEnabled())
     {
         let basket = BasketMgr.getCurrentBasket()

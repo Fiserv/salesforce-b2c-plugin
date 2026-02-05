@@ -14,7 +14,8 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor, payment
 
     let order = OrderMgr.getOrder(orderNo);
     let totalCovered = order.totalGrossPrice.value;
-    order.paymentInstruments.toArray().forEach((pi) => {
+    order.paymentInstruments.toArray().forEach((pi) =>
+    {
         totalCovered -= pi.paymentTransaction.amount.value;
     });
 
@@ -34,7 +35,8 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor, payment
         };
     }
 
-    Transaction.wrap(function () {
+    Transaction.wrap(function ()
+    {
         paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
 
         let _type = paymentMethodModel.getCommercehubPaymentType();
@@ -99,14 +101,16 @@ function rollbackGiftCards(order, orderNo)
 
     let giftFound = 0;
     let giftReversed = 0;
-    order.paymentInstruments.toArray().forEach((pi) => {
+    order.paymentInstruments.toArray().forEach((pi) =>
+    {
         if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD && pi.paymentTransaction.transactionID)
         {
             giftFound++;
             let transactionId = pi.paymentTransaction.transactionID;
             let cancelPayload = fiservRequestBuilder.buildCancelPayload(orderNo, transactionId);
             let cancelService = fiservServices.getService('CommercehubCancel', orderNo);
-            try {
+            try
+            {
                 fiservServices.callService(cancelService, cancelPayload, orderNo);
                 giftReversed++;
             }

@@ -1,7 +1,8 @@
 'use strict';
 
 
-function processForm(req, paymentForm, viewFormData) {
+function processForm(req, paymentForm, viewFormData)
+{
     let orderId = paymentForm.fiservCommercehubPaymentFields.commercehubOrderId.value;
     if(orderId === undefined)
     {

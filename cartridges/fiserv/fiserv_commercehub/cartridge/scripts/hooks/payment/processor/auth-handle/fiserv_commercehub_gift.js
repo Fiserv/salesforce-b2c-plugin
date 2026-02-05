@@ -6,11 +6,13 @@ const fiservGiftCardModel = require('*/cartridge/models/fiservGiftCardModel');
 
 
 // Does nothing. Used to bypass payment method for a covered cart in checkout flow
-function Handle() {
+function Handle()
+{
     return { error: false };
 }
 
-function Authorize(orderNo, paymentInstrument, paymentProcessor) {
+function Authorize(orderNo, paymentInstrument, paymentProcessor)
+{
     return transactionHandler.handleTransaction(orderNo, paymentInstrument, paymentProcessor, fiservGiftCardModel);
 }
 

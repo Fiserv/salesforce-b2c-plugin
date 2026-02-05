@@ -1,6 +1,7 @@
 'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () =>
+{
     let extractInitializationData = function()
     {
         let data = {
@@ -60,20 +61,23 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         // clear gift form on shipping/customer edit buttons
-        $('.customer-summary .edit-button,.shipping-summary .edit-button').on('click', () => {
+        $('.customer-summary .edit-button,.shipping-summary .edit-button').on('click', () =>
+        {
             clearGiftForm();
             hideGiftPanel();
         });
 
         // clear and reinit gift form on payment edit button
-        $('.payment-summary .edit-button').on('click', () => {
+        $('.payment-summary .edit-button').on('click', () =>
+        {
             clearGiftForm();
             initGiftForm();
         });
 
         // set listener for ajax success of shipping submit action
         // after which we init gift form
-        $(document).on("ajaxSuccess", (ev, xhr) => {
+        $(document).on("ajaxSuccess", (ev, xhr) =>
+        {
             if (typeof(xhr.responseJSON) !== 'undefined' &&
                 typeof(xhr.responseJSON.action) !== 'undefined' &&
                 xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
@@ -86,7 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // set listener for ajax success of payment submit action
         // after which we hide gift form
-        $(document).on("ajaxSuccess", (ev, xhr) => {
+        $(document).on("ajaxSuccess", (ev, xhr) =>
+        {
             if (typeof(xhr.responseJSON) !== 'undefined' &&
                 typeof(xhr.responseJSON.action) !== 'undefined' &&
                 xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
@@ -99,7 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // if payment stage: instantiate gift form
         // if beyond payment stage: return to payment stage
-        switch (checkoutStage) {
+        switch (checkoutStage)
+        {
             case 'payment':
                 initGiftForm();
                 break;

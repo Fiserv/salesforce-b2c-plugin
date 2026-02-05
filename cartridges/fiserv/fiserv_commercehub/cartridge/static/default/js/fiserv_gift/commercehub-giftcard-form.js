@@ -23,7 +23,8 @@ class CommercehubGiftForm
         if(initializationData.applyUrl !== undefined)
         {
             this.showGiftCards();
-            $(document).on("ajaxSuccess", (ev, xhr) => {
+            $(document).on("ajaxSuccess", (ev, xhr) =>
+            {
                 if (typeof(xhr.responseJSON) !== 'undefined' &&
                     typeof(xhr.responseJSON.action) !== 'undefined' &&
                     xhr.responseJSON.action === "CheckoutShippingServices-SelectShippingMethod")
@@ -36,11 +37,14 @@ class CommercehubGiftForm
     
     initialize = function()
     {
-        try {
+        try
+        {
             $.spinner().start();
             this.initializeAdapter();
             this.watchFormButtons();
-        } catch (_err) {
+        }
+        catch (_err)
+        {
             this.sdkLoadFailure(_err);
         }
     }
@@ -162,8 +166,10 @@ class CommercehubGiftForm
             return;
         }
 
-        try {
-            await new Promise((resolve, reject) => {
+        try
+        {
+            await new Promise((resolve, reject) =>
+            {
                 if(this.buttonClicked === 'balance')
                 {
                     FiservSDKHelper.backendCall(this.balanceUrl, resolve, reject, { sessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value });
@@ -171,14 +177,16 @@ class CommercehubGiftForm
                 else if(this.getSubmitButton().length && this.buttonClicked === 'applySecondary')
                 {
                     // Run in a timeout to avoid velocity
-                    setTimeout(() => {
+                    setTimeout(() =>
+                    {
                         FiservSDKHelper.backendCall(this.applyUrl, resolve, reject, {
                             primarySessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value,
                             secondarySessionId : $('input#commercehubGiftSecondarySessionIdInput')[0].value,
                         })
                     }, 1000);
                 }
-            }).then((response) => 
+            })
+            .then((response) => 
             {
                 if(this.buttonClicked === 'balance')
                 {
@@ -196,7 +204,8 @@ class CommercehubGiftForm
                         this.hidePaymentBlock();
                     }
                 }
-            }).catch((err) => 
+            })
+            .catch((err) => 
             {
                 if(this.buttonClicked === 'balance')
                 {
@@ -205,7 +214,9 @@ class CommercehubGiftForm
                 }
                 throw new Error(err.responseJSON.error );
             });
-        } catch (e) {
+        }
+        catch (e)
+        {
             this.buttonClicked = null;
             this.watchFormButtons();
             this.showError(e.message);
@@ -231,7 +242,8 @@ class CommercehubGiftForm
         let container = $('#fiserv-scc-gift-alert-container');
         $('.alert', container).remove();
         container.prepend('<div class="alert alert-success" role="alert">' + message + '</div>');
-        setTimeout(() => {
+        setTimeout(() =>
+        {
             $('#fiserv-scc-gift-alert-container').children('.alert-success').remove();
         }, 5000);
     }
@@ -248,7 +260,8 @@ class CommercehubGiftForm
         if(giftInfoJson)
         {
             let giftCardsInfo = JSON.parse(giftInfoJson)
-            giftCardsInfo.giftCardList.forEach((giftCardInfo) => {
+            giftCardsInfo.giftCardList.forEach((giftCardInfo) =>
+            {
                 this.addGiftCardRow(giftCardInfo, giftCardsInfo.amountRemaining);
             });
             $('#fiserv-scc-gift-card-info-container').removeAttr('data-gift-card-list-json');
@@ -298,7 +311,8 @@ class CommercehubGiftForm
         this.getBalanceBlock().addClass('sdc-hidden');
         this.unwatchFormButtons();
         
-        let promise = new Promise((resolve, reject) => {
+        let promise = new Promise((resolve, reject) =>
+        {
             FiservSDKHelper.backendCall(this.giftRemoveUrl, resolve, reject, { uuid: uuid });
         });
 
@@ -327,7 +341,8 @@ class CommercehubGiftForm
             
             this.showSuccess(response.successMessage);
             this.watchFormButtons();
-        }).catch((err) =>
+        })
+        .catch((err) =>
         {
             this.showError(err.responseJSON.error);
             this.watchFormButtons();
@@ -336,7 +351,8 @@ class CommercehubGiftForm
 
     updateGiftCards = function(giftCards)
     {
-        giftCards.forEach((giftCardInfo) => {
+        giftCards.forEach((giftCardInfo) =>
+        {
             let cardBlockQuery = $('#' + giftCardInfo.oldUuid);
             let oldClass = 'giftDetail' + giftCardInfo.oldUuid;
             let cardSummaryQuery = $('.' + oldClass);
@@ -359,9 +375,12 @@ class CommercehubGiftForm
 
     recalculateGiftCards = function()
     {
-        new Promise((resolve, reject) => {
+        new Promise((resolve, reject) =>
+        {
             FiservSDKHelper.backendCall(this.recalculateGiftUrl, resolve, reject);
-        }).then((response) => {
+        })
+        .then((response) =>
+        {
             this.updateGiftCards(response.updatedGiftCards);
             $('.grand-total-sum').text(response.currencySymbol + response.amountRemaining);
 
@@ -374,7 +393,9 @@ class CommercehubGiftForm
                 this.hidePaymentBlock();
             }
 
-        }).catch((error) => {
+        })
+        .catch((error) =>
+        {
             console.log("An error occured while trying to recalculate gift card amounts")
         });
     }
@@ -414,7 +435,7 @@ class CommercehubGiftForm
         this.showError(this.configDataGift.captureFailureMessage);
     }
 
-    submitHandler = (_e) => 
+    submitHandler = (_e) =>
     {
         _e.preventDefault();
         $.spinner().start();
@@ -519,13 +540,15 @@ class CommercehubGiftForm
                 frame.removeClass('sdc-error-field');
                 frame.addClass('sdc-valid-field');
                 mess.addClass('sdc-hidden');
-            } else if (data["shouldShowError"] === true)
+            }
+            else if (data["shouldShowError"] === true)
             {
                 mess.text(this.getSdcInvalidFieldMessageText(data["field"]));
                 frame.removeClass('sdc-valid-field');
                 frame.addClass('sdc-error-field');
                 mess.removeClass('sdc-hidden');
-            } else
+            }
+            else
             {
                 frame.removeClass('sdc-valid-field');
                 frame.removeClass('sdc-error-field');

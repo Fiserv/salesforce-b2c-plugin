@@ -5,8 +5,10 @@ const server = require('server');
 server.extend(module.superModule);
 
 
-server.append('SubmitShipping', function (req, res, next) {
-    this.on('route:BeforeComplete', function (req, res) {
+server.append('SubmitShipping', function (req, res, next)
+{
+    this.on('route:BeforeComplete', function (req, res)
+    {
         const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
         const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
 
@@ -19,7 +21,8 @@ server.append('SubmitShipping', function (req, res, next) {
     return next();
 });
 
-server.prepend('ToggleMultiShip', function (req, res, next) {
+server.prepend('ToggleMultiShip', function (req, res, next)
+{
     res.setStatusCode(400);
     return false
 });

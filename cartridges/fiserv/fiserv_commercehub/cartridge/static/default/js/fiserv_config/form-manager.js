@@ -15,9 +15,11 @@ function instantiate()
     instantiationDomElement.remove();
 
     // Basic input tracking
-    jQuery('input.configField, select.configField, textarea.textBoxConfigField').on("input", function() {
+    jQuery('input.configField, select.configField, textarea.textBoxConfigField').on("input", function()
+    {
         let newValue = jQuery(this).val();
-        if(jQuery(this).attr('type') === 'checkbox') {
+        if(jQuery(this).attr('type') === 'checkbox')
+        {
             newValue = jQuery(this).is(':checked');
         }
         if(newValue === '')
@@ -52,12 +54,14 @@ function instantiate()
 
     // Scroll bar functionality
     jQuery('.configScrollOptionContainer').first().addClass('scrollLocation');
-    jQuery('.scrollLabel').on("click", function() {
-        jQuery('#' + jQuery(this).attr('name'))[0].scrollIntoView({ block: 'start', behavior: 'smooth'});
+    jQuery('.scrollLabel').on("click", function()
+    {
+        jQuery('#' + jQuery(this).attr('name'))[0].scrollIntoView({ block: 'start', behavior: 'smooth' });
         let configScrollOptionContainerQuery = jQuery('.configScrollOptionContainer');
         configScrollOptionContainerQuery.addClass('noLocation');
         // Minor timeout to account for jump time
-        setTimeout(() => {
+        setTimeout(() =>
+        {
             configScrollOptionContainerQuery.removeClass('scrollLocation');
             configScrollOptionContainerQuery.removeClass('noLocation');
             jQuery(this).parent().addClass('scrollLocation');
@@ -65,11 +69,13 @@ function instantiate()
     });
 
     // This might be more complex than it needs to be, but I like it this way personally...
-    jQuery('.customModule-card').on('scroll', function() {
+    jQuery('.customModule-card').on('scroll', function()
+    {
         let pageQuery = jQuery('.customModule-card')
         let pageOffset = pageQuery.offset().top;
         let pageHalfHeight = pageQuery.outerHeight() / 2;
-        jQuery('.configGroupContainer').each(function() {
+        jQuery('.configGroupContainer').each(function()
+        {
             let titleQuery = jQuery(this);
             let id = titleQuery.attr('id');
             let titleOffset = titleQuery.offset().top - parseInt(titleQuery.css('padding-top'));
@@ -113,11 +119,13 @@ function instantiate()
     });
 
     // Code to hide form config side scrolling
-    jQuery('.customModule-card').on('scroll', function() {
+    jQuery('.customModule-card').on('scroll', function()
+    {
         let pageQuery = jQuery('.customModule-card')
         let pageOffset = pageQuery.offset().top;
         let pageHalfHeight = pageQuery.outerHeight() / 2;
-        jQuery('.formContainer').each(function() {
+        jQuery('.formContainer').each(function()
+        {
             let containerQuery = jQuery(this);
             let id = containerQuery.attr('name');
             let titleOffsetTop = containerQuery.offset().top;
@@ -148,7 +156,8 @@ function addDependencyEvents(dependency, key)
     {
         dependencyCounter[key] = 0;
     }
-    jQuery('#' + dependency).on('input', function() {
+    jQuery('#' + dependency).on('input', function()
+    {
         if(jQuery(this).is(':checked'))
         {
             jQuery('#' + key).prop('disabled', false);
@@ -180,7 +189,8 @@ function addDependencyEvents(dependency, key)
 function showMessage(msg, status)
 {
     let statusClass = 'Message';
-    switch(status) {
+    switch(status)
+    {
         case 0:
             statusClass = 'fail' + statusClass;
             break;
@@ -202,9 +212,11 @@ function showMessage(msg, status)
 	msgContainer.prepend(msgDiv);
   	const messageQuery = msgContainer.children(':first-child');
 
-    setTimeout(function() {
+    setTimeout(function()
+    {
         messageQuery.addClass('removeMessage');
-        setTimeout(function() {
+        setTimeout(function()
+        {
             messageQuery.remove();
         }, 500);
     }, 5000);
@@ -250,7 +262,8 @@ function applyChanges()
         dataType: 'json',
         type: "POST",
         data: configChanges,
-        success: function(response) {
+        success: function(response)
+        {
             showMessage(response.successMessage, 1);
             for(let key in configChanges)
             {
@@ -267,7 +280,8 @@ function applyChanges()
             jQuery('#saveButton').prop('disabled', true);
             jQuery('.headerContainer')[0].scrollIntoView({ block: 'start', behavior: 'smooth'});
         },
-        error: function(err) {
+        error: function(err)
+        {
             let response = err.responseJSON;
             if(response.success)
             {
@@ -302,7 +316,8 @@ function applyChanges()
 // Self explanatory
 function clearChanges()
 {
-    Object.keys(configChanges).forEach(key => {
+    Object.keys(configChanges).forEach(key =>
+    {
         let queryObject = jQuery('#' + key);
         let valueChanged = false;
         if(queryObject.attr('type') !== 'checkbox')

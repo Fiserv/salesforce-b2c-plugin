@@ -28,37 +28,39 @@ const helper =
         const SVC = require('dw/svc');
 
         let fiservService = null;
-        try {
+        try
+        {
             fiservService = SVC.LocalServiceRegistry.createService(serviceName, 
+            {
+                createRequest: function createRequest(svc, payload, timeout)
                 {
-                    createRequest: function createRequest(svc, payload, timeout)
+                    svc.setRequestMethod("POST");
+                    if (payload)
                     {
-                        svc.setRequestMethod("POST");
-                        if (payload)
-                        {
-                            return { payload: payload, timeout: timeout };
-                        }
-                        return null;
-                    },
-                    executeOverride: true,
-                    execute: function(svc, args) {
-                        let client = svc.getClient();
-                        if(args.timeout)
-                        {
-                            client.setTimeout(args.timeout * 1000);
-                        }
-                        client.send(args.payload);
-                        return client;
-                    },
-                    parseResponse: function parseResponse(svc, client)
-                    {
-                        return client;
-                    },
-                    filterLogMessage: function filterLogMessage(msg)
-                    {
-                        return msg;
+                        return { payload: payload, timeout: timeout };
                     }
-                });
+                    return null;
+                },
+                executeOverride: true,
+                execute: function(svc, args)
+                {
+                    let client = svc.getClient();
+                    if(args.timeout)
+                    {
+                        client.setTimeout(args.timeout * 1000);
+                    }
+                    client.send(args.payload);
+                    return client;
+                },
+                parseResponse: function parseResponse(svc, client)
+                {
+                    return client;
+                },
+                filterLogMessage: function filterLogMessage(msg)
+                {
+                    return msg;
+                }
+            });
 
             if (typeof(fiservService) === "undefined" || fiservService === null)
             {
@@ -67,7 +69,9 @@ const helper =
 
             fiservService.setURL(getServiceUrl(fiservService.getURL()));
             fiservLogs.logDebug(3, "Created Fiserv service: ".concat(serviceName), orderNo);
-        } catch (_err) {
+        }
+        catch (_err)
+        {
             fiservLogs.logError(2, "Error creating Fiserv service: ".concat(_err.toString())), orderNo;
         }
         return fiservService;

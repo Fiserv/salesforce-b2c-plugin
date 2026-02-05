@@ -5,7 +5,8 @@ const server = require('server');
 const fiservGift = require('*/cartridge/scripts/gift/fiservGift.js');
 
 
-server.post('BalanceInquiry', function(req, res, next) {
+server.post('BalanceInquiry', function(req, res, next)
+{
     let balanceResponse = fiservGift.executeBalanceInquiry(req.form.sessionId);
     if(balanceResponse.error)
     {
@@ -23,7 +24,8 @@ server.post('BalanceInquiry', function(req, res, next) {
     return next();
 });
 
-server.post('ApplyGiftCard', function(req, res, next) {
+server.post('ApplyGiftCard', function(req, res, next)
+{
     const Resource = require('dw/web/Resource');
 
     const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
@@ -34,7 +36,9 @@ server.post('ApplyGiftCard', function(req, res, next) {
     try
     {
         appliedGiftCards = fiservGiftHelper.retrieveAppliedGiftCards();
-    } catch(e) {
+    }
+    catch(e)
+    {
         res.setStatusCode(400);
         res.json({ error: Resource.msg('message.error.gift.genericApply', 'error', null) });
         return next();
@@ -73,7 +77,8 @@ server.post('ApplyGiftCard', function(req, res, next) {
     return next();
 });
 
-server.post('RemoveGiftCard', function(req, res, next) {
+server.post('RemoveGiftCard', function(req, res, next)
+{
     let removeResponse = fiservGift.removeGiftCard(req.form.uuid);
     if(removeResponse.error)
     {
@@ -83,7 +88,8 @@ server.post('RemoveGiftCard', function(req, res, next) {
     return next();
 });
 
-server.post('RecalculateGiftCardAmounts', function(req, res, next) {
+server.post('RecalculateGiftCardAmounts', function(req, res, next)
+{
     let recalculateResponse = fiservGift.recalculateGiftCards();
     if(recalculateResponse.error)
     {

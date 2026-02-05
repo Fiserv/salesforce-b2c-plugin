@@ -51,10 +51,12 @@ class FiservFastlaneInitializer
             toggleSubmitButton(true);
         }
 
-        await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) =>
+        {
             FiservSDKHelper.backendCall(credentialsUrl, resolve, reject);
         })
-        .then(async (credentialsResponse) => {
+        .then(async (credentialsResponse) =>
+        {
             await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
             window.fiservPluginSDKInitRan = true;
 
@@ -75,7 +77,8 @@ class FiservFastlaneInitializer
 
             formAdapter.initSdk(formConfig, null, fastlaneObject)
             
-            $('.submit-customer').on('click', async () => {
+            $('.submit-customer').on('click', async () =>
+            {
                 $.spinner().start();
 
                 // Disable multi-ship for Fastlane auto flow (in case someone got to that point...)
@@ -86,9 +89,12 @@ class FiservFastlaneInitializer
 
                 await fastlane.authenticate({
                     email: $('input[name=dwfrm_coCustomer_email]').val()
-                }).then(async (authResponse) => {
+                })
+                .then(async (authResponse) =>
+                {
                     fastlaneGuestCheckout = authResponse.isGuestCheckout;
-                    if(!fastlaneGuestCheckout) {
+                    if(!fastlaneGuestCheckout)
+                    {
                         formAdapter.setValidity(true);
                         if($('.add-payment').length && !$('.add-payment.checkout-hidden').length)
                         {
@@ -125,7 +131,8 @@ class FiservFastlaneInitializer
                         // Fill out billing address form only after shipping has been submitted...
                         if(!ajaxSuccessAlreadyAdded)
                         {
-                            $(document).on("ajaxSuccess", (ev, xhr) => { 
+                            $(document).on("ajaxSuccess", (ev, xhr) =>
+                            { 
                                 if (typeof(xhr.responseJSON) !== 'undefined' &&
                                     typeof(xhr.responseJSON.action) !== 'undefined' &&
                                     xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
@@ -152,17 +159,21 @@ class FiservFastlaneInitializer
                     }
 
                     $.spinner().stop();
-                }).catch((e) => {
+                })
+                .catch((e) =>
+                {
                     console.log(e);
                     $.spinner().stop();
                 });
             });
 
-            $('.customer-summary .edit-button, #fastlane-re-enable-form-button').on('click', (e) => {
+            $('.customer-summary .edit-button, #fastlane-re-enable-form-button').on('click', (e) =>
+            {
                 FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter);
             });
 
-            $(document).on("ajaxSuccess", (ev, xhr) => {
+            $(document).on("ajaxSuccess", (ev, xhr) =>
+            {
                 if (typeof(xhr.responseJSON) !== 'undefined' &&
                     typeof(xhr.responseJSON.action) !== 'undefined' &&
                     xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
@@ -181,7 +192,9 @@ class FiservFastlaneInitializer
             });
 
             $.spinner().stop();
-        }).catch((error) => {
+        })
+        .catch((error) =>
+        {
             FiservFastlaneInitializer.resetFastlane(formConfig, formAdapter);
             $('#fastlane-email-watermark').find('paypal-watermark').remove();
             formAdapter.destroyIframe('card');
@@ -201,7 +214,8 @@ class FiservFastlaneInitializer
         formAdapter.resetForm();
         $('#fastlane-re-enable-form-button').addClass('checkout-hidden');
 
-        FiservFastlaneInitializer.watermarkInsertions.forEach((id) => {
+        FiservFastlaneInitializer.watermarkInsertions.forEach((id) =>
+        {
             $('#' + id).find('paypal-watermark').remove();
         });
         FiservFastlaneInitializer.watermarkInsertions = [];

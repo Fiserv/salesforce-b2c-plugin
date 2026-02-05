@@ -16,12 +16,15 @@ class CommercehubTokenizationForm
     
     initialize = function()
     {
-        try {
+        try
+        {
             $.spinner().start();
             this.createAdapter();
             this.initializeAdapter();
             this.watchSubmitButton();
-        } catch (_err) {
+        }
+        catch (_err)
+        {
             this.sdkLoadFailure(_err);
         }
     }
@@ -222,7 +225,8 @@ class CommercehubTokenizationForm
         return "";
     }
 
-    setCardBrandIconClass = function(cssClass) {
+    setCardBrandIconClass = function(cssClass)
+    {
         let icon = $('#sdc-card-brand-icon');
         icon.removeClass();
         icon.addClass('sdc-card-brand-icon');
@@ -234,7 +238,8 @@ class CommercehubTokenizationForm
 
     cardBrandChangeHandler = function(brand)
     {
-        switch (brand) {
+        switch (brand)
+        {
             case null:
                 this.setCardBrandIconClass();
                 break;
@@ -282,13 +287,15 @@ class CommercehubTokenizationForm
                 frame.removeClass('sdc-error-field');
                 frame.addClass('sdc-valid-field');
                 mess.addClass('sdc-hidden');
-            } else if (data["shouldShowError"] === true)
+            }
+            else if (data["shouldShowError"] === true)
             {
                 mess.text(this.getSdcInvalidFieldMessageText(data["field"]));
                 frame.removeClass('sdc-valid-field');
                 frame.addClass('sdc-error-field');
                 mess.removeClass('sdc-hidden');
-            } else
+            }
+            else
             {
                 frame.removeClass('sdc-valid-field');
                 frame.removeClass('sdc-error-field');

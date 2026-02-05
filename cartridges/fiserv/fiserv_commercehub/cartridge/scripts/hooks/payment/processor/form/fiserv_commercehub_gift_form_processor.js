@@ -2,7 +2,8 @@
 
 
 // Does nothing. Used to bypass payment method for a covered cart in checkout flow
-function processForm(req, paymentForm, viewFormData) {
+function processForm(req, paymentForm, viewFormData)
+{
     return {
         error: false,
         viewData: {

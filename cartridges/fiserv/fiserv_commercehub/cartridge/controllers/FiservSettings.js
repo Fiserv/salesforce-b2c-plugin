@@ -22,7 +22,8 @@ if(chPreferenceDescriptions != null)
 function retrieveCommerceHubPreferences()
 {
     let configList = null;
-    Object.values(fiservConstants.PROCESSOR_ID_LIST).forEach((processorID) => {
+    Object.values(fiservConstants.PROCESSOR_ID_LIST).forEach((processorID) =>
+    {
         let chAttributeGroup = currentSite.getPreferences().describe().getAttributeGroup(processorID);
         if(!chAttributeGroup)
             return;
@@ -46,7 +47,8 @@ function retrieveCommerceHubPreferences()
 
     let idConfigList = {};
     
-    configList.forEach(configDefinition => {
+    configList.forEach(configDefinition =>
+    {
         let id = configDefinition.ID;
 
         if(idConfigList[id])
@@ -99,7 +101,8 @@ function retrieveCommerceHubPreferences()
     const dependencyList = fiservConstants.DEPENDENCY_LIST;
     for(let dependency in dependencyList)
     {
-        dependencyList[dependency].forEach((key) => {
+        dependencyList[dependency].forEach((key) =>
+        {
             if(!idConfigList[key])
             {
                 if(idConfigList[dependency]['nonInputDependencies'] === undefined)
@@ -117,8 +120,10 @@ function retrieveCommerceHubPreferences()
     const formDependencyList = fiservConstants.FORM_DEPENDENCY_LIST;
     for(let dependency in formDependencyList)
     {
-        formDependencyList[dependency].forEach((key) => {
-            fiservConstants.FORM_ID_LIST.forEach((formId) => {
+        formDependencyList[dependency].forEach((key) =>
+        {
+            fiservConstants.FORM_ID_LIST.forEach((formId) =>
+            {
                 let keyId = 'CommerceHub' + formId + 'Form' + key;
                 let dependencyId = 'CommerceHub' + formId + 'Form' + dependency;
                 if(idConfigList[keyId]['dependencies'] === undefined)
@@ -240,7 +245,6 @@ function buildConfigList(chPreferenceDescriptions)
     // Needs to be an array in order to iterate over it in ISML...
     let configList = [];
 
-
     configList.push({
         'label': 'Commerce Hub Gateway General Settings',
         'id': 'CommerceHubGatewayGeneralSettings',
@@ -355,7 +359,8 @@ function buildConfigList(chPreferenceDescriptions)
     });
 
     let formList = []
-    fiservConstants.FORM_ID_LIST.forEach(formId => {
+    fiservConstants.FORM_ID_LIST.forEach(formId =>
+    {
         formList.push({
             'label': formId + " Form",
             'id': formId + "Form",
@@ -405,7 +410,8 @@ function stripExcessInfo(preferences)
 /**
  * Renders the BM template
  */
-server.get('Config', csrfProtection.validateAjaxRequest, function (req, res, next) {
+server.get('Config', csrfProtection.validateAjaxRequest, function (req, res, next)
+{
     res.render('/extensions/fiservCommerceHubConfigPage', { ConfigList: configList, SimplifiedPreferences: simplifiedPreferences });
     next();
 });
@@ -413,7 +419,8 @@ server.get('Config', csrfProtection.validateAjaxRequest, function (req, res, nex
 /**
  * Allows users to save config changes
  */
-server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware.https, function (req, res, next) {
+server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware.https, function (req, res, next)
+{
     const Transaction = require('dw/system/Transaction');
 
     let form = req.form;
@@ -432,7 +439,8 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
             id = id[0].replace(/([A-Z])/g, ' $1').trim();
             displayName = '(' + id + ') ' + displayName;
         }
-        try {
+        try
+        {
             Transaction.begin();
             
             let configValue = form[configId];
@@ -475,9 +483,12 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
 
             if(configValue !== '' && fiservConstants.CONFIG_VALIDATIONS.JSON_LIST.includes(configId))
             {
-                try {
+                try
+                {
                     JSON.parse(configValue);
-                } catch (error) {
+                }
+                catch (error)
+                {
                     throw new Error('Field must contain valid JSON');
                 }
             }
@@ -486,7 +497,9 @@ server.post('SaveChanges', csrfProtection.validateAjaxRequest, server.middleware
             successString = successString + displayName + ', ';
             success = true;
             Transaction.commit();
-        } catch (_er) {
+        }
+        catch (_er)
+        {
             Transaction.rollback();
             error = true;
             errorList[configId] = _er.message;

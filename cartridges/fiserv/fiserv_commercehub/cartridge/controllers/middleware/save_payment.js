@@ -18,7 +18,8 @@ function validForm(paymentForm)
 
 function sendTokenizationRequest(tokenizationRequest)
 {
-    try {
+    try
+    {
         const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
 
         let tokenizationService = fiservServices.getService('CommercehubTokenization');
@@ -44,7 +45,8 @@ function savePaymentEarly(req, res, next)
     return next();
 }
 
-function savePayment(req, res, next) {
+function savePayment(req, res, next)
+{
     if (fiservConfig.getCommerceHubStandaloneSpa())
     {
         fiservLogs.logInfo(1, 'Initiating Standalone Tokenization call');
@@ -74,7 +76,8 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
     
     Transaction.begin();
     let tokenResponse = null;
-    try {
+    try
+    {
         let sessionId;
         let cardType;
         if(earlyTokenPayload)
@@ -161,7 +164,9 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
         {
             return next();
         }
-    } catch (_er) {
+    }
+    catch (_er)
+    {
         Transaction.rollback();
         fiservLogs.logInfo(1, 'Failed to store card in wallet.');
         if(tokenResponse)

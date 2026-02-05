@@ -1,6 +1,7 @@
 'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () =>
+{
     let extractInitializationData = function()
     {
         let data = {

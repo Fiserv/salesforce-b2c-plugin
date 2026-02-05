@@ -23,12 +23,15 @@ class CommercehubPayPal
 
     initialize = async function()
     {
-        try {
+        try
+        {
             $.spinner().start();
             $('#fiserv-paypal-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, null, "PayPal");
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
-        } catch (_err) {
+        }
+        catch (_err)
+        {
             this.sdkLoadFailure(_err);
         }
     }
@@ -120,8 +123,8 @@ class CommercehubPayPal
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
             $(".payment-information").data("payment-method-id") === "PAYPAL" &&
-            xhr.responseJSON.error
-        ) {
+            xhr.responseJSON.error)
+        {
             this.setOrderIdInput('');
             this.removeInsertedSummary();
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
@@ -138,7 +141,8 @@ class CommercehubPayPal
         $('ul.payment-options li.nav-item[data-method-id=PAYPAL]').on('click', this.paymentMethodHandler);
     }
 
-    paymentMethodHandler = (_e) => {
+    paymentMethodHandler = (_e) =>
+    {
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
     }
 

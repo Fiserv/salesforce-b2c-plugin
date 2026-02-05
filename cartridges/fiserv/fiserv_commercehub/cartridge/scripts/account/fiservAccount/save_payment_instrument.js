@@ -59,12 +59,13 @@ function isDuplicateCard(profile, chResponse, isBasket)
     let paymentInstruments = null;
     if(typeof(profile.getWallet()) === "undefined" ||
         typeof(paymentInstruments = profile.getWallet().getPaymentInstruments()) === "undefined" ||
-        paymentInstruments.length === 0
-    ) {
+        paymentInstruments.length === 0)
+    {
         return false;
     }
 
-    for(let i in paymentInstruments) {
+    for(let i in paymentInstruments)
+    {
         if(isBasket && paymentInstruments[i].custom.forcedTokenization)
         {
             continue;
@@ -72,8 +73,8 @@ function isDuplicateCard(profile, chResponse, isBasket)
 
         if(paymentInstruments[i].getCreditCardToken() === tokenData &&
             paymentInstruments[i].getCreditCardExpirationMonth() === expMonth &&
-            paymentInstruments[i].getCreditCardExpirationYear() === expYear
-        ) {
+            paymentInstruments[i].getCreditCardExpirationYear() === expYear)
+        {
             return paymentInstruments[i];
         }
     };
@@ -171,7 +172,8 @@ function attachBasketTokenToBasket(chResponse, cardType, orderNo)
 
 function savePaymentInstrument(customerNo, paymentInstrument, chResponse, orderNo)
 {
-    try {
+    try
+    {
         if (shouldSavePaymentInstrument(customerNo, paymentInstrument))
         {
             // customer isn't null here--already checked in shouldSavePaymentInstrument()
@@ -185,7 +187,9 @@ function savePaymentInstrument(customerNo, paymentInstrument, chResponse, orderN
                 orderNo
             );
         }
-    } catch (_er) {
+    }
+    catch (_er)
+    {
         fiservLogs.logError(2, "Save Payment Instrument handling failed with: ".concat(_er.toString()), orderNo);
     }
 }

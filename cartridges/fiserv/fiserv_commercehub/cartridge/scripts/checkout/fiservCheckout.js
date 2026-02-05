@@ -61,7 +61,9 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
 
         return chargesResult;
 
-    } catch (e) {
+    }
+    catch (e)
+    {
         fiservLogs.logError(2,
           'Error processing payment. Error message: '.concat(e.message).concat(' more details: ').concat(e.toString()),
           orderNo
@@ -72,7 +74,8 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
 
 function sendChargesRequest(order, chargesRequest, orderNo)
 {
-    try {
+    try
+    {
         let chargesService = fiservServices.getService('CommercehubCharges', orderNo);
         let parsedResponse = fiservServices.callService(chargesService, chargesRequest, orderNo);
 
@@ -95,7 +98,9 @@ function sendChargesRequest(order, chargesRequest, orderNo)
             parsedResponse.error = parsedResponse.error ? parsedResponse.error : { message : "failed with state: ".concat(parsedResponse.gatewayResponse.transactionState)};
         }
         return parsedResponse;
-    } catch (_e) {
+    }
+    catch (_e)
+    {
         fiservLogs.logError(2,
             'Fiserv: '.concat(_e.toString()).concat(' in ').concat(_e.fileName).concat(':').concat(_e.lineNumber),
             orderNo
@@ -145,7 +150,9 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
 
         return chargesResult;
 
-    } catch (e) {
+    }
+    catch (e)
+    {
         fiservLogs.logError(2,
           'Error processing payment. Error message: '.concat(e.message).concat(' more details: ').concat(e.toString()),
           orderNo
@@ -156,7 +163,8 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
 
 function sendOrdersRequest(order, ordersRequest, orderNo)
 {
-    try {
+    try
+    {
         let chargesService = fiservServices.getService('CommercehubOrders', orderNo);
         let parsedResponse = fiservServices.callService(chargesService, ordersRequest, orderNo);
 
@@ -178,7 +186,9 @@ function sendOrdersRequest(order, ordersRequest, orderNo)
             parsedResponse.error = parsedResponse.error ? parsedResponse.error : { message : "failed with state: ".concat(parsedResponse.gatewayResponse.transactionState)};
         }
         return parsedResponse;
-    } catch (_e) {
+    }
+    catch (_e)
+    {
         fiservLogs.logError(2,
             'Fiserv: '.concat(_e.toString()).concat(' in ').concat(_e.fileName).concat(':').concat(_e.lineNumber),
             orderNo

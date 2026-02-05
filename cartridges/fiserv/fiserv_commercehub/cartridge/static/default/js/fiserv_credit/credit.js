@@ -1,6 +1,7 @@
 'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () =>
+{
     let initialized = false;
     let basketTokenFlowEnabled = false;
 
@@ -69,7 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // clear payment form on shipping/customer edit buttons
-    $('.customer-summary .edit-button,.shipping-summary .edit-button').on('click', () => {
+    $('.customer-summary .edit-button,.shipping-summary .edit-button').on('click', () =>
+    {
         clearPaymentForm();
         if(savedPaymentsPresent())
         {
@@ -78,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // clear and reinit payment form on payment edit button
-    $('.payment-summary .edit-button').on('click', () => {
+    $('.payment-summary .edit-button').on('click', () =>
+    {
         if($(".payment-information").data("payment-method-id") !== "CREDIT_CARD")
             return;
 
@@ -108,7 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // set listener for ajax success of shipping submit action
     // after which we init payment form
     // if saved payment menu is active, do not init form
-    $(document).on("ajaxSuccess", (ev, xhr) => {
+    $(document).on("ajaxSuccess", (ev, xhr) =>
+    {
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
@@ -120,13 +124,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    $('.btn.cancel-new-payment').click(()=> {
+    $('.btn.cancel-new-payment').click(() =>
+    {
         form.watchSubmitButtonToken();
         if (form.shouldEnableSubmitButtonOnCancelNewPayment()) form.enableSubmitButton();
         else form.disableSubmitButton();
     });
 
-    $('.btn.add-payment').click(()=> {
+    $('.btn.add-payment').click(() =>
+    {
         clearPaymentForm();
         initPaymentForm();
     });
@@ -134,7 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // if payment stage: instantiate payment form
     if($(".payment-information").data("payment-method-id") === "CREDIT_CARD")
     {
-        switch (checkoutStage) {
+        switch (checkoutStage)
+        {
             case 'payment':
                 initCreditCardSection();
                 break;

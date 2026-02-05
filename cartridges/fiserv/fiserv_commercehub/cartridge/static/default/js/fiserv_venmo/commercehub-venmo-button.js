@@ -23,12 +23,15 @@ class CommercehubVenmo
 
     initialize = async function()
     {
-        try {
+        try
+        {
             $.spinner().start();
             $('#fiserv-venmo-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, null, "Venmo");
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
-        } catch (_err) {
+        }
+        catch (_err)
+        {
             this.sdkLoadFailure(_err);
         }
     }
@@ -119,8 +122,8 @@ class CommercehubVenmo
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
             $(".payment-information").data("payment-method-id") === "VENMO" &&
-            xhr.responseJSON.error
-        ) {
+            xhr.responseJSON.error)
+        {
             this.setOrderIdInput('');
             this.removeInsertedSummary();
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
@@ -137,7 +140,8 @@ class CommercehubVenmo
         $('ul.payment-options li.nav-item[data-method-id=VENMO]').on('click', this.paymentMethodHandler);
     }
 
-    paymentMethodHandler = (_e) => {
+    paymentMethodHandler = (_e) =>
+    {
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
     }
 

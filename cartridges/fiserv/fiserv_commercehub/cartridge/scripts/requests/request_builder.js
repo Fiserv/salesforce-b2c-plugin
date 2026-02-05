@@ -124,7 +124,8 @@ function buildAmountObject(paymentInstrument)
     return amount;
 }
 
-function buildAmountObjectFromBasket(basketObject) {
+function buildAmountObjectFromBasket(basketObject)
+{
     const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
     
     let amount = {}
@@ -473,7 +474,8 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
             {
                 let itemDetails = [];
                 let itemCount = 0;
-                basket.getAllProductLineItems().toArray().forEach((item) => {
+                basket.getAllProductLineItems().toArray().forEach((item) =>
+                {
                     itemCount += item.quantityValue;
 
                     let itemData = {

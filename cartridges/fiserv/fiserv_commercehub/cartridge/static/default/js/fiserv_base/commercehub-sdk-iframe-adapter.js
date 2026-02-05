@@ -20,8 +20,8 @@ class FiservSDKIframe
         fieldValidityHandler,
         fieldFocusHandler,
         runSuccessCallback,
-        runFailureCallback
-    ) {
+        runFailureCallback)
+    {
         // CommerceHub SDK loaded separately by B2C SFRA assets.js
         if (typeof(window.fiserv) === "undefined")
         {
@@ -48,7 +48,8 @@ class FiservSDKIframe
     initSdk = function(formConfig, formType, fastlaneObject)
     {
         window.fiserv.components.paymentFields(this.buildFormConfig(formConfig, formType, fastlaneObject))
-            .then((next) => {
+            .then((next) =>
+            {
                 this.fastlaneStatus = fastlaneObject !== undefined;
                 this.fastlaneInitStatus = false;
                 this.form = next;
@@ -56,7 +57,8 @@ class FiservSDKIframe
                 this.iframeActive = true;
                 this.sdkReadyCallback();
             })
-            .catch((error) => {
+            .catch((error) =>
+            {
                 this.loadFailCallback(error);
             });
     }
@@ -92,27 +94,33 @@ class FiservSDKIframe
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
-            let promise = new Promise((resolve, reject) => {
+            let promise = new Promise((resolve, reject) =>
+            {
                 FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
             });
 
-            promise.then(async (credentialsResponse) => {
+            promise.then(async (credentialsResponse) =>
+            {
                 storeSessionCallback(credentialsResponse['sessionId']);
 
-                if(requestPurpose === "3DS") {
+                if(requestPurpose === "3DS")
+                {
                     await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
                     window.fiservPluginSDKInitRan = true;
                 }
 
                 this.form.submit(credentialsResponse['submitConfig'])
-                    .then((response) => {
+                    .then((response) =>
+                    {
                         this.runSuccessCallback(response);
                     })
-                    .catch((error) => {
+                    .catch((error) =>
+                    {
                         this.runFailureCallback();
                     })
             })
-            .catch((error) => {
+            .catch((error) =>
+            {
                 this.runFailureCallback();
             });
         }
@@ -157,7 +165,6 @@ class FiservSDKIframe
     {
         this.form.mask(field, true);
     }
-
 
     isValid = function()
     {

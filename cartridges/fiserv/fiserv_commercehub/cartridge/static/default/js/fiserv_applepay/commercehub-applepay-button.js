@@ -24,12 +24,15 @@ class CommercehubApplePay
 
     initialize = async function()
     {
-        try {
+        try
+        {
             $.spinner().start();
             $('#fiserv-applepay-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "ApplePay");
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
-        } catch (_err) {
+        }
+        catch (_err)
+        {
             this.sdkLoadFailure(_err);
         }
     }
@@ -114,14 +117,16 @@ class CommercehubApplePay
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
-            $(".payment-information").data("payment-method-id") === "APPLEPAY"
-        ) {
+            $(".payment-information").data("payment-method-id") === "APPLEPAY")
+        {
             if(xhr.responseJSON.isApplePaySuccess)
             {
-                new Promise((resolve, reject) => {
+                new Promise((resolve, reject) =>
+                {
                     FiservSDKHelper.backendCall(xhr.responseJSON.placeOrderURL, resolve, reject);
                 })
-                .then(async (response) => {
+                .then(async (response) =>
+                {
                     if(response.error)
                     {
                         this.applepayFailure(response.errorMessage);
@@ -129,7 +134,9 @@ class CommercehubApplePay
                     }
 
                     this.applepaySuccess(response);
-                }).catch((error) => {
+                })
+                .catch((error) =>
+                {
                     this.applepayFailure();
                 });
             }
@@ -199,7 +206,8 @@ class CommercehubApplePay
         $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').on('click', this.paymentMethodHandler);
     }
 
-    paymentMethodHandler = (_e) => {
+    paymentMethodHandler = (_e) =>
+    {
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
     }
 

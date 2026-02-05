@@ -10,10 +10,12 @@ class FiservSDKHelper
             dataType: 'json',
             type: "POST",
             data: data,
-            success: function(response) {
+            success: function(response)
+            {
                 successCb(response);
             },
-            error: function(err) {
+            error: function(err)
+            {
                 failureCb(err)
             }
         });
@@ -55,7 +57,8 @@ class FiservSDKHelper
     {
         let baseId = type === 'shipping' ? 'dwfrm_shipping_shippingAddress' : 'dwfrm_billing';
         let fields = {};
-        Object.keys(baseForm).forEach((key) => {
+        Object.keys(baseForm).forEach((key) =>
+        {
             fields[key] = {};
             let formElement = $('[name=' + (baseId + baseForm[key]) + ']');
             if(!formElement.length)
@@ -105,6 +108,7 @@ class FiservSDKHelper
 
 
 // Preliminary shared setup call to help with tab navigation...
-$('ul.payment-options li.nav-item').on('click', () => {
+$('ul.payment-options li.nav-item').on('click', () =>
+{
     $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
 });

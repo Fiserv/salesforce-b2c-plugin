@@ -33,7 +33,9 @@ function convertToB2cCardType(paymentInformation, paymentInstrument)
         paymentInstrument.custom.commercehubTokenSource = paymentInformation.tokenSource.value;
         paymentInstrument.custom.commercehubCardType = paymentInformation.commercehubCardType.value;
         paymentInstrument.custom.commercehubCardIndicator = paymentInformation.commercehubCardIndicator.value;
-        if(fiservConfig.getTokenSecurityEnabled()){
+
+        if(fiservConfig.getTokenSecurityEnabled())
+        {
            paymentInstrument.paymentTransaction.custom.commercehubSessionId = paymentInformation.sessionId;
         }
     }
@@ -73,7 +75,8 @@ function getProcessorString(paymentInstrument)
 
 function getB2cCardType(cardType)
 {
-    switch (cardType.value.toLowerCase()) {
+    switch (cardType.value.toLowerCase())
+    {
         case 'visa':
             return 'Visa';
         case 'mastercard':

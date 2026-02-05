@@ -1,6 +1,7 @@
 'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () =>
+{
     let extractInitializationData = function()
     {
         let data = {
@@ -30,7 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
         initialized = true;
     };
 
-    $(document).on("ajaxSuccess", (ev, xhr) => { 
+    $(document).on("ajaxSuccess", (ev, xhr) =>
+    { 
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
@@ -42,11 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    $('ul.payment-options li.nav-item[data-method-id=PAYPAL]').on('click', () => {
+    $('ul.payment-options li.nav-item[data-method-id=PAYPAL]').on('click', () =>
+    {
         initPayPal();
     });
 
-    $('.payment-summary .edit-button').on('click', () => {
+    $('.payment-summary .edit-button').on('click', () =>
+    {
         if($(".payment-information").data("payment-method-id") === "PAYPAL")
             initPayPal();
     })

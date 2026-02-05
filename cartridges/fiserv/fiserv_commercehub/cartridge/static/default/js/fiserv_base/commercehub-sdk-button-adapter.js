@@ -9,8 +9,8 @@ class FiservSDKButton
     constructor(
         loadSuccessCallback, 
         loadFailCallback,
-        sdkReadyCallback
-    ) {
+        sdkReadyCallback)
+    {
         this.loadSuccessCallback = loadSuccessCallback;
         this.loadFailCallback = loadFailCallback;
         this.sdkReadyCallback = sdkReadyCallback;
@@ -18,10 +18,12 @@ class FiservSDKButton
 
     initSdk = async function(credentialsUrl, storeSessionCallback, requestPurpose = null)
     {
-        await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) =>
+        {
             FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
         })
-        .then(async (credentialsResponse) => {
+        .then(async (credentialsResponse) =>
+        {
             if(storeSessionCallback)
                 storeSessionCallback(credentialsResponse['sessionId']);
 
@@ -29,7 +31,9 @@ class FiservSDKButton
             window.fiservPluginSDKInitRan = true;
 
             this.sdkReadyCallback();
-        }).catch((error) => {
+        })
+        .catch((error) =>
+        {
             this.loadFailCallback(error);
         });
     }

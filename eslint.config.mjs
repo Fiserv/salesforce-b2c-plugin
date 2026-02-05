@@ -2,10 +2,7 @@ import { getEslintConfig } from "@commercehub/frontend-node-tools/index.mjs";
 
 export default getEslintConfig({
     include: {
-        JS: [
-            "cartridges/**/cartridge/**/*.js",
-            "*.js"
-        ],
+        JS: ["**/*.js"],
         CSS: ["**/*.css"],
         HTML: ["**/*.html"],
         JSX: ["**/*.jsx"],
@@ -22,7 +19,7 @@ export default getEslintConfig({
     ],
     overrides: [
         {
-            include: ["cartridges/**/cartridge/**/*.js", "*.js"],
+            include: ["cartridges/**/*.js", "*.js"],
             config: {
                 languageOptions: {
                     globals: {
@@ -46,12 +43,12 @@ export default getEslintConfig({
                     "commercehub/type-only-imports": "off",
                     "@stylistic/indent": ["error", 4],
                     "@stylistic/operator-linebreak": ["error", "after"],
-                    "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: true }]
+                    "@stylistic/brace-style": ["error", "allman", { allowSingleLine: true }]
                 }
             }
         },
         {
-            include: ["cartridges/**/cartridge/scripts/*.js", "cartridges/**/cartridge/scripts/**/*.js"],
+            include: ["cartridges/**/*.js"],
             config: {
                 rules: {
                     "import/no-unused-modules": "off",

@@ -1,6 +1,7 @@
 'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () =>
+{
     let extractInitializationData = function()
     {
         let data = {
@@ -33,7 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    $(document).on("ajaxSuccess", (ev, xhr) => { 
+    $(document).on("ajaxSuccess", (ev, xhr) =>
+    { 
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
@@ -45,11 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').on('click', () => {
+    $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').on('click', () =>
+    {
         initApplePay();
     });
 
-    $('.payment-summary .edit-button').on('click', () => {
+    $('.payment-summary .edit-button').on('click', () =>
+    {
         if($(".payment-information").data("payment-method-id") === "APPLEPAY")
             initApplePay();
     })

@@ -3,9 +3,11 @@
 const fiservConstants = require('*/cartridge/fiservConstants/constants');
 
 
-function removeNonGiftPaymentInstruments(currentBasket) {
+function removeNonGiftPaymentInstruments(currentBasket)
+{
     const collections = require('*/cartridge/scripts/util/collections');
-    collections.forEach(currentBasket.getPaymentInstruments(), function (item) {
+    collections.forEach(currentBasket.getPaymentInstruments(), function (item)
+    {
         if(item.getPaymentMethod() !== fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             currentBasket.removePaymentInstrument(item);
@@ -13,7 +15,8 @@ function removeNonGiftPaymentInstruments(currentBasket) {
     });
 }
 
-function handleOrder(basket, paymentInformation, paymentMethodModel) {
+function handleOrder(basket, paymentInformation, paymentMethodModel)
+{
     const Transaction = require('dw/system/Transaction');
 
     const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
@@ -21,7 +24,8 @@ function handleOrder(basket, paymentInformation, paymentMethodModel) {
     let currentBasket = basket;
     let cardErrors = {};
     let serverErrors = [];
-    Transaction.wrap(function () {
+    Transaction.wrap(function ()
+    {
         removeNonGiftPaymentInstruments(currentBasket);
 
         let paymentAmount = fiservGiftHelper.retreiveNonGiftChargeAmount(currentBasket);

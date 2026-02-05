@@ -29,7 +29,9 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
 
         return chargesResult;
 
-    } catch (e) {
+    }
+    catch (e)
+    {
         fiservLogs.logError(2,
             'Error processing gift payment. Error message: '.concat(e.message).concat(' more details: ').concat(e.toString()),
             orderNo
@@ -40,7 +42,8 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
 
 function sendChargesRequest(order, chargesRequest, orderNo)
 {
-    try {
+    try
+    {
         const fiservConstants = require('*/cartridge/fiservConstants/constants');
 
         const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
@@ -68,7 +71,9 @@ function sendChargesRequest(order, chargesRequest, orderNo)
         }
 
         return parsedResponse;
-    } catch (_e) {
+    }
+    catch (_e)
+    {
         fiservLogs.logFatal(2, 
             'Fiserv: '.concat(_e.toString()).concat(' in ').concat(_e.fileName).concat(':').concat(_e.lineNumber),
             orderNo

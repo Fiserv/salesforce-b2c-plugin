@@ -6,11 +6,13 @@ const transactionHandler = require('*/cartridge/scripts/hooks/payment/processor/
 const fiservApplePayModel = require('*/cartridge/models/fiservApplePayModel');
 
 
-function Handle(basket, paymentInformation) {
+function Handle(basket, paymentInformation)
+{
     return orderHandler.handleOrder(basket, paymentInformation, fiservApplePayModel);
 }
 
-function Authorize(orderNo, paymentInstrument, paymentProcessor) {
+function Authorize(orderNo, paymentInstrument, paymentProcessor)
+{
     return transactionHandler.handleTransaction(orderNo, paymentInstrument, paymentProcessor, fiservApplePayModel);
 }
 

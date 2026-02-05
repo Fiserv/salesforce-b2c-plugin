@@ -11,8 +11,10 @@ var collections = require('*/cartridge/scripts/util/collections');
  * @returns {Array} of object that contain information about the applicable payment methods for the
  *      current cart
  */
-function applicablePaymentMethods(paymentMethods) {
-    return collections.map(paymentMethods, function (method) {
+function applicablePaymentMethods(paymentMethods)
+{
+    return collections.map(paymentMethods, function (method)
+    {
         return {
             ID: method.ID,
             name: method.name
@@ -27,8 +29,10 @@ function applicablePaymentMethods(paymentMethods) {
  * @returns {Array} Array of objects that contain information about applicable payment cards for
  *      current basket.
  */
-function applicablePaymentCards(paymentCards) {
-    return collections.map(paymentCards, function (card) {
+function applicablePaymentCards(paymentCards)
+{
+    return collections.map(paymentCards, function (card)
+    {
         return {
             cardType: card.cardType,
             name: card.name
@@ -42,25 +46,31 @@ function applicablePaymentCards(paymentCards) {
  *      of payment instruments that the user is using to pay for the current basket
  * @returns {Array} Array of objects that contain information about the selected payment instruments
  */
-function getSelectedPaymentInstruments(selectedPaymentInstruments) {
-    return collections.map(selectedPaymentInstruments, function (paymentInstrument) {
+function getSelectedPaymentInstruments(selectedPaymentInstruments)
+{
+    return collections.map(selectedPaymentInstruments, function (paymentInstrument)
+    {
         var results = {
             paymentMethod: paymentInstrument.paymentMethod,
             amount: paymentInstrument.paymentTransaction.amount.value
         };
-        if (paymentInstrument.paymentMethod === 'CREDIT_CARD') {
+        if (paymentInstrument.paymentMethod === 'CREDIT_CARD')
+        {
             results.lastFour = paymentInstrument.creditCardNumberLastDigits;
             results.owner = paymentInstrument.creditCardHolder;
             results.expirationYear = paymentInstrument.custom.expireYear !== null ? paymentInstrument.custom.expireYear : "****";;
             results.type = paymentInstrument.creditCardType;
             results.maskedCreditCardNumber = paymentInstrument.custom.maskedCardNumber;
             results.expirationMonth = paymentInstrument.custom.expireMonth !== null ? paymentInstrument.custom.expireMonth : "**";
-        } else if (paymentInstrument.paymentMethod === 'GIFT_CARD')
+        } 
+        else if (paymentInstrument.paymentMethod === 'GIFT_CARD')
         {
             // Need to map this for differing currency symbols...
             results.currencySymbol = '$';
             results.amount = results.amount.toFixed(2);
-        } else if (paymentInstrument.paymentMethod === 'GIFT_CERTIFICATE') {
+        }
+        else if (paymentInstrument.paymentMethod === 'GIFT_CERTIFICATE')
+        {
             results.giftCertificateCode = paymentInstrument.giftCertificateCode;
             results.maskedGiftCertificateCode = paymentInstrument.maskedGiftCertificateCode;
         }
@@ -76,7 +86,8 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
  * @param {string} countryCode - the associated Site countryCode
  * @constructor
  */
-function Payment(currentBasket, currentCustomer, countryCode) {
+function Payment(currentBasket, currentCustomer, countryCode)
+{
     var paymentAmount = currentBasket.totalGrossPrice;
     var paymentMethods = PaymentMgr.getApplicablePaymentMethods(
         currentCustomer,

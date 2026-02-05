@@ -6,11 +6,13 @@ const transactionHandler = require('*/cartridge/scripts/hooks/payment/processor/
 const fiservVenmoModel = require('*/cartridge/models/fiservVenmoModel');
 
 
-function Handle(basket, paymentInformation) {
+function Handle(basket, paymentInformation)
+{
     return orderHandler.handleOrder(basket, paymentInformation, fiservVenmoModel);
 }
 
-function Authorize(orderNo, paymentInstrument, paymentProcessor) {
+function Authorize(orderNo, paymentInstrument, paymentProcessor)
+{
     return transactionHandler.handleTransaction(orderNo, paymentInstrument, paymentProcessor, fiservVenmoModel);
 }
 

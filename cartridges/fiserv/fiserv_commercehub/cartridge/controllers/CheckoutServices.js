@@ -5,8 +5,10 @@ const server = require('server');
 server.extend(module.superModule);
 
 
-server.append('SubmitPayment', function (req, res, next) {
-    this.on('route:BeforeComplete', function (req, res) {
+server.append('SubmitPayment', function (req, res, next)
+{
+    this.on('route:BeforeComplete', function (req, res)
+    {
         if(res.viewData.error)
             return;
 
@@ -61,8 +63,8 @@ server.append('SubmitPayment', function (req, res, next) {
             let paymentInstruments = null;
             if(typeof(profile.getWallet()) !== "undefined" &&
                 typeof(paymentInstruments = profile.getWallet().getPaymentInstruments()) !== "undefined" &&
-                paymentInstruments.length !== 0
-            ) {
+                paymentInstruments.length !== 0)
+            {
                 displayedPayments = new AccountModel(req.currentCustomer).customerPaymentInstruments;
                 let UUIDRemoveList = null;
                 if(!fiservConfig.getCommerceHubTokenization())

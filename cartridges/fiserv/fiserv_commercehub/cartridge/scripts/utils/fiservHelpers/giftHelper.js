@@ -16,7 +16,8 @@ function retrieveAppliedGiftCards()
     let giftCardList = [];
     let leftoverTotal = basket.totalGrossPrice.value;
     let paymentInstruments = basket.paymentInstruments;
-    paymentInstruments.toArray().forEach((pi) => {
+    paymentInstruments.toArray().forEach((pi) =>
+    {
         if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             let paymentAmount = pi.paymentTransaction.amount.value;
@@ -43,7 +44,8 @@ function recalculateGiftCardAmounts(basket)
 {
     let grossTotal = basket.totalGrossPrice;
     let updatedGiftCards = [];
-    basket.paymentInstruments.toArray().forEach((pi) => {
+    basket.paymentInstruments.toArray().forEach((pi) =>
+    {
         if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
         {
             if(grossTotal <= 0.00001)
@@ -101,13 +103,15 @@ function correctGrandTotalResponseIncludingGiftCards(res)
     }
 }
 
-function retreiveNonGiftChargeAmount(currentBasket) {
+function retreiveNonGiftChargeAmount(currentBasket)
+{
     const fiservConfig = require('*/cartridge/scripts/utils/commercehubConfig');
 
     let paymentAmount = currentBasket.totalGrossPrice.value;
     if(fiservConfig.getCommerceHubGiftEnabled())
     {
-        currentBasket.paymentInstruments.toArray().forEach((pi) => {
+        currentBasket.paymentInstruments.toArray().forEach((pi) =>
+        {
             if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             {
                 paymentAmount -= pi.paymentTransaction.amount.value;
