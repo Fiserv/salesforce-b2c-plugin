@@ -164,7 +164,7 @@ function attachBasketTokenToBasket(chResponse, cardType, orderNo)
 
     basket.custom.commercehubBasketToken = JSON.stringify(storedPaymentInstrument);
 
-    fiservLogs.logInfo(1, "New guest token attached to basket", orderNo);
+    fiservLogs.logInfo(1, "New basket token attached to basket", orderNo);
 
     return storedPaymentInstrument;
 }
@@ -210,7 +210,7 @@ function saveTokenizedCardBasket(customerNo, cardType, chResponse)
         profile = CustomerMgr.getCustomerByCustomerNumber(customerNo).getProfile();
     }
 
-    // Passes in null for the profile in the case that it is a guest early token
+    // Passes in null for the profile in the case that it is a guest basket token
     return saveCard(profile, cardType, chResponse, true);
 }
 

@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     let initialized = false;
-    let guestTokenFlowEnabled = false;
+    let basketTokenFlowEnabled = false;
 
     // detect current stage
     const checkoutStage = $('#fiserv-commercehub-card-form-init-container').attr('data-initial-checkout-stage');
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         $('#fiserv-commercehub-card-form-init-container').remove();
 
-        guestTokenFlowEnabled = data.config.configData.tokenizeEarlyGuest;
+        basketTokenFlowEnabled = data.config.configData.basketTokenization;
 
         return data;
     }
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if(savedPaymentsPresent() &&
                 (($('input#saveCreditCard').length &&
                 $('input#saveCreditCard')[0].checked) ||
-                guestTokenFlowEnabled))
+                basketTokenFlowEnabled))
             {
                 $('.cancel-new-payment').trigger('click');
                 if (form.cvvEnabled) form.initializeTokenCVVForms();

@@ -143,7 +143,7 @@
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubTokenization">
-                <display-name xml:lang="x-default">Tokenization</display-name>
+                <display-name xml:lang="x-default">Enable Tokenization</display-name>
                 <description xml:lang="x-default">Allow customers to tokenize payment information for later use</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -167,7 +167,7 @@
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubStandaloneSPA">
-                <display-name xml:lang="x-default">Standalone Tokenization</display-name>
+                <display-name xml:lang="x-default">Enable Standalone Tokenization</display-name>
                 <description xml:lang="x-default">Allow customers to tokenize payment information without a transaction</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -175,7 +175,7 @@
                 <default-value>false</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubEarlyTokenization">
-                <display-name xml:lang="x-default">Early Tokenization</display-name>
+                <display-name xml:lang="x-default">Enable Early Tokenization</display-name>
                 <description xml:lang="x-default">Allow customers to tokenize payment information on credit card capture in the checkout flow</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -192,15 +192,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubBasketTokenization">
                 <display-name xml:lang="x-default">Enable Basket Tokenization</display-name>
-                <description xml:lang="x-default">Stores payment tokens on the basket when customer chooses not to save the token to their wallet</description>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>false</default-value>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubEarlyTokenizationGuest">
-                <display-name xml:lang="x-default">Early Tokenization For Guests</display-name>
-                <description xml:lang="x-default">Allow guest customers to tokenize payment information on credit card capture in the checkout flow</description>
+                <description xml:lang="x-default">Stores payment tokens on the basket when customer chooses not to save the token to their wallet or always for guests</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1365,7 +1357,6 @@
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
                 <attribute attribute-id="CommerceHubBasketTokenization"/>
-                <attribute attribute-id="CommerceHubEarlyTokenizationGuest"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
                 <attribute attribute-id="CommerceHubTokenSecurityEnable"/>
 
@@ -1773,8 +1764,8 @@
     <type-extension type-id="Basket">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="commercehubBasketToken">
-                <display-name xml:lang="x-default">Guest Token</display-name>
-                <description xml:lang="x-default">JSON string representing the token data of a card added by a guest user</description>
+                <display-name xml:lang="x-default">Basket Token</display-name>
+                <description xml:lang="x-default">JSON string representing the token data of a card added in the basket tokenization flow</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>

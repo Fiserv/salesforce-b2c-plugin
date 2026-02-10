@@ -24,7 +24,6 @@ function getFrontendConfigData(formId)
             if(configData.tokenizeEarly)
             {
                 configData['basketTokenization'] = fiservConfig.getBasketTokenization();
-                configData['tokenizeEarlyGuest'] = fiservConfig.getEarlyTokenizationGuest();
             }
             if(configData.fastlaneEnabled)
             {
