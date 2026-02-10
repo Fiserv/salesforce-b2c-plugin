@@ -64,6 +64,7 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
 
     const server = require('server');
 
+    const BasketMgr = require('dw/order/BasketMgr');
     const Transaction = require('dw/system/Transaction');
     const URLUtils = require('dw/web/URLUtils');
 
@@ -134,6 +135,11 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
         }
 
         let uuid = savedCard && savedCard.UUID ? savedCard.UUID : null;
+        let basket = BasketMgr.getCurrentBasket();
+        if(earlyTokenPayload && basket)
+        {
+            basket.custom.commercehubEarlyTokenUUID = uuid;
+        }
         
         Transaction.commit();
         fiservLogs.logInfo(1, 'Tokenization Request Successful');
