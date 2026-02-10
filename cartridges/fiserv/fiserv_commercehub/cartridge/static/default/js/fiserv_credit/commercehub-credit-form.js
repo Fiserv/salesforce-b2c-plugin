@@ -366,7 +366,7 @@ class CommercehubCheckoutForm
 
     watchSubmitResponse = function()
     {
-        $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
+        $(document).on("ajaxError", $.proxy(this.onSubmitResponse, this));
     }
 
     onSubmitResponse = function(ev, xhr)

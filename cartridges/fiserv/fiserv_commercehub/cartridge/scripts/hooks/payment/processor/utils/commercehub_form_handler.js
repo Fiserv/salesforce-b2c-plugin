@@ -1,5 +1,6 @@
 'use strict';
 
+const BasketMgr = require('dw/order/BasketMgr');
 const Resource = require('dw/web/Resource');
 
 
@@ -36,14 +37,12 @@ function getStoredCardFormResult(currentCustomer, storedPaymentUUID, paymentForm
         return getBasketStoredToken(paymentForm, viewFormData, storedPaymentUUID);
     }
     
-    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm);
+    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, storedPaymentUUID);
     return { error: false, viewData: viewData };
 }
 
 function getBasketStoredToken(paymentForm, viewFormData, storedPaymentUUID)
 {
-    const BasketMgr = require('dw/order/BasketMgr');
-
     let basket = BasketMgr.getCurrentBasket();
     if(!basket)
     {
@@ -80,7 +79,7 @@ function getBasketStoredToken(paymentForm, viewFormData, storedPaymentUUID)
         creditCardToken: storedPaymentInstrument.tokenData
     };
 
-    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm);
+    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, storedPaymentUUID);
     return { error: false, viewData: viewData };
 }
 
@@ -99,7 +98,7 @@ function getBaseViewData(viewFormData, paymentForm)
     };
 }
 
-function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
+function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, storedPaymentUUID)
 {
     let viewData = getBaseViewData(viewFormData, paymentForm);
     viewData.paymentInformation.cardType = { value : paymentInstrument.creditCardType };
@@ -113,9 +112,17 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
     viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
     
     const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-    if(fiservConfig.getTokenSecurityEnabled())
+    let basket;
+    if(fiservConfig.getTokenSecurityEnabled() && (basket = BasketMgr.getCurrentBasket()) && basket.custom.commercehubEarlyTokenUUID !== storedPaymentUUID)
     {
-        viewData.paymentInformation.sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
+        let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
+        if(!sessionId)
+        {
+            const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+            fiservLogs.logError(2, "CVV missing for token payment instrument creation");
+            throw new Error(Resource.msg('message.error.cvv.missing', 'error', null));
+        }
+        viewData.paymentInformation.sessionId = sessionId;
     }
 
     let authenticationId3DS = paymentForm.fiservCommercehubPaymentFields.authenticationId3DS
@@ -188,6 +195,16 @@ function processForm(req, paymentForm, viewFormData)
     {
         viewData = getNewCardFormResult(paymentForm, viewFormData);
     }
+
+    const Transaction = require('dw/system/Transaction');
+
+    Transaction.wrap(() => {
+        let basket = BasketMgr.getCurrentBasket();
+        if(basket)
+        {
+            basket.custom.commercehubEarlyTokenUUID = null;
+        }
+    });
 
     return viewData;
 }
