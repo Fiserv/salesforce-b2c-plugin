@@ -679,9 +679,10 @@ class CommercehubCheckoutForm
                         
             tokens.each((idx, storedPayment) => {
                 const paymentUUID = $(storedPayment).data('uuid');
+                const cardType = $(storedPayment).data('card-type');
                 if (paymentUUID)
                 {
-                    this.createCVVFieldAdapter(paymentUUID);
+                    this.createCVVFieldAdapter(paymentUUID, cardType);
                     this.watchCVVMaskingField(paymentUUID);
                 }
             });
@@ -697,7 +698,7 @@ class CommercehubCheckoutForm
         }
     }
 
-    createCVVFieldAdapter = function(cardUUID)
+    createCVVFieldAdapter = function(cardUUID, cardType)
     {
         if (!this.cvvEnabled || !cardUUID || this.cvvAdapters[cardUUID]) return;
 
@@ -736,6 +737,8 @@ class CommercehubCheckoutForm
 
             const updatedFormConfig = structuredClone(this.formConfig);
             updatedFormConfig.formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${ cardUUID }`;
+            if (cardType)
+                    updatedFormConfig.formCustomization.fields.securityCode.brandId = this.mapCardTypeToBrandId(cardType);
             updatedFormConfig.formCustomization.fields = { securityCode: updatedFormConfig.formCustomization.fields.securityCode }
 
             this.cvvAdapters[cardUUID] = adapter;
@@ -800,5 +803,26 @@ class CommercehubCheckoutForm
     {
         $('.cvv-mask-button.' + UUID).off('click', this.mask);
         $('.cvv-mask-button.' + UUID).on('click', (element) => {this.mask(element, this.cvvAdapters[UUID], 'securityCode')});
+    }
+
+    mapCardTypeToBrandId = function(cardType)
+    {
+        if (!cardType) return undefined;
+
+        const cardTypeMap = {
+            'Visa': 'visa',
+            'Master Card': 'mastercard',
+            'MasterCard': 'mastercard',
+            'Amex': 'american-express',
+            'American Express': 'american-express',
+            'Discover': 'discover',
+            'Diners': 'diners-club',
+            'JCB': 'jcb',
+            'Union': 'unionpay',
+            'Maestro': 'maestro',
+            'Elo': 'elo'
+        };
+
+        return cardTypeMap[cardType] || cardType.toLowerCase();
     }
 }

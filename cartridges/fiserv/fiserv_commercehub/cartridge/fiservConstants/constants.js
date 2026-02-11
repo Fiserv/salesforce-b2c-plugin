@@ -7,7 +7,7 @@ module.exports = {
     ENVIRONMENT_URL_PLACEHOLDER : '[CH_ENVIRONMENT_BASE]',
     COMMERCEHUB_LIVE_BASE : "connect.fiservapis.com",
     COMMERCEHUB_CERT_BASE : "connect-cert.fiservapis.com",
-    COMMERCEHUB_SDK_URL : "https://commercehub-secure-data-capture.fiservapps.com/3.7.16/checkout.js",
+    COMMERCEHUB_SDK_URL : "https://commercehub-checkout.fiservapps.com/sdk/3.8.1/checkout.js",
     COMMERCEHUB_SALE_ACTION : "SALE",
     COMMERCEHUB_AUTH_ACTION : "AUTH",
     ECOM_ORIGIN : "ECOM",

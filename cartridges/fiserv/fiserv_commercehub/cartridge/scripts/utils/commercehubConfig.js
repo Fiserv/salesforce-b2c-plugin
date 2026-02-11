@@ -198,7 +198,10 @@ const commerceHubExport =
         let config = {};
         config['fields'] = this.buildFormFieldsConfig(formId);
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
-        config['font'] = this.buildFormFontConfig(formId);
+        const fontConfig = this.buildFormFontConfig(formId);
+        if (fontConfig !== null) {
+            config['font'] = fontConfig;
+        }
         config['contextualCssClassNames'] = {
             valid: "validSdcInput",
             invalid: "invalidSdcInput"
@@ -272,6 +275,9 @@ const commerceHubExport =
             'format': getSitePreference('CommerceHub' + formId + 'FormFontFormat'),
             'integrity': getSitePreference('CommerceHub' + formId + 'FormFontIntegrity')
         }
+
+        if (!Object.values(formFontConfig).some( v => v != null ))
+            return null;
 
         return formFontConfig;
     },
