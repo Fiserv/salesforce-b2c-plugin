@@ -738,7 +738,7 @@ class CommercehubCheckoutForm
             const updatedFormConfig = structuredClone(this.formConfig);
             updatedFormConfig.formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${ cardUUID }`;
             if (cardType)
-                    updatedFormConfig.formCustomization.fields.securityCode.brandId = this.mapCardTypeToBrandId(cardType);
+                updatedFormConfig.formCustomization.fields.securityCode.brandId = this.mapCardTypeToBrandId(cardType);
             updatedFormConfig.formCustomization.fields = { securityCode: updatedFormConfig.formCustomization.fields.securityCode }
 
             this.cvvAdapters[cardUUID] = adapter;
@@ -807,6 +807,8 @@ class CommercehubCheckoutForm
 
     mapCardTypeToBrandId = function(cardType)
     {
+        if (!cardType) return null;
+
         switch (cardType) {
             case 'Visa':
                 return 'visa';
@@ -824,7 +826,8 @@ class CommercehubCheckoutForm
             case 'Union':
             case 'Discover':
                 return 'discover';
-    }
-        throw new Error('Unable to determine Salesforce B2C card type for: '.concat(cardType));
-    }
+            default:
+                return null;
+        }
+    } 
 }
