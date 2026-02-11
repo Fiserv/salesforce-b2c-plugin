@@ -71,7 +71,12 @@ function buildChargesTransactionDetailsObject(capture, tokenize)
 
 function buildSourceObject(paymentInstrument)
 {
-    let sessionId = paymentInstrument.paymentTransaction.custom.commercehubSessionId.value;
+    let sessionIdObject = paymentInstrument.paymentTransaction.custom.commercehubSessionId;
+    let sessionId;
+    if(sessionIdObject)
+    {
+        sessionId = sessionIdObject.value;
+    }
     return paymentInstrument.creditCardToken ? buildTokenSourceObject(paymentInstrument, sessionId) : buildSessionSourceObject(sessionId);
 }
 
