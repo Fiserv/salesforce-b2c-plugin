@@ -49,9 +49,6 @@
                 <preference preference-id="CommerceHubBasketTokenization">
                     <value>false</value>
                 </preference>
-                <preference preference-id="CommerceHubEarlyTokenizationGuest">
-                    <value>false</value>
-                </preference>
                 <preference preference-id="CommerceHub3DSEnable">
                     <value>false</value>
                 </preference>

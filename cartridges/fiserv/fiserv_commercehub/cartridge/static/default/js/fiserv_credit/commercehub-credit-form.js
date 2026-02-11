@@ -184,9 +184,8 @@ class CommercehubCheckoutForm
 
         let earlyFlowExecuted = false;
         if(this.configDataPaymentCard.tokenizeEarly && 
-            (($('input#saveCreditCard').length && 
-                ($('input#saveCreditCard')[0].checked || this.configDataPaymentCard.basketTokenization)) ||
-            (this.configDataPaymentCard.tokenizeEarlyGuest && this.isGuest)))
+            (($('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked) ||
+            this.configDataPaymentCard.basketTokenization))
         {
             try {
                 await new Promise((resolve, reject) => {
