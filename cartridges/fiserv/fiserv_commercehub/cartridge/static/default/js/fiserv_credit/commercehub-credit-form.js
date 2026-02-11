@@ -812,18 +812,12 @@ class CommercehubCheckoutForm
         switch (cardType) {
             case 'Visa':
                 return 'visa';
-            case 'MasterCard':
             case 'Master Card':
                 return 'mastercard';
             case 'Amex':
-            case 'American Express':
                 return 'american-express';
             case 'Maestro':
-            case 'MaestroUK':
                 return 'maestro';
-            case 'Diners':
-            case 'JCB':
-            case 'Union':
             case 'Discover':
                 return 'discover';
             default:
