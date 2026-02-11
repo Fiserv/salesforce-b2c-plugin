@@ -70,6 +70,11 @@ server.append('Begin', function (req, res, next) {
         }
     }
 
+    if(basket)
+    {
+        basket.custom.commercehubEarlyTokenUUID = null;
+    }
+
     return next();
 });
 

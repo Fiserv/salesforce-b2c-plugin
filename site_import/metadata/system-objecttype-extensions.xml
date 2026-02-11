@@ -1763,6 +1763,13 @@
     </type-extension>
     <type-extension type-id="Basket">
         <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubEarlyTokenUUID">
+                <display-name xml:lang="x-default">Early Token UUID</display-name>
+                <description xml:lang="x-default">Placeholder field to store and verify the early token being used in a checkout flow</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
             <attribute-definition attribute-id="commercehubBasketToken">
                 <display-name xml:lang="x-default">Basket Token</display-name>
                 <description xml:lang="x-default">JSON string representing the token data of a card added in the basket tokenization flow</description>
@@ -1774,6 +1781,7 @@
         <group-definitions>
             <attribute-group group-id="FISERV_COMMERCEHUB">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubEarlyTokenUUID"/>
                 <attribute attribute-id="commercehubBasketToken"/>
             </attribute-group>
         </group-definitions>
