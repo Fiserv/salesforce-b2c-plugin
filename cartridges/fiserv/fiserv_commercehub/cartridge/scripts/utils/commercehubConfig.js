@@ -268,6 +268,9 @@ const commerceHubExport =
             'integrity': getSitePreference('CommerceHub' + formId + 'FormFontIntegrity')
         }
 
+        if (!Object.values(formFontConfig).some( v => v != null ))
+            return null;
+
         return formFontConfig;
     },
 
