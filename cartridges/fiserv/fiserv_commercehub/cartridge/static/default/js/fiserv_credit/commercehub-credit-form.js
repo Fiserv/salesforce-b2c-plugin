@@ -807,22 +807,24 @@ class CommercehubCheckoutForm
 
     mapCardTypeToBrandId = function(cardType)
     {
-        if (!cardType) return undefined;
-
-        const cardTypeMap = {
-            'Visa': 'visa',
-            'Master Card': 'mastercard',
-            'MasterCard': 'mastercard',
-            'Amex': 'american-express',
-            'American Express': 'american-express',
-            'Discover': 'discover',
-            'Diners': 'diners-club',
-            'JCB': 'jcb',
-            'Union': 'unionpay',
-            'Maestro': 'maestro',
-            'Elo': 'elo'
-        };
-
-        return cardTypeMap[cardType] || cardType.toLowerCase();
+        switch (cardType) {
+            case 'Visa':
+                return 'visa';
+            case 'MasterCard':
+            case 'Master Card':
+                return 'mastercard';
+            case 'Amex':
+            case 'American Express':
+                return 'american-express';
+            case 'Maestro':
+            case 'MaestroUK':
+                return 'maestro';
+            case 'Diners':
+            case 'JCB':
+            case 'Union':
+            case 'Discover':
+                return 'discover';
+    }
+        throw new Error('Unable to determine Salesforce B2C card type for: '.concat(cardType));
     }
 }
