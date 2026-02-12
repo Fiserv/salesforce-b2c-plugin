@@ -42,6 +42,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+            $('ul.payment-options li.nav-item:first').find('a').trigger('click');
+            if ($('ul.payment-options li.nav-item[data-method-id=PAYPAL]').hasClass('active'))
+                initPayPal();
+    }
+
     $('ul.payment-options li.nav-item[data-method-id=PAYPAL]').on('click', () => {
         initPayPal();
     });
