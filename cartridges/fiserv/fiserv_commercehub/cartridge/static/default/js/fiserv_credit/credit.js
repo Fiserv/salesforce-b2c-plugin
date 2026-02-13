@@ -57,7 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
             form.unwatchSubmitButtonToken();
             form.watchSubmitButtonToken();
             if (form.cvvEnabled)
-                    form.disableSubmitButton();
+            {
+                form.initializeTokenCVVForms();
+                form.disableSubmitButton();
+            }
         }
     }
 
