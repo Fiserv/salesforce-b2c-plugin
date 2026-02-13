@@ -265,27 +265,68 @@ class CommercehubCheckoutForm
     }
 
     paymentMethodHandler = (_e) => { 
-        if (
-            $(_e.currentTarget).attr("data-method-id") !== 'CREDIT_CARD' && 
-            $('a.credit-card-tab.active').length)
+        if (this.paymentCardReselected(_e.currentTarget)) return;
+        
+        if (this.nonPaymentCardSelectedFromPaymentCard(_e.currentTarget))
         {
             this.deactivateCommercehubForm();
+            return;
         }
-        else if (
-            $(_e.currentTarget).attr("data-method-id") === 'CREDIT_CARD' && 
-            !$(_e.currentTarget).find("a.nav-link").hasClass('active'))
+        
+        this.activateCommercehubForm();
+            
+        if (this.isSavedPaymentMethodSelected())
         {
-            this.activateCommercehubForm();
-            if(!this.validForm && !$('.credit-card-form.checkout-hidden').length)
+            this.handleSavedPaymentMethodSelection();
+            return;
+        }
+
+        this.handleNewPaymentCardMethodSelection();
+    }
+
+    handleSavedPaymentMethodSelection = function()
+    {
+        if (this.cvvEnabled)
+        {
+            const tokenForm = this.cvvAdapters[this.currentSelectedPaymentUUID];
+            if (!tokenForm.isValid()) 
             {
                 this.disableSubmitButton();
+                return;
             }
+
         }
+        
+        this.enableSubmitButton();
+    }
+
+    handleNewPaymentCardMethodSelection = function()
+    {
+        if (this.validForm)this.enableSubmitButton();
+        else this.disableSubmitButton();
+    }
+
+    nonPaymentCardSelectedFromPaymentCard = function(target)
+    {
+        return $(target).attr("data-method-id") !== 'CREDIT_CARD' && 
+            $('a.credit-card-tab.active').length > 0;
+    }
+
+    paymentCardReselected = function(target)
+    {
+        return $(target).attr("data-method-id") === 'CREDIT_CARD' && 
+            $(target).find("a.nav-link").hasClass('active')
     }
 
     watchPaymentMethods = function()
     {
         $('ul.payment-options li.nav-item').on('click', this.paymentMethodHandler);
+    }
+
+    isSavedPaymentMethodSelected = function()
+    {
+        return $('.saved-payment-instrument.selected-payment').length > 0 &&
+            $(".user-payment-instruments.checkout-hidden").length < 1;
     }
 
     submitHandlerForm = (_e) => 
