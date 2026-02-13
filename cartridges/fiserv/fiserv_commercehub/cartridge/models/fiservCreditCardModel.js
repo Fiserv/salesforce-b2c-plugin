@@ -33,7 +33,7 @@ function convertToB2cCardType(paymentInformation, paymentInstrument)
         paymentInstrument.custom.commercehubTokenSource = paymentInformation.tokenSource.value;
         paymentInstrument.custom.commercehubCardType = paymentInformation.commercehubCardType.value;
         paymentInstrument.custom.commercehubCardIndicator = paymentInformation.commercehubCardIndicator.value;
-        if(fiservConfig.getTokenSecurityEnabled()){
+        if(fiservConfig.getTokenSecurityEnabled() && paymentInformation.sessionId){
            paymentInstrument.paymentTransaction.custom.commercehubSessionId = paymentInformation.sessionId;
         }
     }
