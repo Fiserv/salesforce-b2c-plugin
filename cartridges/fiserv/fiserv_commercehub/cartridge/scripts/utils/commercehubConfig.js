@@ -1,7 +1,10 @@
-const dwSystem = require('dw/system');
-const currentSite = dwSystem.Site.getCurrent();
-let constants = require('*/cartridge/fiservConstants/constants');
+'use strict';
+
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+
+const currentSite = require('dw/system').Site.getCurrent();
 const NO_MASKING = 'NO_MASKING';
+
 
 function getSitePreference(field)
 {
@@ -47,14 +50,19 @@ const commerceHubExport =
         return getSitePreference('CommerceHubLogLevel').value;
     },
 
-    getCommerceHubMerchantPartnerIntegrator()
+    getCommercehubSessionLifetime()
     {
-        return getSitePreference('CommerceHubMerchantPartnerIntegrator');
+        return getSitePreference('CommerceHubSessionLifetime');
     },
 
     getCommerceHubTimeout()
     {
         return getSitePreference('CommerceHubTimeout');
+    },
+    
+    getCommerceHubMerchantPartnerIntegrator()
+    {
+        return getSitePreference('CommerceHubMerchantPartnerIntegrator');
     },
 
     // This is where the Credit/Debit Cards settings start
@@ -89,9 +97,19 @@ const commerceHubExport =
         return getSitePreference('CommerceHubEarlyTokenization');
     },
 
+    getBasketTokenization()
+    {
+        return getSitePreference('CommerceHubBasketTokenization');
+    },
+
     get3DSEnabled()
     {
         return getSitePreference('CommerceHub3DSEnable');
+    },
+
+    getTokenSecurityEnabled()
+    {
+        return getSitePreference('CommerceHubTokenSecurityEnable');
     },
 
     // This is where the Gift Card settings start
@@ -143,6 +161,18 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPayPalVaultingEnable');
     },
 
+    // This is where the Venmo settings start
+
+    getCommerceHubVenmoEnabled()
+    {
+        return getSitePreference('CommerceHubVenmoEnable');
+    },
+
+    getCommerceHubVenmoPaymentType()
+    {
+        return getSitePreference('CommerceHubVenmoPaymentType').value;
+    },
+
     // This is where the Apple Pay settings start
 
     getCommerceHubApplePayEnabled()
@@ -157,13 +187,17 @@ const commerceHubExport =
 
     getFormConfig(formId)
     {
-        if(!constants.FORM_ID_LIST.includes(formId))
+        if(!fiservConstants.FORM_ID_LIST.includes(formId))
             return;
 
         let config = {};
         config['fields'] = this.buildFormFieldsConfig(formId);
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
         config['font'] = this.buildFormFontConfig(formId);
+        config['contextualCssClassNames'] = {
+            valid: "validSdcInput",
+            invalid: "invalidSdcInput"
+        };
         return config;
     },
 
@@ -234,12 +268,15 @@ const commerceHubExport =
             'integrity': getSitePreference('CommerceHub' + formId + 'FormFontIntegrity')
         }
 
+        if (!Object.values(formFontConfig).some( v => v != null ))
+            return null;
+
         return formFontConfig;
     },
 
     getInvalidFields(formId)
     {
-        if(!constants.FORM_ID_LIST.includes(formId))
+        if(!fiservConstants.FORM_ID_LIST.includes(formId))
             return;
 
 
@@ -276,18 +313,23 @@ const commerceHubExport =
         return dataConfig;
     },
 
-    buildAddressFormNamesObject()
+    buildVenmoButtonsConfig()
     {
-        return {
-            firstName: "_addressFields_firstName",
-            lastName: "_addressFields_lastName",
-            street: "_addressFields_address1",
-            houseNumberOrName: "_addressFields_address2",
-            city: "_addressFields_city",
-            stateOrProvince: "_addressFields_states_stateCode",
-            postalCode: "_addressFields_postalCode",
-            country: "_addressFields_country"
+    
+        let buttonsConfig = {};
+        if(this.getCommerceHubVenmoEnabled())
+        {
+            buttonsConfig['venmo'] = {
+                'parentElementId': 'fiserv_commercehub-venmo-button',
+                'color': getSitePreference('CommerceHubVenmoButtonColor').value,
+                'shape': getSitePreference('CommerceHubVenmoButtonShape').value
+            }
+        }
+        let dataConfig = {
+            'customerConfirmation': 'REVIEW_AND_PAY',
+            'buttons': buttonsConfig
         };
+        return dataConfig;
     },
 
     buildApplePayButtonConfig()
@@ -302,7 +344,21 @@ const commerceHubExport =
         }
 
         return { 'button': buttonConfig };
-    }
+    },
+
+    buildAddressFormNamesObject()
+    {
+        return {
+            firstName: "_addressFields_firstName",
+            lastName: "_addressFields_lastName",
+            street: "_addressFields_address1",
+            houseNumberOrName: "_addressFields_address2",
+            city: "_addressFields_city",
+            stateOrProvince: "_addressFields_states_stateCode",
+            postalCode: "_addressFields_postalCode",
+            country: "_addressFields_country"
+        };
+    },
 };
 
 module.exports = commerceHubExport;

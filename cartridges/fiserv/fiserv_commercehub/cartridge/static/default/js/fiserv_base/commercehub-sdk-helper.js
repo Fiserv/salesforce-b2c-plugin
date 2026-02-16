@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 class FiservSDKHelper
 {
@@ -102,9 +102,3 @@ class FiservSDKHelper
             .text(optionText);
     }
 }
-
-
-// Preliminary shared setup call to help with tab navigation...
-$('ul.payment-options li.nav-item').on('click', () => {
-    $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
-});

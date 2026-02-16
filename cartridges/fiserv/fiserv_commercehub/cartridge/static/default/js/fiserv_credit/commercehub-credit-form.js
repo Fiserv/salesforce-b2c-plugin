@@ -1,8 +1,8 @@
-"use strict"
+'use strict';
 
 class CommercehubCheckoutForm
 {
-    constructor(initializationData) 
+    constructor(initializationData)
     {
         if (typeof(initializationData) === "undefined")
         {
@@ -12,47 +12,71 @@ class CommercehubCheckoutForm
         this.configDataPaymentCard = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
         this.tokenizationUrl = initializationData.tokenizationUrl;
+        this.isGuest = !initializationData.userLoggedIn;
+        this.cvvEnabled = this.configDataPaymentCard.cvvEnabled;
+        
         this.createAdapter();
-
-        $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element);});
-
-        if(this.configDataPaymentCard.fastlaneEnabled && !initializationData.userLoggedIn)
+        
+        $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element, this.formAdapter);});
+        
+        if(this.configDataPaymentCard.fastlaneEnabled && this.isGuest)
         {
             this.formAdapter.setFastlaneInitStatus(true);
             FiservFastlaneInitializer.initFastlane(this.credentialsUrl, this.formAdapter, this.formConfig);
         }
-
+        
         this.watchSubmitResponse();
         this.watchPaymentMethods();
+        
+        if (this.cvvEnabled) this.initializeTokenCVVForms();
     }
-    
+
     initialize = function()
     {
         try {
-            if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
+            if(this.formAdapter.getFastlaneInitStatus())
+            {
+                setTimeout(() => {
+                    this.initialize();
+                }, 1000);
+                return;
+            }
+            if(!this.formAdapter.getFastlaneStatus())
             {
                 $.spinner().start();
                 this.initializeAdapter();
+            }
+            else if(!this.formAdapter.isValid())
+            {
+                this.getSubmitButton().prop('disabled', true);
             }
             if($('.nav-link.credit-card-tab.active').length)
             {
                 this.watchSubmitButtonForm();
             }
         } catch (_err) {
-            this.sdkLoadFailure(_err);
+            this.sdkLoadFailure(_err, "#fiserv-scc-fatal-notice");
         }
     }
 
     createAdapter = function()
     {
         let loadSuccessCallback = () => { console.log("CommerceHub SDK has loaded."); };
-        let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
+        let loadFailCallback = (error) => { this.sdkLoadFailure(error, "#fiserv-scc-fatal-notice"); };
         let formReadyCallback = () => { this.sdkInitialized() };
         let formValidCallback = () => { this.getSubmitButton().prop('disabled', false); this.validForm = true; };
         let formInvalidCallback = () => { this.getSubmitButton().prop('disabled', true); this.validForm = false; };
         let cardBrandHandler = (brand) => { this.cardBrandChangeHandler(brand) };
-        let fieldValidityHandler = (data) => { this.fieldValidityHandler(data); };
-        let fieldFocusHandler = (data) => { this.fieldFocusHandler(data) };
+        let fieldValidityHandler = (data) => { 
+            let frame = this.getSdcFieldFrame(data["field"]);
+            let mess = this.getSdcFieldInvalidMessageContainer(data["field"]);
+
+            this.fieldValidityHandler(data, frame, mess); 
+        };
+        let fieldFocusHandler = (data) => { 
+            let frame = this.getSdcFieldFrame(data);
+            this.fieldFocusHandler(frame) 
+        };
         let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
         let runFailureCallback = (error) => { this.paymentProceedFailure(error); };
 
@@ -113,6 +137,11 @@ class CommercehubCheckoutForm
         $('input#commercehubSessionIdInput').val(sessionId);
     }
 
+    setTokenUUIDInput = function(uuid)
+    {
+        $('input#commercehubTokenUUIDInput').val(uuid);
+    }
+
     getSubmitButton = function() 
     {
         return $('button.btn.btn-primary.btn-block.submit-payment');
@@ -123,21 +152,16 @@ class CommercehubCheckoutForm
         return $('#fiserv-commercehub-card-form-container');
     }
 
-    getFatalNotice = function()
-    {
-        return $('#fiserv-scc-fatal-notice');
-    }
-
     sdkInitialized = function() 
     {
         $.spinner().stop();
     }
 
-    sdkLoadFailure = function (err) 
+    sdkLoadFailure = function (err, noticeId) 
     {
         console.log(err);
         this.disableSubmitButton();
-        this.getFatalNotice().show();
+        $(noticeId).show();
         $.spinner().stop(); 
         throw new Error("Unable to load CommerceHub SDK.")
     }
@@ -159,11 +183,24 @@ class CommercehubCheckoutForm
         }
 
         let earlyFlowExecuted = false;
-        if(this.configDataPaymentCard.tokenizeEarly && $('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked)
+        if(this.configDataPaymentCard.tokenizeEarly && 
+            (($('input#saveCreditCard').length && $('input#saveCreditCard')[0].checked) ||
+            this.configDataPaymentCard.basketTokenization))
         {
             try {
                 await new Promise((resolve, reject) => {
-                    FiservSDKHelper.backendCall(this.tokenizationUrl, resolve, reject, { sessionId : $('input#commercehubSessionIdInput')[0].value, cardType: $('#cardType')[0].value })
+                    let tokenizationPayload = {
+                        sessionId : $('input#commercehubSessionIdInput')[0].value,
+                        cardType: $('#cardType')[0].value
+                    };
+
+                    let saveCardCheckbox = $('input#saveCreditCard');
+                    if(saveCardCheckbox.length)
+                    {
+                        tokenizationPayload.customerTokenizeChoice = saveCardCheckbox[0].checked;
+                    }
+
+                    FiservSDKHelper.backendCall(this.tokenizationUrl, resolve, reject, tokenizationPayload);
                 }).then((response) => 
                 {
                     if(response.error)
@@ -172,9 +209,13 @@ class CommercehubCheckoutForm
                     }
                     $('.payment-information').data('is-new-payment', false);
                     $('.selected-payment').removeClass('selected-payment');
+                    $('#earlyTokenizeInjectedForm').attr('data-uuid', response.uuid);
                     $('#earlyTokenizeInjectedForm').data('uuid', response.uuid);
                     $('#earlyTokenizeInjectedForm').addClass('selected-payment');
+                    this.setSessionIdInput(null);
+                    this.setTokenUUIDInput(response.uuid);
 
+                    $('.cancel-new-payment').removeClass('checkout-hidden');
                     earlyFlowExecuted = true;
                 }).catch((err) => 
                 {
@@ -224,27 +265,68 @@ class CommercehubCheckoutForm
     }
 
     paymentMethodHandler = (_e) => { 
-        if (
-            $(_e.currentTarget).attr("data-method-id") !== 'CREDIT_CARD' && 
-            $('a.credit-card-tab.active').length)
+        if (this.paymentCardReselected(_e.currentTarget)) return;
+        
+        if (this.nonPaymentCardSelectedFromPaymentCard(_e.currentTarget))
         {
             this.deactivateCommercehubForm();
+            return;
         }
-        else if (
-            $(_e.currentTarget).attr("data-method-id") === 'CREDIT_CARD' && 
-            !$(_e.currentTarget).find("a.nav-link").hasClass('active'))
+        
+        this.activateCommercehubForm();
+            
+        if (this.isSavedPaymentMethodSelected())
         {
-            this.activateCommercehubForm();
-            if(!this.validForm && !$('.credit-card-form.checkout-hidden').length)
+            this.handleSavedPaymentMethodSelection();
+            return;
+        }
+
+        this.handleNewPaymentCardMethodSelection();
+    }
+
+    handleSavedPaymentMethodSelection = function()
+    {
+        if (this.cvvEnabled)
+        {
+            const tokenForm = this.cvvAdapters[this.currentSelectedPaymentUUID];
+            if (!tokenForm.isValid()) 
             {
                 this.disableSubmitButton();
+                return;
             }
+
         }
+        
+        this.enableSubmitButton();
+    }
+
+    handleNewPaymentCardMethodSelection = function()
+    {
+        if (this.validForm)this.enableSubmitButton();
+        else this.disableSubmitButton();
+    }
+
+    nonPaymentCardSelectedFromPaymentCard = function(target)
+    {
+        return $(target).attr("data-method-id") !== 'CREDIT_CARD' && 
+            $('a.credit-card-tab.active').length > 0;
+    }
+
+    paymentCardReselected = function(target)
+    {
+        return $(target).attr("data-method-id") === 'CREDIT_CARD' && 
+            $(target).find("a.nav-link").hasClass('active')
     }
 
     watchPaymentMethods = function()
     {
         $('ul.payment-options li.nav-item').on('click', this.paymentMethodHandler);
+    }
+
+    isSavedPaymentMethodSelected = function()
+    {
+        return $('.saved-payment-instrument.selected-payment').length > 0 &&
+            $(".user-payment-instruments.checkout-hidden").length < 1;
     }
 
     submitHandlerForm = (_e) => 
@@ -254,6 +336,7 @@ class CommercehubCheckoutForm
             _e.preventDefault();
             $.spinner().start();
             this.unwatchSubmitButton();
+            this.setTokenUUIDInput(null);
             this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS ? "3DS" : null);
             return false;
         }
@@ -261,8 +344,21 @@ class CommercehubCheckoutForm
 
     submitHandlerToken = (_e) =>
     {
-        if(!this.configDataPaymentCard.use3DS)
-            return;
+        this.setSessionIdInput(null);
+        this.setTokenUUIDInput($('.saved-payment-instrument.selected-payment').data('uuid'));
+
+        if (this.cvvEnabled)
+        {
+            _e.preventDefault();
+            if (!this.cvvAdapters[this.currentSelectedPaymentUUID]?.isValid()) return false;
+
+            $.spinner().start();
+            this.unwatchSubmitButtonToken();
+            this.submitCVVForValidation();
+            return false;
+        }
+
+        if(!this.configDataPaymentCard.use3DS) return;
 
         _e.preventDefault();
 
@@ -310,7 +406,7 @@ class CommercehubCheckoutForm
 
     watchSubmitResponse = function()
     {
-        $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
+        $(document).on("ajaxError", $.proxy(this.onSubmitResponse, this));
     }
 
     onSubmitResponse = function(ev, xhr)
@@ -373,16 +469,33 @@ class CommercehubCheckoutForm
         this.getSubmitButton().prop('disabled', true);
     }
 
+    shouldEnableSubmitButtonOnCancelNewPayment = function ()
+    {
+        if (!this.cvvEnabled) return true;
+
+        const selectedPayment = $('.saved-payment-instrument.selected-payment');
+        if (selectedPayment.length > 0) 
+        {
+            const tokenForm = this.cvvAdapters[this.currentSelectedPaymentUUID ];
+            return typeof(tokenForm) === "undefined" ? false : tokenForm.isValid();
+        }
+    }
+    
     enableSubmitButton = function ()
     {
         this.getSubmitButton().prop('disabled', false);
+    }
+
+    disableSubmitButton = function ()
+    {
+        this.getSubmitButton().prop('disabled', true);
     }
 
     resetForm = function()
     {
         if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
             this.formAdapter.destroyIframe('card');
-        this.getFatalNotice().hide();
+        $('#fiserv-scc-fatal-notice').hide();
     }
 
     execute3DS = async function(isToken = false)
@@ -514,11 +627,8 @@ class CommercehubCheckoutForm
         $('#cardType').val(brand);
     }
 
-    fieldValidityHandler = function(data)
+    fieldValidityHandler = function(data, frame, mess)
     {
-        let frame = this.getSdcFieldFrame(data["field"]);
-        let mess = this.getSdcFieldInvalidMessageContainer(data["field"]);
-
         if (typeof(frame) !== "undefined")
         {
             if (data["isValid"] === true)
@@ -541,10 +651,8 @@ class CommercehubCheckoutForm
         }
     }
 
-    fieldFocusHandler = function (data)
+    fieldFocusHandler = function (frame)
     {
-        let frame = this.getSdcFieldFrame(data);
-        
         if(typeof(frame) !== "undefined")
         {
             if(frame[0].contains(document.activeElement) === true)
@@ -558,25 +666,202 @@ class CommercehubCheckoutForm
         }
     }
 
-    mask = function(element)
+    // fieldParameter is optional for the primary this.formAdapter of this file...
+    mask = function(element, adapter, fieldParameter)
     {
         element.preventDefault();
 
         let field = element.target;
-        let id = field.id.replace(/sdc-mask-/, "");
         let jQueryObject = $('#' + field.id);
+
+        let id;
+        if(!fieldParameter)
+        {
+            id = field.id.replace(/sdc-mask-/, "");
+        }
+        else
+        {
+            id = fieldParameter;
+        }
 
         if(jQueryObject.hasClass('sdc-unmasking-icon'))
         {
             jQueryObject.removeClass('sdc-unmasking-icon');
             jQueryObject.addClass('sdc-masking-icon');
-            this.formAdapter.unmask(id);
+            adapter.unmask(id);
         }
         else
         {
             jQueryObject.removeClass('sdc-masking-icon');
             jQueryObject.addClass('sdc-unmasking-icon');
-            this.formAdapter.mask(id);
+            adapter.mask(id);
         }
     }
+
+    initializeTokenCVVForms = function()
+    {
+        this.cvvAdapters = {};
+        this.currentSelectedPaymentUUID = null;
+        $('[id^="fiserv_commercehub-cvv-security-code-"]').each(function () {
+            $(this).empty();
+        });
+        
+        this.watchSavedCardSelection();
+        this.initializeTokenCVVFields();
+    }
+    
+    initializeTokenCVVFields = function()
+    {
+        const tokens = $('.saved-payment-instrument');
+        if (tokens.filter('[data-uuid]:not([data-uuid=""])').length > 0)
+        {
+            $.spinner().start();
+                        
+            tokens.each((idx, storedPayment) => {
+                const paymentUUID = $(storedPayment).data('uuid');
+                const cardType = $(storedPayment).data('card-type');
+                if (paymentUUID)
+                {
+                    this.createCVVFieldAdapter(paymentUUID, cardType);
+                    this.watchCVVMaskingField(paymentUUID);
+                }
+            });
+            $(".cvv-collector-container").hide();
+            
+            const selectedPayment = $('.saved-payment-instrument.selected-payment');
+            if (selectedPayment.length > 0)
+            {
+                this.currentSelectedPaymentUUID = selectedPayment.data('uuid');
+                selectedPayment.find(".cvv-collector-container").show();
+                this.handleTokenFormValidity(this.currentSelectedPaymentUUID, false);
+            }
+        }
+    }
+
+    createCVVFieldAdapter = function(cardUUID, cardType)
+    {
+        if (!this.cvvEnabled || !cardUUID || this.cvvAdapters[cardUUID]) return;
+
+        try
+        {
+            const loadSuccessCallback = () => { console.log(`CommerceHub CVV SDK loaded for card ${cardUUID}`); };
+            const loadFailCallback = (error) => { this.sdkLoadFailure(error, `#cvv-fatal-notice-${ cardUUID }`); };
+            const formReadyCallback = () => { this.sdkInitialized(); };
+            const formValidCallback = () => { this.handleTokenFormValidity(cardUUID, true); };
+            const formInvalidCallback = () => { this.handleTokenFormValidity(cardUUID, false); };
+            const fieldValidityHandler = (data) => {
+                let frame = $(`#cvv-security-code-frame-${ cardUUID }`);
+                let mess = $(`#cvv-security-code-invalid-message-${ cardUUID }`);
+
+                this.fieldValidityHandler(data, frame, mess);
+            };
+            const fieldFocusHandler = () => {
+                let frame = $(`#cvv-security-code-frame-${ cardUUID }`);
+                this.fieldFocusHandler(frame);
+            };
+            const runSuccessCallback = (response) => { this.handleCVVTokenFormSubmit(null); };
+            const runFailureCallback = (error) => { this.handleCVVTokenFormSubmit(error || 'CVV validation failed'); };
+
+            const adapter = new FiservSDKIframe(
+                loadSuccessCallback,
+                loadFailCallback,
+                formReadyCallback,
+                formValidCallback,
+                formInvalidCallback,
+                null, // cardBrandHandler - not needed for Token Forms
+                fieldValidityHandler,
+                fieldFocusHandler,
+                runSuccessCallback,
+                runFailureCallback
+            );
+
+            const updatedFormConfig = structuredClone(this.formConfig);
+            updatedFormConfig.formCustomization.fields.securityCode.parentElementId = `fiserv_commercehub-cvv-security-code-${ cardUUID }`;
+            if (cardType)
+                updatedFormConfig.formCustomization.fields.securityCode.brandId = this.mapCardTypeToBrandId(cardType);
+            updatedFormConfig.formCustomization.fields = { securityCode: updatedFormConfig.formCustomization.fields.securityCode }
+
+            this.cvvAdapters[cardUUID] = adapter;
+            adapter.initSdk(updatedFormConfig, "CREDIT_CARD", null);
+        }
+        catch(err)
+        {
+            console.log(err);
+            this.cvvLoadFailure(err, cardUUID);
+        }
+    }
+
+    handleTokenFormValidity = function(cardUUID, valid)
+    {
+        this.cvvAdapters[cardUUID]?.setValidity(valid);
+        this.getSubmitButton().prop('disabled', !valid);
+    }
+
+    savedCardSelectionClickHandler = (clickedPayment) => {
+        const paymentUUID = $(clickedPayment.currentTarget).data('uuid');
+
+        $(".cvv-collector-container").hide();
+        $(clickedPayment.currentTarget).find(".cvv-collector-container").show();
+
+        this.currentSelectedPaymentUUID = paymentUUID;
+        this.getSubmitButton().prop('disabled', !this.cvvAdapters[this.currentSelectedPaymentUUID]?.isValid());
+    }
+
+    handleCVVTokenFormSubmit = function(error) 
+    {
+        if (!this.configDataPaymentCard.use3DS) $.spinner().stop();
+        
+        if (error)
+        {
+            this.showError(error);
+            this.watchSubmitButtonToken();
+            return;
+        }
+
+        if (this.configDataPaymentCard.use3DS) this.perform3DSToken();
+        else this.getSubmitButton().trigger('click');
+    }
+
+    submitCVVForValidation = function()
+    {
+        $.spinner().start();
+
+        this.cvvAdapters[this.currentSelectedPaymentUUID].submitForm(
+            this.credentialsUrl,
+            (sessionId) => { this.setSessionIdInput(sessionId);}, 
+            "CVV"
+        );
+    }
+
+    watchSavedCardSelection = function()
+    {
+        $('.saved-payment-instrument').off('click', this.savedCardSelectionClickHandler);
+        $('.saved-payment-instrument').on('click', this.savedCardSelectionClickHandler);
+    }
+
+    watchCVVMaskingField = function(UUID)
+    {
+        $('.cvv-mask-button.' + UUID).off('click', this.mask);
+        $('.cvv-mask-button.' + UUID).on('click', (element) => {this.mask(element, this.cvvAdapters[UUID], 'securityCode')});
+    }
+
+    mapCardTypeToBrandId = function(cardType)
+    {
+        if (!cardType) return null;
+
+        switch (cardType) {
+            case 'Visa':
+                return 'visa';
+            case 'Master Card':
+                return 'mastercard';
+            case 'Amex':
+                return 'american-express';
+            case 'Maestro':
+                return 'maestro';
+            case 'Discover':
+                return 'discover';
+            default:
+                return null;
+        }
+    } 
 }

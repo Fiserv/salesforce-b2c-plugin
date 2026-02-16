@@ -1,23 +1,25 @@
+'use strict';
+
 const Resource = require('dw/web/Resource');
-const Order = require('dw/order/Order');
-const OrderMgr = require('dw/order/OrderMgr');
-const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
-let constants = require('*/cartridge/fiservConstants/constants');
-let requestBuilder = require('*/cartridge/scripts/requests/request_builder');
-let FiservServices = require('*/cartridge/scripts/utils/commercehubServices');
-var fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
+
+const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+
 
 function executeCommercehubGiftTransaction(orderNo, paymentInstrument) 
 {
     try 
     {
-        // build request obj    
-        let transactionPayload = requestBuilder.buildChargesRequest(orderNo, paymentInstrument);
+        const OrderMgr = require('dw/order/OrderMgr');
 
-        var order = OrderMgr.getOrder(orderNo);
+        const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
+
+        // build request obj    
+        let transactionPayload = fiservRequestBuilder.buildChargesRequest(orderNo, paymentInstrument);
+
+        let order = OrderMgr.getOrder(orderNo);
         if (order === null)
         {
-            FiservLogs.logFatal(2, "Unable to retrieve order object for number: ".concat(orderNo), orderNo);
+            fiservLogs.logFatal(2, "Unable to retrieve order object for number: ".concat(orderNo), orderNo);
             throw new Error(Resource.msg('message.error.order.retrieval', 'error', null).concat(orderNo));
         }
 
@@ -28,7 +30,7 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
         return chargesResult;
 
     } catch (e) {
-        FiservLogs.logError(2,
+        fiservLogs.logError(2,
             'Error processing gift payment. Error message: '.concat(e.message).concat(' more details: ').concat(e.toString()),
             orderNo
         );
@@ -39,29 +41,35 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
 function sendChargesRequest(order, chargesRequest, orderNo)
 {
     try {
-        let chargesService = FiservServices.getService('CommercehubCharges', orderNo);
-        let parsedResponse = FiservServices.callService(chargesService, chargesRequest, orderNo);
+        const fiservConstants = require('*/cartridge/fiservConstants/constants');
+
+        const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
+        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+
+        let chargesService = fiservServices.getService('CommercehubCharges', orderNo);
+        let parsedResponse = fiservServices.callService(chargesService, chargesRequest, orderNo);
 
         let okStates = [
-            constants.TXN_STATES.AUTHORIZED,
-            constants.TXN_STATES.CAPTURED
+            fiservConstants.TXN_STATES.AUTHORIZED,
+            fiservConstants.TXN_STATES.CAPTURED
         ];
 
         // transaction failed
-        if (okStates.indexOf(fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE)) === -1)
+        if (okStates.indexOf(fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE)) === -1)
         {
+            const Order = require('dw/order/Order');
             order.setExportStatus(Order.EXPORT_STATUS_NOTEXPORTED);
-            FiservLogs.logInfo(1, 'Response returned with unsuccessful state', orderNo);
-            FiservLogs.logError(1, 'Transaction state failure: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_STATE), orderNo);
-            FiservLogs.logError(2, 'Response message: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.RESPONSE_MESSAGE), orderNo);
-            FiservLogs.logError(2, 'Payment Source Type: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.SOURCE_TYPE), orderNo);
-            FiservLogs.logError(2, 'Transaction ID: ' + fiservHelper.secureTraversal(parsedResponse, constants.RESPONSE_PATHS.TRANSACTION_ID), orderNo);
+            fiservLogs.logInfo(1, 'Response returned with unsuccessful state', orderNo);
+            fiservLogs.logError(1, 'Transaction state failure: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE), orderNo);
+            fiservLogs.logError(2, 'Response message: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.RESPONSE_MESSAGE), orderNo);
+            fiservLogs.logError(2, 'Payment Source Type: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.SOURCE_TYPE), orderNo);
+            fiservLogs.logError(2, 'Transaction ID: ' + fiservHelper.secureTraversal(parsedResponse, fiservConstants.RESPONSE_PATHS.TRANSACTION_ID), orderNo);
             parsedResponse.error = parsedResponse.error ? parsedResponse.error : { message : "failed with state: ".concat(parsedResponse.gatewayResponse.transactionState)};
         }
 
         return parsedResponse;
     } catch (_e) {
-        FiservLogs.logFatal(2, 
+        fiservLogs.logFatal(2, 
             'Fiserv: '.concat(_e.toString()).concat(' in ').concat(_e.fileName).concat(':').concat(_e.lineNumber),
             orderNo
         );

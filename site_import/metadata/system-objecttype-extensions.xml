@@ -65,11 +65,14 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubMerchantPartnerIntegrator">
-                <display-name xml:lang="x-default">CommerceHub Merchant Partner Integrator</display-name>
-                <type>string</type>
-                <mandatory-flag>false</mandatory-flag>
+            <attribute-definition attribute-id="CommerceHubSessionLifetime">
+                <display-name xml:lang="x-default">CommerceHub Session Lifetime (in minutes)</display-name>
+                <type>int</type>
+                <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
+                <min-value>30</min-value>
+                <max-value>240</max-value>
+                <default-value>30</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubTimeout">
                 <display-name xml:lang="x-default">CommerceHub API Request Timeouts (in seconds)</display-name>
@@ -79,6 +82,12 @@
                 <min-value>5</min-value>
                 <max-value>30</max-value>
                 <default-value>30</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubMerchantPartnerIntegrator">
+                <display-name xml:lang="x-default">CommerceHub Merchant Partner Integrator</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
 
             <!--THIS IS WHERE THE PAYMENT ACCEPTANCE SETTINGS START-->
@@ -134,7 +143,7 @@
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubTokenization">
-                <display-name xml:lang="x-default">Tokenization</display-name>
+                <display-name xml:lang="x-default">Enable Tokenization</display-name>
                 <description xml:lang="x-default">Allow customers to tokenize payment information for later use</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -158,7 +167,7 @@
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubStandaloneSPA">
-                <display-name xml:lang="x-default">Standalone Tokenization</display-name>
+                <display-name xml:lang="x-default">Enable Standalone Tokenization</display-name>
                 <description xml:lang="x-default">Allow customers to tokenize payment information without a transaction</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -166,8 +175,24 @@
                 <default-value>false</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubEarlyTokenization">
-                <display-name xml:lang="x-default">Early Tokenization</display-name>
+                <display-name xml:lang="x-default">Enable Early Tokenization</display-name>
                 <description xml:lang="x-default">Allow customers to tokenize payment information on credit card capture in the checkout flow</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubTokenSecurityEnable">
+                <display-name xml:lang="x-default">Enable CVV for Tokenized Cards</display-name>
+                <description xml:lang="x-default">Require CVV entry when using tokenized payment cards</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubBasketTokenization">
+                <display-name xml:lang="x-default">Enable Basket Tokenization</display-name>
+                <description xml:lang="x-default">Stores payment tokens on the basket when customer chooses not to save the token to their wallet or always for guests</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -380,7 +405,69 @@
                 </value-definitions>
             </attribute-definition>
 
-            <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+            <!--THIS IS WHERE THE VENMO SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubVenmoEnable">
+                <display-name xml:lang="x-default">Enable Venmo</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+             <attribute-definition attribute-id="CommerceHubVenmoPaymentType">
+                <display-name xml:lang="x-default">CommerceHubVenmo Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubVenmoButtonColor">
+                <display-name xml:lang="x-default">CommerceHubVenmo Button Color</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Blue</display>
+                        <value>blue</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>White</display>
+                        <value>white</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubVenmoButtonShape">
+                <display-name xml:lang="x-default">CommerceHubVenmo Button Shape</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Rect</display>
+                        <value>rect</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Pill</display>
+                        <value>pill</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sharp</display>
+                        <value>sharp</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+        
+           <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
 
             <attribute-definition attribute-id="CommerceHubApplePayEnable">
                 <display-name xml:lang="x-default">Enable Apple Pay</display-name>
@@ -1254,8 +1341,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE PAYMENT ACCEPTANCE SETTINGS START-->
                 <attribute attribute-id="CommerceHubAcceptedCurrency"/>
@@ -1268,7 +1356,9 @@
                 <attribute attribute-id="CommerceHubTokenizationStrategy"/>
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
+                <attribute attribute-id="CommerceHubBasketTokenization"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
+                <attribute attribute-id="CommerceHubTokenSecurityEnable"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
                 <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>
@@ -1336,8 +1426,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
                 <attribute attribute-id="CommerceHubGiftEnable"/>
@@ -1377,8 +1468,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE PAYPAL SETTINGS START-->
                 <attribute attribute-id="CommerceHubPayPalEnable"/>
@@ -1388,6 +1480,27 @@
                 <attribute attribute-id="CommerceHubPayPalButtonColor"/>
                 <attribute attribute-id="CommerceHubPayPalButtonShape"/>
                 <attribute attribute-id="CommerceHubPayPalButtonLabel"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_VENMO">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Venmo Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+
+                <!--THIS IS WHERE THE VENMO SETTINGS START-->
+                <attribute attribute-id="CommerceHubVenmoEnable"/>
+                <attribute attribute-id="CommerceHubVenmoPaymentType"/>
+                <attribute attribute-id="CommerceHubVenmoButtonShape"/>
+                <attribute attribute-id="CommerceHubVenmoButtonColor"/>
+
             </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
                 <display-name xml:lang="x-default">Fiserv CommerceHub Apple Pay Settings</display-name>
@@ -1399,8 +1512,9 @@
                 <attribute attribute-id="CommerceHubAPISecret"/>
                 <attribute attribute-id="CommerceHubAPIEnvironment"/>
                 <attribute attribute-id="CommerceHubLogLevel"/>
-                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
                 <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
                 <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
                 <attribute attribute-id="CommerceHubApplePayEnable"/>
@@ -1616,6 +1730,11 @@
                 <attribute attribute-id="commercehubOrderId"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_VENMO">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubOrderId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
@@ -1639,6 +1758,31 @@
             <attribute-group group-id="FISERV_COMMERCEHUB_PAYPAL">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubCustomerId"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    <type-extension type-id="Basket">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="commercehubEarlyTokenUUID">
+                <display-name xml:lang="x-default">Early Token UUID</display-name>
+                <description xml:lang="x-default">Placeholder field to store and verify the early token being used in a checkout flow</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="commercehubBasketToken">
+                <display-name xml:lang="x-default">Basket Token</display-name>
+                <description xml:lang="x-default">JSON string representing the token data of a card added in the basket tokenization flow</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="FISERV_COMMERCEHUB">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubEarlyTokenUUID"/>
+                <attribute attribute-id="commercehubBasketToken"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

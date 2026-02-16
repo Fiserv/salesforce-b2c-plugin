@@ -1,13 +1,13 @@
-"use strict"
+'use strict';
 
 module.exports = {
-    VERSION : '1.1.1',
+    VERSION : '1.1.3',
     COMMERCEHUB_CERT_ENV : 'CERT',
     COMMERCEHUB_LIVE_ENV : 'PROD',
     ENVIRONMENT_URL_PLACEHOLDER : '[CH_ENVIRONMENT_BASE]',
     COMMERCEHUB_LIVE_BASE : "connect.fiservapis.com",
     COMMERCEHUB_CERT_BASE : "connect-cert.fiservapis.com",
-    COMMERCEHUB_SDK_URL : "https://commercehub-secure-data-capture.fiservapps.com/3.6.13/checkout.js",
+    COMMERCEHUB_SDK_URL : "https://commercehub-checkout.fiservapps.com/sdk/3.8.1/checkout.js",
     COMMERCEHUB_SALE_ACTION : "SALE",
     COMMERCEHUB_AUTH_ACTION : "AUTH",
     ECOM_ORIGIN : "ECOM",
@@ -19,11 +19,13 @@ module.exports = {
         COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
         COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
         COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
+        COMMERCEHUB_VENMO_PROCESSOR : "FISERV_COMMERCEHUB_VENMO",
         COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
     },
-    COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
-    COMMERCEHUB_PAYPAL_PAYMENT_METHOD : "PAYPAL",
-    COMMERCEHUB_APPLEPAY_PAYMENT_METHOD : "APPLEPAY",
+    PAYMENT_METHOD_LIST : {
+        COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
+        COMMERCEHUB_APPLEPAY_PAYMENT_METHOD : "APPLEPAY",
+    },
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",
@@ -52,17 +54,19 @@ module.exports = {
     DEPENDENCY_LIST : { 
         'CommerceHubCreditEnable': [
             'CommerceHubCreditPaymentType',
-            'CommerceHubTokenization',
-            'CommerceHubTokenizationStrategy',
-            'CommerceHubStandaloneSPA',
-            'CommerceHubEarlyTokenization',
             'CommerceHub3DSEnable',
-            'CommerceHubPayPalFastlaneEnable' // Fastlane is depentdent on Credit/Debit, not PayPal...
+            'CommerceHubPayPalFastlaneEnable', // Fastlane is depentdent on Credit/Debit, not PayPal...
+            'Tokenization'
         ],
         'CommerceHubTokenization': [
             'CommerceHubTokenizationStrategy',
             'CommerceHubStandaloneSPA',
-            'CommerceHubEarlyTokenization'
+            'CommerceHubEarlyTokenization',
+            'CommerceHubTokenSecurityEnable',
+            'CommerceHubBasketTokenization'
+        ],
+        'CommerceHubEarlyTokenization': [
+            'CommerceHubBasketTokenization'
         ],
         'CommerceHubGiftEnable': [
             'CommerceHubGiftPaymentMethodTitle',
@@ -74,6 +78,10 @@ module.exports = {
             'CommerceHubPayPalPaymentType',
             'CommerceHubPayPalVaultingEnable',
             'PayPalButton'
+        ],
+        'CommerceHubVenmoEnable': [
+            'CommerceHubVenmoPaymentType',
+            'VenmoButton'
         ],
         'CommerceHubApplePayEnable': [
             'CommerceHubApplePayPaymentType',
@@ -90,9 +98,11 @@ module.exports = {
             'CommerceHubTerminalID',
             'CommerceHubAPIKey',
             'CommerceHubAPISecret',
+            'CommerceHubSessionLifetime',
             'CommerceHubTimeout'
         ],
         INT_CONSTRAINTS : {
+            'CommerceHubSessionLifetime': { min: 30, max: 240, message: 'Valid lifetime value required (240 ≥ value ≥ 30)' },
             'CommerceHubTimeout': { min: 5, max: 30, message: 'Valid timeout value required (30 ≥ value ≥ 5)' },
             'CommerceHubPaymentFormCardNumberMaskLength': { min: 0, message: 'Valid mask length required (value ≥ 4)' },
             'CommerceHubTokenizationFormCardNumberMaskLength': { min: 0, message: 'Valid mask length required (value ≥ 4)' }
@@ -112,9 +122,11 @@ module.exports = {
         ]
     },
     CONFIG_DESCRIPTIONS : {
-        'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
+        'CommerceHubSessionLifetime': 'This field identifies the lifetime of applied payment instruments to the basket (Default: 30 minutes)',
         'CommerceHubTimeout': "Default: 30 seconds",
+        'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
         'CommerceHubTokenizationStrategy': "Enable this option to tokenize all payment cards submitted at checkout, regardless of consumer choice.",
-        'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow"
+        'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow",
+        'CommerceHubBasketTokenization': "Stores payment tokens on the basket when customer chooses not to save the token to their wallet or always for guests",
     }
 };

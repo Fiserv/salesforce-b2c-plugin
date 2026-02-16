@@ -1,10 +1,11 @@
-<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
-<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
-<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
-<isset name="CHGiftEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
-<isset name="CHGiftSecurityEnabled" value="${pdict.commercehubConfig.getCommerceHubGiftSecurityEnabled()}" scope="pdict" />
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+<isset name="FiservGiftHelper" value="${require('*/cartridge/scripts/utils/fiservHelpers/giftHelper')}" scope="pdict" />
+
+<isset name="CHGiftEnabled" value="${pdict.FiservConfig.getCommerceHubGiftEnabled()}" scope="pdict" />
+<isset name="CHGiftSecurityEnabled" value="${pdict.FiservConfig.getCommerceHubGiftSecurityEnabled()}" scope="pdict" />
 <isif condition="${pdict.currentStage}">
-    <isset name="giftCardInfo" value="${pdict.FiservHelper.retrieveAppliedGiftCards()}" scope="pdict" />
+    <isset name="giftCardInfo" value="${pdict.FiservGiftHelper.retrieveAppliedGiftCards()}" scope="pdict" />
 </isif>
 
 <isif condition="${pdict.CHGiftEnabled}">
@@ -14,18 +15,18 @@
         assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
         assets.addJs('/js/fiserv_gift/commercehub-giftcard-form.js');
         assets.addJs('/js/fiserv_gift/giftcard.js');
-        assets.addJs(pdict.chSdkUrl);
+        assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
         assets.addCss('css/fiservScc.css');
     </isscript>
 
     <isif condition="${!pdict.CHGiftPanelTitlePresent}">
         <label class="form-control-label" for="fiserv-commercehub-gift-form-container">
-            <isprint value="${pdict.commercehubConfig.getCommerceHubGiftTitle()}" />
+            <isprint value="${pdict.FiservConfig.getCommerceHubGiftTitle()}" />
         </label>
     </isif>
 
     <div id="fiserv-commercehub-gift-form-init-container" 
-        data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Gift'))}"
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Gift'))}"
         data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
         data-commercehub-balance-inquiry="${URLUtils.https('FiservGift-BalanceInquiry')}"
         data-commercehub-recalculate="${URLUtils.https('FiservGift-RecalculateGiftCardAmounts')}"

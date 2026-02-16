@@ -1,7 +1,15 @@
 'use strict';
 
-// Does nothing. Used to bypass payment method for a covered cart in checkout flow
+
 function processForm(req, paymentForm, viewFormData) {
+    let orderId = paymentForm.fiservCommercehubPaymentFields.commercehubOrderId.value;
+    if(orderId === undefined)
+    {
+        let errors = [];
+        errors.push("There was an error validating your Venmo execution");
+        return { fieldErrors: [], serverErrors: errors, error: true };    
+    }
+
     return {
         error: false,
         viewData: {
@@ -13,6 +21,7 @@ function processForm(req, paymentForm, viewFormData) {
             phone: viewFormData.phone,
             paymentInformation: {
                 isCreditCard: false,
+                orderId: orderId
             }
         }
     }

@@ -1,8 +1,9 @@
 'use strict';
 
-var server = require('server');
+const server = require('server');
 
 server.extend(module.superModule);
+
 
 server.append('Show', function (req, res, next) {
     let paymentInstruments = null;
