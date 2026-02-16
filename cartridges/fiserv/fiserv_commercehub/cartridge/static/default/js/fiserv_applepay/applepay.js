@@ -1,3 +1,5 @@
+'use strict';
+
 document.addEventListener("DOMContentLoaded", () => {
     let extractInitializationData = function()
     {
@@ -43,6 +45,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    if ($('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').length > 0 && $('ul.payment-options li.nav-item.active').length === 0)
+    {
+         $('ul.payment-options li.nav-item:first').find('a').trigger('click');
+            if ($('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').hasClass('active'))
+                initApplePay();
+    }
+
     $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').on('click', () => {
         initApplePay();
     });
@@ -52,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
             initApplePay();
     })
 
-    let grandTotalUpdated = function(context)
+    let grandTotalUpdated = function()
     {
         if(window.fiservPluginSDKInitRan)
         {

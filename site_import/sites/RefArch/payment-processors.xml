@@ -13,6 +13,9 @@
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
                 </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>
                 </preference>
@@ -43,7 +46,13 @@
                 <preference preference-id="CommerceHubEarlyTokenization">
                     <value>false</value>
                 </preference>
+                <preference preference-id="CommerceHubBasketTokenization">
+                    <value>false</value>
+                </preference>
                 <preference preference-id="CommerceHub3DSEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubTokenSecurityEnable">
                     <value>false</value>
                 </preference>
 
@@ -255,6 +264,9 @@
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
                 </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>
                 </preference>
@@ -355,6 +367,9 @@
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
                 </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>
                 </preference>
@@ -388,6 +403,46 @@
             <production/>
         </preferences>
     </payment-processor>
+     <payment-processor processor-id="FISERV_COMMERCEHUB_VENMO">
+        <description>Fiserv Commerce Hub Venmo processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE VENMO SETTINGS START-->
+
+                <preference preference-id="CommerceHubVenmoEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubVenmoPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubVenmoButtonColor">
+                    <value>blue</value>
+                </preference>
+                <preference preference-id="CommerceHubVenmoButtonShape">
+                    <value>rect</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
     <payment-processor processor-id="FISERV_COMMERCEHUB_APPLEPAY">
         <description>Fiserv Commerce Hub Apple Pay processor</description>
         <preferences>
@@ -400,6 +455,9 @@
                 </preference>
                 <preference preference-id="CommerceHubLogLevel">
                     <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
                 </preference>
                 <preference preference-id="CommerceHubTimeout">
                     <value>30</value>

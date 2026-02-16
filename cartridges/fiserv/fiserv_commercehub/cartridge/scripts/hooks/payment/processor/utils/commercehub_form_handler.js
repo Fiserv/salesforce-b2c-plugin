@@ -1,14 +1,18 @@
-let CustomerMgr = require('dw/customer/CustomerMgr');
-let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+'use strict';
+
+const BasketMgr = require('dw/order/BasketMgr');
+const Resource = require('dw/web/Resource');
+
 
 function getCustomer(customerNo)
 {
-    return (CustomerMgr.getCustomerByCustomerNumber(customerNo));
+    return (require('dw/customer/CustomerMgr').getCustomerByCustomerNumber(customerNo));
 }
 
 function getPaymentInstrument(currentCustomer, storedPaymentMethodId) 
 {
-    let array = require('*/cartridge/scripts/util/array');
+    const array = require('*/cartridge/scripts/util/array');
+    
     let paymentInstruments = currentCustomer.getProfile().getWallet().getPaymentInstruments();
     let findById = (item) => 
     {
@@ -23,22 +27,60 @@ function getStoredCardFormResult(currentCustomer, storedPaymentUUID, paymentForm
     let customer = getCustomer(currentCustomer.profile.customerNo);
     if (!customer)
     {
-        var errors = [];
-        errors.push("There was an error locating your stored payment card.");
-        return { fieldErrors: [], serverErrors: errors, error: true };    
+        return cardErrorToken();
     }    
     
     let paymentInstrument = getPaymentInstrument(customer, storedPaymentUUID)
     if (!paymentInstrument)
     {
-        var errors = [];
-        errors.push("There was an error locating your stored payment card.");
-        return { fieldErrors: [], serverErrors: errors, error: true };    
+        // Check to see if the token is on the basket instead of in the wallet
+        return getBasketStoredToken(paymentForm, viewFormData, storedPaymentUUID);
     }
     
-    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm);
-    return { error: false, viewData: viewData };    
+    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, storedPaymentUUID);
+    return { error: false, viewData: viewData };
+}
 
+function getBasketStoredToken(paymentForm, viewFormData, storedPaymentUUID)
+{
+    let basket = BasketMgr.getCurrentBasket();
+    if(!basket)
+    {
+        return cardError();
+    }
+
+    let storedPaymentInstrumentString = basket.custom.commercehubBasketToken;
+    if(!storedPaymentInstrumentString)
+    {
+        return cardError();
+    }
+    let storedPaymentInstrument = JSON.parse(storedPaymentInstrumentString);
+    if(!storedPaymentInstrument)
+    {
+        return cardError();
+    }
+
+    if(storedPaymentUUID !== storedPaymentInstrument.UUID)
+    {
+        return cardError();
+    }
+
+    let custom = {
+        commercehubTokenSource: storedPaymentInstrument.tokenSource,
+        commercehubCardType: storedPaymentInstrument.commercehubCardType,
+        commercehubCardIndicator: storedPaymentInstrument.cardIndicator
+    };
+    let paymentInstrument = {
+        custom: custom,
+        creditCardType: storedPaymentInstrument.cardType,
+        creditCardNumber: storedPaymentInstrument.cardNumber,
+        creditCardExpirationMonth: storedPaymentInstrument.expirationMonth,
+        creditCardExpirationYear: storedPaymentInstrument.expirationYear,
+        creditCardToken: storedPaymentInstrument.tokenData
+    };
+
+    let viewData = getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, storedPaymentUUID);
+    return { error: false, viewData: viewData };
 }
 
 function getBaseViewData(viewFormData, paymentForm)
@@ -56,7 +98,7 @@ function getBaseViewData(viewFormData, paymentForm)
     };
 }
 
-function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
+function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, storedPaymentUUID)
 {
     let viewData = getBaseViewData(viewFormData, paymentForm);
     viewData.paymentInformation.cardType = { value : paymentInstrument.creditCardType };
@@ -68,9 +110,24 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm)
     viewData.paymentInformation.tokenSource = { value : paymentInstrument.custom.commercehubTokenSource };
     viewData.paymentInformation.commercehubCardType = { value : paymentInstrument.custom.commercehubCardType };
     viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
+    
+    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+    let basket;
+    if(fiservConfig.getTokenSecurityEnabled() && (basket = BasketMgr.getCurrentBasket()) && basket.custom.commercehubEarlyTokenUUID !== storedPaymentUUID)
+    {
+        let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
+        if(!sessionId)
+        {
+            const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
+            fiservLogs.logError(2, "CVV missing for token payment instrument creation");
+            throw new Error(Resource.msg('message.error.cvv.missing', 'error', null));
+        }
+        viewData.paymentInformation.sessionId = sessionId;
+    }
 
     let authenticationId3DS = paymentForm.fiservCommercehubPaymentFields.authenticationId3DS
-    if(authenticationId3DS && FiservConfig.get3DSEnabled())
+
+    if(authenticationId3DS && fiservConfig.get3DSEnabled())
     {
         viewData.paymentInformation.authenitcationId3DS = authenticationId3DS.value;
     }
@@ -101,17 +158,13 @@ function getNewCardFormResult(paymentForm, viewFormData)
     let guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
     if(sessionId === undefined || !sessionId.match(guidRegex))
     {
-        var errors = [];
-        errors.push("There was an error validating your payment card.");
-        return { fieldErrors: [], serverErrors: errors, error: true };    
+        return cardError();
     }
 
     let maskedCard = paymentForm.creditCardFields.cardNumber.value;
     if(typeof(maskedCard) === "undefined" || maskedCard === null)
     {
-        var errors = [];
-        errors.push("There was an error validating your payment card.");
-        return { fieldErrors: [], serverErrors: errors, error: true };    
+        return cardError();
     }
 
     let viewData = getNewCardViewData(viewFormData, paymentForm);
@@ -121,8 +174,53 @@ function getNewCardFormResult(paymentForm, viewFormData)
 
 function processForm(req, paymentForm, viewFormData) 
 {
-    let viewData = req.form.storedPaymentUUID ? getStoredCardFormResult(req.currentCustomer, req.form.storedPaymentUUID, paymentForm, viewFormData) : getNewCardFormResult(paymentForm, viewFormData)
+    let viewData;
+    let tokenUUID = paymentForm.fiservCommercehubPaymentFields.commercehubTokenUUID.value;
+    if(tokenUUID)
+    {
+        const isLoggedIn = !!(req.currentCustomer
+            && req.currentCustomer.raw
+            && req.currentCustomer.raw.authenticated);
+
+        if(isLoggedIn)
+        {
+            viewData = getStoredCardFormResult(req.currentCustomer, tokenUUID, paymentForm, viewFormData);
+        }
+        else
+        {
+            viewData = getBasketStoredToken(paymentForm, viewFormData, tokenUUID);
+        }
+    }
+    else
+    {
+        viewData = getNewCardFormResult(paymentForm, viewFormData);
+    }
+
+    const Transaction = require('dw/system/Transaction');
+
+    Transaction.wrap(() => {
+        let basket = BasketMgr.getCurrentBasket();
+        if(basket)
+        {
+            basket.custom.commercehubEarlyTokenUUID = null;
+        }
+    });
+
     return viewData;
+}
+
+function cardError()
+{
+    let errors = [];
+    errors.push(Resource.msg('message.error.payment.validation', 'error', null));
+    return { fieldErrors: [], serverErrors: errors, error: true };
+}
+
+function cardErrorToken()
+{
+    let errors = [];
+    errors.push(Resource.msg('message.error.payment.retrieval', 'error', null));
+    return { fieldErrors: [], serverErrors: errors, error: true };
 }
 
 module.exports = 

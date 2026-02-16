@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 // This class is for sdk form constructions
 class FiservSDKIframe
@@ -11,10 +11,10 @@ class FiservSDKIframe
     // run success callback fires when card is successfully tokenized
     // run failure callback fires when card fails to tokenize
     constructor(
-        loadSuccessCallback, 
+        loadSuccessCallback,
         loadFailCallback,
-        sdkReadyCallback, 
-        formValidCallback, 
+        sdkReadyCallback,
+        formValidCallback,
         formInvalidCallback,
         cardBrandHandler,
         fieldValidityHandler,
@@ -27,7 +27,7 @@ class FiservSDKIframe
         {
             throw new Error("CommerceHub SDK not found. Unable to create CommerceHub Hosted Payment Page.")
         }
-        
+
         this.loadSuccessCallback = loadSuccessCallback;
         this.loadFailCallback = loadFailCallback;
         this.sdkReadyCallback = sdkReadyCallback;
@@ -39,6 +39,7 @@ class FiservSDKIframe
         this.runSuccessCallback = runSuccessCallback;
         this.runFailureCallback = runFailureCallback;
 
+        this.validity = false;
         this.fastlaneStatus = false;
         this.fastlaneInitStatus = false;
         this.fastlaneAuthResponse = null;
@@ -75,7 +76,7 @@ class FiservSDKIframe
         };
 
         formConfig["data"]["environment"] =  formConfigInput['environment'];
-        
+
         // Useful for Valuelink form differential (not necessary rn)
         formConfig["data"]["paymentMethod"] = formType;
 
@@ -120,6 +121,7 @@ class FiservSDKIframe
     destroyIframe = function(formId)
     {
         $("#fiserv-commercehub-" + formId + "-form-container").find("iframe").remove();
+        this.validity = false;
     }
 
     reactivateIframe = function(formId)
@@ -139,7 +141,11 @@ class FiservSDKIframe
 
     resetForm = function()
     {
-        this.form.reset();
+        if(this.form)
+        {
+            this.form.reset();
+            this.validity = false;
+        }
     }
 
     unmask = function(field)
@@ -150,6 +156,17 @@ class FiservSDKIframe
     mask = function(field)
     {
         this.form.mask(field, true);
+    }
+
+
+    isValid = function()
+    {
+        return this.validity;
+    }
+
+    setValidity = function(val)
+    {
+        this.validity = val;
     }
 
     getFastlaneStatus = function()

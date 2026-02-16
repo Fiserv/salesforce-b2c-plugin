@@ -1,21 +1,21 @@
-"use strict";
+'use strict';
 
-let server = require('server');
+const server = require('server');
+
+const csrfProtection = require('*/cartridge/scripts/middleware/csrf');
+const userLoggedIn = require('*/cartridge/scripts/middleware/userLoggedIn');
+const fiservPaymentSaver = require('*/cartridge/controllers/middleware/save_payment');
+
 server.extend(module.superModule);
 
-let csrfProtection = require('*/cartridge/scripts/middleware/csrf');
-let savePaymentMiddleware = require('*/cartridge/controllers/middleware/save_payment');
-let userLoggedIn = require('*/cartridge/scripts/middleware/userLoggedIn');
-let AccountModel = require('*/cartridge/models/account');
-let CustomerMgr = require('dw/customer/CustomerMgr');
-let Resource = require('dw/web/Resource');
 
+server.prepend('SavePayment', userLoggedIn.validateLoggedIn, csrfProtection.validateAjaxRequest, fiservPaymentSaver.savePayment);
 
-server.prepend('SavePayment', userLoggedIn.validateLoggedIn, csrfProtection.validateAjaxRequest, savePaymentMiddleware.savePayment);
-
-server.post('EarlyTokenization', userLoggedIn.validateLoggedIn, savePaymentMiddleware.savePaymentEarly);
+server.post('EarlyTokenization', fiservPaymentSaver.savePaymentEarly);
 
 server.append('List', function (req, res, next) {
+    const AccountModel = require('*/cartridge/models/account');
+
     let paymentInstruments = req.currentCustomer.wallet.paymentInstruments;
     let UUIDRemoveList = paymentInstruments.filter((pi) => pi.raw.custom.forcedTokenization).map((pi) => pi.UUID);
 
@@ -33,6 +33,9 @@ server.append('List', function (req, res, next) {
 
 server.append('DeletePayment', function (req, res, next) {
     this.on('route:BeforeComplete', function () {
+        const CustomerMgr = require('dw/customer/CustomerMgr');
+        const Resource = require('dw/web/Resource');
+
         let customer = CustomerMgr.getCustomerByCustomerNumber(req.currentCustomer.profile.customerNo);
         let paymentInstruments = [];
         if(typeof(customer.getProfile().getWallet()) !== "undefined" &&

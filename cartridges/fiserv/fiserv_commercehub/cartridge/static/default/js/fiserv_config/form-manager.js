@@ -1,3 +1,5 @@
+'use strict';
+
 var configChanges = {};
 var preferenceValues;
 var dependencyList = {};
@@ -189,7 +191,17 @@ function showMessage(msg, status)
             statusClass = 'warn' + statusClass;
             break;
     }
-    let messageQuery = jQuery("#messageContainer").prepend('<div class="messageBlock ' + statusClass + '">' + msg + '</div>').children(':first-child');
+
+	const msgDiv = jQuery('<div>', {
+    	class: `messageBlock ${ statusClass }`,
+		role: 'alert'
+	}).text(msg);
+    msgDiv.html(msgDiv.html().replace(/___br___/g,'<br>'));
+
+  	const msgContainer = jQuery('#messageContainer');
+	msgContainer.prepend(msgDiv);
+  	const messageQuery = msgContainer.children(':first-child');
+
     setTimeout(function() {
         messageQuery.addClass('removeMessage');
         setTimeout(function() {
@@ -256,7 +268,7 @@ function applyChanges()
             jQuery('.headerContainer')[0].scrollIntoView({ block: 'start', behavior: 'smooth'});
         },
         error: function(err) {
-            response = err.responseJSON;
+            let response = err.responseJSON;
             if(response.success)
             {
                 // Partial success, need to update and remove successful fields in configChanges...

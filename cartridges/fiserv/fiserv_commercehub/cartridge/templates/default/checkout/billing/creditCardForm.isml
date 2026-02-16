@@ -1,27 +1,27 @@
-<isset name="FiservHelper" value="${require('*/cartridge/scripts/utils/fiservHelper')}" scope="pdict" />
-<isset name="FrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
-<isset name="chSdkUrl" value="${pdict.FiservHelper.getCommercehubSDK()}" scope="pdict" />
-<isset name="canTokenize" value="${pdict.commercehubConfig.getCommerceHubTokenization()}" scope="pdict" />
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+
+<isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
-<isset name="earlyTokenization" value="${pdict.commercehubConfig.getEarlyTokenization()}" scope="pdict" />
-<isset name="fastlaneEnabled" value="${pdict.commercehubConfig.getCommerceHubPayPalFastlaneEnabled()}" scope="pdict" />
+<isset name="earlyTokenization" value="${pdict.FiservConfig.getCommerceHubTokenization() && pdict.FiservConfig.getEarlyTokenization()}" scope="pdict" />
+<isset name="fastlaneEnabled" value="${pdict.FiservConfig.getCommerceHubPayPalFastlaneEnabled()}" scope="pdict" />
 
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
-    assets.addJs('/js/fiserv_checkout/commercehub-checkout-form.js');
-    assets.addJs('/js/fiserv_checkout/checkout.js');
+    assets.addJs('/js/fiserv_credit/commercehub-credit-form.js');
+    assets.addJs('/js/fiserv_credit/credit.js');
     if(!pdict.customer.registeredUser && pdict.fastlaneEnabled)
     {
         assets.addJs('/js/fiserv_paypal/commercehub-paypal-fastlane.js');
     }
-    assets.addJs(pdict.chSdkUrl);
+    assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
     assets.addCss('css/fiservScc.css');
 </isscript>
 
 <div id="fiserv-commercehub-card-form-init-container" 
-    data-commercehub-initialization-data="${JSON.stringify(pdict.FrontendConfigRetriever.retrieveFrontendInitializationData('Payment'))}"
+    data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Payment'))}"
     data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
     data-commercehub-tokenization="${URLUtils.https('PaymentInstruments-EarlyTokenization')}"
     data-initial-checkout-stage="${pdict.currentStage}"
@@ -93,17 +93,16 @@
 <!--- Hidden input for credit card type --->
 <input id="commercehubSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
 <input id="authenticationId3DSInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.authenticationId3DS.htmlName}"/>
-<input type="hidden" class="form-control" id="cardType"
-    name="${creditFields.cardType.htmlName}"
-    value="" />
-<input type="hidden" class="form-control cardNumber" id="cardNumber"
-    value="" <isprint value=${creditFields.cardNumber.attributes} encoding="off"/>/>
-<select style="display:none;" id="expirationMonth" name="${creditFields.expirationMonth.htmlName}">
-    <option id="expirationMonthValue" value=""></option>
-</select>
-<select style="display:none;" id="expirationYear" name="${creditFields.expirationYear.htmlName}">
-    <option id="expirationYearValue" value=""></option>
-</select>
+<input id="commercehubTokenUUIDInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubTokenUUID.htmlName}"/>
 <isif condition="${pdict.earlyTokenization}">
     <div style="display:none;" id="earlyTokenizeInjectedForm" class="saved-payment-instrument" data-uuid=""></div>
 </isif>
+
+<input type="hidden" class="form-control" id="cardType" name="${pdict.forms.billingForm.creditCardFields.cardType.htmlName}" value="" />
+<input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
+<select style="display:none;" id="expirationMonth" name="${pdict.forms.billingForm.creditCardFields.expirationMonth.htmlName}">
+    <option id="expirationMonthValue" value=""></option>
+</select>
+<select style="display:none;" id="expirationYear" name="${pdict.forms.billingForm.creditCardFields.expirationYear.htmlName}">
+    <option id="expirationYearValue" value=""></option>
+</select>

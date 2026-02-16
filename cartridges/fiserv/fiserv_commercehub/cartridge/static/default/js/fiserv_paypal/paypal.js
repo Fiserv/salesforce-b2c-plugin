@@ -1,3 +1,5 @@
+'use strict';
+
 document.addEventListener("DOMContentLoaded", () => {
     let extractInitializationData = function()
     {
@@ -23,11 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         
-        if (!initialized)
-        {
-            await form.initialize();
-            initialized = true;
-        }
+        $('#fiserv_commercehub-paypal-button').children().remove();
+        await form.initialize();
+        initialized = true;
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -42,6 +42,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+            $('ul.payment-options li.nav-item:first').find('a').trigger('click');
+            if ($('ul.payment-options li.nav-item[data-method-id=PAYPAL]').hasClass('active'))
+                initPayPal();
+    }
+
     $('ul.payment-options li.nav-item[data-method-id=PAYPAL]').on('click', () => {
         initPayPal();
     });
@@ -51,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
             initPayPal();
     })
 
-    let grandTotalUpdated = function(context)
+    let grandTotalUpdated = function()
     {
         if(window.fiservPluginSDKInitRan)
         {

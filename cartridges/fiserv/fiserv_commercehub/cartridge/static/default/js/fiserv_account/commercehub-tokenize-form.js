@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 class CommercehubTokenizationForm
 {
@@ -110,9 +110,8 @@ class CommercehubTokenizationForm
         throw new Error("Unable to load CommerceHub SDK.")
     }
 
-    cardCaptureSuccess = function(responseBody)
+    cardCaptureSuccess = function()
     {
-        // Need to figure out the card Details at some point...
         $.spinner().stop();
         
         this.getSubmitButton().trigger('click');

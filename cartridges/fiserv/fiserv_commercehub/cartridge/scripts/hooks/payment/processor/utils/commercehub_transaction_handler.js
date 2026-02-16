@@ -1,20 +1,19 @@
+'use strict';
 
-const PaymentTransaction = require('dw/order/PaymentTransaction');
-let Transaction = require('dw/system/Transaction');
-let OrderMgr = require('dw/order/OrderMgr');
-let fiservCheckout = require('*/cartridge/scripts/checkout/fiservCheckout');
-let fiservGiftCheckout = require('*/cartridge/scripts/checkout/fiservGiftCheckout');
-let FiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-let constants = require('*/cartridge/fiservConstants/constants');
-const FiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
-let fiservHelper = require('*/cartridge/scripts/utils/fiservHelper');
-let requestBuilder = require('*/cartridge/scripts/requests/request_builder');
-let FiservServices = require('*/cartridge/scripts/utils/commercehubServices');
+const fiservConstants = require('*/cartridge/fiservConstants/constants');
+const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
 
-function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
+
+function handleTransaction(orderNo, paymentInstrument, paymentProcessor, paymentMethodModel)
 {
+    const OrderMgr = require('dw/order/OrderMgr');
+    const Transaction = require('dw/system/Transaction');
+
+    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+
     let order = OrderMgr.getOrder(orderNo);
-    var totalCovered = order.totalGrossPrice.value;
+    let totalCovered = order.totalGrossPrice.value;
     order.paymentInstruments.toArray().forEach((pi) => {
         totalCovered -= pi.paymentTransaction.amount.value;
     });
@@ -22,8 +21,8 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
     // Need to change paymentCovered later to account for currency precision
     if (Number(Math.abs(totalCovered)).toFixed(2) !== Number(0).toFixed(2))
     {
-        FiservLogs.logError(2, 'Detected a mismatch between the requested payment amount and cart total. Aborting transaction flow', orderNo);
-        if(FiservConfig.getCommerceHubGiftEnabled())
+        fiservLogs.logError(2, 'Detected a mismatch between the requested payment amount and cart total. Aborting transaction flow', orderNo);
+        if(fiservConfig.getCommerceHubGiftEnabled())
         {
             rollbackGiftCards(order, orderNo);
         }
@@ -37,67 +36,25 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
 
     Transaction.wrap(function () {
         paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
-        let _type = null;
-        switch(paymentProcessor.ID)
-        {
-            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
-                _type = FiservConfig.getCommerceHubCreditPaymentType();
-                break;
-            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
-                _type = FiservConfig.getCommerceHubGiftPaymentType();
-                paymentInstrument.paymentTransaction.custom.paymentAction = _type;
-                break;
-            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
-                _type = FiservConfig.getCommerceHubPayPalPaymentType();
-                break;
-            case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
-                _type = FiservConfig.getCommerceHubApplePayPaymentType();
-                break;
-            default:
-                FiservLogs.logError(2, 'Invalid Payment Processor somehow made it this far ¯\\_(ツ)_/¯', orderNo);
-                return {
-                    authorized: false,
-                    fieldErrors: [],
-                    serverErrors: ["Invalid Payment Processor"],
-                    error: true
-                };
-        }
+
+        let _type = paymentMethodModel.getCommercehubPaymentType();
+        paymentInstrument.paymentTransaction.custom.paymentAction = _type;
 
         if (_type !== null)
         {
-            let paymentType = _type.toString() === constants.COMMERCEHUB_AUTH_ACTION ? PaymentTransaction.TYPE_AUTH : PaymentTransaction.TYPE_CAPTURE;
+            const PaymentTransaction = require('dw/order/PaymentTransaction');
+            let paymentType = _type.toString() === fiservConstants.COMMERCEHUB_AUTH_ACTION ? PaymentTransaction.TYPE_AUTH : PaymentTransaction.TYPE_CAPTURE;
             paymentInstrument.paymentTransaction.setType(paymentType);
         }
     });
     Transaction.begin();
 
-    let res;
-    switch(paymentProcessor.ID)
-    {
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
-            res = fiservCheckout.executeCommercehubChargesTransaction(orderNo, paymentInstrument);
-            break;
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
-            res = fiservGiftCheckout.executeCommercehubGiftTransaction(orderNo, paymentInstrument);
-            break;
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
-            res = fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
-            break;
-        default:
-            FiservLogs.logError(2, 'Invalid Payment Processor somehow made it this far ¯\\_(ツ)_/¯', orderNo);
-            return {
-                authorized: false,
-                fieldErrors: [],
-                serverErrors: ["Invalid Payment Processor"],
-                error: true
-            };
-    }
+    let res = paymentMethodModel.executeCommercehubTransaction(orderNo, paymentInstrument);
 
     if (res.error)
     {
         Transaction.rollback();
-        if(FiservConfig.getCommerceHubGiftEnabled())
+        if(fiservConfig.getCommerceHubGiftEnabled())
         {
             rollbackGiftCards(order, orderNo);
         }
@@ -109,80 +66,53 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor)
         };
     }
 
-    let transactionId = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.TRANSACTION_ID);
+    let transactionId = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.TRANSACTION_ID);
     if (transactionId)
     {
         paymentInstrument.paymentTransaction.transactionID = transactionId;
     }
 
-    if((paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR
-        && !paymentInstrument.creditCardToken)
-        || paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR
-    ) {
-        paymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_TYPE);
-        paymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.CARD_INDICATOR);
-    }
-    else if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR)
-    {
-        paymentInstrument.custom.balance = null;
-    }
-    if(paymentProcessor.ID === constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR)
-    {
-        paymentInstrument.custom.maskedCardNumber = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.LAST_FOUR).padStart(16, '*');
-        paymentInstrument.custom.expireMonth = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.EXP_MONTH);
-        paymentInstrument.custom.expireYear = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.EXP_YEAR);
-    }
-    
+    paymentMethodModel.associateDataPostTransaction(res, paymentInstrument);
+
 
     Transaction.commit();
-    let transactionState = fiservHelper.secureTraversal(res, constants.RESPONSE_PATHS.TRANSACTION_STATE)
-    let processorString;
-    switch(paymentProcessor.ID) {
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PROCESSOR:
-            processorString = 'Payment ' + (paymentInstrument.creditCardToken ? 'Token' : 'Card');
-            break;
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_GIFT_PROCESSOR:
-            processorString = 'Gift Card';
-            break;
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_PAYPAL_PROCESSOR:
-            processorString = 'PayPal';
-            break;
-        case constants.PROCESSOR_ID_LIST.COMMERCEHUB_APPLEPAY_PROCESSOR:
-            processorString = 'Apple Pay';
-            break;
-    }
-    if(transactionState === constants.TXN_STATES.AUTHORIZED)
+    let transactionState = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE)
+    let processorString = paymentMethodModel.getProcessorString(paymentInstrument);
+    if(transactionState === fiservConstants.TXN_STATES.AUTHORIZED)
     {
-        FiservLogs.logInfo(1, processorString + ' Auth Transaction Successful', orderNo);
+        fiservLogs.logInfo(1, processorString + ' Auth Transaction Successful', orderNo);
     }
-    else if(transactionState === constants.TXN_STATES.CAPTURED)
+    else if(transactionState === fiservConstants.TXN_STATES.CAPTURED)
     {
-        FiservLogs.logInfo(1, processorString + ' Sale Transaction Successful', orderNo);
+        fiservLogs.logInfo(1, processorString + ' Sale Transaction Successful', orderNo);
     }
-    FiservLogs.logInfo(1, 'Transaction ID: ' + transactionId, orderNo);
+    fiservLogs.logInfo(1, 'Transaction ID: ' + transactionId, orderNo);
     return { authorized: true, error: false };
 }
 
 function rollbackGiftCards(order, orderNo)
 {
-    FiservLogs.logError(2, 'An error occurred during payment processing. Checking for gift card transactions to reverse', orderNo);
+    const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
+    const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
+
+    fiservLogs.logError(2, 'An error occurred during payment processing. Checking for gift card transactions to reverse', orderNo);
 
     let giftFound = 0;
     let giftReversed = 0;
     order.paymentInstruments.toArray().forEach((pi) => {
-        if(pi.paymentMethod === constants.COMMERCEHUB_GIFT_PAYMENT_METHOD && pi.paymentTransaction.transactionID)
+        if(pi.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD && pi.paymentTransaction.transactionID)
         {
             giftFound++;
             let transactionId = pi.paymentTransaction.transactionID;
-            let cancelPayload = requestBuilder.buildCancelPayload(orderNo, transactionId);
-            let cancelService = FiservServices.getService('CommercehubCancel', orderNo);
+            let cancelPayload = fiservRequestBuilder.buildCancelPayload(orderNo, transactionId);
+            let cancelService = fiservServices.getService('CommercehubCancel', orderNo);
             try {
-                FiservServices.callService(cancelService, cancelPayload, orderNo);
+                fiservServices.callService(cancelService, cancelPayload, orderNo);
                 giftReversed++;
             }
             catch(e)
             {
-                FiservLogs.logError(2, 'Failed to reverse gift transaction with Transaction ID: ' + transactionId, orderNo);
+                fiservLogs.logError(2, 'Failed to reverse gift transaction with Transaction ID: ' + transactionId, orderNo);
             }
         }
     });
@@ -191,16 +121,16 @@ function rollbackGiftCards(order, orderNo)
     {
         if(giftReversed !== 0)
         {
-            FiservLogs.logError(2, 'Successfully reversed ' + giftReversed + ' gift transaction(s)', orderNo);
+            fiservLogs.logError(2, 'Successfully reversed ' + giftReversed + ' gift transaction(s)', orderNo);
         }
         if(giftReversed !== giftFound)
         {
-            FiservLogs.logError(2, 'Failed to reverse ' + (giftFound - giftReversed) + ' gift transaction(s)', orderNo);
+            fiservLogs.logError(2, 'Failed to reverse ' + (giftFound - giftReversed) + ' gift transaction(s)', orderNo);
         }
     }
     else
     {
-        FiservLogs.logError(2, 'No gift transactions applied. Continuing...', orderNo);
+        fiservLogs.logError(2, 'No gift transactions applied. Continuing...', orderNo);
     }
 }
 
