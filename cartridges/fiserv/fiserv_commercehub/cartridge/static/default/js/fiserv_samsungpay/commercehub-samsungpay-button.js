@@ -73,8 +73,7 @@ class CommercehubSamsungPay
         }
         $.spinner().stop();
     }
-
-
+    
     sdkLoadFailure = function (err)
     {
         console.log(err);
@@ -82,7 +81,7 @@ class CommercehubSamsungPay
         $.spinner().stop();
         throw new Error("Unable to load CommerceHub SDK.")
     }
-
+    
     samsungpayApproval = async function(response)
     {
         this.completePayment = response.completePayment;
@@ -106,29 +105,8 @@ class CommercehubSamsungPay
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
             $(".payment-information").data("payment-method-id") === "SAMSUNGPAY"
         ) {
-            if(xhr.responseJSON.isSamsungPaySuccess)
-            {
-                new Promise((resolve, reject) => {
-                    FiservSDKHelper.backendCall(xhr.responseJSON.placeOrderURL, resolve, reject);
-                })
-                .then(async (response) => {
-                    if(response.error)
-                    {
-                        this.samsungpayFailure(response.errorMessage);
-                        return;
-                    }
-
-                    this.samsungpaySuccess(response);
-                }).catch((error) => {
-                    this.samsungpayFailure();
-                });
-            }
-            else
-            {
-                this.setSessionIdInput('');
-                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
-                this.samsungpayFailure();
-            }
+            this.setSessionIdInput('');
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
         }
     }
 
@@ -140,16 +118,6 @@ class CommercehubSamsungPay
         this.showError(message);
         this.completePayment('FAILURE');
         this.initialize();
-    }
-
-    samsungpaySuccess = function(data)
-    {
-        // Notify Samsung Pay SDK that the payment was successful
-        this.completePayment('SUCCESS');
-
-        // Redirect to order confirmation page
-        // The backend has already placed the order and the session contains the order details
-        window.location.href = data.continueUrl;
     }
 
     samsungpayCancel = function()
