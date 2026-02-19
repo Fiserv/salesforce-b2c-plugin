@@ -75,7 +75,6 @@ function getFrontendConfigData(formId)
         case 'SamsungPay':
             configData = {
                 'buttonConfig': fiservConfig.buildSamsungPayButtonConfig(),
-                'billingAddressFormNames': fiservConfig.buildAddressFormNamesObject(),
                 'samsungpayFailureMessage': Resource.msg('message.error.samsungpay.failure', 'error', null),
             }
             break;

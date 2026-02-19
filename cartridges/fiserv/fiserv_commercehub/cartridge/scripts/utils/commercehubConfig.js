@@ -392,8 +392,7 @@ const commerceHubExport =
 
         let buttonConfig = {
             'parentElementId': 'fiserv_commercehub-samsungpay-button',
-            'color': getSitePreference('CommerceHubSamsungPayButtonColor').value,
-            'type': getSitePreference('CommerceHubSamsungPayPaymentType').value
+            'color': getSitePreference('CommerceHubSamsungPayButtonColor').value
         }
 
         return { 'button': buttonConfig };
