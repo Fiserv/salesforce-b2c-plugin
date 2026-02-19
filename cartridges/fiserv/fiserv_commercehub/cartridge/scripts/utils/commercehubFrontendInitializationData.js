@@ -65,6 +65,13 @@ function getFrontendConfigData(formId)
                 'applepayFailureMessage': Resource.msg('message.error.applepay.failure', 'error', null),
             }
             break;
+        case 'Affirm':
+            configData = {
+                'buttonConfig': fiservConfig.buildAffirmButtonConfig(),
+                'chargeType': fiservConfig.getCommerceHubAffirmPaymentType(),
+                'affirmFailureMessage': Resource.msg('message.error.affirm.failure', 'error', null),
+            }
+            break;
         default:
             configData = {};
             break;
