@@ -12,7 +12,8 @@ const fiservServices = require('*/cartridge/scripts/utils/commercehubServices');
 
 const okStates = [
     fiservConstants.TXN_STATES.AUTHORIZED,
-    fiservConstants.TXN_STATES.CAPTURED
+    fiservConstants.TXN_STATES.CAPTURED,
+    fiservConstants.TXN_STATES.PROCESSING
 ];
 
 
@@ -52,11 +53,17 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
             fiservSavePaymentInstrument.savePaymentInstrument(order.getCustomerNo(), paymentInstrument, chargesResult, orderNo);
         }
 
-        // Handle Capture
-        if (fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
+        // Handle Capture (Need to consider potential previous order payment status due to GCs transacting first)
+        if (order.getStatus().value === Order.PAYMENT_STATUS_NOTPAID && fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
         {
-            order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
-            //order.invoices[0].addCaptureTransaction(paymentInstrument, paymentInstrument.paymentTransaction.amount);
+            if(order.getPaymentInstruments().length > 1)
+                order.setPaymentStatus(Order.PAYMENT_STATUS_PARTPAID);
+            else
+                order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
+        }
+        else if(order.getStatus().value === Order.PAYMENT_STATUS_PAID)
+        {
+            order.setPaymentStatus(Order.PAYMENT_STATUS_PARTPAID);
         }
 
         return chargesResult;
@@ -130,11 +137,10 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
         // process transaction
         let chargesResult = sendOrdersRequest(order, transactionPayload, orderNo);
 
-        // Handle Capture
+        // Handle Capture (GCs transact first, so don't have to worry about previous state)
         if (fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
         {
             order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
-            //order.invoices[0].addCaptureTransaction(paymentInstrument, paymentInstrument.paymentTransaction.amount);
         }
 
         let customerId = null;

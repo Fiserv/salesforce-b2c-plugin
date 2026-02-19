@@ -12,6 +12,8 @@
             <isinclude template="checkout/billing/paymentOptions/applepaySummary" />
         <iselseif condition="${payment.paymentMethod === 'AFFIRM'}" />
             <isinclude template="checkout/billing/paymentOptions/affirmSummary" />
+        <iselseif condition="${payment.paymentMethod === 'SAMSUNGPAY'}" />
+            <isinclude template="checkout/billing/paymentOptions/samsungpaySummary" />
         </isif>
         <isif condition="${!status.last}">
             <br/>

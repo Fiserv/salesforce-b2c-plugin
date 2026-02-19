@@ -22,14 +22,17 @@ module.exports = {
         COMMERCEHUB_VENMO_PROCESSOR : "FISERV_COMMERCEHUB_VENMO",
         COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
         COMMERCEHUB_AFFIRM_PROCESSOR : "FISERV_COMMERCEHUB_AFFIRM",
+        COMMERCEHUB_SAMSUNGPAY_PROCESSOR : "FISERV_COMMERCEHUB_SAMSUNGPAY",
     },
     PAYMENT_METHOD_LIST : {
         COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
         COMMERCEHUB_APPLEPAY_PAYMENT_METHOD : "APPLEPAY",
+        COMMERCEHUB_SAMSUNGPAY_PAYMENT_METHOD : "SAMSUNGPAY",
     },
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",
+        PROCESSING: "PROCESSING",
         DECLINED: "DECLINED"
     },
     RESPONSE_PATHS : {
@@ -52,7 +55,7 @@ module.exports = {
     },
     ICON_LIST : ['card', 'gear', 'gift', 'money', 'sign', 'token'],
     FORM_ID_LIST : [ 'Payment', 'Tokenization', 'Gift' ],
-    DEPENDENCY_LIST : { 
+    DEPENDENCY_LIST : {
         'CommerceHubCreditEnable': [
             'CommerceHubCreditPaymentType',
             'CommerceHub3DSEnable',
@@ -88,10 +91,13 @@ module.exports = {
             'CommerceHubApplePayPaymentType',
             'ApplePayButton'
         ],
-
         'CommerceHubAffirmEnable': [
             'CommerceHubAffirmPaymentType',
             'AffirmButton'
+		],
+        'CommerceHubSamsungPayEnable': [
+            'CommerceHubSamsungPayPaymentType',
+            'SamsungPayButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {

@@ -2,19 +2,19 @@
 
 const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 
-const METHOD_ID = "APPLEPAY";
-const PROCESSOR_STRING = 'Apple Pay';
+const METHOD_ID = "SAMSUNGPAY";
+const PROCESSOR_STRING = 'Samsung Pay';
 
 
 function convertToB2cCardType(paymentInformation, paymentInstrument)
 {
-    paymentInstrument.paymentTransaction.custom.paymentAction = fiservConfig.getCommerceHubApplePayPaymentType();
+    paymentInstrument.paymentTransaction.custom.paymentAction = fiservConfig.getCommerceHubSamsungPayPaymentType();
     paymentInstrument.paymentTransaction.custom.commercehubSessionId = paymentInformation.sessionId;
 }
 
 function getCommercehubPaymentType()
 {
-    return fiservConfig.getCommerceHubApplePayPaymentType();
+    return fiservConfig.getCommerceHubSamsungPayPaymentType();
 }
 
 function executeCommercehubTransaction(orderNo, paymentInstrument)
@@ -23,7 +23,7 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
     return fiservCheckout.executeCommercehubChargesTransaction(orderNo, paymentInstrument);
 }
 
-function postTransactionDataProcessing(res, paymentInstrument)
+function associateDataPostTransaction(res, paymentInstrument)
 {
     const fiservConstants = require('*/cartridge/fiservConstants/constants');
     const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
@@ -46,6 +46,6 @@ module.exports =
     convertToB2cCardType : convertToB2cCardType,
     getCommercehubPaymentType : getCommercehubPaymentType,
     executeCommercehubTransaction : executeCommercehubTransaction,
-    postTransactionDataProcessing : postTransactionDataProcessing,
+    associateDataPostTransaction : associateDataPostTransaction,
     getProcessorString : getProcessorString,
 };

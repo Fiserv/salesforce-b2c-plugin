@@ -104,10 +104,17 @@ class CommercehubAffirm
         console.log("Affirm flow cancelled");
     }
 
-    affirmError = function()
+    affirmError = function(response)
     {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
-        this.showError(this.configDataAffirm.affirmFailureMessage);
+        if(response.providerData?.error?.reason === 'canceled')
+        {
+            this.affirmCancel(response);
+        }
+        else
+        {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.showError(this.configDataAffirm.affirmFailureMessage);
+        }
     }
 
     watchSubmitResponse = function()

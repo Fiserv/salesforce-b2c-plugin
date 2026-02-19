@@ -2,19 +2,19 @@
 
 const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 
-const METHOD_ID = "PAYPAL";
-const PROCESSOR_STRING = 'PayPal';
+const METHOD_ID = "AFFIRM";
+const PROCESSOR_STRING = 'Affirm';
 
 
 function convertToB2cCardType(paymentInformation, paymentInstrument)
 {
-    paymentInstrument.paymentTransaction.custom.paymentAction = fiservConfig.getCommerceHubPayPalPaymentType();
+    paymentInstrument.paymentTransaction.custom.paymentAction = fiservConfig.getCommerceHubAffirmPaymentType();
     paymentInstrument.paymentTransaction.custom.commercehubOrderId = paymentInformation.orderId;
 }
 
 function getCommercehubPaymentType()
 {
-    return fiservConfig.getCommerceHubPayPalPaymentType();
+    return fiservConfig.getCommerceHubAffirmPaymentType();
 }
 
 function executeCommercehubTransaction(orderNo, paymentInstrument)
@@ -23,9 +23,13 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
     return fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
 }
 
-function postTransactionDataProcessing()
+function postTransactionDataProcessing(res, paymentInstrument)
 {
-    // Do Nothing
+    const fiservConstants = require('*/cartridge/fiservConstants/constants');
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+
+    paymentInstrument.paymentTransaction.custom.inquiryRequired = 
+        (fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.PROCESSING);
 }
 
 function getProcessorString()

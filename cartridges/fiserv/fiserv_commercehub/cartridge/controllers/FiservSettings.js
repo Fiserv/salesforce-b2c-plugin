@@ -60,7 +60,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = fiservConstants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay)|(Affirm))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay)|(Affirm))?)|(SamsungPay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(fiservConstants.CONFIG_DESCRIPTIONS[id])
         {
@@ -366,6 +366,22 @@ function buildConfigList(chPreferenceDescriptions)
             'id': 'AffirmButton',
             'items': [
                 getPreferenceDescription('CommerceHubAffirmButtonColor')
+            ]
+        }
+    });
+
+    configList.push({
+        'label': 'Samsung Pay',
+        'id': 'SamsungPay',
+        'items': [
+            getPreferenceDescription('CommerceHubSamsungPayEnable'),
+            getPreferenceDescription('CommerceHubSamsungPayPaymentType')
+        ],
+        'subform': {
+            'label': 'Samsung Pay Button Customization',
+            'id': 'SamsungPayButton',
+            'items': [
+                getPreferenceDescription('CommerceHubSamsungPayButtonColor')
             ]
         }
     });

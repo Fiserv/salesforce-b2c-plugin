@@ -141,20 +141,19 @@ function buildAddressObject(addressObject)
     address["city"] = addressObject.city;
     address["stateOrProvince"] = addressObject.stateCode;
     address["postalCode"] = addressObject.postalCode;
-    address["stateOrProvince"] = addressObject.stateCode;
     address["country"] = addressObject.countryCode.value;
 
-    let billingAddress = {};
-    billingAddress["firstName"] = addressObject.firstName;
-    billingAddress["lastName"] = addressObject.lastName;
-    billingAddress["address"] = address;
-    billingAddress["phone"] = {
+    let payloadAddressObject = {};
+    payloadAddressObject["firstName"] = addressObject.firstName;
+    payloadAddressObject["lastName"] = addressObject.lastName;
+    payloadAddressObject["address"] = address;
+    payloadAddressObject["phone"] = {
         "phoneNumber": addressObject.phone
     };
 
     if(showBuilders)
-        fiservLogs.logDebug(3, "Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
-    return billingAddress;
+        fiservLogs.logDebug(3, "Address Data Builder:\n" + JSON.stringify(payloadAddressObject,null,2), orderNo);
+    return payloadAddressObject;
 }
 
 function buildCustomerObject(cartInfoContainer)
@@ -262,7 +261,7 @@ function buildChargesRequest(orderNumber, paymentInstrument)
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
     if(paymentAction === fiservConstants.COMMERCEHUB_AUTH_ACTION || paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION)
     {
-        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
+        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD || paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_SAMSUNGPAY_PAYMENT_METHOD)
             return buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction);
         else if(paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             return buildGiftChargesRequest(paymentInstrument, paymentAction);
@@ -499,25 +498,28 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     itemDetails.push(itemData)
                 });
 
-                let shippingData = {
-                    itemNumber: basket.getAllProductLineItems().toArray().length + 1,
-                    itemType: "SHIPPING",
-                    itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
-                    itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
-                    quantity: 1,
-                    productSKU: basket.getDefaultShipment().getShippingMethodID(),
-                    amountComponents: {
-                        unitPrice: basket.shippingTotalPrice.value,
-                        shippingAmount: 0,
-                        taxAmounts: [
-                            {
-                                taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
-                                taxAmount: basket.shippingTotalTax.value
-                            }
-                        ],
-                    }
-                };
-                itemDetails.push(shippingData);
+                if(basket.shippingTotalPrice.value > 0)
+                {
+                    let shippingData = {
+                        itemNumber: basket.getAllProductLineItems().toArray().length + 1,
+                        itemType: "SHIPPING",
+                        itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                        itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                        quantity: 1,
+                        productSKU: basket.getDefaultShipment().getShippingMethodID(),
+                        amountComponents: {
+                            unitPrice: basket.shippingTotalPrice.value,
+                            shippingAmount: 0,
+                            taxAmounts: [
+                                {
+                                    taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
+                                    taxAmount: basket.shippingTotalTax.value
+                                }
+                            ],
+                        }
+                    };
+                    itemDetails.push(shippingData);
+                }
 
                 orderData['itemCount'] = itemCount;
                 orderData['itemDetails'] = itemDetails;

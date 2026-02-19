@@ -23,7 +23,7 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
     return fiservCheckout.executeCommercehubOrderTransaction(orderNo, paymentInstrument);
 }
 
-function associateDataPostTransaction()
+function postTransactionDataProcessing()
 {
     // Do Nothing
 }
@@ -39,6 +39,6 @@ module.exports =
     convertToB2cCardType : convertToB2cCardType,
     getCommercehubPaymentType : getCommercehubPaymentType,
     executeCommercehubTransaction : executeCommercehubTransaction,
-    associateDataPostTransaction : associateDataPostTransaction,
+    postTransactionDataProcessing : postTransactionDataProcessing,
     getProcessorString : getProcessorString,
 };
