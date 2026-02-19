@@ -467,7 +467,7 @@
                 </value-definitions>
             </attribute-definition>
         
-           <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+            <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
 
             <attribute-definition attribute-id="CommerceHubApplePayEnable">
                 <display-name xml:lang="x-default">Enable Apple Pay</display-name>
@@ -585,6 +585,48 @@
                     <value-definition>
                         <display>Top Up</display>
                         <value>top-up</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE AFFIRM SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubAffirmEnable">
+                <display-name xml:lang="x-default">Enable Affirm</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAffirmPaymentType">
+                <display-name xml:lang="x-default">CommerceHubAffirm Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubAffirmButtonColor">
+                <display-name xml:lang="x-default">CommerceHubAffirm Button Color</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Default</display>
+                        <value>default</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Light</display>
+                        <value>light</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
@@ -1355,10 +1397,10 @@
                 <attribute attribute-id="CommerceHubTokenization"/>
                 <attribute attribute-id="CommerceHubTokenizationStrategy"/>
                 <attribute attribute-id="CommerceHubStandaloneSPA"/>
+                <attribute attribute-id="CommerceHubTokenSecurityEnable"/>
                 <attribute attribute-id="CommerceHubEarlyTokenization"/>
                 <attribute attribute-id="CommerceHubBasketTokenization"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
-                <attribute attribute-id="CommerceHubTokenSecurityEnable"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
                 <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>
@@ -1521,6 +1563,25 @@
                 <attribute attribute-id="CommerceHubApplePayPaymentType"/>
                 <attribute attribute-id="CommerceHubApplePayButtonColor"/>
                 <attribute attribute-id="CommerceHubApplePayButtonLabel"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_AFFIRM">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Affirm Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+
+                <!--THIS IS WHERE THE APPLE PAY SETTINGS START-->
+                <attribute attribute-id="CommerceHubAffirmEnable"/>
+                <attribute attribute-id="CommerceHubAffirmPaymentType"/>
+                <attribute attribute-id="CommerceHubAffirmButtonColor"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -1738,6 +1799,11 @@
             <attribute-group group-id="FISERV_COMMERCEHUB_APPLEPAY">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_AFFIRM">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubOrderId"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
         </group-definitions>

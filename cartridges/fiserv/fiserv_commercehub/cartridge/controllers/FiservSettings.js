@@ -60,7 +60,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = fiservConstants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay)|(Affirm))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(fiservConstants.CONFIG_DESCRIPTIONS[id])
         {
@@ -350,6 +350,22 @@ function buildConfigList(chPreferenceDescriptions)
             'items': [
                 getPreferenceDescription('CommerceHubApplePayButtonColor'),
                 getPreferenceDescription('CommerceHubApplePayButtonLabel')
+            ]
+        }
+    });
+
+    configList.push({
+        'label': 'Affirm',
+        'id': 'Affirm',
+        'items': [
+            getPreferenceDescription('CommerceHubAffirmEnable'),
+            getPreferenceDescription('CommerceHubAffirmPaymentType')
+        ],
+        'subform': {
+            'label': 'Affirm Button Customization',
+            'id': 'AffirmButton',
+            'items': [
+                getPreferenceDescription('CommerceHubAffirmButtonColor')
             ]
         }
     });
