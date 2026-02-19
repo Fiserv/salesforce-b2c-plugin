@@ -9,8 +9,11 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
 {
     try 
     {
+        const Order = require('dw/order/Order');
         const OrderMgr = require('dw/order/OrderMgr');
 
+        const fiservConstants = require('*/cartridge/fiservConstants/constants');
+        const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
         const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
 
         // build request obj    
@@ -26,6 +29,11 @@ function executeCommercehubGiftTransaction(orderNo, paymentInstrument)
         // process transaction
         let chargesResult = sendChargesRequest(order, transactionPayload, orderNo);
 
+        // Handle Capture (GCs transact first, so don't have to worry about previous state)
+        if (fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
+        {
+            order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
+        }
 
         return chargesResult;
 

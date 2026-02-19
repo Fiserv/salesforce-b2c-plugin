@@ -5,6 +5,7 @@ const OrderMgr = require('dw/order/OrderMgr');
 const Resource = require('dw/web/Resource');
 
 const fiservConstants = require('*/cartridge/fiservConstants/constants');
+const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
 const fiservRequestBuilder = require('*/cartridge/scripts/requests/request_builder');
@@ -54,14 +55,14 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
         }
 
         // Handle Capture (Need to consider potential previous order payment status due to GCs transacting first)
-        if (order.getStatus().value === Order.PAYMENT_STATUS_NOTPAID && fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
+        if (fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
         {
-            if(order.getPaymentInstruments().length > 1)
+            if(order.getPaymentInstruments().length > 1 && fiservConfig.getCommerceHubGiftPaymentType() === "AUTH")
                 order.setPaymentStatus(Order.PAYMENT_STATUS_PARTPAID);
             else
                 order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
         }
-        else if(order.getStatus().value === Order.PAYMENT_STATUS_PAID)
+        else if(order.getPaymentInstruments().length > 1 && fiservConfig.getCommerceHubGiftPaymentType() === "SALE")
         {
             order.setPaymentStatus(Order.PAYMENT_STATUS_PARTPAID);
         }
@@ -137,10 +138,17 @@ function executeCommercehubOrderTransaction(orderNo, paymentInstrument)
         // process transaction
         let chargesResult = sendOrdersRequest(order, transactionPayload, orderNo);
 
-        // Handle Capture (GCs transact first, so don't have to worry about previous state)
+        // Handle Capture (Need to consider potential previous order payment status due to GCs transacting first)
         if (fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.TRANSACTION_STATE) === fiservConstants.TXN_STATES.CAPTURED.toString())
         {
-            order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
+            if(order.getPaymentInstruments().length > 1 && fiservConfig.getCommerceHubGiftPaymentType() === "AUTH")
+                order.setPaymentStatus(Order.PAYMENT_STATUS_PARTPAID);
+            else
+                order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
+        }
+        else if(order.getPaymentInstruments().length > 1 && fiservConfig.getCommerceHubGiftPaymentType() === "SALE")
+        {
+            order.setPaymentStatus(Order.PAYMENT_STATUS_PARTPAID);
         }
 
         let customerId = null;
