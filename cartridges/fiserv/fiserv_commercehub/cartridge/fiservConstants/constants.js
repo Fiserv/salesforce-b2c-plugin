@@ -60,17 +60,11 @@ module.exports = {
             'CommerceHubCreditPaymentType',
             'CommerceHub3DSEnable',
             'CommerceHubPayPalFastlaneEnable', // Fastlane is depentdent on Credit/Debit, not PayPal...
-            'Tokenization'
         ],
         'CommerceHubTokenization': [
-            'CommerceHubTokenizationStrategy',
-            'CommerceHubStandaloneSPA',
-            'CommerceHubEarlyTokenization',
+            'CommerceHubStandaloneTokenization',
             'CommerceHubTokenSecurityEnable',
-            'CommerceHubBasketTokenization'
-        ],
-        'CommerceHubEarlyTokenization': [
-            'CommerceHubBasketTokenization'
+            'CommerceHubForcedBasketTokenization'
         ],
         'CommerceHubGiftEnable': [
             'CommerceHubGiftPaymentMethodTitle',
@@ -137,8 +131,7 @@ module.exports = {
         'CommerceHubSessionLifetime': 'This field identifies the lifetime of applied payment instruments to the basket (Default: 30 minutes)',
         'CommerceHubTimeout': "Default: 30 seconds",
         'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
-        'CommerceHubTokenizationStrategy': "Enable this option to tokenize all payment cards submitted at checkout, regardless of consumer choice.",
-        'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow",
-        'CommerceHubBasketTokenization': "Stores payment tokens on the basket when customer chooses not to save the token to their wallet or always for guests",
+        'CommerceHubStandaloneTokenization': "Disables the ability for customers to add payment methods from their account page",
+        'CommerceHubForcedBasketTokenization': "Creates a useable payment method associated with the basket and order when a customer chooses not to store their card",
     }
 };

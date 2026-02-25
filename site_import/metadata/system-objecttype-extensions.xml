@@ -142,64 +142,43 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHub3DSEnable">
+                <display-name xml:lang="x-default">Enable 3DS</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+
+            <!--THIS IS WHERE THE TOKENIZATION SETTINGS START-->
+
             <attribute-definition attribute-id="CommerceHubTokenization">
-                <display-name xml:lang="x-default">Enable Tokenization</display-name>
-                <description xml:lang="x-default">Allow customers to tokenize payment information for later use</description>
+                <display-name xml:lang="x-default">Enable Stored Payment Methods</display-name>
+                <description xml:lang="x-default">Allow customers to store payment information for later use</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubTokenizationStrategy">
-                <display-name xml:lang="x-default">CommerceHub Payment Card Tokenization Strategy</display-name>
-                <type>enum-of-string</type>
-                <mandatory-flag>true</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <value-definitions>
-                    <value-definition default="true">
-                        <display>Tokenize at customer request</display>
-                        <value>false</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Tokenize all transactions</display>
-                        <value>true</value>
-                    </value-definition>
-                </value-definitions>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubStandaloneSPA">
-                <display-name xml:lang="x-default">Enable Standalone Tokenization</display-name>
-                <description xml:lang="x-default">Allow customers to tokenize payment information without a transaction</description>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>false</default-value>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubEarlyTokenization">
-                <display-name xml:lang="x-default">Enable Early Tokenization</display-name>
-                <description xml:lang="x-default">Allow customers to tokenize payment information on credit card capture in the checkout flow</description>
+            <attribute-definition attribute-id="CommerceHubStandaloneTokenization">
+                <display-name xml:lang="x-default">Require Checkout</display-name>
+                <description xml:lang="x-default">Disables the ability for customers to add payment methods from their account page</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubTokenSecurityEnable">
-                <display-name xml:lang="x-default">Enable CVV for Tokenized Cards</display-name>
-                <description xml:lang="x-default">Require CVV entry when using tokenized payment cards</description>
+                <display-name xml:lang="x-default">Require Security Code in Checkout</display-name>
+                <description xml:lang="x-default">Require security code entry when using stored payment cards</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubBasketTokenization">
-                <display-name xml:lang="x-default">Enable Basket Tokenization</display-name>
-                <description xml:lang="x-default">Stores payment tokens on the basket when customer chooses not to save the token to their wallet or always for guests</description>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>false</default-value>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHub3DSEnable">
-                <display-name xml:lang="x-default">Enable 3DS</display-name>
+            <attribute-definition attribute-id="CommerceHubForcedBasketTokenization">
+                <display-name xml:lang="x-default">Always Store on Order</display-name>
+                <description xml:lang="x-default">Creates a useable payment method associated with the basket and order when a customer chooses not to store their card</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1440,13 +1419,13 @@
                 <!--THIS IS WHERE THE CREDIT/DEBIT CARD SETTINGS START-->
                 <attribute attribute-id="CommerceHubCreditEnable"/>
                 <attribute attribute-id="CommerceHubCreditPaymentType"/>
-                <attribute attribute-id="CommerceHubTokenization"/>
-                <attribute attribute-id="CommerceHubTokenizationStrategy"/>
-                <attribute attribute-id="CommerceHubStandaloneSPA"/>
-                <attribute attribute-id="CommerceHubTokenSecurityEnable"/>
-                <attribute attribute-id="CommerceHubEarlyTokenization"/>
-                <attribute attribute-id="CommerceHubBasketTokenization"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
+
+                <!--THIS IS WHERE THE TOKENIZATION SETTINGS START-->
+                <attribute attribute-id="CommerceHubTokenization"/>
+                <attribute attribute-id="CommerceHubStandaloneTokenization"/>
+                <attribute attribute-id="CommerceHubTokenSecurityEnable"/>
+                <attribute attribute-id="CommerceHubForcedBasketTokenization"/>
 
                 <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
                 <attribute attribute-id="CommerceHubPaymentFormCardNumberPlaceholder"/>

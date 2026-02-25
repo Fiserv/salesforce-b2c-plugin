@@ -22,7 +22,7 @@ function isValidCustomer(customer)
 
 function shouldSavePaymentInstrument(customerNo, paymentInstrument)
 {
-    return (fiservConfig.getCommerceHubTokenizationStrategy() || paymentInstrument.paymentTransaction.custom.tokenizeCard) &&
+    return (fiservConfig.getForcedBasketTokenization() || paymentInstrument.paymentTransaction.custom.tokenizeCard) &&
         customerNo &&
         canTokenize(CustomerMgr.getCustomerByCustomerNumber(customerNo));
 }

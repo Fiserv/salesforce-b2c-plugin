@@ -48,7 +48,7 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
         }
 
         // Handle Saved Payment Instrument
-        if (!chargesResult.error && (!paymentInstrument.creditCardToken || fiservConfig.getCommerceHubTokenizationStrategy()))
+        if (!chargesResult.error && (!paymentInstrument.creditCardToken || fiservConfig.getForcedBasketTokenization()))
         {
             const fiservSavePaymentInstrument = require('*/cartridge/scripts/account/fiservAccount/save_payment_instrument');
             fiservSavePaymentInstrument.savePaymentInstrument(order.getCustomerNo(), paymentInstrument, chargesResult, orderNo);

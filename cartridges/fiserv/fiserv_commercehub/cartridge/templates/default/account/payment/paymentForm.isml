@@ -3,10 +3,10 @@
 <isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 
 <isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
-<isset name="canTokenizeSpa" value="${pdict.FiservConfig.getCommerceHubStandaloneSpa()}" scope="pdict" />
+<isset name="canTokenizeStandalone" value="${pdict.FiservConfig.getCommerceHubStandaloneTokenization()}" scope="pdict" />
 <isset name="creditEnabled" value="${pdict.FiservConfig.getCommerceHubCreditEnabled()}" scope="pdict" />
 
-<isif condition="${pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeSpa}">
+<isif condition="${pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeStandalone}">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');

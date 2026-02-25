@@ -210,11 +210,11 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
     let tokenize = false;
     if(fiservConfig.getCommerceHubTokenization())
     {
-        if(fiservConfig.getCommerceHubTokenizationStrategy())
+        if(fiservConfig.getForcedBasketTokenization())
         {
             tokenize = true;
         }
-        else if(!paymentInstrument.creditCardToken && !fiservConfig.getEarlyTokenization())
+        else if(!paymentInstrument.creditCardToken)
         {
             tokenize = paymentInstrument.paymentTransaction.custom.tokenizeCard;
         }
@@ -428,7 +428,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     }
                 }
             }
-            if(!pi && fiservConfig.getEarlyTokenization() && fiservConfig.getBasketTokenization() && basket.custom.commercehubBasketToken)
+            if(!pi && fiservConfig.getForcedBasketTokenization() && basket.custom.commercehubBasketToken)
             {
                 let basketPI = JSON.parse(basket.custom.commercehubBasketToken);
                 if(basketPI.UUID === credentialsForm.threeDSToken)
