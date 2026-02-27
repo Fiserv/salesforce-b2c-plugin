@@ -251,6 +251,115 @@
             <production/>
         </preferences>
     </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_ACH">
+        <description>Fiserv Commerce Hub ACH processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE ACH SETTINGS START-->
+
+                <preference preference-id="CommerceHubACHEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubACHPaymentType">
+                    <value>AUTH</value>
+                </preference>
+
+                <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
+
+                <preference preference-id="CommerceHubACHFormAccountNumberPlaceholder">
+                    <value>Account Number</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberPlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMaskingCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMaskingMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberShrunkLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberPlaceholder">
+                    <value>Routing Number</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMaskingCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMaskingMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberShrunkLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValuePlaceholder">
+                    <value>ID Value</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValuePlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValueMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValueMaskingCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValueMaskingMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValueShrunkLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormBusinessNamePlaceholder">
+                    <value>Business Name</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormCSS">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontData">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontFamily">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontFormat">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontIntegrity">
+                    <value></value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
     <payment-processor processor-id="FISERV_COMMERCEHUB_GIFT">
         <description>Fiserv Commerce Hub gift card processor</description>
         <preferences>

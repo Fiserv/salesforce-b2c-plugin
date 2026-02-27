@@ -206,6 +206,33 @@
                 <default-value>false</default-value>
             </attribute-definition>
 
+            <!--THIS IS WHERE THE ACH SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubACHEnable">
+                <display-name xml:lang="x-default">Enable ACH</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="CommerceHubACHPaymentType">
+                <display-name xml:lang="x-default">CommerceHubACH Charge Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Authorize</display>
+                        <value>AUTH</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Sale (Auth &amp; Capture)</display>
+                        <value>SALE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+
             <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
 
             <attribute-definition attribute-id="CommerceHubGiftEnable">
@@ -1203,6 +1230,326 @@
                 <default-value></default-value>
             </attribute-definition>
 
+            <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
+
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberPlaceholder">
+                <display-name xml:lang="x-default">ACH Form Account Number Field Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberPlaceholderCharacter">
+                <display-name xml:lang="x-default">ACH Form Account Number Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMask">
+                <display-name xml:lang="x-default">ACH Form Account Number Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMaskingCharacter">
+                <display-name xml:lang="x-default">ACH Form Account Number Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMaskingMode">
+                <display-name xml:lang="x-default">ACH Form Account Number Field Masking Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask always except last four</display>
+                        <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4_SHRINK</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur</display>
+                        <value>BLUR_MASK_ALL_SHRINK</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberShrunkLength">
+                <display-name xml:lang="x-default">ACH Form Account Number Field Shrunk Length</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Account Number Field for the ACH Form</description>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberPlaceholder">
+                <display-name xml:lang="x-default">ACH Form Routing Number Field Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter">
+                <display-name xml:lang="x-default">ACH Form Routing Number Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMask">
+                <display-name xml:lang="x-default">ACH Form Routing Number Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMaskingCharacter">
+                <display-name xml:lang="x-default">ACH Form Routing Number Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMaskingMode">
+                <display-name xml:lang="x-default">ACH Form Routing Number Field Masking Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask always except last four</display>
+                        <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4_SHRINK</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur</display>
+                        <value>BLUR_MASK_ALL_SHRINK</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberShrunkLength">
+                <display-name xml:lang="x-default">ACH Form Routing Number Field Shrunk Length</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Routing Number Field for the ACH Form</description>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="CommerceHubACHFormIdValuePlaceholder">
+                <display-name xml:lang="x-default">ACH Form ID Value Field Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormIdValuePlaceholderCharacter">
+                <display-name xml:lang="x-default">ACH Form ID Value Field Placeholder Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormIdValueMask">
+                <display-name xml:lang="x-default">ACH Form ID Value Field Masking</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormIdValueMaskingCharacter">
+                <display-name xml:lang="x-default">ACH Form ID Value Field Masking Character</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>*</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>•</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>x</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormIdValueMaskingMode">
+                <display-name xml:lang="x-default">ACH Form ID Value Field Masking Mode</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display>Mask always except last four</display>
+                        <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all always</display>
+                        <value>ALWAYS_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask all on blur</display>
+                        <value>BLUR_MASK_ALL</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur except last four</display>
+                        <value>BLUR_MASK_EXCEPT_LAST_4_SHRINK</value>
+                    </value-definition>
+                    <value-definition>
+                        <display>Mask and shrink on blur</display>
+                        <value>BLUR_MASK_ALL_SHRINK</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormIdValueShrunkLength">
+                <display-name xml:lang="x-default">ACH Form ID Value Field Shrunk Length</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the ID Value Field for the ACH Form</description>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="CommerceHubACHFormBusinessNamePlaceholder">
+                <display-name xml:lang="x-default">ACH Form Business Name Field Placeholder</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Business Name Field for the ACH Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormCSS">
+                <display-name xml:lang="x-default">ACH Form CSS</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the CSS of the ACH Form</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormFontData">
+                <display-name xml:lang="x-default">ACH Form Font Data</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormFontFamily">
+                <display-name xml:lang="x-default">ACH Form Font Family</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormFontFormat">
+                <display-name xml:lang="x-default">ACH Form Font Format</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormFontIntegrity">
+                <display-name xml:lang="x-default">ACH Form Font Integrity</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Font of the ACH Form (All fields required to apply custom font)</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value></default-value>
+            </attribute-definition>
+
             <!--THIS IS WHERE THE GIFT FORM CUSTOMIZATION STARTS-->
 
             <attribute-definition attribute-id="CommerceHubGiftFormCardNumberPlaceholder">
@@ -1503,6 +1850,50 @@
                 <attribute attribute-id="CommerceHubTokenizationFormFontFamily"/>
                 <attribute attribute-id="CommerceHubTokenizationFormFontFormat"/>
                 <attribute attribute-id="CommerceHubTokenizationFormFontIntegrity"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_ACH">
+                <display-name xml:lang="x-default">Fiserv CommerceHub ACH Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+
+                <!--THIS IS WHERE THE ACH SETTINGS START-->
+                <attribute attribute-id="CommerceHubACHEnable"/>
+                <attribute attribute-id="CommerceHubACHPaymentType"/>
+
+                <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
+                <attribute attribute-id="CommerceHubACHFormAccountNumberPlaceholder"/>
+                <attribute attribute-id="CommerceHubACHFormAccountNumberPlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubACHFormAccountNumberMask"/>
+                <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingCharacter"/>
+                <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingMode"/>
+                <attribute attribute-id="CommerceHubACHFormAccountNumberShrunkLength"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholder"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberMask"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingCharacter"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingMode"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberShrunkLength"/>
+                <attribute attribute-id="CommerceHubACHFormIdValuePlaceholder"/>
+                <attribute attribute-id="CommerceHubACHFormIdValuePlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubACHFormIdValueMask"/>
+                <attribute attribute-id="CommerceHubACHFormIdValueMaskingCharacter"/>
+                <attribute attribute-id="CommerceHubACHFormIdValueMaskingMode"/>
+                <attribute attribute-id="CommerceHubACHFormIdValueShrunkLength"/>
+                <attribute attribute-id="CommerceHubACHFormBusinessNamePlaceholder"/>
+                <attribute attribute-id="CommerceHubACHFormCSS"/>
+                <attribute attribute-id="CommerceHubACHFormFontData"/>
+                <attribute attribute-id="CommerceHubACHFormFontFamily"/>
+                <attribute attribute-id="CommerceHubACHFormFontFormat"/>
+                <attribute attribute-id="CommerceHubACHFormFontIntegrity"/>
             </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
                 <display-name xml:lang="x-default">Fiserv CommerceHub Gift Settings</display-name>
@@ -1862,6 +2253,11 @@
                 <attribute attribute-id="commercehubSessionId"/>
                 <attribute attribute-id="commercehub3DSAuthenitcationId"/>
                 <attribute attribute-id="tokenizeCard"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_ACH">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubSessionId"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
