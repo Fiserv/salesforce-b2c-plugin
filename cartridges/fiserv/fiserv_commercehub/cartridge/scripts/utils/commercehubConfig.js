@@ -104,6 +104,19 @@ const commerceHubExport =
         return getSitePreference('CommerceHubForcedBasketTokenization');
     },
 
+    // This is where the ACH settings start
+
+    getCommerceHubACHEnabled()
+    {
+        return getSitePreference('CommerceHubACHEnable');
+    },
+
+    getCommerceHubACHPaymentType()
+    {
+        return getSitePreference('CommerceHubACHPaymentType').value;
+    },
+
+
     // This is where the Gift Card settings start
 
     getCommerceHubGiftEnabled()
@@ -209,7 +222,7 @@ const commerceHubExport =
             return;
 
         let config = {};
-        config['fields'] = this.buildFormFieldsConfig(formId);
+        config['fields'] = formId !== "ACH" ? this.buildFormFieldsConfig(formId) : this.buildACHFormFieldsConfig();
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
         config['font'] = this.buildFormFontConfig(formId);
         config['contextualCssClassNames'] = {
@@ -274,6 +287,71 @@ const commerceHubExport =
             }
         }
 
+        return fieldsConfig;
+    },
+
+    buildACHFormFieldsConfig()
+    {
+        let fieldsConfig = {};
+        let elementIdPrefix = 'fiserv_commercehub-ach';
+
+        fieldsConfig['accountNumber'] = {
+            'parentElementId': elementIdPrefix + '-account-number',
+            'placeholder': getSitePreference('CommerceHubACHFormAccountNumberPlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormAccountNumberPlaceholderCharacter')?.value,
+            'masking': {
+                'character': getSitePreference('CommerceHubACHFormAccountNumberMaskingCharacter')?.value,
+                'mode': (getSitePreference('CommerceHubACHFormAccountNumberMask') 
+                        ? getSitePreference('CommerceHubACHFormAccountNumberMaskingMode')?.value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubACHFormAccountNumberShrunkLength')
+            }
+        };
+    
+        fieldsConfig['routingNumber'] = {
+            'parentElementId': elementIdPrefix + '-routing-number',
+            'placeholder': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholderCharacter')?.value,
+            'masking': {
+                'character': getSitePreference('CommerceHubACHFormRoutingNumberMaskingCharacter')?.value,
+                'mode': (getSitePreference('CommerceHubACHFormRoutingNumberMask') 
+                        ? getSitePreference('CommerceHubACHFormRoutingNumberMaskingMode')?.value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubACHFormRoutingNumberShrunkLength')
+            }
+        };
+    
+        fieldsConfig['idValue'] = {
+            'parentElementId': elementIdPrefix + '-id-value',
+            'placeholder': getSitePreference('CommerceHubACHFormIdValuePlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormIdValuePlaceholderCharacter')?.value,
+            'masking': {
+                'character': getSitePreference('CommerceHubACHFormIdValueMaskingCharacter')?.value,
+                'mode': (getSitePreference('CommerceHubACHFormIdValueMask') 
+                        ? getSitePreference('CommerceHubACHFormIdValueMaskingMode')?.value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubACHFormIdValueShrunkLength')
+            }
+        };
+    
+        fieldsConfig['businessName'] = {
+            'parentElementId': elementIdPrefix + '-business-name',
+            'placeholder': getSitePreference('CommerceHubACHFormBusinessNamePlaceholder')
+        };
+    
+        fieldsConfig['idType'] = {
+            'parentElementId': elementIdPrefix + '-id-type'
+        };
+    
+        fieldsConfig['driverLicenseState'] = {
+            'parentElementId': elementIdPrefix + '-driver-license-state'
+        };
+    
+        fieldsConfig['accountType'] = {
+            'parentElementId': elementIdPrefix + '-account-type'
+        };
+    
+        fieldsConfig['checkType'] = {
+            'parentElementId': elementIdPrefix + '-check-type'
+        };
+    
         return fieldsConfig;
     },
 
