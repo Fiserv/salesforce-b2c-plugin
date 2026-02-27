@@ -2,8 +2,7 @@
 
 <isset name="basketTokenFlowEnabled" value="${!pdict.customer.registeredUser &&
     pdict.FiservConfig.getCommerceHubTokenization() &&
-    pdict.FiservConfig.getEarlyTokenization() &&
-    pdict.FiservConfig.getBasketTokenization()}" scope="pdict" />
+    pdict.FiservConfig.getForcedBasketTokenization()}" scope="pdict" />
 
 <!--- applicable credit cards--->
 <div class="tab-pane active credit-card-content" id="credit-card-content" role="tabpanel">

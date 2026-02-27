@@ -13,7 +13,7 @@ function getFrontendConfigData(formId)
     {
         case 'Payment':
             configData = {
-                'tokenizeEarly': fiservConfig.getCommerceHubTokenization() ? fiservConfig.getEarlyTokenization() : false,
+                'basketTokenization': (fiservConfig.getCommerceHubTokenization() && fiservConfig.getForcedBasketTokenization()),
                 'use3DS': fiservConfig.get3DSEnabled(),
                 'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'cvvEnabled': fiservConfig.getTokenSecurityEnabled(),
@@ -21,10 +21,6 @@ function getFrontendConfigData(formId)
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
                 'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
             };
-            if(configData.tokenizeEarly)
-            {
-                configData['basketTokenization'] = fiservConfig.getBasketTokenization();
-            }
             if(configData.fastlaneEnabled)
             {
                 configData['fastlaneAddressFormNames'] = fiservConfig.buildAddressFormNamesObject();

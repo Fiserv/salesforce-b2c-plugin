@@ -34,25 +34,22 @@
                 <preference preference-id="CommerceHubCreditPaymentType">
                     <value>AUTH</value>
                 </preference>
+                <preference preference-id="CommerceHub3DSEnable">
+                    <value>false</value>
+                </preference>
+
+                <!--THIS IS WHERE THE TOKENIZATION SETTINGS START-->
+
                 <preference preference-id="CommerceHubTokenization">
                     <value>true</value>
                 </preference>
-                <preference preference-id="CommerceHubTokenizationStrategy">
-                    <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHubStandaloneSPA">
+                <preference preference-id="CommerceHubStandaloneTokenization">
                     <value>false</value>
                 </preference>
                 <preference preference-id="CommerceHubTokenSecurityEnable">
                     <value>false</value>
                 </preference>
-                <preference preference-id="CommerceHubEarlyTokenization">
-                    <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHubBasketTokenization">
-                    <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHub3DSEnable">
+                <preference preference-id="CommerceHubForcedBasketTokenization">
                     <value>false</value>
                 </preference>
 
@@ -551,12 +548,6 @@
                 </preference>
                 <preference preference-id="CommerceHubSamsungPayButtonColor">
                     <value>black</value>
-                </preference>
-                <preference preference-id="CommerceHubSamsungPaySupportedCardBrands">
-                    <value>visa</value>
-                    <value>mastercard</value>
-                    <value>amex</value>
-                    <value>discover</value>
                 </preference>
             </all-instances>
             <development/>

@@ -77,19 +77,21 @@ const commerceHubExport =
         return getSitePreference('CommerceHubCreditPaymentType').value;
     },
 
+    get3DSEnabled()
+    {
+        return getSitePreference('CommerceHub3DSEnable');
+    },
+
+    // This is where the Tokenization settings start
+
     getCommerceHubTokenization()
     {
         return getSitePreference('CommerceHubTokenization');
     },
 
-    getCommerceHubTokenizationStrategy()
+    getCommerceHubStandaloneTokenization()
     {
-        return getSitePreference('CommerceHubTokenizationStrategy').value === 'true';
-    },
-
-    getCommerceHubStandaloneSpa()
-    {
-        return getSitePreference('CommerceHubStandaloneSPA');
+        return !getSitePreference('CommerceHubStandaloneTokenization'); // To align with the display in the config page, this value is negated
     },
 
     getTokenSecurityEnabled()
@@ -97,19 +99,9 @@ const commerceHubExport =
         return getSitePreference('CommerceHubTokenSecurityEnable');
     },
 
-    getEarlyTokenization()
+    getForcedBasketTokenization()
     {
-        return getSitePreference('CommerceHubEarlyTokenization');
-    },
-
-    getBasketTokenization()
-    {
-        return getSitePreference('CommerceHubBasketTokenization');
-    },
-
-    get3DSEnabled()
-    {
-        return getSitePreference('CommerceHub3DSEnable');
+        return getSitePreference('CommerceHubForcedBasketTokenization');
     },
 
     // This is where the Gift Card settings start

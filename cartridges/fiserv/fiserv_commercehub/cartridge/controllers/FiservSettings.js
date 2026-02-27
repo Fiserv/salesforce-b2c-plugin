@@ -273,19 +273,18 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubCreditEnable'),
             getPreferenceDescription('CommerceHubCreditPaymentType'),
             getPreferenceDescription('CommerceHub3DSEnable')
-        ],
-        'subform': {
-            'label': 'Tokenization Options',
-            'id': 'Tokenization',
-            'items': [
-                getPreferenceDescription('CommerceHubTokenization'),
-                getPreferenceDescription('CommerceHubTokenizationStrategy'),
-                getPreferenceDescription('CommerceHubStandaloneSPA'),
-                getPreferenceDescription('CommerceHubTokenSecurityEnable'),
-                getPreferenceDescription('CommerceHubEarlyTokenization'),
-                getPreferenceDescription('CommerceHubBasketTokenization'),
-            ]
-        }
+        ]
+    });
+
+    configList.push({
+        'label': 'Stored Payment Options',
+        'id': 'Tokenization',
+        'items': [
+            getPreferenceDescription('CommerceHubTokenization'),
+            getPreferenceDescription('CommerceHubStandaloneTokenization'),
+            getPreferenceDescription('CommerceHubTokenSecurityEnable'),
+            getPreferenceDescription('CommerceHubForcedBasketTokenization')
+        ]
     });
 
     configList.push({
