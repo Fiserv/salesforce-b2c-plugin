@@ -100,7 +100,7 @@ function retrieveCommerceHubPreferences()
     for(let dependency in dependencyList)
     {
         dependencyList[dependency].forEach((key) => {
-            if(!idConfigList[key])
+            if(!idConfigList[key] && idConfigList[dependency])
             {
                 if(idConfigList[dependency]['nonInputDependencies'] === undefined)
                     idConfigList[dependency]['nonInputDependencies'] = [];
@@ -108,9 +108,12 @@ function retrieveCommerceHubPreferences()
                 return;
             }
 
-            if(idConfigList[key]['dependencies'] === undefined)
-                idConfigList[key]['dependencies'] = [];
-            idConfigList[key]['dependencies'].push(dependency);
+            if(idConfigList[key])
+            {
+                if(idConfigList[key]['dependencies'] === undefined)
+                    idConfigList[key]['dependencies'] = [];
+                idConfigList[key]['dependencies'].push(dependency);
+            }
         });
     }
 
@@ -121,9 +124,12 @@ function retrieveCommerceHubPreferences()
             fiservConstants.FORM_ID_LIST.forEach((formId) => {
                 let keyId = 'CommerceHub' + formId + 'Form' + key;
                 let dependencyId = 'CommerceHub' + formId + 'Form' + dependency;
-                if(idConfigList[keyId]['dependencies'] === undefined)
-                    idConfigList[keyId]['dependencies'] = [];
-                idConfigList[keyId]['dependencies'].push(dependencyId);
+                if(idConfigList[keyId])
+                {
+                    if(idConfigList[keyId]['dependencies'] === undefined)
+                        idConfigList[keyId]['dependencies'] = [];
+                    idConfigList[keyId]['dependencies'].push(dependencyId);
+                }
             });
         });
     }
@@ -200,6 +206,53 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
         'items': [
             getPreferenceDescription(prefix + 'ExpirationYearPlaceholder'),
             getPreferenceDescription(prefix + 'ExpirationYearInvalidFieldMessage')
+        ]
+    });
+
+    form.push({
+        'label': 'Account Number',
+        'id': formId + 'AccountNumber',
+        'items': [
+            getPreferenceDescription(prefix + 'AccountNumberPlaceholder'),
+            getPreferenceDescription(prefix + 'AccountNumberPlaceholderCharacter'),
+            getPreferenceDescription(prefix + 'AccountNumberMask'),
+            getPreferenceDescription(prefix + 'AccountNumberMaskingCharacter'),
+            getPreferenceDescription(prefix + 'AccountNumberMaskingMode'),
+            getPreferenceDescription(prefix + 'AccountNumberShrunkLength')
+        ]
+    });
+
+    form.push({
+        'label': 'Routing Number',
+        'id': formId + 'RoutingNumber',
+        'items': [
+            getPreferenceDescription(prefix + 'RoutingNumberPlaceholder'),
+            getPreferenceDescription(prefix + 'RoutingNumberPlaceholderCharacter'),
+            getPreferenceDescription(prefix + 'RoutingNumberMask'),
+            getPreferenceDescription(prefix + 'RoutingNumberMaskingCharacter'),
+            getPreferenceDescription(prefix + 'RoutingNumberMaskingMode'),
+            getPreferenceDescription(prefix + 'RoutingNumberShrunkLength')
+        ]
+    });
+
+    form.push({
+        'label': 'ID Value',
+        'id': formId + 'IdValue',
+        'items': [
+            getPreferenceDescription(prefix + 'IdValuePlaceholder'),
+            getPreferenceDescription(prefix + 'IdValuePlaceholderCharacter'),
+            getPreferenceDescription(prefix + 'IdValueMask'),
+            getPreferenceDescription(prefix + 'IdValueMaskingCharacter'),
+            getPreferenceDescription(prefix + 'IdValueMaskingMode'),
+            getPreferenceDescription(prefix + 'IdValueShrunkLength')
+        ]
+    });
+
+    form.push({
+        'label': 'Business Name',
+        'id': formId + 'BusinessName',
+        'items': [
+            getPreferenceDescription(prefix + 'BusinessNamePlaceholder')
         ]
     });
 
@@ -284,6 +337,15 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubStandaloneTokenization'),
             getPreferenceDescription('CommerceHubTokenSecurityEnable'),
             getPreferenceDescription('CommerceHubForcedBasketTokenization')
+        ]
+    });
+
+    configList.push({
+        'label': 'ACH',
+        'id': 'ACH',
+        'items': [
+            getPreferenceDescription('CommerceHubACHEnable'),
+            getPreferenceDescription('CommerceHubACHPaymentType')
         ]
     });
 

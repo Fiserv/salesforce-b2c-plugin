@@ -17,6 +17,7 @@ module.exports = {
     TOKEN_SOURCE_TYPE : "PaymentToken",
     PROCESSOR_ID_LIST : {
         COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
+        COMMERCEHUB_ACH_PROCESSOR : "FISERV_COMMERCEHUB_ACH",
         COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
         COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
         COMMERCEHUB_VENMO_PROCESSOR : "FISERV_COMMERCEHUB_VENMO",
@@ -25,8 +26,9 @@ module.exports = {
         COMMERCEHUB_SAMSUNGPAY_PROCESSOR : "FISERV_COMMERCEHUB_SAMSUNGPAY",
         COMMERCEHUB_PAZE_PROCESSOR : "FISERV_COMMERCEHUB_PAZE",
     },
-    PAYMENT_METHOD_LIST : {
+    PAYMENT_METHOD_LIST : {=
         COMMERCEHUB_CREDIT_PAYMENT_METHOD : "CREDIT_CARD",
+        COMMERCEHUB_ACH_PAYMENT_METHOD : "ACH",
         COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
         COMMERCEHUB_APPLEPAY_PAYMENT_METHOD : "APPLEPAY",
         COMMERCEHUB_SAMSUNGPAY_PAYMENT_METHOD : "SAMSUNGPAY",
@@ -63,7 +65,7 @@ module.exports = {
         ERROR_MESSAGE: ['error', [0], 'message']
     },
     ICON_LIST : ['card', 'gear', 'gift', 'money', 'sign', 'token'],
-    FORM_ID_LIST : [ 'Payment', 'Tokenization', 'Gift' ],
+    FORM_ID_LIST : [ 'Payment', 'Tokenization', 'ACH', 'Gift' ],
     DEPENDENCY_LIST : {
         'CommerceHubCreditEnable': [
             'CommerceHubCreditPaymentType',
@@ -74,6 +76,9 @@ module.exports = {
             'CommerceHubStandaloneTokenization',
             'CommerceHubTokenSecurityEnable',
             'CommerceHubForcedBasketTokenization'
+        ],
+        'CommerceHubACHEnable': [
+            'CommerceHubACHPaymentType'
         ],
         'CommerceHubGiftEnable': [
             'CommerceHubGiftPaymentMethodTitle',
@@ -110,7 +115,10 @@ module.exports = {
     },
     FORM_DEPENDENCY_LIST : {
         'CardNumberMask': ['CardNumberMaskCharacter', 'CardNumberMaskMode', 'CardNumberMaskLength'],
-        'SecurityCodeMask': ['SecurityCodeMaskCharacter', 'SecurityCodeMaskMode']
+        'SecurityCodeMask': ['SecurityCodeMaskCharacter', 'SecurityCodeMaskMode'],
+        'AccountNumberMask': ['AccountNumberMaskingCharacter', 'AccountNumberMaskingMode', 'AccountNumberShrunkLength'],
+        'RoutingNumberMask': ['RoutingNumberMaskingCharacter', 'RoutingNumberMaskingMode', 'RoutingNumberShrunkLength'],
+        'IdValueMask': ['IdValueMaskingCharacter', 'IdValueMaskingMode', 'IdValueShrunkLength']
     },
     CONFIG_VALIDATIONS : {
         MANDATORY: [ // A list of absolutely mandatory fields (Excluding select dropdowns...)
@@ -138,7 +146,8 @@ module.exports = {
             'CommerceHubPaymentFormExpirationMonthOptionLabels',
             'CommerceHubTokenizationFormExpirationMonthOptionLabels',
             'CommerceHubPaymentFormCSS',
-            'CommerceHubTokenizationFormCSS'
+            'CommerceHubTokenizationFormCSS',
+            'CommerceHubACHFormCSS'
         ]
     },
     CONFIG_DESCRIPTIONS : {
