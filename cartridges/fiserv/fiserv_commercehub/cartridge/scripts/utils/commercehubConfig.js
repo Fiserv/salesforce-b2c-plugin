@@ -331,37 +331,29 @@ const commerceHubExport =
         fieldsConfig['accountNumber'] = {
             'parentElementId': elementIdPrefix + '-account-number',
             'placeholder': getSitePreference('CommerceHubACHFormAccountNumberPlaceholder'),
-            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormAccountNumberPlaceholderCharacter')?.value,
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormAccountNumberPlaceholderCharacter').value,
             'masking': {
-                'character': getSitePreference('CommerceHubACHFormAccountNumberMaskingCharacter')?.value,
+                'character': getSitePreference('CommerceHubACHFormAccountNumberMaskingCharacter').value,
                 'mode': (getSitePreference('CommerceHubACHFormAccountNumberMask') 
-                        ? getSitePreference('CommerceHubACHFormAccountNumberMaskingMode')?.value : NO_MASKING),
-                'shrunkLength': getSitePreference('CommerceHubACHFormAccountNumberShrunkLength')
+                        ? getSitePreference('CommerceHubACHFormAccountNumberMaskingMode').value : NO_MASKING)
             }
         };
     
         fieldsConfig['routingNumber'] = {
             'parentElementId': elementIdPrefix + '-routing-number',
             'placeholder': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholder'),
-            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholderCharacter')?.value,
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholderCharacter').value,
             'masking': {
-                'character': getSitePreference('CommerceHubACHFormRoutingNumberMaskingCharacter')?.value,
+                'character': getSitePreference('CommerceHubACHFormRoutingNumberMaskingCharacter').value,
                 'mode': (getSitePreference('CommerceHubACHFormRoutingNumberMask') 
-                        ? getSitePreference('CommerceHubACHFormRoutingNumberMaskingMode')?.value : NO_MASKING),
-                'shrunkLength': getSitePreference('CommerceHubACHFormRoutingNumberShrunkLength')
+                        ? getSitePreference('CommerceHubACHFormRoutingNumberMaskingMode').value : NO_MASKING)
             }
         };
     
         fieldsConfig['idValue'] = {
             'parentElementId': elementIdPrefix + '-id-value',
             'placeholder': getSitePreference('CommerceHubACHFormIdValuePlaceholder'),
-            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormIdValuePlaceholderCharacter')?.value,
-            'masking': {
-                'character': getSitePreference('CommerceHubACHFormIdValueMaskingCharacter')?.value,
-                'mode': (getSitePreference('CommerceHubACHFormIdValueMask') 
-                        ? getSitePreference('CommerceHubACHFormIdValueMaskingMode')?.value : NO_MASKING),
-                'shrunkLength': getSitePreference('CommerceHubACHFormIdValueShrunkLength')
-            }
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormIdValuePlaceholderCharacter').value
         };
     
         fieldsConfig['businessName'] = {
@@ -415,6 +407,22 @@ const commerceHubExport =
             'securityCode': getSitePreference('CommerceHub' + formId + 'FormSecurityCodeInvalidFieldMessage'),
             'expirationMonth': getSitePreference('CommerceHub' + formId + 'FormExpirationMonthInvalidFieldMessage'),
             'expirationYear': getSitePreference('CommerceHub' + formId + 'FormExpirationYearInvalidFieldMessage')
+        };
+
+        return invalidFields;
+    },
+
+    getACHInvalidFields()
+    {
+        let invalidFields = {
+            'accountNumber': getSitePreference('CommerceHubACHFormAccountNumberInvalidFieldMessage'),
+            'routingNumber': getSitePreference('CommerceHubACHFormRoutingNumberInvalidFieldMessage'),
+            'idValue': getSitePreference('CommerceHubACHFormIdValueInvalidFieldMessage'),
+            'businessName': getSitePreference('CommerceHubACHFormBusinessNameInvalidFieldMessage'),
+            'idType': getSitePreference('CommerceHubACHFormIdTypeInvalidFieldMessage'),
+            'driverLicenseState': getSitePreference('CommerceHubACHFormDriverLicenseStateInvalidFieldMessage'),
+            'accountType': getSitePreference('CommerceHubACHFormAccountTypeInvalidFieldMessage'),
+            'checkType': getSitePreference('CommerceHubACHFormCheckTypeInvalidFieldMessage')
         };
 
         return invalidFields;

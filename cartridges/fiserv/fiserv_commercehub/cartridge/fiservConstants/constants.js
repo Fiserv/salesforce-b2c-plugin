@@ -116,9 +116,9 @@ module.exports = {
     FORM_DEPENDENCY_LIST : {
         'CardNumberMask': ['CardNumberMaskCharacter', 'CardNumberMaskMode', 'CardNumberMaskLength'],
         'SecurityCodeMask': ['SecurityCodeMaskCharacter', 'SecurityCodeMaskMode'],
-        'AccountNumberMask': ['AccountNumberMaskingCharacter', 'AccountNumberMaskingMode', 'AccountNumberShrunkLength'],
-        'RoutingNumberMask': ['RoutingNumberMaskingCharacter', 'RoutingNumberMaskingMode', 'RoutingNumberShrunkLength'],
-        'IdValueMask': ['IdValueMaskingCharacter', 'IdValueMaskingMode', 'IdValueShrunkLength']
+        'AccountNumberMask': ['AccountNumberMaskingCharacter', 'AccountNumberMaskingMode', 'AccountNumberMaskLength'],
+        'RoutingNumberMask': ['RoutingNumberMaskingCharacter', 'RoutingNumberMaskingMode', 'RoutingNumberMaskLength'],
+        'IdValueMask': ['IdValueMaskingCharacter', 'IdValueMaskingMode', 'IdValueMaskLength']
     },
     CONFIG_VALIDATIONS : {
         MANDATORY: [ // A list of absolutely mandatory fields (Excluding select dropdowns...)
