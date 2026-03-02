@@ -23,7 +23,7 @@ function executeCommercehubTransaction(orderNo, paymentInstrument)
     return fiservCheckout.executeCommercehubChargesTransaction(orderNo, paymentInstrument);
 }
 
-function associateDataPostTransaction(res, paymentInstrument)
+function postTransactionDataProcessing(res, paymentInstrument)
 {
     const fiservConstants = require('*/cartridge/fiservConstants/constants');
     const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
@@ -46,6 +46,6 @@ module.exports =
     convertToB2cCardType : convertToB2cCardType,
     getCommercehubPaymentType : getCommercehubPaymentType,
     executeCommercehubTransaction : executeCommercehubTransaction,
-    associateDataPostTransaction : associateDataPostTransaction,
+    postTransactionDataProcessing : postTransactionDataProcessing,
     getProcessorString : getProcessorString,
 };
