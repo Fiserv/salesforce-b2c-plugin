@@ -88,29 +88,50 @@ class FiservSDKIframe
         return formConfig;
     }
 
+    credentialsReponseFormSubmission = async function(storeSessionCallback, requestPurpose = null)
+    {
+        storeSessionCallback(this.credentialsResponse['sessionId']);
+
+        if(requestPurpose === "3DS") {
+            await window.fiserv.init(FiservSDKHelper.buildInitConfig(this.credentialsResponse));
+            window.fiservPluginSDKInitRan = true;
+        }
+
+        this.form.submit(this.credentialsResponse['submitConfig'])
+            .then((response) => {
+                this.runSuccessCallback(response);
+            })
+            .catch((error) => {
+                this.runFailureCallback();
+            });
+    }
+
+    rawInitCall = async function(credentialsUrl, requestPurpose = null)
+    {
+        this.credentialsResponse = await new Promise((resolve, reject) => {
+            FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
+        });
+
+        await window.fiserv.init(FiservSDKHelper.buildInitConfig(this.credentialsResponse));
+        window.fiservPluginSDKInitRan = true;
+    }
+
     submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null)
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
+            if (requestPurpose === "ACH") {
+                this.credentialsReponseFormSubmission(storeSessionCallback, requestPurpose);
+                return;
+            }
+
             let promise = new Promise((resolve, reject) => {
                 FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
             });
 
             promise.then(async (credentialsResponse) => {
-                storeSessionCallback(credentialsResponse['sessionId']);
-
-                if(requestPurpose === "3DS") {
-                    await window.fiserv.init(FiservSDKHelper.buildInitConfig(credentialsResponse));
-                    window.fiservPluginSDKInitRan = true;
-                }
-
-                this.form.submit(credentialsResponse['submitConfig'])
-                    .then((response) => {
-                        this.runSuccessCallback(response);
-                    })
-                    .catch((error) => {
-                        this.runFailureCallback();
-                    })
+                this.credentialsResponse = credentialsResponse;
+                this.credentialsReponseFormSubmission(storeSessionCallback, requestPurpose);
             })
             .catch((error) => {
                 this.runFailureCallback();

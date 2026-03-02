@@ -13,6 +13,10 @@
         <div>
             <span>${Resource.msg('msg.card.type.ending', 'confirmation', null)} ${payment.expirationMonth}/${payment.expirationYear}</span>
         </div>
+    <iselseif condition="${payment.paymentMethod === 'ACH'}" />
+        <div class="ach-item">
+            <span>ACH</span>
+        </div>
     <iselseif condition="${payment.paymentMethod === 'GIFT_CARD'}" />
         <div class="gift-card-item">
             <span>${Resource.msg('display.html.gift.giftListItem', 'display', null)} - ${payment.currencySymbol}${payment.amount}</span>

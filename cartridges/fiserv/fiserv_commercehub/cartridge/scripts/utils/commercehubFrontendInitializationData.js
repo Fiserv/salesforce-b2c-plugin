@@ -31,6 +31,11 @@ function getFrontendConfigData(formId)
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailTokenization', 'error', null)
             }
             break;
+        case 'ACH':
+            configData = {
+                'captureFailureMessage': Resource.msg('message.error.ach.captureFailCheckout', 'error', null)
+            }
+            break;
         case 'Gift':
             configData = {
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailGift', 'error', null),
@@ -86,7 +91,7 @@ function retrieveFrontendInitializationData(formId)
     return {
         'environment': fiservConfig.getCommerceHubApiEnvironment(),
         'formCustomization': fiservConfig.getFormConfig(formId),
-        'invalidFields': fiservConfig.getInvalidFields(formId),
+        'invalidFields': formId !== 'ACH' ? fiservConfig.getInvalidFields(formId) : fiservConfig.getACHInvalidFields(),
         'configData': getFrontendConfigData(formId)
     }
 }
