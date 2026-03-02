@@ -1290,15 +1290,13 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberShrunkLength">
-                <display-name xml:lang="x-default">ACH Form Account Number Field Shrunk Length</display-name>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form Account Number Invalid Field Message</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
                 <description xml:lang="x-default">Customize the Account Number Field for the ACH Form</description>
-                <type>int</type>
+                <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
-                <min-value>0</min-value>
-                <default-value>4</default-value>
             </attribute-definition>
 
             <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberPlaceholder">
@@ -1380,15 +1378,13 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberShrunkLength">
-                <display-name xml:lang="x-default">ACH Form Routing Number Field Shrunk Length</display-name>
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form Routing Number Invalid Field Message</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
                 <description xml:lang="x-default">Customize the Routing Number Field for the ACH Form</description>
-                <type>int</type>
+                <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
-                <min-value>0</min-value>
-                <default-value>4</default-value>
             </attribute-definition>
 
             <attribute-definition attribute-id="CommerceHubACHFormIdValuePlaceholder">
@@ -1414,77 +1410,59 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormIdValueMask">
-                <display-name xml:lang="x-default">ACH Form ID Value Field Masking</display-name>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>true</default-value>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormIdValueMaskingCharacter">
-                <display-name xml:lang="x-default">ACH Form ID Value Field Masking Character</display-name>
-                <type>enum-of-string</type>
-                <mandatory-flag>true</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <value-definitions>
-                    <value-definition>
-                        <value>*</value>
-                    </value-definition>
-                    <value-definition default="true">
-                        <value>•</value>
-                    </value-definition>
-                    <value-definition>
-                        <value>x</value>
-                    </value-definition>
-                </value-definitions>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormIdValueMaskingMode">
-                <display-name xml:lang="x-default">ACH Form ID Value Field Masking Mode</display-name>
-                <type>enum-of-string</type>
-                <mandatory-flag>true</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <value-definitions>
-                    <value-definition default="true">
-                        <display>Mask always except last four</display>
-                        <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Mask all always</display>
-                        <value>ALWAYS_MASK_ALL</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Mask on blur except last four</display>
-                        <value>BLUR_MASK_EXCEPT_LAST_4</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Mask all on blur</display>
-                        <value>BLUR_MASK_ALL</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Mask and shrink on blur except last four</display>
-                        <value>BLUR_MASK_EXCEPT_LAST_4_SHRINK</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Mask and shrink on blur</display>
-                        <value>BLUR_MASK_ALL_SHRINK</value>
-                    </value-definition>
-                </value-definitions>
-            </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormIdValueShrunkLength">
-                <display-name xml:lang="x-default">ACH Form ID Value Field Shrunk Length</display-name>
+
+
+            <attribute-definition attribute-id="CommerceHubACHFormIdValueInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form ID Value Invalid Field Message</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
                 <description xml:lang="x-default">Customize the ID Value Field for the ACH Form</description>
-                <type>int</type>
+                <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
-                <min-value>0</min-value>
-                <default-value>4</default-value>
             </attribute-definition>
 
             <attribute-definition attribute-id="CommerceHubACHFormBusinessNamePlaceholder">
                 <display-name xml:lang="x-default">ACH Form Business Name Field Placeholder</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormBusinessNameInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form Business Name Invalid Field Message</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
                 <description xml:lang="x-default">Customize the Business Name Field for the ACH Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormIdTypeInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form ID Type Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the ID Type Field for the ACH Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormDriverLicenseStateInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form Driver License State Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Driver License State Field for the ACH Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountTypeInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form Account Type Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Account Type Field for the ACH Form</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormCheckTypeInvalidFieldMessage">
+                <display-name xml:lang="x-default">ACH Form Check Type Invalid Field Message</display-name>
+                <!--This really shouldn't be here, but it makes it look good on the settings page...-->
+                <description xml:lang="x-default">Customize the Check Type Field for the ACH Form</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1854,20 +1832,22 @@
                 <attribute attribute-id="CommerceHubACHFormAccountNumberMask"/>
                 <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingCharacter"/>
                 <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingMode"/>
-                <attribute attribute-id="CommerceHubACHFormAccountNumberShrunkLength"/>
+                <attribute attribute-id="CommerceHubACHFormAccountNumberInvalidFieldMessage"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholder"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberMask"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingCharacter"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingMode"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberShrunkLength"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage"/>
                 <attribute attribute-id="CommerceHubACHFormIdValuePlaceholder"/>
                 <attribute attribute-id="CommerceHubACHFormIdValuePlaceholderCharacter"/>
-                <attribute attribute-id="CommerceHubACHFormIdValueMask"/>
-                <attribute attribute-id="CommerceHubACHFormIdValueMaskingCharacter"/>
-                <attribute attribute-id="CommerceHubACHFormIdValueMaskingMode"/>
-                <attribute attribute-id="CommerceHubACHFormIdValueShrunkLength"/>
+                <attribute attribute-id="CommerceHubACHFormIdValueInvalidFieldMessage"/>
                 <attribute attribute-id="CommerceHubACHFormBusinessNamePlaceholder"/>
+                <attribute attribute-id="CommerceHubACHFormBusinessNameInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubACHFormIdTypeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubACHFormDriverLicenseStateInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubACHFormAccountTypeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubACHFormCheckTypeInvalidFieldMessage"/>
                 <attribute attribute-id="CommerceHubACHFormCSS"/>
                 <attribute attribute-id="CommerceHubACHFormFontData"/>
                 <attribute attribute-id="CommerceHubACHFormFontFamily"/>
