@@ -82,6 +82,12 @@
                 <span id="sdc-id-value-invalid-message" class="sdc-error-message sdc-hidden"></span>
             </div>
 
+            <div id="fiserv-ach-confirm-fields-container" style="display:none;">
+                <button id="fiserv-ach-confirm-fields-btn" class="btn btn-primary btn-block">
+                    ${Resource.msg('display.ach.confirmFields', 'display', null)}
+                </button>
+            </div>
+
             <div class="privacyPolicy">
                 <span></span>
                 Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.

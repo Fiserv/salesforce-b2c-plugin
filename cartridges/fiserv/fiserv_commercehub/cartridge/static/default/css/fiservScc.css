@@ -28,13 +28,17 @@
     margin-bottom: 1rem;
 }
 
+#fiserv-ach-confirm-fields-container {
+    margin-bottom: 1rem;
+}
+
 #fiserv-ach-legal-text-container {
     margin-bottom: 1rem;
 }
 
 .fiserv-ach-legal-text-box {
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 0.1875rem;
     padding: 0.75rem;
     max-height: 150px;
     overflow-y: auto;

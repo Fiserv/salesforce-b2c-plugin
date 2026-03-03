@@ -335,7 +335,8 @@ const commerceHubExport =
             'masking': {
                 'character': getSitePreference('CommerceHubACHFormAccountNumberMaskingCharacter').value,
                 'mode': (getSitePreference('CommerceHubACHFormAccountNumberMask') 
-                        ? getSitePreference('CommerceHubACHFormAccountNumberMaskingMode').value : NO_MASKING)
+                        ? getSitePreference('CommerceHubACHFormAccountNumberMaskingMode').value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubACHFormAccountNumberMaskLength')
             }
         };
     
@@ -346,7 +347,8 @@ const commerceHubExport =
             'masking': {
                 'character': getSitePreference('CommerceHubACHFormRoutingNumberMaskingCharacter').value,
                 'mode': (getSitePreference('CommerceHubACHFormRoutingNumberMask') 
-                        ? getSitePreference('CommerceHubACHFormRoutingNumberMaskingMode').value : NO_MASKING)
+                        ? getSitePreference('CommerceHubACHFormRoutingNumberMaskingMode').value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubACHFormRoutingNumberMaskLength')
             }
         };
     
