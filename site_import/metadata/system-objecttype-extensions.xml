@@ -1290,6 +1290,14 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMaskLength">
+                <display-name xml:lang="x-default">ACH Form Account Number Mask Length</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
+            </attribute-definition>
             <attribute-definition attribute-id="CommerceHubACHFormAccountNumberInvalidFieldMessage">
                 <display-name xml:lang="x-default">ACH Form Account Number Invalid Field Message</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
@@ -1377,6 +1385,14 @@
                         <value>BLUR_MASK_ALL_SHRINK</value>
                     </value-definition>
                 </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMaskLength">
+                <display-name xml:lang="x-default">ACH Form Routing Number Mask Length</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-value>0</min-value>
+                <default-value>4</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage">
                 <display-name xml:lang="x-default">ACH Form Routing Number Invalid Field Message</display-name>
@@ -1832,12 +1848,14 @@
                 <attribute attribute-id="CommerceHubACHFormAccountNumberMask"/>
                 <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingCharacter"/>
                 <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingMode"/>
+                <attribute attribute-id="CommerceHubACHFormAccountNumberMaskLength"/>
                 <attribute attribute-id="CommerceHubACHFormAccountNumberInvalidFieldMessage"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholder"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberMask"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingCharacter"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingMode"/>
+                <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskLength"/>
                 <attribute attribute-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage"/>
                 <attribute attribute-id="CommerceHubACHFormIdValuePlaceholder"/>
                 <attribute attribute-id="CommerceHubACHFormIdValuePlaceholderCharacter"/>

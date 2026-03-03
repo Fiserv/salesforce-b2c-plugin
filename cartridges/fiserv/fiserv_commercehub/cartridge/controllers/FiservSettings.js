@@ -218,6 +218,7 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
             getPreferenceDescription(prefix + 'AccountNumberMask'),
             getPreferenceDescription(prefix + 'AccountNumberMaskingCharacter'),
             getPreferenceDescription(prefix + 'AccountNumberMaskingMode'),
+            getPreferenceDescription(prefix + 'AccountNumberMaskLength'),
             getPreferenceDescription(prefix + 'AccountNumberInvalidFieldMessage')
         ]
     });
@@ -231,6 +232,7 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
             getPreferenceDescription(prefix + 'RoutingNumberMask'),
             getPreferenceDescription(prefix + 'RoutingNumberMaskingCharacter'),
             getPreferenceDescription(prefix + 'RoutingNumberMaskingMode'),
+            getPreferenceDescription(prefix + 'RoutingNumberMaskLength'),
             getPreferenceDescription(prefix + 'RoutingNumberInvalidFieldMessage')
         ]
     });

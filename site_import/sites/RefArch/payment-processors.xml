@@ -294,6 +294,9 @@
                 <preference preference-id="CommerceHubACHFormAccountNumberMaskingMode">
                     <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
                 </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMaskLength">
+                    <value>4</value>
+                </preference>
                 <preference preference-id="CommerceHubACHFormAccountNumberInvalidFieldMessage">
                     <value>Invalid Account Number</value>
                 </preference>
@@ -311,6 +314,9 @@
                 </preference>
                 <preference preference-id="CommerceHubACHFormRoutingNumberMaskingMode">
                     <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMaskLength">
+                    <value>4</value>
                 </preference>
                 <preference preference-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage">
                     <value>Invalid Routing Number</value>
