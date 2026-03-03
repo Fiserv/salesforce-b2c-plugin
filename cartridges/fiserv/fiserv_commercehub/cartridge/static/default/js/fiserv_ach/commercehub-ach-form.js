@@ -16,9 +16,11 @@ class CommercehubACH
 
         $('#sdc-mask-accountNumber, #sdc-mask-routingNumber').on('click', (element) => { this.mask(element, this.formAdapter); });
         $('#achLegalTextAccepted').on('change', () => { this.legalTextCheckboxHandler(); });
+        $('#fiserv-ach-confirm-fields-btn').on('click', (e) => { e.preventDefault(); this.fetchAndDisplayLegalText(); });
 
         this.watchSubmitResponse();
         this.watchPaymentMethod();
+        this.watchBillingAddressFields();
     }
 
     initialize = async function()
@@ -41,8 +43,8 @@ class CommercehubACH
         let loadSuccessCallback = () => { console.log("CommerceHub ACH SDK has loaded."); };
         let loadFailCallback = (error) => { this.sdkLoadFailure(error, "#fiserv-ach-fatal-notice"); };
         let formReadyCallback = () => { this.sdkInitialized(); };
-        let formValidCallback = () => { this.validForm = true; this.fetchAndDisplayLegalText(); };
-        let formInvalidCallback = () => { this.validForm = false; this.getSubmitButton().prop('disabled', true); this.hideLegalTextContainer(); };
+        let formValidCallback = () => { this.validForm = true; this.showConfirmFieldsButton(); };
+        let formInvalidCallback = () => { this.validForm = false; this.getSubmitButton().prop('disabled', true); this.hideConfirmFieldsButton(); this.hideLegalTextContainer(); };
         let fieldValidityHandler = (data) => {
             let frame = this.getSdcFieldFrame(data["field"]);
             let mess = this.getSdcFieldInvalidMessageContainer(data["field"]);
@@ -74,6 +76,7 @@ class CommercehubACH
         try
         {
             await this.formAdapter.rawInitCall(this.credentialsUrl);
+            await FiservSDKHelper.retrieveAddress(this.configDataACH.billingAddressFormNames, 'billing');
             this.formAdapter.initSdk(this.formConfig, "BANK_ACCOUNT");
         }
         catch (err)
@@ -86,21 +89,58 @@ class CommercehubACH
     fetchAndDisplayLegalText = async function()
     {
         this.getSubmitButton().prop('disabled', true);
+        $.spinner().start();
 
         let legalText = await this.formAdapter.form.getAchLegalText();
         if (legalText) {
-            $('#fiserv-ach-legal-text').html(legalText);
+            $('#fiserv-ach-legal-text').html(legalText.plainText);
             $('#achLegalTextAccepted').prop('checked', false);
-            $('#fiserv-ach-legal-text-container').show();
+            $('#fiserv-ach-legal-text-container').show().addClass('fiserv-ach-legal-populated');
             this.getSubmitButton().prop('disabled', true);
+            this.hideConfirmFieldsButton();
         }
+        
+        $.spinner().stop();
     }
 
     hideLegalTextContainer = function()
     {
-        $('#fiserv-ach-legal-text-container').hide();
+        $('#fiserv-ach-legal-text-container').hide().removeClass('fiserv-ach-legal-populated');
         $('#fiserv-ach-legal-text').html('');
         $('#achLegalTextAccepted').prop('checked', false);
+    }
+
+    watchBillingAddressFields = function()
+    {
+        const baseId = 'dwfrm_billing';
+        const billingAddressFieldsSelector = Object.keys(this.configDataACH.billingAddressFormNames)
+            .map((key) => '[name=' + baseId + this.configDataACH.billingAddressFormNames[key] + ']')
+            .join(', ');
+
+        $(billingAddressFieldsSelector).on('change', () => {
+            if ($('#fiserv-ach-legal-text-container').hasClass('fiserv-ach-legal-populated'))
+            {
+                this.hideLegalTextContainer();
+                if ($(".payment-information").data("payment-method-id") === "ACH")
+                {
+                    this.getSubmitButton().prop('disabled', true);
+                }
+                if (this.validForm)
+                {
+                    this.showConfirmFieldsButton();
+                }
+            }
+        });
+    }
+
+    showConfirmFieldsButton = function()
+    {
+        $('#fiserv-ach-confirm-fields-container').show();
+    }
+
+    hideConfirmFieldsButton = function()
+    {
+        $('#fiserv-ach-confirm-fields-container').hide();
     }
 
     legalTextCheckboxHandler = function()
@@ -117,6 +157,7 @@ class CommercehubACH
             this.getSubmitButton().prop('disabled', true);
         }
         this.hideLegalTextContainer();
+        this.hideConfirmFieldsButton();
         $('#sdc-account-number-frame, #sdc-routing-number-frame, #sdc-id-value-frame, #sdc-business-name-frame, #sdc-id-type-frame, #sdc-driver-license-state-frame, #sdc-account-type-frame, #sdc-check-type-frame')
             .removeClass('sdc-valid-field sdc-error-field sdc-focused-field');
         $('#sdc-account-number-invalid-message, #sdc-routing-number-invalid-message, #sdc-id-value-invalid-message, #sdc-business-name-invalid-message, #sdc-id-type-invalid-message, #sdc-driver-license-state-invalid-message, #sdc-account-type-invalid-message, #sdc-check-type-invalid-message')
@@ -172,7 +213,7 @@ class CommercehubACH
 
     paymentMethodHandler = (_e) => {
         this.watchSubmitButton();
-        this.getSubmitButton().prop('disabled', !this.validForm);
+        this.getSubmitButton().prop('disabled', !$('#achLegalTextAccepted').prop('checked'));
     }
 
     watchPaymentMethod = function()
@@ -336,6 +377,18 @@ class CommercehubACH
             if (frame[0].contains(document.activeElement) === true)
             {
                 frame.addClass('sdc-focused-field');
+                if ($('#fiserv-ach-legal-text-container').hasClass('fiserv-ach-legal-populated'))
+                {
+                    this.hideLegalTextContainer();
+                    if ($(".payment-information").data("payment-method-id") === "ACH")
+                    {
+                        this.getSubmitButton().prop('disabled', true);
+                    }
+                    if (this.validForm)
+                    {
+                        this.showConfirmFieldsButton();
+                    }
+                }
             }
             else
             {

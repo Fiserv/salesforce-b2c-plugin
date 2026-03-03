@@ -85,6 +85,11 @@ class FiservSDKIframe
             formConfig["paypalFastlane"] = fastlaneObject;
         }
 
+        if(formType === 'BANK_ACCOUNT' && FiservSDKHelper.addressFormList['billing'])
+        {
+            formConfig["billingAddress"] = FiservSDKHelper.addressFormList['billing'];
+        }
+
         return formConfig;
     }
 
