@@ -27,8 +27,6 @@ class CommercehubCheckoutForm
         
         this.watchSubmitResponse();
         this.watchPaymentMethods();
-        
-        if (this.cvvEnabled) this.initializeTokenCVVForms();
     }
 
     initialize = function()
