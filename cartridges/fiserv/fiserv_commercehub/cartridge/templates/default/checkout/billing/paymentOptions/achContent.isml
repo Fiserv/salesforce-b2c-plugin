@@ -102,7 +102,7 @@
                 <div id="fiserv-ach-legal-text"></div>
             </div>
             <div class="ach-legal-accept custom-control custom-checkbox">
-                <input type="checkbox" id="achConsentIndicator" class="custom-control-input" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.achConsentIndicator.htmlName}">
+                <input type="checkbox" id="achConsentIndicator" class="custom-control-input" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.achConsentIndicator.htmlName}" value="true">
                 <label class="custom-control-label" for="achConsentIndicator">
                     ${Resource.msg('display.ach.legal.accept', 'display', null)}
                 </label>
