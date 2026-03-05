@@ -135,7 +135,7 @@ module.exports = {
             'CommerceHubTokenizationFormCardNumberMaskLength': { min: 0, message: 'Valid mask length required (value ≥ 4)' }
         },
         CONFIG_REGEX : {
-            //'CommerceHubMerchantID': { regex: /^\d{15}$/, message: 'Merchant ID must be 15 digits' },
+            'CommerceHubMerchantID': { regex: /^\d{15}$/, message: 'Merchant ID must be 15 digits' },
             'CommerceHubTerminalID': { regex: /^\d{8}$/, message: 'Terminal ID must be 8 digits' },
             'CommerceHubAPIKey': { regex: /^[a-zA-Z0-9]{1,2048}$/,message: 'API Key must contain a max length of 2048 alphanumeric characters' },
             'CommerceHubAPISecret': { regex: /^[a-zA-Z0-9]{1,2048}$/, message: 'API Secret must contain a max length of 2048 alphanumeric characters' },
