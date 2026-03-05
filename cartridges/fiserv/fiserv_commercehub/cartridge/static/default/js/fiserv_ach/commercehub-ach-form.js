@@ -15,7 +15,7 @@ class CommercehubACH
         this.createAdapter();
 
         $('#sdc-mask-accountNumber, #sdc-mask-routingNumber').on('click', (element) => { this.mask(element, this.formAdapter); });
-        $('#achLegalTextAccepted').on('change', () => { this.legalTextCheckboxHandler(); });
+        $('#achConsentIndicator').on('change', () => { this.legalTextCheckboxHandler(); });
         $('#fiserv-ach-confirm-fields-btn').on('click', (e) => { e.preventDefault(); this.fetchAndDisplayLegalText(); });
 
         this.watchSubmitResponse();
@@ -94,7 +94,7 @@ class CommercehubACH
         let legalText = await this.formAdapter.form.getAchLegalText();
         if (legalText) {
             $('#fiserv-ach-legal-text').html(legalText.plainText);
-            $('#achLegalTextAccepted').prop('checked', false);
+            $('#achConsentIndicator').prop('checked', false);
             $('#fiserv-ach-legal-text-container').show().addClass('fiserv-ach-legal-populated');
             this.getSubmitButton().prop('disabled', true);
             this.hideConfirmFieldsButton();
@@ -107,7 +107,7 @@ class CommercehubACH
     {
         $('#fiserv-ach-legal-text-container').hide().removeClass('fiserv-ach-legal-populated');
         $('#fiserv-ach-legal-text').html('');
-        $('#achLegalTextAccepted').prop('checked', false);
+        $('#achConsentIndicator').prop('checked', false);
     }
 
     watchBillingAddressFields = function()
@@ -146,7 +146,7 @@ class CommercehubACH
     legalTextCheckboxHandler = function()
     {
         if (this.validForm) {
-            this.getSubmitButton().prop('disabled', !$('#achLegalTextAccepted').prop('checked'));
+            this.getSubmitButton().prop('disabled', !$('#achConsentIndicator').prop('checked'));
         }
     }
 
@@ -191,7 +191,17 @@ class CommercehubACH
     achCaptureSuccess = function()
     {
         $.spinner().stop();
+        $('.payment-details').addClass('checkout-hidden');
+        $('<div class="payment-details-ach">ACH</div>').insertAfter('.payment-details');
+        $('.edit-button').on('click', this.removeInsertedSummary);
         this.getSubmitButton().trigger('click');
+    }
+
+    removeInsertedSummary = () =>
+    {
+        $('.payment-details').removeClass('checkout-hidden');
+        $('.payment-details-ach').remove();
+        $('.edit-button').off('click', this.removeInsertedSummary);
     }
 
     showError = function(message)
@@ -213,7 +223,7 @@ class CommercehubACH
 
     paymentMethodHandler = (_e) => {
         this.watchSubmitButton();
-        this.getSubmitButton().prop('disabled', !$('#achLegalTextAccepted').prop('checked'));
+        this.getSubmitButton().prop('disabled', !$('#achConsentIndicator').prop('checked'));
     }
 
     watchPaymentMethod = function()
@@ -248,6 +258,7 @@ class CommercehubACH
             $(".payment-information").data("payment-method-id") === "ACH" &&
             xhr.responseJSON.error
         ) {
+            this.removeInsertedSummary();
             this.setSessionIdInput('');
             this.watchSubmitButton();
         }

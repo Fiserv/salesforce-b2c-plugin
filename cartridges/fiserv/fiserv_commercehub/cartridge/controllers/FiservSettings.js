@@ -355,8 +355,7 @@ function buildConfigList(chPreferenceDescriptions)
         'label': 'ACH',
         'id': 'ACH',
         'items': [
-            getPreferenceDescription('CommerceHubACHEnable'),
-            getPreferenceDescription('CommerceHubACHPaymentType')
+            getPreferenceDescription('CommerceHubACHEnable')
         ]
     });
 

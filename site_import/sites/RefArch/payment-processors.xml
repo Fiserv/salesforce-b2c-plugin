@@ -273,9 +273,6 @@
                 <preference preference-id="CommerceHubACHEnable">
                     <value>false</value>
                 </preference>
-                <preference preference-id="CommerceHubACHPaymentType">
-                    <value>AUTH</value>
-                </preference>
 
                 <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
 
