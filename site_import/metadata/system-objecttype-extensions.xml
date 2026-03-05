@@ -195,23 +195,6 @@
                 <default-value>false</default-value>
             </attribute-definition>
 
-            <attribute-definition attribute-id="CommerceHubACHPaymentType">
-                <display-name xml:lang="x-default">CommerceHubACH Charge Type</display-name>
-                <type>enum-of-string</type>
-                <mandatory-flag>true</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <value-definitions>
-                    <value-definition default="true">
-                        <display>Authorize</display>
-                        <value>AUTH</value>
-                    </value-definition>
-                    <value-definition>
-                        <display>Sale (Auth &amp; Capture)</display>
-                        <value>SALE</value>
-                    </value-definition>
-                </value-definitions>
-            </attribute-definition>
-
             <!--THIS IS WHERE THE GIFT CARD SETTINGS START-->
 
             <attribute-definition attribute-id="CommerceHubGiftEnable">
@@ -1840,7 +1823,6 @@
 
                 <!--THIS IS WHERE THE ACH SETTINGS START-->
                 <attribute attribute-id="CommerceHubACHEnable"/>
-                <attribute attribute-id="CommerceHubACHPaymentType"/>
 
                 <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
                 <attribute attribute-id="CommerceHubACHFormAccountNumberPlaceholder"/>
@@ -2077,6 +2059,14 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
+            <attribute-definition attribute-id="maskedAccountNumber">
+                <display-name xml:lang="x-default">Masked Account Number</display-name>
+                <description xml:lang="x-default">Masked bank account number associated with ACH payment</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="FISERV_COMMERCEHUB">
@@ -2107,6 +2097,10 @@
                 <attribute attribute-id="expireYear"/>
                 <attribute attribute-id="commercehubCardType"/>
                 <attribute attribute-id="commercehubCardIndicator"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_ACH">
+                <display-name xml:lang="x-default">Fiserv CommerceHub ACH</display-name>
+                <attribute attribute-id="maskedAccountNumber"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

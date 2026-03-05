@@ -111,11 +111,6 @@ const commerceHubExport =
         return getSitePreference('CommerceHubACHEnable');
     },
 
-    getCommerceHubACHPaymentType()
-    {
-        return getSitePreference('CommerceHubACHPaymentType').value;
-    },
-
 
     // This is where the Gift Card settings start
 
