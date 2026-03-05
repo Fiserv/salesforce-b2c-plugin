@@ -3,7 +3,7 @@
 
 function processForm(req, paymentForm, viewFormData) {
     let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
-    if(sessionId === undefined)
+    if(!sessionId)
     {
         let errors = [];
         errors.push("There was an error validating your Samsung Pay execution");
