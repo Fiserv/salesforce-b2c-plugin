@@ -62,10 +62,7 @@ class CommercehubSamsungPay
                 data: this.configDataSamsungPay.buttonConfig,
                 hooks: this.createCallbacksObject()
             });
-            $('#fiserv_commercehub-samsungpay-button').on('click', 'button', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            });
+            $('#fiserv_commercehub-samsungpay-button button').attr('type', 'button');
         }
         catch(e)
         {
@@ -84,10 +81,6 @@ class CommercehubSamsungPay
     
     samsungpayApproval = async function(response)
     {
-        this.completePayment = response.completePayment;
-
-        // Mark button as approved before triggering submission
-        $('button.btn.btn-primary.btn-block.submit-payment').data('samsung-pay-approved', true);
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
@@ -115,8 +108,7 @@ class CommercehubSamsungPay
         $('#fiserv_commercehub-samsungpay-button').children().remove();
 
         if(message)
-        this.showError(message);
-        this.completePayment('FAILURE');
+            this.showError(message);
         this.initialize();
     }
 
