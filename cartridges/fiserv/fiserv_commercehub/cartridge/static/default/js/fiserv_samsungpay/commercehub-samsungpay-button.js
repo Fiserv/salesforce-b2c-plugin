@@ -105,8 +105,15 @@ class CommercehubSamsungPay
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
             $(".payment-information").data("payment-method-id") === "SAMSUNGPAY"
         ) {
-            this.setSessionIdInput('');
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            if (xhr.responseJSON.error) {
+                let storedSessionId = $('input#commercehubSessionIdInputSamsungPay').val();
+                if (storedSessionId) {
+                    $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
+                }
+            } else {
+                this.setSessionIdInput('');
+                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            }
         }
     }
 
