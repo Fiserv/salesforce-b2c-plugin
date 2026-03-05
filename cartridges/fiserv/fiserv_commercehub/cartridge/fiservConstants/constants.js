@@ -48,6 +48,7 @@ module.exports = {
         LAST_FOUR: ['source', 'card', 'last4'],
         EXP_MONTH: ['source', 'card', 'expirationMonth'],
         EXP_YEAR: ['source', 'card', 'expirationYear'],
+        ACH_ACCOUNT_NUMBER: ['source', 'check', 'accountNumber'],
         PAYMENT_TOKEN: ['paymentTokens', 0],
         RESPONSE_MESSAGE: ['paymentReceipt', 'processorResponseDetails', 'responseMessage'],
         SOURCE_TYPE: ['source', 'sourceType'],
@@ -67,9 +68,6 @@ module.exports = {
             'CommerceHubStandaloneTokenization',
             'CommerceHubTokenSecurityEnable',
             'CommerceHubForcedBasketTokenization'
-        ],
-        'CommerceHubACHEnable': [
-            'CommerceHubACHPaymentType'
         ],
         'CommerceHubGiftEnable': [
             'CommerceHubGiftPaymentMethodTitle',
@@ -122,7 +120,7 @@ module.exports = {
             'CommerceHubTokenizationFormCardNumberMaskLength': { min: 0, message: 'Valid mask length required (value ≥ 4)' }
         },
         CONFIG_REGEX : {
-            'CommerceHubMerchantID': { regex: /^\d{15}$/, message: 'Merchant ID must be 15 digits' },
+            //'CommerceHubMerchantID': { regex: /^\d{15}$/, message: 'Merchant ID must be 15 digits' },
             'CommerceHubTerminalID': { regex: /^\d{8}$/, message: 'Terminal ID must be 8 digits' },
             'CommerceHubAPIKey': { regex: /^[a-zA-Z0-9]{1,2048}$/,message: 'API Key must contain a max length of 2048 alphanumeric characters' },
             'CommerceHubAPISecret': { regex: /^[a-zA-Z0-9]{1,2048}$/, message: 'API Secret must contain a max length of 2048 alphanumeric characters' },
