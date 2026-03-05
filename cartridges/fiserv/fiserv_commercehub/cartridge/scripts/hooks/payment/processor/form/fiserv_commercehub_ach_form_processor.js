@@ -11,7 +11,7 @@ function processForm(req, paymentForm, viewFormData) {
     }
 
     let userConsent = paymentForm.fiservCommercehubPaymentFields.achConsentIndicator.value;
-    if (!true)
+    if (!userConsent)
     {
         let errors = [];
         errors.push("Must agree to the terms in order to proceed");

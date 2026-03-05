@@ -19,7 +19,7 @@ class CommercehubACH
         $('#fiserv-ach-confirm-fields-btn').on('click', (e) => { e.preventDefault(); this.fetchAndDisplayLegalText(); });
 
         this.watchSubmitResponse();
-        this.watchPaymentMethod();
+        this.watchPaymentMethods();
         this.watchBillingAddressFields();
     }
 
@@ -91,13 +91,21 @@ class CommercehubACH
         this.getSubmitButton().prop('disabled', true);
         $.spinner().start();
 
-        let legalText = await this.formAdapter.form.getAchLegalText();
-        if (legalText) {
-            $('#fiserv-ach-legal-text').html(legalText.plainText);
-            $('#achConsentIndicator').prop('checked', false);
-            $('#fiserv-ach-legal-text-container').show().addClass('fiserv-ach-legal-populated');
-            this.getSubmitButton().prop('disabled', true);
-            this.hideConfirmFieldsButton();
+        try
+        {
+            let legalText = await this.formAdapter.form.getAchLegalText();
+            if (legalText)
+            {
+                $('#fiserv-ach-legal-text').html(legalText.plainText);
+                $('#achConsentIndicator').prop('checked', false);
+                $('#fiserv-ach-legal-text-container').show().addClass('fiserv-ach-legal-populated');
+                this.getSubmitButton().prop('disabled', true);
+                this.hideConfirmFieldsButton();
+            }
+        }
+        catch (_err)
+        {
+            this.showError(this.configDataACH.legalFetchFailureMessage);
         }
         
         $.spinner().stop();
@@ -202,6 +210,10 @@ class CommercehubACH
         $('.payment-details').removeClass('checkout-hidden');
         $('.payment-details-ach').remove();
         $('.edit-button').off('click', this.removeInsertedSummary);
+        if ($(".payment-information").data("payment-method-id") === "ACH")
+        {
+            this.watchSubmitButton();
+        }
     }
 
     showError = function(message)
@@ -222,13 +234,19 @@ class CommercehubACH
     }
 
     paymentMethodHandler = (_e) => {
+        if ($(_e.currentTarget).attr('data-method-id') !== 'ACH')
+        {
+            this.unwatchSubmitButton();
+            return;
+        }
+
         this.watchSubmitButton();
         this.getSubmitButton().prop('disabled', !$('#achConsentIndicator').prop('checked'));
     }
 
-    watchPaymentMethod = function()
+    watchPaymentMethods = function()
     {
-        $('ul.payment-options li.nav-item[data-method-id="ACH"]').on('click', this.paymentMethodHandler);
+        $('ul.payment-options li.nav-item').on('click', this.paymentMethodHandler);
     }
 
     submitHandler = (_e) =>

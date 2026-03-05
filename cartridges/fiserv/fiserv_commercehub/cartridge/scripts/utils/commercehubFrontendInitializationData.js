@@ -34,6 +34,7 @@ function getFrontendConfigData(formId)
         case 'ACH':
             configData = {
                 'captureFailureMessage': Resource.msg('message.error.ach.captureFailCheckout', 'error', null),
+                'legalFetchFailureMessage': Resource.msg('message.error.ach.legalFetchFailure', 'error', null),
                 'billingAddressFormNames': fiservConfig.buildAddressFormNamesObject()
             }
             break;
