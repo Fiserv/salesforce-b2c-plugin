@@ -103,7 +103,8 @@ class CommercehubSamsungPay
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
-            $(".payment-information").data("payment-method-id") === "SAMSUNGPAY" && xhr.responseJSON.error
+            $(".payment-information").data("payment-method-id") === "SAMSUNGPAY" && 
+            xhr.responseJSON.error
         ) {
               let storedSessionId = $('input#commercehubSessionIdInputSamsungPay').val();
               if (storedSessionId) {
