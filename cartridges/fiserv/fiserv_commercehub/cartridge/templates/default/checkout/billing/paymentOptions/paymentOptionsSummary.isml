@@ -14,6 +14,8 @@
             <isinclude template="checkout/billing/paymentOptions/affirmSummary" />
         <iselseif condition="${payment.paymentMethod === 'SAMSUNGPAY'}" />
             <isinclude template="checkout/billing/paymentOptions/samsungpaySummary" />
+        <iselseif condition="${payment.paymentMethod === 'PAZE'}" />
+            <isinclude template="checkout/billing/paymentOptions/pazeSummary" />
         </isif>
         <isif condition="${!status.last}">
             <br/>

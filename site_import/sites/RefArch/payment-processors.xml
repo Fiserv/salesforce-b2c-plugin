@@ -555,4 +555,49 @@
             <production/>
         </preferences>
     </payment-processor>
+
+    <payment-processor processor-id="FISERV_COMMERCEHUB_PAZE">
+        <description>Fiserv Commerce Hub Paze processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE PAZE SETTINGS START-->
+
+                <preference preference-id="CommerceHubPazeEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPazePaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubPazeButtonColor">
+                    <value>blue</value>
+                </preference>
+                <preference preference-id="CommerceHubPazeButtonLabel">
+                    <value>paze</value>
+                </preference>
+                <preference preference-id="CommerceHubPazeButtonShape">
+                    <value>rect</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+
 </payment-processors>

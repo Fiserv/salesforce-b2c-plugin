@@ -42,4 +42,10 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>FISERV_COMMERCEHUB_SAMSUNGPAY</processor-id>
     </payment-method>
+    <payment-method method-id="PAZE">
+        <name xml:lang="x-default">Paze</name>
+        <description xml:lang="x-default">Use this payment method for Paze</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>FISERV_COMMERCEHUB_PAZE</processor-id>
+    </payment-method>
 </payment-settings>

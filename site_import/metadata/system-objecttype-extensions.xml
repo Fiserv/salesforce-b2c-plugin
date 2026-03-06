@@ -656,6 +656,100 @@
                 </value-definitions>
             </attribute-definition>
 
+            <!--THIS IS WHERE THE PAZE PAY SETTINGS START-->
+
+            <attribute-definition attribute-id="CommerceHubPazeEnable">
+                <display-name xml:lang="x-default">CommerceHub Paze Enable</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+                <attribute-definition attribute-id="CommerceHubPazePaymentType">
+                    <display-name xml:lang="x-default">CommerceHub Paze Charge Type</display-name>
+                    <type>enum-of-string</type>
+                    <mandatory-flag>true</mandatory-flag>
+                    <externally-managed-flag>false</externally-managed-flag>
+                    <value-definitions>
+                        <value-definition default="true">
+                            <display>Authorize</display>
+                            <value>AUTH</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>Sale (Auth &amp; Capture)</display>
+                            <value>SALE</value>
+                        </value-definition>
+                    </value-definitions>
+                </attribute-definition>
+                <attribute-definition attribute-id="CommerceHubPazeButtonColor">
+                    <display-name xml:lang="x-default">CommerceHub Paze Button Color</display-name>
+                    <type>enum-of-string</type>
+                    <mandatory-flag>true</mandatory-flag>
+                    <externally-managed-flag>false</externally-managed-flag>
+                    <value-definitions>
+                        <value-definition>
+                            <display>White</display>
+                            <value>white</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>White Without Line</display>
+                            <value>whitewithoutline</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>Black</display>
+                            <value>black</value>
+                        </value-definition>
+                        <value-definition default="true">
+                            <display>Blue</display>
+                            <value>blue</value>
+                        </value-definition>
+                    </value-definitions>
+                </attribute-definition>
+                <attribute-definition attribute-id="CommerceHubPazeButtonShape">
+                    <display-name xml:lang="x-default">CommerceHub Paze Button Shape</display-name>
+                    <type>enum-of-string</type>
+                    <mandatory-flag>true</mandatory-flag>
+                    <externally-managed-flag>false</externally-managed-flag>
+                    <value-definitions>
+                        <value-definition default="true">
+                            <display>Default</display>
+                            <value>default</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>Rectangle</display>
+                            <value>rectangle</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>Pill</display>
+                            <value>pill</value>
+                        </value-definition>
+                    </value-definitions>
+                </attribute-definition>
+                <attribute-definition attribute-id="CommerceHubPazeButtonLabel">
+                    <display-name xml:lang="x-default">CommerceHub Paze Button Label</display-name>
+                    <type>enum-of-string</type>
+                    <mandatory-flag>true</mandatory-flag>
+                    <externally-managed-flag>false</externally-managed-flag>
+                    <value-definitions>
+                        <value-definition default="true">
+                            <display>Pay</display>
+                            <value>pay</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>Checkout</display>
+                            <value>checkout</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>Checkout with</display>
+                            <value>checkoutwith</value>
+                        </value-definition>
+                        <value-definition>
+                            <display>Donate with</display>
+                            <value>donatewith</value>
+                        </value-definition>
+                    </value-definitions>
+                </attribute-definition>
+
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
 
             <attribute-definition attribute-id="CommerceHubPaymentFormCardNumberPlaceholder">
@@ -1630,6 +1724,28 @@
                 <attribute attribute-id="CommerceHubSamsungPayButtonColor"/>
             </attribute-group>
 
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAZE">
+                <display-name xml:lang="x-default">Fiserv CommerceHub Paze Settings</display-name>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+                <attribute attribute-id="CommerceHubMerchantID"/>
+                <attribute attribute-id="CommerceHubTerminalID"/>
+                <attribute attribute-id="CommerceHubAPIKey"/>
+                <attribute attribute-id="CommerceHubAPISecret"/>
+                <attribute attribute-id="CommerceHubAPIEnvironment"/>
+                <attribute attribute-id="CommerceHubLogLevel"/>
+                <attribute attribute-id="CommerceHubSessionLifetime"/>
+                <attribute attribute-id="CommerceHubTimeout"/>
+                <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
+
+                <!--THIS IS WHERE THE PAZE SETTINGS START-->
+                <attribute attribute-id="CommerceHubPazeEnable"/>
+                <attribute attribute-id="CommerceHubPazePaymentType"/>
+                <attribute attribute-id="CommerceHubPazeButtonColor"/>
+                <attribute attribute-id="CommerceHubPazeButtonShape"/>
+                <attribute attribute-id="CommerceHubPazeButtonLabel"/>
+            </attribute-group>
+
         </group-definitions>
     </type-extension>
     <type-extension type-id="OrderPaymentInstrument">
@@ -1872,6 +1988,11 @@
             <attribute-group group-id="FISERV_COMMERCEHUB_SAMSUNGPAY">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
+                <attribute attribute-id="paymentAction"/>
+            </attribute-group>
+            <attribute-group group-id="FISERV_COMMERCEHUB_PAZE">
+                <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
+                <attribute attribute-id="commercehubOrderId"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
         </group-definitions>
