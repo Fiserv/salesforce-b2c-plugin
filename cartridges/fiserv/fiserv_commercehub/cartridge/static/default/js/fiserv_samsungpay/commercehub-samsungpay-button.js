@@ -84,8 +84,6 @@ class CommercehubSamsungPay
     
     samsungpayApproval = async function(response)
     {
-        this.completePayment = response.completePayment;
-
         // Mark button as approved before triggering submission
         $('button.btn.btn-primary.btn-block.submit-payment').data('samsung-pay-approved', true);
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
@@ -106,10 +104,9 @@ class CommercehubSamsungPay
             $(".payment-information").data("payment-method-id") === "SAMSUNGPAY" && 
             xhr.responseJSON.error
         ) {
-              let storedSessionId = $('input#commercehubSessionIdInputSamsungPay').val();
-              if (storedSessionId) {
-                  $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
-              }
+            this.setSessionIdInput('');
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.samsungpayFailure();
         }
     }
 
@@ -119,7 +116,6 @@ class CommercehubSamsungPay
 
         if(message)
         this.showError(message);
-        this.completePayment('FAILURE');
         this.initialize();
     }
 
