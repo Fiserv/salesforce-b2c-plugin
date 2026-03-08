@@ -6,13 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let data = {
             config: $('#fiserv-commercehub-paze-form-init-container').data('commercehub-initialization-data'),
             credentialsUrl: $('#fiserv-commercehub-paze-form-init-container').attr('data-commercehub-credentials'),
-            logoUrl: $('#fiserv-commercehub-paze-form-init-container').data('commercehub-logo-url'),
         }
         $('#fiserv-commercehub-paze-form-init-container').remove();
         return data;
     }
 
-    //const checkoutStage = $('#fiserv-commercehub-paze-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubPaze(extractInitializationData());
     let initialized = false;
     let postInitPaymentChangeDetected = false;
@@ -20,28 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let initPaze = async function()
     {
         console.log("Initializing PAZE");
-        // Temporary fix...
+       
         if(postInitPaymentChangeDetected)
         {
             location.reload();
             return;
         }
 
-        // Ensure the PAZE tab pane is visible
-        $('#paze-content').addClass('active show');
-        $('.tab-pane').not('#paze-content').removeClass('active show');
-        console.log("PAZE tab pane activated");
-
         $('#fiserv_commercehub-paze-button').children().remove();
         await form.initialize();
         initialized = true;
     };
-
-    // Call initialize on page load if PAZE is already selected
-    if ($(".payment-information").data("payment-method-id") === "PAZE")
-    {
-        initPaze();
-    }
 
     $(document).on("ajaxSuccess", (ev, xhr) => {
         if (typeof(xhr.responseJSON) !== 'undefined' &&

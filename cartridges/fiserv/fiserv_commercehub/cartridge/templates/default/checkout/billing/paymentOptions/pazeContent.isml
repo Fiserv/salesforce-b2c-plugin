@@ -25,7 +25,6 @@
         <div id="fiserv-commercehub-paze-form-init-container"
             data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Paze'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
-            data-commercehub-logo-url="${URLUtils.staticURL('/images/paze.svg')}"
             data-locale="${pdict.locale}"
             data-initial-checkout-stage="${pdict.currentStage}"></div>
 
@@ -41,13 +40,8 @@
             </div>
         </div>
 
-        <!--- Hidden input for order ID --->
-        <input id="commercehubOrderIdInputPaze" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubOrderId.htmlName}"/>
-
-        <!--- Hidden input for session ID (required for Paze) --->
         <input id="commercehubSessionIdInputPaze" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
 
-        <iscomment> This field needs to be here when Credit Card is not enabled </iscomment>
         <isif condition="${!pdict.FiservConfig.getCommerceHubCreditEnabled()}">
             <input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
         </isif>

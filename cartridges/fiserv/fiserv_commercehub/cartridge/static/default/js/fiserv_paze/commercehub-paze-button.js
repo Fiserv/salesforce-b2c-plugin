@@ -13,18 +13,14 @@ class CommercehubPaze
         this.formConfig = initializationData.config;
         this.configDataPaze = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
-        this.logoUrl = initializationData.logoUrl || '/images/paze.svg';
         this.credentials = null;
-        this.completePayment = (status) => { console.log("Paze completePayment:", status); };
         this.loadFailCallback = (error) => { this.sdkLoadFailure(error); };
         this.watchButtonLoadLag();
-        this.watchSubmitResponse();
         this.watchPaymentMethod();
     }
 
     initialize = async function()
     {
-        console.log("Initializing CommercehubPaze...");
         try {
             $.spinner().start();
             $('#fiserv-paze-fatal-notice').hide();
@@ -68,7 +64,6 @@ class CommercehubPaze
     buttonClass = function()
     {
         const buttonColor = this.configDataPaze.buttonConfig.color;
-        console.log("Paze button color:", buttonColor);
         if (buttonColor === 'blue') {
             return 'paze-blue';
         } else if (buttonColor === 'white') {
@@ -83,7 +78,6 @@ class CommercehubPaze
     buttonShape = function()
     {
         const buttonShape = this.configDataPaze.buttonConfig.shape;
-        console.log("Paze button shape:", buttonShape);
         if (buttonShape === 'rectangle') {
             return 'paze-rect';
         } else if (buttonShape === 'pill') {
@@ -96,7 +90,6 @@ class CommercehubPaze
     buttonLabel = function()
     {
         const buttonLabel = this.configDataPaze.buttonConfig.label;
-        console.log("Paze button label:", buttonLabel);
         if (buttonLabel === 'donatewith') {
             return 'Donate with';
         } else if (buttonLabel === 'checkout') {
@@ -127,9 +120,6 @@ class CommercehubPaze
 
     createPazeButton = function()
     {
-        // Use logoUrl from initialization data (set by the template using URLUtils.staticURL)
-        const logoUrl = this.logoUrl;
-        
         const pazeButtonClass = this.buttonClass();
         const pazeButtonShape = this.buttonShape();
         const pazeButtonLabel = this.buttonLabel();
@@ -161,37 +151,17 @@ class CommercehubPaze
         return buttonElement;
     }
 
-    validateOrderData = function(orderData)
-    {
-        if (!orderData.amount.total || orderData.amount.total <= 0) {
-            throw new Error('Invalid order total. Please refresh the page and try again.');
-        }
-        return orderData;
-    }
-
-    handlePaymentSelectionError = function(error)
-    {
-        if (error.responseText) {
-            try {
-                const parsedError = JSON.parse(error.responseText);
-                console.error("Parsed error response:", parsedError);
-            } catch(e) {
-                console.error("Could not parse error response:", error.responseText);
-            }
-        }
-        throw error;
-    }
-
     processPaymentSelection = async function(orderData)
     {
-        const validatedOrderData = this.validateOrderData(orderData);
-        
-        return await this.pazeComponent.selectPaymentMethod(validatedOrderData)
+       return await this.pazeComponent.selectPaymentMethod(orderData)
             .then(result => {
                 return result;
             })
             .catch(error => {
-                this.handlePaymentSelectionError(error);
+                if (error.responseText) {
+                    const parsedError = JSON.parse(error.responseText);
+                    console.error("Parsed error response:", parsedError);
+                }
             });
     }
 
@@ -219,11 +189,6 @@ class CommercehubPaze
     {
         try {
             $.spinner().start();
-            
-            if (!this.pazeComponent || typeof this.pazeComponent.selectPaymentMethod !== 'function') {
-                throw new Error('Paze component is not initialized correctly.');
-            }
-            
             const orderData = this.getOrderData();
             await this.processPaymentSelection(orderData);
             await this.submitPayment(orderData);
@@ -242,26 +207,16 @@ class CommercehubPaze
             const pazeLoadConfig = this.buildPazeConfig();
             this.pazeComponent = await window.fiserv.components.paze(pazeLoadConfig);
 
-            if (!this.pazeComponent || typeof this.pazeComponent.selectPaymentMethod !== 'function') {
-                throw new Error('Paze component did not return a valid instance.');
-            }
-
-            const pazeButtonContainer = document.getElementById('fiserv_commercehub-paze-button');
-            if (pazeButtonContainer) {
+            const pazeButtonContainer = $('#fiserv_commercehub-paze-button');
+            if (pazeButtonContainer.length) {
                 const buttonElement = this.createPazeButton();
-                pazeButtonContainer.innerHTML = '';
-                pazeButtonContainer.appendChild(buttonElement);
-            } 
+                pazeButtonContainer.empty().append(buttonElement);
+            }
 
             $.spinner().stop();
         }
         catch(e)
         {
-            if (e && e.code === 'FEATURE_NOT_ENABLED') {
-                console.error('Paze feature is not enabled for these credentials or merchant configuration.');
-                this.showError('Paze is not enabled for this merchant configuration. Please select another payment method.');
-                $('#fiserv_commercehub-paze-button').children().remove();
-            }
             $('#fiserv-paze-fatal-notice').show();
             $.spinner().stop();
 
@@ -271,32 +226,12 @@ class CommercehubPaze
 
     getOrderData = function()
     {
-        let orderTotalStr = $('.grand-total-sum').text().replace(/[^0-9.]/g, '') ||
-                           $('.order-total').text().replace(/[^0-9.]/g, '') ||
-                           $('[data-order-total]').data('order-total') ||
-                           '0.00';
-        let orderTotal = parseFloat(orderTotalStr);
-        
-        // Validate order total - must be greater than 0 and must be a valid number
-        if (!orderTotal || isNaN(orderTotal) || orderTotal <= 0) {
-            console.warn("Invalid order total:", orderTotal, "using default 0.01");
-            orderTotal = 0.01; // Use minimum value if invalid
-        }
-        let orderQuantity = 0;
-        $('.line-item-quantity').each(function() {
-            let qty = parseInt($(this).val() || $(this).text(), 10);
-            orderQuantity += isNaN(qty) ? 0 : qty;
-        });
-        if (orderQuantity === 0) {
-            orderQuantity = 1; // Default to 1 if no items found
-        }
         let orderData = {
            amount: {
                 currency: "USD",
-                total: orderTotal.toString()
+                total: $('.grand-total-sum').text().replace(/[^0-9.]/g, '')
             }
         };
-        console.log("Paze order data:", JSON.stringify(orderData, null, 2));
         return orderData;
     }
 
@@ -313,79 +248,12 @@ class CommercehubPaze
         $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
     }
 
-    onSubmitResponse = function(ev, xhr)
-    {
-        if (typeof(xhr.responseJSON) !== 'undefined' &&
-            typeof(xhr.responseJSON.action) !== 'undefined' &&
-            xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
-            $(".payment-information").data("payment-method-id") === "PAZE"
-        ) {
-            if(xhr.responseJSON.isPazeSuccess)
-            {
-                new Promise((resolve, reject) => {
-                    FiservSDKHelper.backendCall(xhr.responseJSON.placeOrderURL, resolve, reject);
-                })
-                .then(async (response) => {
-                    if(response.error)
-                    {
-                        this.pazeFailure(response.errorMessage);
-                        return;
-                    }
-
-                    this.pazeSuccess(response);
-                }).catch((error) => {
-                    this.pazeFailure();
-                });
-            }
-            else
-            {
-                this.setSessionIdInput('');
-                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
-                this.pazeFailure();
-            }
-        }
-    }
-
     pazeFailure = function(message)
     {
         $('#fiserv_commercehub-paze-button').children().remove();
         if(message)
             this.showError(message);
-        this.completePayment('FAILURE');
         this.initialize();
-    }
-
-    pazeSuccess = function(data)
-    {
-        this.completePayment('SUCCESS');
-
-        var redirect = $('<form>')
-            .appendTo(document.body)
-            .attr({
-                method: 'POST',
-                action: data.continueUrl
-            });
-
-        $('<input>')
-            .appendTo(redirect)
-            .attr({
-                name: 'orderID',
-                value: data.orderID
-            });
-
-        $('<input>')
-            .appendTo(redirect)
-            .attr({
-                name: 'orderToken',
-                value: data.orderToken
-            });
-
-        redirect.submit();
-    }
-
-    pazeCancel = function()
-    {
-        console.log("Paze flow cancelled");
     }
 
     pazeError = function()
@@ -395,9 +263,7 @@ class CommercehubPaze
 
     setSessionIdInput = function(sessionId)
     {
-        // Use the correct input ID for session ID (commercehubSessionIdInputPaze)
         $('input#commercehubSessionIdInputPaze').val(sessionId);
-        console.log("Session ID set:", sessionId);
     }
 
     watchPaymentMethod = function()
