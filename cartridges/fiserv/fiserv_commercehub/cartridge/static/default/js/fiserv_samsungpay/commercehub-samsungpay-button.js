@@ -62,10 +62,7 @@ class CommercehubSamsungPay
                 data: this.configDataSamsungPay.buttonConfig,
                 hooks: this.createCallbacksObject()
             });
-            $('#fiserv_commercehub-samsungpay-button').on('click', 'button', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            });
+            $('#fiserv_commercehub-samsungpay-button button').attr('type', 'button');
         }
         catch(e)
         {
