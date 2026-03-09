@@ -96,10 +96,12 @@ class CommercehubSamsungPay
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
-            $(".payment-information").data("payment-method-id") === "SAMSUNGPAY"
+            $(".payment-information").data("payment-method-id") === "SAMSUNGPAY" && 
+            xhr.responseJSON.error
         ) {
             this.setSessionIdInput('');
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.samsungpayFailure();
         }
     }
 
@@ -108,7 +110,7 @@ class CommercehubSamsungPay
         $('#fiserv_commercehub-samsungpay-button').children().remove();
 
         if(message)
-            this.showError(message);
+        this.showError(message);
         this.initialize();
     }
 

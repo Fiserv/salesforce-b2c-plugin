@@ -45,6 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+            $('ul.payment-options li.nav-item:first').find('a').trigger('click');
+            if ($('ul.payment-options li.nav-item[data-method-id=SAMSUNGPAY]').hasClass('active'))
+                initSamsungPay();
+    }
+
     $('ul.payment-options li.nav-item[data-method-id=SAMSUNGPAY]').on('click', () => {
         initSamsungPay();
     });
