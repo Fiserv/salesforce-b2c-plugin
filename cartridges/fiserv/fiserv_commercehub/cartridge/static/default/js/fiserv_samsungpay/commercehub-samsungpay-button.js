@@ -81,8 +81,6 @@ class CommercehubSamsungPay
     
     samsungpayApproval = async function(response)
     {
-        // Mark button as approved before triggering submission
-        $('button.btn.btn-primary.btn-block.submit-payment').data('samsung-pay-approved', true);
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
