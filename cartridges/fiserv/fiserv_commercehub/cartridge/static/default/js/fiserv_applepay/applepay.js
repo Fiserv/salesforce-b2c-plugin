@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //const checkoutStage = $('#fiserv-commercehub-applepay-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubApplePay(extractInitializationData());
     let initialized = false;
+    let initializingPromise = null;
     let postInitPaymentChangeDetected = false;
 
     let initApplePay = async function()
@@ -26,11 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         
-        if (!initialized)
+        if (initialized || initializingPromise)
         {
-            await form.initialize();
-            initialized = true;
+            return;
         }
+
+        $('#fiserv_commercehub-paypal-button').children().remove();
+        initializingPromise = form.initialize();
+        await initializingPromise;
+        initialized = true;
+        initializingPromise = null;
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -45,14 +51,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if ($('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').length > 0 && $('ul.payment-options li.nav-item.active').length === 0)
-    {
-         $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-            if ($('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').hasClass('active'))
-                initApplePay();
+    const applePayNavItem = $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]');
+
+    if (applePayNavItem.hasClass('active')) {
+        initApplePay();
+    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+        applePayNavItem.find('a').one('shown.bs.tab', function () {
+            initApplePay();
+        });
+        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
     }
 
-    $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').on('click', () => {
+    applePayNavItem.on('click', () => {
         initApplePay();
     });
 

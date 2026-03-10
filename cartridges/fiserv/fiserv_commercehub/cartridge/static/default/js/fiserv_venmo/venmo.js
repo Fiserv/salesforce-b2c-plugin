@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let form = new CommercehubVenmo(extractInitializationData());
     let initialized = false;
+    let initializingPromise = null;
     let postInitPaymentChangeDetected = false;
 
     let initVenmo = async function()
@@ -24,9 +25,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        if (initialized || initializingPromise)
+        {
+            return;
+        }
+        
         $('#fiserv_commercehub-venmo-button').children().remove();
-        await form.initialize();
+         initializingPromise = form.initialize();
+        await initializingPromise;
         initialized = true;
+        initializingPromise = null;
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -41,14 +49,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if ($('ul.payment-options li.nav-item[data-method-id=VENMO]').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) 
-    {
-        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-        if ($('ul.payment-options li.nav-item[data-method-id=VENMO]').hasClass('active')) 
+     const venmoNavItem = $('ul.payment-options li.nav-item[data-method-id=VENMO]');
+
+    if (venmoNavItem.hasClass('active')) {
+        initVenmo();
+    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+        venmoNavItem.find('a').one('shown.bs.tab', function () {
             initVenmo();
+        });
+        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
     }
 
-    $('ul.payment-options li.nav-item[data-method-id=VENMO]').on('click', () => {
+    venmoNavItem.on('click', () => {
         initVenmo();
     });
 

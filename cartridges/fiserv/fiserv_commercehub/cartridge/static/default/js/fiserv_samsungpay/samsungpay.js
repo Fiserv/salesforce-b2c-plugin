@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //const checkoutStage = $('#fiserv-commercehub-samsungpay-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubSamsungPay(extractInitializationData());
     let initialized = false;
+    let initializingPromise = null;
     let postInitPaymentChangeDetected = false;
 
     let initSamsungPay = async function()
@@ -25,12 +26,17 @@ document.addEventListener("DOMContentLoaded", () => {
             location.reload();
             return;
         }
-        
-        if (!initialized)
+
+        if (initialized || initializingPromise)
         {
-            await form.initialize();
-            initialized = true;
+            return;
         }
+
+        $('#fiserv_commercehub-samsungpay-button').children().remove();
+        initializingPromise = form.initialize();
+        await initializingPromise;
+        initialized = true;
+        initializingPromise = null;
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -45,13 +51,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
-            $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-            if ($('ul.payment-options li.nav-item[data-method-id=SAMSUNGPAY]').hasClass('active'))
-                initSamsungPay();
+    const samsungPayNavItem = $('ul.payment-options li.nav-item[data-method-id=SAMSUNGPAY]');
+    if (samsungPayNavItem.hasClass('active')) {
+        initSamsungPay();
+    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+        samsungPayNavItem.find('a').one('shown.bs.tab', function () {
+            initSamsungPay();
+        });
+        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
     }
 
-    $('ul.payment-options li.nav-item[data-method-id=SAMSUNGPAY]').on('click', () => {
+    samsungPayNavItem.on('click', () => {
         initSamsungPay();
     });
 

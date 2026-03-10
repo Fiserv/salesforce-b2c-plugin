@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //const checkoutStage = $('#fiserv-commercehub-paypal-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubPayPal(extractInitializationData());
     let initialized = false;
+    let initializingPromise = null;
     let postInitPaymentChangeDetected = false;
 
     let initPayPal = async function()
@@ -24,10 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
             location.reload();
             return;
         }
-        
+
+        if (initialized || initializingPromise)
+        {
+            return;
+        }
+
         $('#fiserv_commercehub-paypal-button').children().remove();
-        await form.initialize();
+        initializingPromise = form.initialize();
+        await initializingPromise;
         initialized = true;
+        initializingPromise = null;
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -42,13 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
-            $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-            if ($('ul.payment-options li.nav-item[data-method-id=PAYPAL]').hasClass('active'))
-                initPayPal();
+    const paypalNavItem = $('ul.payment-options li.nav-item[data-method-id=PAYPAL]');
+
+    if (paypalNavItem.hasClass('active')) {
+        initPayPal();
+    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+        paypalNavItem.find('a').one('shown.bs.tab', function () {
+            initPayPal();
+        });
+        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
     }
 
-    $('ul.payment-options li.nav-item[data-method-id=PAYPAL]').on('click', () => {
+    paypalNavItem.on('click', () => {
         initPayPal();
     });
 
@@ -59,22 +72,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let grandTotalUpdated = function()
     {
-        if(window.fiservPluginSDKInitRan)
+        if (window.fiservPluginSDKInitRan)
         {
             postInitPaymentChangeDetected = true;
         }
 
         $('#fiserv_commercehub-paypal-button').children().remove();
-        if(initialized)
+        if (initPromise)
         {
             // Temporary fix...
             location.reload();
-            return;
-
-            initialized = false;
-            if($('.data-checkout-stage').attr('data-checkout-stage') === "payment"
-                && $(".payment-information").data("payment-method-id") === "PAYPAL")
-                initPayPal();
         }
     }
     new MutationObserver(() => { grandTotalUpdated(); }).observe($('.grand-total-sum')[0], { childList: true });

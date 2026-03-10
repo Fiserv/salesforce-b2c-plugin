@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //const checkoutStage = $('#fiserv-commercehub-affirm-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubAffirm(extractInitializationData());
     let initialized = false;
+    let initializingPromise = null;
     let postInitPaymentChangeDetected = false;
 
     let initAffirm = async function()
@@ -25,11 +26,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        if (!initialized)
+        if (initialized || initializingPromise)
         {
-            await form.initialize();
-            initialized = true;
+            return;
         }
+
+        $('#fiserv_commercehub-affirm-button').children().remove();
+        initializingPromise = form.initialize();
+        await initializingPromise;
+        initialized = true;
+        initializingPromise = null;
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -44,7 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    $('ul.payment-options li.nav-item[data-method-id=AFFIRM]').on('click', () => {
+    const affirmNavItem = $('ul.payment-options li.nav-item[data-method-id=AFFIRM]');
+
+    if (affirmNavItem.hasClass('active')) {
+        initAffirm();
+    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
+        affirmNavItem.find('a').one('shown.bs.tab', function () {
+            initAffirm();
+        });
+        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
+    }
+
+    affirmNavItem.on('click', () => {
         initAffirm();
     });
 
