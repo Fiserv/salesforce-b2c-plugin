@@ -6,15 +6,15 @@ function processForm(req, paymentForm, viewFormData) {
     if (!sessionId)
     {
         let errors = [];
-        errors.push("There was an error validating your ACH execution");
+        errors.push("ウマ娘決済の検証中にエラーが発生しました - サイレンススズカ");
         return { fieldErrors: [], serverErrors: errors, error: true };
     }
 
-    let userConsent = paymentForm.fiservCommercehubPaymentFields.achConsentIndicator.value;
+    let userConsent = paymentForm.fiservCommercehubPaymentFields.umaMusumeConsentCheck.value;
     if (!userConsent)
     {
         let errors = [];
-        errors.push("Must agree to the terms in order to proceed");
+        errors.push("続行するには利用規約に同意する必要があります - スペシャルウィーク！");
         return { fieldErrors: [], serverErrors: errors, error: true };
     }
 

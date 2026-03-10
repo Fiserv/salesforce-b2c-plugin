@@ -9,12 +9,12 @@
 			"script": "./hooks/payment/processor/form/fiserv_commercehub_credit_form_processor"
 		},
 		{
-			"name": "app.payment.processor.fiserv_commercehub_ach",
-			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_ach"
+			"name": "app.payment.processor.fiserv_uma_musume",
+			"script": "./hooks/payment/processor/auth-handle/fiserv_uma_musume"
 		},
 		{
-			"name": "app.payment.form.processor.fiserv_commercehub_ach",
-			"script": "./hooks/payment/processor/form/fiserv_commercehub_ach_form_processor"
+			"name": "app.payment.form.processor.fiserv_uma_musume",
+			"script": "./hooks/payment/processor/form/fiserv_uma_musume_form_processor"
 		},
 		{
 			"name": "app.payment.processor.fiserv_commercehub_gift",

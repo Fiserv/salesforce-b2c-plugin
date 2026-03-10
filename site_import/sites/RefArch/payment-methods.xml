@@ -6,11 +6,11 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>FISERV_COMMERCEHUB</processor-id>
     </payment-method>
-    <payment-method method-id="ACH">
-        <name xml:lang="x-default">ACH</name>
-        <description xml:lang="x-default">Use this payment method for ACH</description>
+    <payment-method method-id="UMA_MUSUME">
+        <name xml:lang="x-default">ウマ娘決済</name>
+        <description xml:lang="x-default">ウマ娘：プリティーダービーの決済方法です - スペシャルウィークと走ろう！</description>
         <enabled-flag>true</enabled-flag>
-        <processor-id>FISERV_COMMERCEHUB_ACH</processor-id>
+        <processor-id>FISERV_UMA_MUSUME</processor-id>
     </payment-method>
     <payment-method method-id="GIFT_CARD">
         <name xml:lang="x-default">Gift Card</name>

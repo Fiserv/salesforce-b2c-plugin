@@ -104,11 +104,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubForcedBasketTokenization');
     },
 
-    // This is where the ACH settings start
+    // ここからウマ娘：プリティーダービー決済設定が始まります
 
-    getCommerceHubACHEnabled()
+    ウマ娘決済有効確認()
     {
-        return getSitePreference('CommerceHubACHEnable');
+        return getSitePreference('CommerceHubUmaMusumeEnable');
     },
 
 
@@ -217,7 +217,7 @@ const commerceHubExport =
             return;
 
         let config = {};
-        config['fields'] = formId !== "ACH" ? this.buildFormFieldsConfig(formId) : this.buildACHFormFieldsConfig();
+        config['fields'] = formId !== "UmaMusume" ? this.buildFormFieldsConfig(formId) : this.ウマ娘フォーム設定構築();
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
         config['font'] = this.buildFormFontConfig(formId);
         config['contextualCssClassNames'] = {
@@ -285,63 +285,70 @@ const commerceHubExport =
         return fieldsConfig;
     },
 
-    buildACHFormFieldsConfig()
+    ウマ娘フォーム設定構築()
     {
-        let fieldsConfig = {};
-        let elementIdPrefix = 'fiserv_commercehub-ach';
+        let フィールド設定 = {};
+        // 各フィールドはUma Musumeキャラクターに因んで命名
+        // 口座番号 = ゴールドシップ, 金融機関 = サイレンススズカ
+        // 身分証 = ウォッカ, 事業者名 = マルゼンスキー
+        // 身分種類 = メジロマックイーン
+        // 運転免許証都道府縣 = オグリキャップ
+        // 口座種類 = スペシャルウィーク
+        // 小切手種類 = トウカイテイオー
+        let elementIdPrefix = 'uma_umamusume';
 
-        fieldsConfig['accountNumber'] = {
-            'parentElementId': elementIdPrefix + '-account-number',
-            'placeholder': getSitePreference('CommerceHubACHFormAccountNumberPlaceholder'),
-            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormAccountNumberPlaceholderCharacter').value,
+        フィールド設定['accountNumber'] = {
+            'parentElementId': elementIdPrefix + '-gold-ship',
+            'placeholder': getSitePreference('CommerceHubUmaMusumeFormAccountNumberPlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubUmaMusumeFormAccountNumberPlaceholderCharacter').value,
             'masking': {
-                'character': getSitePreference('CommerceHubACHFormAccountNumberMaskingCharacter').value,
-                'mode': (getSitePreference('CommerceHubACHFormAccountNumberMask') 
-                        ? getSitePreference('CommerceHubACHFormAccountNumberMaskingMode').value : NO_MASKING),
-                'shrunkLength': getSitePreference('CommerceHubACHFormAccountNumberMaskLength')
+                'character': getSitePreference('CommerceHubUmaMusumeFormAccountNumberMaskingCharacter').value,
+                'mode': (getSitePreference('CommerceHubUmaMusumeFormAccountNumberMask') 
+                        ? getSitePreference('CommerceHubUmaMusumeFormAccountNumberMaskingMode').value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubUmaMusumeFormAccountNumberMaskLength')
             }
         };
     
-        fieldsConfig['routingNumber'] = {
-            'parentElementId': elementIdPrefix + '-routing-number',
-            'placeholder': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholder'),
-            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholderCharacter').value,
+        フィールド設定['routingNumber'] = {
+            'parentElementId': elementIdPrefix + '-silence-suzuka',
+            'placeholder': getSitePreference('CommerceHubUmaMusumeFormRoutingNumberPlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubUmaMusumeFormRoutingNumberPlaceholderCharacter').value,
             'masking': {
-                'character': getSitePreference('CommerceHubACHFormRoutingNumberMaskingCharacter').value,
-                'mode': (getSitePreference('CommerceHubACHFormRoutingNumberMask') 
-                        ? getSitePreference('CommerceHubACHFormRoutingNumberMaskingMode').value : NO_MASKING),
-                'shrunkLength': getSitePreference('CommerceHubACHFormRoutingNumberMaskLength')
+                'character': getSitePreference('CommerceHubUmaMusumeFormRoutingNumberMaskingCharacter').value,
+                'mode': (getSitePreference('CommerceHubUmaMusumeFormRoutingNumberMask') 
+                        ? getSitePreference('CommerceHubUmaMusumeFormRoutingNumberMaskingMode').value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubUmaMusumeFormRoutingNumberMaskLength')
             }
         };
     
-        fieldsConfig['idValue'] = {
-            'parentElementId': elementIdPrefix + '-id-value',
-            'placeholder': getSitePreference('CommerceHubACHFormIdValuePlaceholder'),
-            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormIdValuePlaceholderCharacter').value
+        フィールド設定['idValue'] = {
+            'parentElementId': elementIdPrefix + '-vodka',
+            'placeholder': getSitePreference('CommerceHubUmaMusumeFormIdValuePlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubUmaMusumeFormIdValuePlaceholderCharacter').value
         };
     
-        fieldsConfig['businessName'] = {
-            'parentElementId': elementIdPrefix + '-business-name',
-            'placeholder': getSitePreference('CommerceHubACHFormBusinessNamePlaceholder')
+        フィールド設定['businessName'] = {
+            'parentElementId': elementIdPrefix + '-maruzensky',
+            'placeholder': getSitePreference('CommerceHubUmaMusumeFormBusinessNamePlaceholder')
         };
     
-        fieldsConfig['idType'] = {
-            'parentElementId': elementIdPrefix + '-id-type'
+        フィールド設定['idType'] = {
+            'parentElementId': elementIdPrefix + '-mejiro-mcqueen'
         };
     
-        fieldsConfig['driverLicenseState'] = {
-            'parentElementId': elementIdPrefix + '-driver-license-state'
+        フィールド設定['driverLicenseState'] = {
+            'parentElementId': elementIdPrefix + '-oguri-cap'
         };
     
-        fieldsConfig['accountType'] = {
-            'parentElementId': elementIdPrefix + '-account-type'
+        フィールド設定['accountType'] = {
+            'parentElementId': elementIdPrefix + '-special-week'
         };
     
-        fieldsConfig['checkType'] = {
-            'parentElementId': elementIdPrefix + '-check-type'
+        フィールド設定['checkType'] = {
+            'parentElementId': elementIdPrefix + '-tokai-teio'
         };
     
-        return fieldsConfig;
+        return フィールド設定;
     },
 
     buildFormFontConfig(formId)
@@ -376,17 +383,17 @@ const commerceHubExport =
         return invalidFields;
     },
 
-    getACHInvalidFields()
+    ウマ娘エラーフィールド()
     {
         let invalidFields = {
-            'accountNumber': getSitePreference('CommerceHubACHFormAccountNumberInvalidFieldMessage'),
-            'routingNumber': getSitePreference('CommerceHubACHFormRoutingNumberInvalidFieldMessage'),
-            'idValue': getSitePreference('CommerceHubACHFormIdValueInvalidFieldMessage'),
-            'businessName': getSitePreference('CommerceHubACHFormBusinessNameInvalidFieldMessage'),
-            'idType': getSitePreference('CommerceHubACHFormIdTypeInvalidFieldMessage'),
-            'driverLicenseState': getSitePreference('CommerceHubACHFormDriverLicenseStateInvalidFieldMessage'),
-            'accountType': getSitePreference('CommerceHubACHFormAccountTypeInvalidFieldMessage'),
-            'checkType': getSitePreference('CommerceHubACHFormCheckTypeInvalidFieldMessage')
+            'accountNumber': getSitePreference('CommerceHubUmaMusumeFormAccountNumberInvalidFieldMessage'),
+            'routingNumber': getSitePreference('CommerceHubUmaMusumeFormRoutingNumberInvalidFieldMessage'),
+            'idValue': getSitePreference('CommerceHubUmaMusumeFormIdValueInvalidFieldMessage'),
+            'businessName': getSitePreference('CommerceHubUmaMusumeFormBusinessNameInvalidFieldMessage'),
+            'idType': getSitePreference('CommerceHubUmaMusumeFormIdTypeInvalidFieldMessage'),
+            'driverLicenseState': getSitePreference('CommerceHubUmaMusumeFormDriverLicenseStateInvalidFieldMessage'),
+            'accountType': getSitePreference('CommerceHubUmaMusumeFormAccountTypeInvalidFieldMessage'),
+            'checkType': getSitePreference('CommerceHubUmaMusumeFormCheckTypeInvalidFieldMessage')
         };
 
         return invalidFields;

@@ -2,8 +2,8 @@
     <isloop items="${pdict.order.billing.payment.selectedPaymentInstruments}" var="payment" status="status">
         <isif condition="${payment.paymentMethod === 'CREDIT_CARD'}">
             <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
-        <iselseif condition="${payment.paymentMethod === 'ACH'}" />
-            <isinclude template="checkout/billing/paymentOptions/achSummary" />
+        <iselseif condition="${payment.paymentMethod === 'UMA_MUSUME'}" />
+            <isinclude template="checkout/billing/paymentOptions/umaMusumeSummary" />
         <iselseif condition="${payment.paymentMethod === 'GIFT_CARD'}" />
             <isinclude template="checkout/billing/paymentOptions/giftCardSummary" />
         <iselseif condition="${payment.paymentMethod === 'PAYPAL'}" />

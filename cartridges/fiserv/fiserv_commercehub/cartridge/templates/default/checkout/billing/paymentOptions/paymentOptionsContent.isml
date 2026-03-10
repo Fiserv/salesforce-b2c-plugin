@@ -3,8 +3,8 @@
 <isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
     <isif condition="${paymentOption.ID === 'CREDIT_CARD' && pdict.FiservConfig.getCommerceHubCreditEnabled()}">
         <isinclude template="checkout/billing/paymentOptions/creditCardContent" />
-    <iselseif condition="${paymentOption.ID === 'ACH' && pdict.FiservConfig.getCommerceHubACHEnabled()}" />
-        <isinclude template="checkout/billing/paymentOptions/achContent" />
+    <iselseif condition="${paymentOption.ID === 'UMA_MUSUME' && pdict.FiservConfig.ウマ娘決済有効確認()}" />
+        <isinclude template="checkout/billing/paymentOptions/umaMusumeContent" />
     <iselseif condition="${paymentOption.ID === 'PAYPAL' && pdict.FiservConfig.getCommerceHubPayPalEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/paypalContent" />
     <iselseif condition="${paymentOption.ID === 'VENMO' && pdict.FiservConfig.getCommerceHubVenmoEnabled()}" />

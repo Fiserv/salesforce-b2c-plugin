@@ -13,9 +13,9 @@
         <div>
             <span>${Resource.msg('msg.card.type.ending', 'confirmation', null)} ${payment.expirationMonth}/${payment.expirationYear}</span>
         </div>
-    <iselseif condition="${payment.paymentMethod === 'ACH'}" />
-        <div class="ach-item">
-            <span>ACH</span>
+    <iselseif condition="${payment.paymentMethod === 'UMA_MUSUME'}" />
+        <div class="uma-item">
+            <span>ウマ娘決済</span>
         </div>
     <iselseif condition="${payment.paymentMethod === 'GIFT_CARD'}" />
         <div class="gift-card-item">

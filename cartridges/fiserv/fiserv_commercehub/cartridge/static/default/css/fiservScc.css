@@ -1,5 +1,5 @@
 #fiserv-scc-fatal-notice,
-#fiserv-ach-fatal-notice,
+#uma-fatal-notice,
 #fiserv-scc-gift-fatal-notice,
 #fiserv-paypal-fatal-notice,
 #fiserv-applepay-fatal-notice,
@@ -27,15 +27,15 @@
     margin-bottom: 1rem;
 }
 
-#fiserv-ach-confirm-fields-container {
+#uma-confirm-container {
     margin-bottom: 1rem;
 }
 
-#fiserv-ach-legal-text-container {
+#uma-legal-container {
     margin-bottom: 1rem;
 }
 
-.fiserv-ach-legal-text-box {
+.uma-legal-text-box {
     border: 1px solid #ccc;
     border-radius: 0.1875rem;
     padding: 0.75rem;

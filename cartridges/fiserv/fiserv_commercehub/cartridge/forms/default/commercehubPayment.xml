@@ -4,5 +4,5 @@
     <field formid="commercehubOrderId" type="string" mandatory="true" />
     <field formid="commercehubTokenUUID" type="string" mandatory="true" />
     <field formid="authenticationId3DS" type="string" mandatory="false" />
-    <field formid="achConsentIndicator" type="boolean" mandatory="false" />
+    <field formid="umaMusumeConsentCheck" type="boolean" mandatory="false" />
 </form>

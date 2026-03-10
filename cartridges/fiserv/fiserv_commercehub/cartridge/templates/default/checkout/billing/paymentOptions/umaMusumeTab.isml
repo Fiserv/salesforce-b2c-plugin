@@ -1,0 +1,5 @@
+<li class="nav-item" data-method-id="${paymentOption.ID}">
+    <a class="nav-link uma-tab" data-toggle="tab" href="#uma-content" role="tab">
+        ウマ娘決済
+    </a>
+</li>

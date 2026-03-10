@@ -248,8 +248,8 @@
             <production/>
         </preferences>
     </payment-processor>
-    <payment-processor processor-id="FISERV_COMMERCEHUB_ACH">
-        <description>Fiserv Commerce Hub ACH processor</description>
+    <payment-processor processor-id="FISERV_UMA_MUSUME">
+        <description>ウマ娘：プリティーダービー 決済プロセッサー - スペシャルウィークと走ろう！</description>
         <preferences>
             <all-instances>
 
@@ -268,96 +268,96 @@
                     <value>30</value>
                 </preference>
 
-                <!--THIS IS WHERE THE ACH SETTINGS START-->
+                <!--ウマ娘決済設定開始 - ゴールドシップが走る！-->
 
-                <preference preference-id="CommerceHubACHEnable">
+                <preference preference-id="CommerceHubUmaMusumeEnable">
                     <value>false</value>
                 </preference>
 
-                <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
+                <!--ウマ娘決済フォームカスタマイズ開始 - トウカイテイオーが跳躍する！-->
 
-                <preference preference-id="CommerceHubACHFormAccountNumberPlaceholder">
-                    <value>Account Number</value>
+                <preference preference-id="CommerceHubUmaMusumeFormAccountNumberPlaceholder">
+                    <value>口座番号 - ゴールドシップ</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormAccountNumberPlaceholderCharacter">
+                <preference preference-id="CommerceHubUmaMusumeFormAccountNumberPlaceholderCharacter">
                     <value>•</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormAccountNumberMask">
+                <preference preference-id="CommerceHubUmaMusumeFormAccountNumberMask">
                     <value>true</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormAccountNumberMaskingCharacter">
+                <preference preference-id="CommerceHubUmaMusumeFormAccountNumberMaskingCharacter">
                     <value>•</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormAccountNumberMaskingMode">
+                <preference preference-id="CommerceHubUmaMusumeFormAccountNumberMaskingMode">
                     <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormAccountNumberMaskLength">
+                <preference preference-id="CommerceHubUmaMusumeFormAccountNumberMaskLength">
                     <value>4</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormAccountNumberInvalidFieldMessage">
-                    <value>Invalid Account Number</value>
+                <preference preference-id="CommerceHubUmaMusumeFormAccountNumberInvalidFieldMessage">
+                    <value>ゴールドシップ！口座無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormRoutingNumberPlaceholder">
-                    <value>Routing Number</value>
+                <preference preference-id="CommerceHubUmaMusumeFormRoutingNumberPlaceholder">
+                    <value>金融機関番号-スズカ</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter">
+                <preference preference-id="CommerceHubUmaMusumeFormRoutingNumberPlaceholderCharacter">
                     <value>•</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormRoutingNumberMask">
+                <preference preference-id="CommerceHubUmaMusumeFormRoutingNumberMask">
                     <value>true</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormRoutingNumberMaskingCharacter">
+                <preference preference-id="CommerceHubUmaMusumeFormRoutingNumberMaskingCharacter">
                     <value>•</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormRoutingNumberMaskingMode">
+                <preference preference-id="CommerceHubUmaMusumeFormRoutingNumberMaskingMode">
                     <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormRoutingNumberMaskLength">
+                <preference preference-id="CommerceHubUmaMusumeFormRoutingNumberMaskLength">
                     <value>4</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage">
-                    <value>Invalid Routing Number</value>
+                <preference preference-id="CommerceHubUmaMusumeFormRoutingNumberInvalidFieldMessage">
+                    <value>スズカ！金融機関無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormIdValuePlaceholder">
-                    <value>ID Value</value>
+                <preference preference-id="CommerceHubUmaMusumeFormIdValuePlaceholder">
+                    <value>身分証明番号 - ウォッカ</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormIdValuePlaceholderCharacter">
+                <preference preference-id="CommerceHubUmaMusumeFormIdValuePlaceholderCharacter">
                     <value>•</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormIdValueInvalidFieldMessage">
-                    <value>Invalid ID Value</value>
+                <preference preference-id="CommerceHubUmaMusumeFormIdValueInvalidFieldMessage">
+                    <value>ウォッカ！証明無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormBusinessNamePlaceholder">
-                    <value>Business Name</value>
+                <preference preference-id="CommerceHubUmaMusumeFormBusinessNamePlaceholder">
+                    <value>会社名 - マルゼンスキー</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormBusinessNameInvalidFieldMessage">
-                    <value>Invalid Business Name</value>
+                <preference preference-id="CommerceHubUmaMusumeFormBusinessNameInvalidFieldMessage">
+                    <value>マルゼンスキー！無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormIdTypeInvalidFieldMessage">
-                    <value>Invalid ID Type</value>
+                <preference preference-id="CommerceHubUmaMusumeFormIdTypeInvalidFieldMessage">
+                    <value>マックイーン！無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormDriverLicenseStateInvalidFieldMessage">
-                    <value>Invalid Driver License State</value>
+                <preference preference-id="CommerceHubUmaMusumeFormDriverLicenseStateInvalidFieldMessage">
+                    <value>オグリキャップ！無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormAccountTypeInvalidFieldMessage">
-                    <value>Invalid Account Type</value>
+                <preference preference-id="CommerceHubUmaMusumeFormAccountTypeInvalidFieldMessage">
+                    <value>スペシャルウィーク無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormCheckTypeInvalidFieldMessage">
-                    <value>Invalid Check Type</value>
+                <preference preference-id="CommerceHubUmaMusumeFormCheckTypeInvalidFieldMessage">
+                    <value>テイオー！小切手無効</value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormCSS">
+                <preference preference-id="CommerceHubUmaMusumeFormCSS">
                     <value></value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormFontData">
+                <preference preference-id="CommerceHubUmaMusumeFormFontData">
                     <value></value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormFontFamily">
+                <preference preference-id="CommerceHubUmaMusumeFormFontFamily">
                     <value></value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormFontFormat">
+                <preference preference-id="CommerceHubUmaMusumeFormFontFormat">
                     <value></value>
                 </preference>
-                <preference preference-id="CommerceHubACHFormFontIntegrity">
+                <preference preference-id="CommerceHubUmaMusumeFormFontIntegrity">
                     <value></value>
                 </preference>
             </all-instances>

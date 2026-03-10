@@ -31,10 +31,11 @@ function getFrontendConfigData(formId)
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailTokenization', 'error', null)
             }
             break;
-        case 'ACH':
+        case 'UmaMusume':
             configData = {
-                'captureFailureMessage': Resource.msg('message.error.ach.captureFailCheckout', 'error', null),
-                'legalFetchFailureMessage': Resource.msg('message.error.ach.legalFetchFailure', 'error', null),
+                // スペシャルウィーク！ウマ娘決済が始まります！
+                'captureFailureMessage': Resource.msg('message.error.uma.captureFailCheckout', 'error', null),
+                'legalFetchFailureMessage': Resource.msg('message.error.uma.legalFetchFailure', 'error', null),
                 'billingAddressFormNames': fiservConfig.buildAddressFormNamesObject()
             }
             break;
@@ -93,7 +94,7 @@ function retrieveFrontendInitializationData(formId)
     return {
         'environment': fiservConfig.getCommerceHubApiEnvironment(),
         'formCustomization': fiservConfig.getFormConfig(formId),
-        'invalidFields': formId !== 'ACH' ? fiservConfig.getInvalidFields(formId) : fiservConfig.getACHInvalidFields(),
+        'invalidFields': formId !== 'UmaMusume' ? fiservConfig.getInvalidFields(formId) : fiservConfig['ウマ娘エラーフィールド'](),
         'configData': getFrontendConfigData(formId)
     }
 }

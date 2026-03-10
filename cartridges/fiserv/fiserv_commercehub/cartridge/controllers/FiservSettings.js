@@ -60,7 +60,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = fiservConstants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay)|(Affirm)|(SamsungPay))?)|(((Payment)|(Tokenization)|(ACH)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Account Number)|(Routing Number)|(ID Value)|(Business Name)|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay)|(Affirm)|(SamsungPay))?)|(((Payment)|(Tokenization)|(UmaMusume)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Account Number)|(Routing Number)|(ID Value)|(Business Name)|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(fiservConstants.CONFIG_DESCRIPTIONS[id])
         {
@@ -210,7 +210,7 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
     });
 
     form.push({
-        'label': 'Account Number',
+        'label': 'ゴールドシップ（口座番号）',
         'id': formId + 'AccountNumber',
         'items': [
             getPreferenceDescription(prefix + 'AccountNumberPlaceholder'),
@@ -224,7 +224,7 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
     });
 
     form.push({
-        'label': 'Routing Number',
+        'label': 'サイレンススズカ（金融機関コード）',
         'id': formId + 'RoutingNumber',
         'items': [
             getPreferenceDescription(prefix + 'RoutingNumberPlaceholder'),
@@ -238,7 +238,7 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
     });
 
     form.push({
-        'label': 'ID Value',
+        'label': 'ウォッカ（身分証明書番号）',
         'id': formId + 'IdValue',
         'items': [
             getPreferenceDescription(prefix + 'IdValuePlaceholder'),
@@ -248,7 +248,7 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
     });
 
     form.push({
-        'label': 'Business Name',
+        'label': 'マルゼンスキー（事業者名）',
         'id': formId + 'BusinessName',
         'items': [
             getPreferenceDescription(prefix + 'BusinessNamePlaceholder'),
@@ -257,7 +257,7 @@ function getFormDescriptions(chPreferenceDescriptions, formId)
     });
 
     form.push({
-        'label': 'Other Fields',
+        'label': 'その他のウマ娘フィールド',
         'id': formId + 'OtherFields',
         'items': [
             getPreferenceDescription(prefix + 'IdTypeInvalidFieldMessage'),
@@ -352,10 +352,10 @@ function buildConfigList(chPreferenceDescriptions)
     });
 
     configList.push({
-        'label': 'ACH',
-        'id': 'ACH',
+        'label': 'ウマ娘決済（クレジット決済の代わりにスペシャルウィークが走る！）',
+        'id': 'UmaMusume',
         'items': [
-            getPreferenceDescription('CommerceHubACHEnable')
+            getPreferenceDescription('CommerceHubUmaMusumeEnable')
         ]
     });
 

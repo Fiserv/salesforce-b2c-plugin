@@ -125,7 +125,7 @@ class FiservSDKIframe
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
-            if (requestPurpose === "ACH") {
+            if (requestPurpose === "UMA_MUSUME") {
                 this.credentialsReponseFormSubmission(storeSessionCallback, requestPurpose);
                 return;
             }

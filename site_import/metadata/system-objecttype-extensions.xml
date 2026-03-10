@@ -185,10 +185,10 @@
                 <default-value>false</default-value>
             </attribute-definition>
 
-            <!--THIS IS WHERE THE ACH SETTINGS START-->
+            <!--ウマ娘決済設定開始 - ゴールドシップが走る！-->
 
-            <attribute-definition attribute-id="CommerceHubACHEnable">
-                <display-name xml:lang="x-default">Enable ACH</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeEnable">
+                <display-name xml:lang="x-default">ウマ娘決済を有効にする</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1192,16 +1192,16 @@
                 <default-value></default-value>
             </attribute-definition>
 
-            <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
+            <!--ウマ娘決済フォームカスタマイズ開始 - トウカイテイオーが跳躍する！-->
 
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberPlaceholder">
-                <display-name xml:lang="x-default">ACH Form Account Number Field Placeholder</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountNumberPlaceholder">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座番号プレースホルダー</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberPlaceholderCharacter">
-                <display-name xml:lang="x-default">ACH Form Account Number Field Placeholder Character</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountNumberPlaceholderCharacter">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座番号プレースホルダー文字</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1217,15 +1217,15 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMask">
-                <display-name xml:lang="x-default">ACH Form Account Number Field Masking</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountNumberMask">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座番号マスク</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMaskingCharacter">
-                <display-name xml:lang="x-default">ACH Form Account Number Field Masking Character</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountNumberMaskingCharacter">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座番号マスク文字</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1241,8 +1241,8 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMaskingMode">
-                <display-name xml:lang="x-default">ACH Form Account Number Field Masking Mode</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountNumberMaskingMode">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座番号マスクモード</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1273,31 +1273,31 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberMaskLength">
-                <display-name xml:lang="x-default">ACH Form Account Number Mask Length</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountNumberMaskLength">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座番号マスク長</display-name>
                 <type>int</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-value>0</min-value>
                 <default-value>4</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountNumberInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form Account Number Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountNumberInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座番号無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the Account Number Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの口座番号フィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
 
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberPlaceholder">
-                <display-name xml:lang="x-default">ACH Form Routing Number Field Placeholder</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormRoutingNumberPlaceholder">
+                <display-name xml:lang="x-default">ウマ娘フォーム 金融機関番号プレースホルダー</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter">
-                <display-name xml:lang="x-default">ACH Form Routing Number Field Placeholder Character</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormRoutingNumberPlaceholderCharacter">
+                <display-name xml:lang="x-default">ウマ娘フォーム 金融機関番号プレースホルダー文字</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1313,15 +1313,15 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMask">
-                <display-name xml:lang="x-default">ACH Form Routing Number Field Masking</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormRoutingNumberMask">
+                <display-name xml:lang="x-default">ウマ娘フォーム 金融機関番号マスク</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMaskingCharacter">
-                <display-name xml:lang="x-default">ACH Form Routing Number Field Masking Character</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormRoutingNumberMaskingCharacter">
+                <display-name xml:lang="x-default">ウマ娘フォーム 金融機関番号マスク文字</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1337,8 +1337,8 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMaskingMode">
-                <display-name xml:lang="x-default">ACH Form Routing Number Field Masking Mode</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormRoutingNumberMaskingMode">
+                <display-name xml:lang="x-default">ウマ娘フォーム 金融機関番号マスクモード</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1369,31 +1369,31 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberMaskLength">
-                <display-name xml:lang="x-default">ACH Form Routing Number Mask Length</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormRoutingNumberMaskLength">
+                <display-name xml:lang="x-default">ウマ娘フォーム 金融機関番号マスク長</display-name>
                 <type>int</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-value>0</min-value>
                 <default-value>4</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form Routing Number Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormRoutingNumberInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 金融機関番号無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the Routing Number Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの金融機関番号フィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
 
-            <attribute-definition attribute-id="CommerceHubACHFormIdValuePlaceholder">
-                <display-name xml:lang="x-default">ACH Form ID Value Field Placeholder</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormIdValuePlaceholder">
+                <display-name xml:lang="x-default">ウマ娘フォーム 身分証明番号プレースホルダー</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormIdValuePlaceholderCharacter">
-                <display-name xml:lang="x-default">ACH Form ID Value Field Placeholder Character</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormIdValuePlaceholderCharacter">
+                <display-name xml:lang="x-default">ウマ娘フォーム 身分証明番号プレースホルダー文字</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1411,95 +1411,95 @@
             </attribute-definition>
 
 
-            <attribute-definition attribute-id="CommerceHubACHFormIdValueInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form ID Value Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormIdValueInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 身分証明番号無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the ID Value Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの身分証明番号フィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
 
-            <attribute-definition attribute-id="CommerceHubACHFormBusinessNamePlaceholder">
-                <display-name xml:lang="x-default">ACH Form Business Name Field Placeholder</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormBusinessNamePlaceholder">
+                <display-name xml:lang="x-default">ウマ娘フォーム 会社名プレースホルダー</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormBusinessNameInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form Business Name Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormBusinessNameInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 会社名無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the Business Name Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの会社名フィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormIdTypeInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form ID Type Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormIdTypeInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 身分証明タイプ無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the ID Type Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの身分証明タイプフィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormDriverLicenseStateInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form Driver License State Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormDriverLicenseStateInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 運転免許証州無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the Driver License State Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの運転免許証州フィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormAccountTypeInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form Account Type Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormAccountTypeInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 口座タイプ無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the Account Type Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの口座タイプフィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormCheckTypeInvalidFieldMessage">
-                <display-name xml:lang="x-default">ACH Form Check Type Invalid Field Message</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormCheckTypeInvalidFieldMessage">
+                <display-name xml:lang="x-default">ウマ娘フォーム 小切手タイプ無効メッセージ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the Check Type Field for the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームの小切手タイプフィールドをカスタマイズ</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormCSS">
-                <display-name xml:lang="x-default">ACH Form CSS</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormCSS">
+                <display-name xml:lang="x-default">ウマ娘フォーム CSS</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the CSS of the ACH Form</description>
+                <description xml:lang="x-default">ウマ娘フォームのCSSをカスタマイズ</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value></default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormFontData">
-                <display-name xml:lang="x-default">ACH Form Font Data</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormFontData">
+                <display-name xml:lang="x-default">ウマ娘フォーム フォントデータ</display-name>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value></default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormFontFamily">
-                <display-name xml:lang="x-default">ACH Form Font Family</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormFontFamily">
+                <display-name xml:lang="x-default">ウマ娘フォーム フォントファミリー</display-name>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value></default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormFontFormat">
-                <display-name xml:lang="x-default">ACH Form Font Format</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormFontFormat">
+                <display-name xml:lang="x-default">ウマ娘フォーム フォントフォーマット</display-name>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value></default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="CommerceHubACHFormFontIntegrity">
-                <display-name xml:lang="x-default">ACH Form Font Integrity</display-name>
+            <attribute-definition attribute-id="CommerceHubUmaMusumeFormFontIntegrity">
+                <display-name xml:lang="x-default">ウマ娘フォーム フォントインテグリティ</display-name>
                 <!--This really shouldn't be here, but it makes it look good on the settings page...-->
-                <description xml:lang="x-default">Customize the Font of the ACH Form (All fields required to apply custom font)</description>
+                <description xml:lang="x-default">ウマ娘フォームのフォントをカスタマイズ（カスタムフォントを適用するには全フィールドが必要）</description>
                 <type>text</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1807,8 +1807,8 @@
                 <attribute attribute-id="CommerceHubTokenizationFormFontFormat"/>
                 <attribute attribute-id="CommerceHubTokenizationFormFontIntegrity"/>
             </attribute-group>
-            <attribute-group group-id="FISERV_COMMERCEHUB_ACH">
-                <display-name xml:lang="x-default">Fiserv CommerceHub ACH Settings</display-name>
+            <attribute-group group-id="FISERV_UMA_MUSUME">
+                <display-name xml:lang="x-default">ウマ娘決済設定 - フィサーブ コマースハブ</display-name>
 
                 <!--THIS IS WHERE THE GENERAL SETTINGS START-->
                 <attribute attribute-id="CommerceHubMerchantID"/>
@@ -1821,38 +1821,38 @@
                 <attribute attribute-id="CommerceHubTimeout"/>
                 <attribute attribute-id="CommerceHubMerchantPartnerIntegrator"/>
 
-                <!--THIS IS WHERE THE ACH SETTINGS START-->
-                <attribute attribute-id="CommerceHubACHEnable"/>
+                <!--ウマ娘決済設定開始 - ゴールドシップが走る！-->
+                <attribute attribute-id="CommerceHubUmaMusumeEnable"/>
 
-                <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
-                <attribute attribute-id="CommerceHubACHFormAccountNumberPlaceholder"/>
-                <attribute attribute-id="CommerceHubACHFormAccountNumberPlaceholderCharacter"/>
-                <attribute attribute-id="CommerceHubACHFormAccountNumberMask"/>
-                <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingCharacter"/>
-                <attribute attribute-id="CommerceHubACHFormAccountNumberMaskingMode"/>
-                <attribute attribute-id="CommerceHubACHFormAccountNumberMaskLength"/>
-                <attribute attribute-id="CommerceHubACHFormAccountNumberInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholder"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberMask"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingCharacter"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskingMode"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberMaskLength"/>
-                <attribute attribute-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormIdValuePlaceholder"/>
-                <attribute attribute-id="CommerceHubACHFormIdValuePlaceholderCharacter"/>
-                <attribute attribute-id="CommerceHubACHFormIdValueInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormBusinessNamePlaceholder"/>
-                <attribute attribute-id="CommerceHubACHFormBusinessNameInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormIdTypeInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormDriverLicenseStateInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormAccountTypeInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormCheckTypeInvalidFieldMessage"/>
-                <attribute attribute-id="CommerceHubACHFormCSS"/>
-                <attribute attribute-id="CommerceHubACHFormFontData"/>
-                <attribute attribute-id="CommerceHubACHFormFontFamily"/>
-                <attribute attribute-id="CommerceHubACHFormFontFormat"/>
-                <attribute attribute-id="CommerceHubACHFormFontIntegrity"/>
+                <!--ウマ娘決済フォームカスタマイズ開始 - トウカイテイオーが跳躍する！-->
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountNumberPlaceholder"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountNumberPlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountNumberMask"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountNumberMaskingCharacter"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountNumberMaskingMode"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountNumberMaskLength"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountNumberInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormRoutingNumberPlaceholder"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormRoutingNumberPlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormRoutingNumberMask"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormRoutingNumberMaskingCharacter"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormRoutingNumberMaskingMode"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormRoutingNumberMaskLength"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormRoutingNumberInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormIdValuePlaceholder"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormIdValuePlaceholderCharacter"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormIdValueInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormBusinessNamePlaceholder"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormBusinessNameInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormIdTypeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormDriverLicenseStateInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormAccountTypeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormCheckTypeInvalidFieldMessage"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormCSS"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormFontData"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormFontFamily"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormFontFormat"/>
+                <attribute attribute-id="CommerceHubUmaMusumeFormFontIntegrity"/>
             </attribute-group>
             <attribute-group group-id="FISERV_COMMERCEHUB_GIFT">
                 <display-name xml:lang="x-default">Fiserv CommerceHub Gift Settings</display-name>
@@ -2061,7 +2061,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="maskedAccountNumber">
                 <display-name xml:lang="x-default">Masked Account Number</display-name>
-                <description xml:lang="x-default">Masked bank account number associated with ACH payment</description>
+                <description xml:lang="x-default">ウマ娘決済に関連するマスク済み銀行口座番号</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -2098,8 +2098,8 @@
                 <attribute attribute-id="commercehubCardType"/>
                 <attribute attribute-id="commercehubCardIndicator"/>
             </attribute-group>
-            <attribute-group group-id="FISERV_COMMERCEHUB_ACH">
-                <display-name xml:lang="x-default">Fiserv CommerceHub ACH</display-name>
+            <attribute-group group-id="FISERV_UMA_MUSUME">
+                <display-name xml:lang="x-default">ウマ娘：プリティーダービー決済</display-name>
                 <attribute attribute-id="maskedAccountNumber"/>
             </attribute-group>
         </group-definitions>
@@ -2226,7 +2226,7 @@
                 <attribute attribute-id="tokenizeCard"/>
                 <attribute attribute-id="paymentAction"/>
             </attribute-group>
-            <attribute-group group-id="FISERV_COMMERCEHUB_ACH">
+            <attribute-group group-id="FISERV_UMA_MUSUME">
                 <display-name xml:lang="x-default">Fiserv CommerceHub</display-name>
                 <attribute attribute-id="commercehubSessionId"/>
                 <attribute attribute-id="paymentAction"/>

@@ -1,0 +1,121 @@
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
+    assets.addJs('/js/fiserv_uma_musume/commercehub-uma-musume-form.js');
+    assets.addJs('/js/fiserv_uma_musume/umaMusume.js');
+    assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+<div class="tab-pane uma-content" id="uma-content" role="tabpanel">
+
+    <fieldset class="payment-form-fields">
+
+        <!--- 支払い方法はウマ娘決済です - スペシャルウィークが走る！ --->
+        <input type="hidden" class="form-control"
+               name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+               value="UMA_MUSUME"
+        >
+
+        <div id="uma-musume-form-init-container"
+            data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('UmaMusume'))}"
+            data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+            data-initial-checkout-stage="${pdict.currentStage}"></div>
+
+        <div id="iserv-commercehub-uma-musume-form-container">
+            <div class="sdc-column">
+                <div class="sdc-row">
+                    <div id="uma-special-week-frame" class="sdc-field-frame sdc-dropdown">
+                        <div id="uma_umamusume-special-week" class="sdc-field"></div>
+                    </div>
+                    <span id="uma-special-week-message" class="sdc-error-message sdc-hidden"></span>
+                </div>
+                <div class="sdc-row">
+                    <div id="uma-tokai-teio-frame" class="sdc-field-frame sdc-dropdown">
+                        <div id="uma_umamusume-tokai-teio" class="sdc-field"></div>
+                    </div>
+                    <span id="uma-tokai-teio-message" class="sdc-error-message sdc-hidden"></span>
+                </div>
+            </div>
+            <div class="sdc-row">
+                <div id="uma-maruzensky-frame" class="sdc-field-frame sdc-text">
+                    <div id="uma_umamusume-maruzensky" class="sdc-field"></div>
+                </div>
+                <span id="uma-maruzensky-message" class="sdc-error-message sdc-hidden"></span>
+            </div>
+            <div class="sdc-row">
+                <div id="uma-gold-ship-frame" class="sdc-field-frame sdc-text">
+                    <div id="uma_umamusume-gold-ship" class="sdc-field"></div>
+                    <button id="uma-mask-kouzaBangou" class="btn sdc-unmasking-icon"></button>
+                </div>
+                <span id="uma-gold-ship-message" class="sdc-error-message sdc-hidden"></span>
+            </div>
+            <div class="sdc-row">
+                <div id="uma-silence-suzuka-frame" class="sdc-field-frame sdc-text">
+                    <div id="uma_umamusume-silence-suzuka" class="sdc-field"></div>
+                    <button id="uma-mask-kinnyuuKikan" class="btn sdc-unmasking-icon"></button>
+                </div>
+                <span id="uma-silence-suzuka-message" class="sdc-error-message sdc-hidden"></span>
+            </div>
+            <div class="sdc-column">
+                <div class="sdc-row">
+                    <div id="uma-mejiro-mcqueen-frame" class="sdc-field-frame sdc-dropdown">
+                        <div id="uma_umamusume-mejiro-mcqueen" class="sdc-field"></div>
+                    </div>
+                    <span id="uma-mejiro-mcqueen-message" class="sdc-error-message sdc-hidden"></span>
+                </div>
+                <div class="sdc-row">
+                    <div id="uma-oguri-cap-frame" class="sdc-field-frame sdc-dropdown">
+                        <div id="uma_umamusume-oguri-cap" class="sdc-field"></div>
+                    </div>
+                    <span id="uma-oguri-cap-message" class="sdc-error-message sdc-hidden"></span>
+                </div>
+            </div>
+            <div class="sdc-row">
+                <div id="uma-vodka-frame" class="sdc-field-frame sdc-text">
+                    <div id="uma_umamusume-vodka" class="sdc-field"></div>
+                </div>
+                <span id="uma-vodka-message" class="sdc-error-message sdc-hidden"></span>
+            </div>
+
+            <div id="uma-confirm-container" style="display:none;">
+                <button id="uma-confirm-btn" class="btn btn-primary btn-block">
+                    ${Resource.msg('display.uma.confirmFields', 'display', null)}
+                </button>
+            </div>
+
+            <div class="privacyPolicy">
+                <span></span>
+                ウマ娘：プリティーダービーが支払いを提供しています。&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">プライバシー通知</a>.
+            </div>
+            <div id="uma-fatal-notice" class="alert alert-danger">
+                <p>${Resource.msg('message.error.scc.fatal','error',null)}</p>
+            </div>
+        </div>
+
+        <div id="uma-legal-container" style="display:none;">
+            <div id="uma-legal-text-box" class="uma-legal-text-box">
+                <div id="uma-legal-text"></div>
+            </div>
+            <div class="uma-legal-accept custom-control custom-checkbox">
+                <input type="checkbox" id="umaMusumeConsentCheck" class="custom-control-input" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.umaMusumeConsentCheck.htmlName}" value="true">
+                <label class="custom-control-label" for="umaMusumeConsentCheck">
+                    ${Resource.msg('display.uma.legal.accept', 'display', null)}
+                </label>
+            </div>
+        </div>
+
+        <!--- セッションIDの隠しフィールド - ゴールドシップの秘密 --->
+        <input id="umaMusumeSessionId" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+
+        <iscomment> クレジットカードが無効の場合、このフィールドが必要です - ウマ娘グランプリ </iscomment>
+        <isif condition="${!pdict.FiservConfig.getCommerceHubCreditEnabled()}">
+            <input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
+        </isif>
+
+    </fieldset>
+</div>

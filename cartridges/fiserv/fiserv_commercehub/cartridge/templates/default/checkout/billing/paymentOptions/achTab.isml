@@ -1,5 +1,0 @@
-<li class="nav-item" data-method-id="${paymentOption.ID}">
-    <a class="nav-link ach-tab" data-toggle="tab" href="#ach-content" role="tab">
-        ACH
-    </a>
-</li>

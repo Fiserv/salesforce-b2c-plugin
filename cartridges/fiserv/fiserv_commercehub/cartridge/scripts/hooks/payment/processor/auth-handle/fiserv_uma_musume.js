@@ -3,15 +3,15 @@
 const orderHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_order_handler');
 const transactionHandler = require('*/cartridge/scripts/hooks/payment/processor/utils/commercehub_transaction_handler');
 
-const fiservAchModel = require('*/cartridge/models/fiservAchModel');
+const umaMusumeModel = require('*/cartridge/models/fiservUmaMusumeModel');
 
 
 function Handle(basket, paymentInformation) {
-    return orderHandler.handleOrder(basket, paymentInformation, fiservAchModel);
+    return orderHandler.handleOrder(basket, paymentInformation, umaMusumeModel);
 }
 
 function Authorize(orderNo, paymentInstrument, paymentProcessor) {
-    return transactionHandler.handleTransaction(orderNo, paymentInstrument, paymentProcessor, fiservAchModel);
+    return transactionHandler.handleTransaction(orderNo, paymentInstrument, paymentProcessor, umaMusumeModel);
 }
 
 exports.Handle = Handle;
