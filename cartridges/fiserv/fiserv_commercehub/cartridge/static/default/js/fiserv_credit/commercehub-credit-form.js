@@ -791,6 +791,13 @@ class CommercehubCheckoutForm
     handleTokenFormValidity = function(cardUUID, valid)
     {
         this.cvvAdapters[cardUUID]?.setValidity(valid);
+
+        if ($('.payment-information').parent().hasClass('checkout-hidden'))
+        {
+            this.getSubmitButton().prop('disabled', false);
+            return;
+        }
+
         this.getSubmitButton().prop('disabled', !valid);
     }
 

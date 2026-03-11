@@ -48,6 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let initCreditCardSection = function()
     {
+        const isPaymentCoveredByGift = $('.payment-information').parent().hasClass('checkout-hidden');
+
         if(!savedPaymentsPresent() || !creditCardFormHidden())
         {
             initPaymentForm();
@@ -59,7 +61,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (form.cvvEnabled)
             {
                 form.initializeTokenCVVForms();
-                form.disableSubmitButton();
+                if (!isPaymentCoveredByGift)
+                {
+                    form.disableSubmitButton();
+                }
             }
         }
     }
