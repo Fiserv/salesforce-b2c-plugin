@@ -11,7 +11,7 @@
     assets.addCss('css/fiservScc.css');
 </isscript>
 
-<div class="tab-pane paypal-content" id="paypal-content" role="tabpanel">
+<div class="tab-pane paypal-content ${pdict.firstActivePaymentMethod === 'PAYPAL' ? 'active' : ''}" id="paypal-content" role="tabpanel">
 
     <fieldset class="payment-form-fields">
         

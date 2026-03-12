@@ -27,7 +27,9 @@ class CommercehubVenmo
             $.spinner().start();
             $('#fiserv-venmo-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, null, "Venmo");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            }
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -121,6 +123,9 @@ class CommercehubVenmo
             $(".payment-information").data("payment-method-id") === "VENMO" &&
             xhr.responseJSON.error
         ) {
+            if ($('.payment-information').parent().hasClass('checkout-hidden')) {
+                return;
+            }
             this.setOrderIdInput('');
             this.removeInsertedSummary();
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
@@ -138,7 +143,9 @@ class CommercehubVenmo
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        }
     }
 
     watchButtonLoadLag = function()

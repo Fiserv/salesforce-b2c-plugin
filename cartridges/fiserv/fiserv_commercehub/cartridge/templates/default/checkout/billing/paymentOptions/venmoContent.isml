@@ -11,7 +11,7 @@
     assets.addCss('css/fiservScc.css');
 </isscript>
 
-<div class="tab-pane venmo-content" id="venmo-content" role="tabpanel">
+<div class="tab-pane venmo-content ${pdict.firstActivePaymentMethod === 'VENMO' ? 'active' : ''}" id="venmo-content" role="tabpanel">
 
     <fieldset class="payment-form-fields">
         

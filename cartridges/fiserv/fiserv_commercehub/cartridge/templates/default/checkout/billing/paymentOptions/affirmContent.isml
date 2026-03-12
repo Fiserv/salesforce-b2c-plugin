@@ -11,7 +11,7 @@
     assets.addCss('css/fiservScc.css');
 </isscript>
 
-<div class="tab-pane affirm-content" id="affirm-content" role="tabpanel">
+<div class="tab-pane affirm-content ${pdict.firstActivePaymentMethod === 'AFFIRM' ? 'active' : ''}" id="affirm-content" role="tabpanel">
 
     <fieldset class="payment-form-fields">
         

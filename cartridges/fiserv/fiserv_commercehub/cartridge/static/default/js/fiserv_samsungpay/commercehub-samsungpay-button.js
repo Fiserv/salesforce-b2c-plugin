@@ -26,7 +26,9 @@ class CommercehubSamsungPay
             $.spinner().start();
             $('#fiserv-samsungpay-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "SamsungPay");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            }
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -99,6 +101,9 @@ class CommercehubSamsungPay
             $(".payment-information").data("payment-method-id") === "SAMSUNGPAY" && 
             xhr.responseJSON.error
         ) {
+            if ($('.payment-information').parent().hasClass('checkout-hidden')) {
+                return;
+            }
             this.setSessionIdInput('');
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
             this.samsungpayFailure();
@@ -135,7 +140,9 @@ class CommercehubSamsungPay
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        }
     }
 
     watchButtonLoadLag = function()

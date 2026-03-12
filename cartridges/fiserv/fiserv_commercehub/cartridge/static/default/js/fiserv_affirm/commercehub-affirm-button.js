@@ -26,7 +26,9 @@ class CommercehubAffirm
             $.spinner().start();
             $('#fiserv-affirm-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, null, "Affirm");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            }
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -130,6 +132,10 @@ class CommercehubAffirm
             $(".payment-information").data("payment-method-id") === "AFFIRM" &&
             xhr.responseJSON.error
         ) {
+            // If gift cards fully cover the total, skip Affirm-specific error handling
+            if ($('.payment-information').parent().hasClass('checkout-hidden')) {
+                return;
+            }
             this.setOrderIdInput('');
             this.removeInsertedSummary();
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
@@ -147,7 +153,10 @@ class CommercehubAffirm
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        // Do not disable submit-payment if gift cards have fully covered the total
+        if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        }
     }
 
     watchButtonLoadLag = function()

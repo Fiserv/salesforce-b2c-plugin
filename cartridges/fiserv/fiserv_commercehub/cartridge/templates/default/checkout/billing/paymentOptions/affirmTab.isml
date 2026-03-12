@@ -1,5 +1,5 @@
-<li class="nav-item" data-method-id="${paymentOption.ID}">
-    <a class="nav-link affirm-tab" data-toggle="tab" href="#affirm-content" role="tab">
+<li class="nav-item ${pdict.firstActivePaymentMethod === 'AFFIRM' ? 'active' : ''}" data-method-id="${paymentOption.ID}">
+    <a class="nav-link affirm-tab ${pdict.firstActivePaymentMethod === 'AFFIRM' ? 'active' : ''}" data-toggle="tab" href="#affirm-content" role="tab">
         <img class="affirm-option"
                 src="${URLUtils.staticURL('/images/affirm.png')}"
                 height="32"

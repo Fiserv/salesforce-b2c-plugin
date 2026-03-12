@@ -315,16 +315,25 @@ class CommercehubGiftForm
             this.updateGiftCards(response.updatedGiftCards);
             $('.grand-total-sum').text(response.currencySymbol + response.amountRemaining);
 
+            if($('#checkout-main').attr('data-checkout-stage') === "placeOrder")
+            {
+                if(response.redirectUrl)
+                {
+                    window.location.href = response.redirectUrl;
+                }
+                else
+                {
+                    // Fallback: reload is still better than staying broken
+                    location.reload();
+                }
+                return;
+            }
+
             if(!response.paymentCovered && $('.payment-information').parent().hasClass('checkout-hidden'))
             {
                 this.showPaymentBlock();
             }
 
-            if($('.data-checkout-stage').attr('data-checkout-stage') === "placeOrder")
-            {
-                $('.payment-summary .edit-button').trigger('click');
-            }
-            
             this.showSuccess(response.successMessage);
             this.watchFormButtons();
         }).catch((err) =>
@@ -388,9 +397,12 @@ class CommercehubGiftForm
         let subitButtonQuery = $('.submit-payment');
         if(subitButtonQuery.attr('disabled'))
         {
-            subitButtonQuery.prop("disabled", false);
             this.paymentBlockWasDisabled = true;
         }
+
+        subitButtonQuery.prop("disabled", false);
+
+        $('button.btn.btn-primary.btn-block.place-order').prop('disabled', false);
     }
 
     showPaymentBlock = function()

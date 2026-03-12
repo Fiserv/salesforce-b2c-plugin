@@ -13,7 +13,7 @@
     assets.addCss('css/fiservScc.css');
 </isscript>
 
-<div class="tab-pane samsungpay-content" id="samsungpay-content" role="tabpanel">
+<div class="tab-pane samsungpay-content ${pdict.firstActivePaymentMethod === 'SAMSUNGPAY' ? 'active' : ''}" id="samsungpay-content" role="tabpanel">
 
     <fieldset class="payment-form-fields">
 

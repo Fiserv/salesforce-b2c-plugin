@@ -1,5 +1,5 @@
-<li class="nav-item" data-method-id="${paymentOption.ID}">
-    <a class="nav-link venmo-tab" data-toggle="tab" href="#venmo-content" role="tab">
+<li class="nav-item ${pdict.firstActivePaymentMethod === 'VENMO' ? 'active' : ''}" data-method-id="${paymentOption.ID}">
+    <a class="nav-link venmo-tab ${pdict.firstActivePaymentMethod === 'VENMO' ? 'active' : ''}" data-toggle="tab" href="#venmo-content" role="tab">
         <img class="venmo-option"
                 src="${URLUtils.staticURL('/images/venmo.svg')}"
                 height="32"

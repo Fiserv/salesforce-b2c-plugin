@@ -74,10 +74,16 @@ server.post('ApplyGiftCard', function(req, res, next) {
 });
 
 server.post('RemoveGiftCard', function(req, res, next) {
+    const URLUtils = require('dw/web/URLUtils');
+
     let removeResponse = fiservGift.removeGiftCard(req.form.uuid);
     if(removeResponse.error)
     {
         res.setStatusCode(400);
+    }
+    else
+    {
+        removeResponse.redirectUrl = URLUtils.url('Checkout-Begin', 'stage', 'payment').toString();
     }
     res.json(removeResponse);
     return next();

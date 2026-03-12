@@ -27,7 +27,9 @@ class CommercehubPayPal
             $.spinner().start();
             $('#fiserv-paypal-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, null, "PayPal");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            }
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -122,6 +124,9 @@ class CommercehubPayPal
             $(".payment-information").data("payment-method-id") === "PAYPAL" &&
             xhr.responseJSON.error
         ) {
+            if ($('.payment-information').parent().hasClass('checkout-hidden')) {
+                return;
+            }
             this.setOrderIdInput('');
             this.removeInsertedSummary();
             $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
@@ -139,7 +144,9 @@ class CommercehubPayPal
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        }
     }
 
     watchButtonLoadLag = function()

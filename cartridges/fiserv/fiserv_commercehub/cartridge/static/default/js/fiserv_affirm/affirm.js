@@ -11,10 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
-    //const checkoutStage = $('#fiserv-commercehub-affirm-form-init-container').attr('data-initial-checkout-stage');
+    const checkoutStage = $('#fiserv-commercehub-affirm-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubAffirm(extractInitializationData());
     let initialized = false;
-    let initializingPromise = null;
     let postInitPaymentChangeDetected = false;
 
     let initAffirm = async function()
@@ -26,16 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        if (initialized || initializingPromise)
-        {
-            return;
-        }
-
-        $('#fiserv_commercehub-affirm-button').children().remove();
-        initializingPromise = form.initialize();
-        await initializingPromise;
-        initialized = true;
-        initializingPromise = null;
+        
+            await form.initialize();
+            initialized = true;
+        
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -44,24 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
             typeof(xhr.responseJSON.order) !== 'undefined' &&
             typeof(xhr.responseJSON.order.shipping) !== 'undefined' &&
-            $(".payment-information").data("payment-method-id") === "AFFIRM")
+            ($(".payment-information").data("payment-method-id") === "AFFIRM" || $('.affirm-tab.active').length > 0))
         {
             initAffirm();
         }
     });
 
-    const affirmNavItem = $('ul.payment-options li.nav-item[data-method-id=AFFIRM]');
-
-    if (affirmNavItem.hasClass('active')) {
-        initAffirm();
-    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
-        affirmNavItem.find('a').one('shown.bs.tab', function () {
-            initAffirm();
-        });
-        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-    }
-
-    affirmNavItem.on('click', () => {
+    $('ul.payment-options li.nav-item[data-method-id=AFFIRM]').on('click', () => {
         initAffirm();
     });
 
@@ -90,5 +72,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 initAffirm();
         }
     }
+    if (checkoutStage === 'payment' && $(".payment-information").data("payment-method-id") === "AFFIRM")
+    {
+        initAffirm();
+    }
+
+    if ($('.affirm-tab.active').length > 0 && !initialized)
+    {
+        initAffirm();
+    }
+
+    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0 && $(".payment-information").data("payment-method-id") === "AFFIRM")
+    {
+        $('ul.payment-options li.nav-item[data-method-id=AFFIRM]').find('a').trigger('click');
+        initAffirm();
+    }
+    
     new MutationObserver(() => { grandTotalUpdated(); }).observe($('.grand-total-sum')[0], { childList: true });
 });

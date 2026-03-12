@@ -1,5 +1,5 @@
-<li class="nav-item" data-method-id="${paymentOption.ID}">
-    <a class="nav-link samsungpay-tab" data-toggle="tab" href="#samsungpay-content" role="tab">
+<li class="nav-item ${pdict.firstActivePaymentMethod === 'SAMSUNGPAY' ? 'active' : ''}" data-method-id="${paymentOption.ID}">
+    <a class="nav-link samsungpay-tab ${pdict.firstActivePaymentMethod === 'SAMSUNGPAY' ? 'active' : ''}" data-toggle="tab" href="#samsungpay-content" role="tab">
         <img class="samsungpay-option"
                 src="${URLUtils.staticURL('/images/samsungpay.svg')}"
                 height="32"

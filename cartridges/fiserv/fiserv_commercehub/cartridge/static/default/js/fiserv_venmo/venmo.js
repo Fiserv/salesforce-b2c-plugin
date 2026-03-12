@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
+    const checkoutStage = $('#fiserv-commercehub-venmo-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubVenmo(extractInitializationData());
     let initialized = false;
     let initializingPromise = null;
@@ -18,32 +19,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let initVenmo = async function()
     {
-        // Temporary fix...
         if(postInitPaymentChangeDetected)
         {
             location.reload();
             return;
         }
 
-        if (initialized || initializingPromise)
-        {
-            return;
-        }
-        
         $('#fiserv_commercehub-venmo-button').children().remove();
-         initializingPromise = form.initialize();
-        await initializingPromise;
+        await form.initialize();
         initialized = true;
-        initializingPromise = null;
     };
 
-    $(document).on("ajaxSuccess", (ev, xhr) => { 
+    $(document).on("ajaxSuccess", (ev, xhr) => {
         if (typeof(xhr.responseJSON) !== 'undefined' &&
             typeof(xhr.responseJSON.action) !== 'undefined' &&
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
             typeof(xhr.responseJSON.order) !== 'undefined' &&
             typeof(xhr.responseJSON.order.shipping) !== 'undefined' &&
-            $(".payment-information").data("payment-method-id") === "VENMO")
+            ($(".payment-information").data("payment-method-id") === "VENMO" || $('.venmo-tab.active').length > 0))
         {
             initVenmo();
         }
@@ -51,14 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
      const venmoNavItem = $('ul.payment-options li.nav-item[data-method-id=VENMO]');
 
-    if (venmoNavItem.hasClass('active')) {
-        initVenmo();
-    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
-        venmoNavItem.find('a').one('shown.bs.tab', function () {
-            initVenmo();
-        });
-        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-    }
 
     venmoNavItem.on('click', () => {
         initVenmo();
@@ -77,17 +62,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         $('#fiserv_commercehub-venmo-button').children().remove();
-        if(initialized)
+        if(initializingPromise)
         {
             // Temporary fix...
             location.reload();
-            return;
-
-            initialized = false;
-            if($('.data-checkout-stage').attr('data-checkout-stage') === "payment"
-                && $(".payment-information").data("payment-method-id") === "VENMO")
-                initVenmo();
         }
     }
+    if (checkoutStage === 'payment' && $(".payment-information").data("payment-method-id") === "VENMO")
+    {
+        initVenmo();
+    }
+
+    if ($('.venmo-tab.active').length > 0 && !initialized)
+    {
+        initVenmo();
+    }
+
+    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0 && $(".payment-information").data("payment-method-id") === "VENMO")
+    {
+        venmoNavItem.find('a').trigger('click');
+        initVenmo();
+    }
+
     new MutationObserver(() => { grandTotalUpdated(); }).observe($('.grand-total-sum')[0], { childList: true });
 });

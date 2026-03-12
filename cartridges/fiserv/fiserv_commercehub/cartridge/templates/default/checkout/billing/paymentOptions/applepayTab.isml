@@ -1,5 +1,5 @@
-<li class="nav-item" data-method-id="${paymentOption.ID}">
-    <a class="nav-link applepay-tab" data-toggle="tab" href="#applepay-content" role="tab">
+<li class="nav-item ${pdict.firstActivePaymentMethod === 'APPLEPAY' ? 'active' : ''}" data-method-id="${paymentOption.ID}">
+    <a class="nav-link applepay-tab ${pdict.firstActivePaymentMethod === 'APPLEPAY' ? 'active' : ''}" data-toggle="tab" href="#applepay-content" role="tab">
         <img class="applepay-option"
                 src="${URLUtils.staticURL('/images/applepay.svg')}"
                 height="32"

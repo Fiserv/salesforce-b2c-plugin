@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
-    //const checkoutStage = $('#fiserv-commercehub-paypal-form-init-container').attr('data-initial-checkout-stage');
+    const checkoutStage = $('#fiserv-commercehub-paypal-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubPayPal(extractInitializationData());
     let initialized = false;
     let initializingPromise = null;
@@ -19,23 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let initPayPal = async function()
     {
-        // Temporary fix...
         if(postInitPaymentChangeDetected)
         {
             location.reload();
             return;
         }
 
-        if (initialized || initializingPromise)
-        {
-            return;
-        }
-
         $('#fiserv_commercehub-paypal-button').children().remove();
-        initializingPromise = form.initialize();
-        await initializingPromise;
+        await form.initialize();
         initialized = true;
-        initializingPromise = null;
+
     };
 
     $(document).on("ajaxSuccess", (ev, xhr) => { 
@@ -44,22 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
             xhr.responseJSON.action === "CheckoutShippingServices-SubmitShipping" &&
             typeof(xhr.responseJSON.order) !== 'undefined' &&
             typeof(xhr.responseJSON.order.shipping) !== 'undefined' &&
-            $(".payment-information").data("payment-method-id") === "PAYPAL")
+            ($(".payment-information").data("payment-method-id") === "PAYPAL" || $('.paypal-tab.active').length > 0))
         {
             initPayPal();
         }
     });
 
     const paypalNavItem = $('ul.payment-options li.nav-item[data-method-id=PAYPAL]');
-
-    if (paypalNavItem.hasClass('active')) {
-        initPayPal();
-    } else if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) {
-        paypalNavItem.find('a').one('shown.bs.tab', function () {
-            initPayPal();
-        });
-        $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-    }
 
     paypalNavItem.on('click', () => {
         initPayPal();
@@ -78,11 +62,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         $('#fiserv_commercehub-paypal-button').children().remove();
-        if (initPromise)
+        if (initializingPromise)
         {
             // Temporary fix...
             location.reload();
         }
     }
+
+    if (checkoutStage === 'payment' && $(".payment-information").data("payment-method-id") === "PAYPAL")
+    {
+        initPayPal();
+    }
+
+    if ($('.paypal-tab.active').length > 0 && !initialized)
+    {
+        initPayPal();
+    }
+
+    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0 && $(".payment-information").data("payment-method-id") === "PAYPAL")
+    {
+        paypalNavItem.find('a').trigger('click');
+        initPayPal();
+    }
+
     new MutationObserver(() => { grandTotalUpdated(); }).observe($('.grand-total-sum')[0], { childList: true });
 });

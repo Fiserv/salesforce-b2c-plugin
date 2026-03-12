@@ -1,17 +1,39 @@
 <isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
+<isset name="firstPaymentTabRendered" value="${false}" scope="page" />
 
 <isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
     <isif condition="${paymentOption.ID === 'CREDIT_CARD' && pdict.FiservConfig.getCommerceHubCreditEnabled()}">
         <isinclude template="checkout/billing/paymentOptions/creditCardTab" />
+        <isset name="firstPaymentTabRendered" value="${true}" scope="page" />
     <iselseif condition="${paymentOption.ID === 'PAYPAL'&& pdict.FiservConfig.getCommerceHubPayPalEnabled()}" />
+        <isif condition="${!firstPaymentTabRendered}">
+            <isset name="firstPaymentTabRendered" value="${true}" scope="page" />
+            <isset name="firstActivePaymentMethod" value="PAYPAL" scope="pdict" />
+        </isif>
         <isinclude template="checkout/billing/paymentOptions/paypalTab" />
     <iselseif condition="${paymentOption.ID === 'VENMO'&& pdict.FiservConfig.getCommerceHubVenmoEnabled()}" />
+        <isif condition="${!firstPaymentTabRendered}">
+            <isset name="firstPaymentTabRendered" value="${true}" scope="page" />
+            <isset name="firstActivePaymentMethod" value="VENMO" scope="pdict" />
+        </isif>
         <isinclude template="checkout/billing/paymentOptions/venmoTab" />
     <iselseif condition="${paymentOption.ID === 'APPLEPAY'&& pdict.FiservConfig.getCommerceHubApplePayEnabled()}" />
+        <isif condition="${!firstPaymentTabRendered}">
+            <isset name="firstPaymentTabRendered" value="${true}" scope="page" />
+            <isset name="firstActivePaymentMethod" value="APPLEPAY" scope="pdict" />
+        </isif>
         <isinclude template="checkout/billing/paymentOptions/applepayTab" />
     <iselseif condition="${paymentOption.ID === 'AFFIRM'&& pdict.FiservConfig.getCommerceHubAffirmEnabled()}" />
+        <isif condition="${!firstPaymentTabRendered}">
+            <isset name="firstPaymentTabRendered" value="${true}" scope="page" />
+            <isset name="firstActivePaymentMethod" value="AFFIRM" scope="pdict" />
+        </isif>
         <isinclude template="checkout/billing/paymentOptions/affirmTab" />
     <iselseif condition="${paymentOption.ID === 'SAMSUNGPAY'&& pdict.FiservConfig.getCommerceHubSamsungPayEnabled()}" />
+        <isif condition="${!firstPaymentTabRendered}">
+            <isset name="firstPaymentTabRendered" value="${true}" scope="page" />
+            <isset name="firstActivePaymentMethod" value="SAMSUNGPAY" scope="pdict" />
+        </isif>
         <isinclude template="checkout/billing/paymentOptions/samsungpayTab" />
     </isif>
 </isloop>

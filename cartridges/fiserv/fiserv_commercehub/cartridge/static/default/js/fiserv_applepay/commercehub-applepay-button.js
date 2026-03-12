@@ -28,7 +28,9 @@ class CommercehubApplePay
             $.spinner().start();
             $('#fiserv-applepay-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "ApplePay");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            }
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -116,6 +118,12 @@ class CommercehubApplePay
             xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
             $(".payment-information").data("payment-method-id") === "APPLEPAY"
         ) {
+            // If gift cards fully cover the total, the payment block is hidden and the
+            // submission was for GIFT_CARD, not Apple Pay — skip Apple Pay-specific handling.
+            if ($('.payment-information').parent().hasClass('checkout-hidden')) {
+                return;
+            }
+
             if(xhr.responseJSON.isApplePaySuccess)
             {
                 new Promise((resolve, reject) => {
@@ -200,7 +208,10 @@ class CommercehubApplePay
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        // Do not disable submit-payment if gift cards have fully covered the total
+        if (!$('.payment-information').parent().hasClass('checkout-hidden')) {
+            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        }
     }
 
     watchButtonLoadLag = function()
