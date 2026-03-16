@@ -65,4 +65,21 @@ server.append('UpdateQuantity', function (req, res, next) {
     return next();
 });
 
+server.append('Show', function (req, res, next) {
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+
+    var basket = BasketMgr.getCurrentBasket();
+    if (false) {
+        res.setViewData({
+            availableCommerceHubExpressMethods: fiservHelper.getAvailableExpressMethods(
+                basket,
+                req.currentCustomer.raw,
+                req.geolocation.countryCode
+            )
+        });
+    }
+
+    return next();
+});
+
 module.exports = server.exports();

@@ -1,0 +1,14 @@
+<div class="mb-sm-3">
+    <a href="${URLUtils.https('Checkout-Begin')}"
+        class="btn btn-primary btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" role="button">
+        ${Resource.msg('button.checkout', 'cart', null)}
+    </a>
+
+    <isif condition="${pdict.availableCommerceHubExpressMethods && pdict.availableCommerceHubExpressMethods.length > 0}">
+        <div class="card mt-3">
+            <div class="card-body">
+                <isinclude template="cart/expressCheckout/expressPaymentOptions" />
+            </div>
+        </div>
+    </isif>
+</div>
