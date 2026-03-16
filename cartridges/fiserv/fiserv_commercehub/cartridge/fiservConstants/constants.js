@@ -41,6 +41,9 @@ module.exports = {
         "SAMSUNGPAY",
         "PAZE"
     ],
+    EXPRESS_PAYMENT_METHODS : [
+        "APPLEPAY",
+    ],
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",

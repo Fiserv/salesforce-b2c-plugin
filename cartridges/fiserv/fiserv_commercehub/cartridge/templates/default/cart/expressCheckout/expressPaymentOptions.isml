@@ -1,0 +1,5 @@
+<isloop items="${pdict.availableCommerceHubExpressMethods}" var="paymentMethod">
+    <isif condition="${paymentMethod.ID === 'APPLEPAY'}">
+        <isinclude template="cart/expressCheckout/applepayExpressContent" />
+    </isif>
+</isloop>
