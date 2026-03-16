@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const placeOrderBtn = document.querySelector('button.btn.btn-primary.btn-block.submit-payment');
     let placeOrderHandler = null;
     if (placeOrderBtn) {
-        placeOrderHandler = new FiservPlaceOrderButtonHandler(placeOrderBtn);
+        placeOrderHandler = new PlaceOrderButtonHandler(placeOrderBtn);
         window.fiservPlaceOrderHandler = placeOrderHandler;
 
         placeOrderHandler.setFact('payment.activeMethod', 'card');

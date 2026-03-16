@@ -1,6 +1,6 @@
 'use strict';
 
-class FiservPlaceOrderButtonHandler
+class PlaceOrderButtonHandler
 {
     constructor(buttonElement)
     {
