@@ -6,7 +6,8 @@
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
     assets.addJs('/js/fiserv_base/commercehub-dom-disable-handler.js');
-    assets.addJs('/js/fiserv_applepay/commercehub-applepay-button.js');
+    assets.addJs('/js/fiserv_applepay/commercehub-applepay-checkout-handler.js');
+    assets.addJs('/js/fiserv_applepay/commercehub-applepay-button-base.js');
     assets.addJs('/js/fiserv_applepay/applepay.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
     assets.addCss('css/fiservScc.css');
@@ -26,6 +27,7 @@
             data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('ApplePay'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
             data-initial-checkout-stage="${pdict.currentStage}"
+            data-payment-amount-block=".grand-total-sum"
             data-locale="${pdict.locale}"></div>
     
         <div id="fiserv-commercehub-applepay-form-container">

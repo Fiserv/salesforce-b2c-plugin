@@ -1,0 +1,31 @@
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_applepay/commercehub-applepay-express-handler.js');
+    assets.addJs('/js/fiserv_applepay/commercehub-applepay-button-base.js');
+    assets.addJs('/js/fiserv_applepay/applepay.js');
+    assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+
+<div class="tab-pane applepay-content" id="applepay-content">
+    <div id="fiserv-commercehub-applepay-form-init-container"
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('ApplePay'))}"
+        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+        data-payment-amount-block=".grand-total"
+        data-locale="${pdict.locale}"></div>
+
+    <div id="fiserv_commercehub-applepay-button" class="sdc-button"></div>
+
+    <div id="fiserv-applepay-fatal-notice" class="alert alert-danger">
+        <p>${Resource.msg('message.error.applepay.fatal','error',null)}</p>            
+    </div>
+
+    <!--- Hidden input for session ID --->
+    <input id="commercehubSessionIdInputApplePay" type="hidden" name="<<< ADD IN FORM ITEM ROUTING HERE >>>"/>
+</div>
