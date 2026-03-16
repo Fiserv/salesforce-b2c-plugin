@@ -99,7 +99,7 @@
 </isif>
 
 <input type="hidden" class="form-control" id="cardType" name="${pdict.forms.billingForm.creditCardFields.cardType.htmlName}" value="" />
-<input type="text" class="form-control cardNumber" id="cardNumber" style="display:none;" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
+<input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
 <select style="display:none;" id="expirationMonth" name="${pdict.forms.billingForm.creditCardFields.expirationMonth.htmlName}">
     <option id="expirationMonthValue" value=""></option>
 </select>

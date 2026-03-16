@@ -1,11 +1,5 @@
 <isset name="FiservConfig" value="${require('*/cartridge/scripts/utils/commercehubConfig')}" scope="pdict" />
 
-<!--- Cleave.js compatibility shim: SFRA checkout.js always calls handleCreditCardNumber('.cardNumber') on DOMReady. --->
-<!--- This input must be present regardless of whether credit card is enabled. --->
-<input type="text" class="cardNumber"
-    name="${pdict.forms.billingForm.creditCardFields.cardNumber.htmlName}"
-    style="display:none;" aria-hidden="true" autocomplete="cc-number">
-
 <isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
     <isif condition="${paymentOption.ID === 'CREDIT_CARD' && pdict.FiservConfig.getCommerceHubCreditEnabled()}">
         <isinclude template="checkout/billing/paymentOptions/creditCardContent" />
