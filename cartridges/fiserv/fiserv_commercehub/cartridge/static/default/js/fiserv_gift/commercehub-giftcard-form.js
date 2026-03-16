@@ -385,11 +385,15 @@ class CommercehubGiftForm
         $('.payment-information').parent().addClass('checkout-hidden');
         $('.payment-details').addClass('checkout-hidden');
         $('.gift-details').children().last().addClass('checkout-hidden');
-        let subitButtonQuery = $('.submit-payment');
-        if(subitButtonQuery.attr('disabled'))
-        {
-            subitButtonQuery.prop("disabled", false);
-            this.paymentBlockWasDisabled = true;
+        if (window.fiservPlaceOrderHandler) {
+            window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
+        } else {
+            let subitButtonQuery = $('.submit-payment');
+            if(subitButtonQuery.attr('disabled'))
+            {
+                subitButtonQuery.prop("disabled", false);
+                this.paymentBlockWasDisabled = true;
+            }
         }
     }
 
@@ -399,8 +403,9 @@ class CommercehubGiftForm
         $('.payment-information').parent().removeClass('checkout-hidden');
         $('.payment-details').removeClass('checkout-hidden');
         $('.gift-details').children().last().removeClass('checkout-hidden');
-        if(this.paymentBlockWasDisabled)
-        {
+        if (window.fiservPlaceOrderHandler) {
+            window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', false);
+        } else if(this.paymentBlockWasDisabled) {
             $('.submit-payment').prop("disabled", true);
             this.paymentBlockWasDisabled = false;
         }

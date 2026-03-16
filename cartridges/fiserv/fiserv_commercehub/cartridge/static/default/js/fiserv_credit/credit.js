@@ -32,7 +32,29 @@ document.addEventListener("DOMContentLoaded", () => {
         return $('.credit-card-form.checkout-hidden').length
     }
 
-    let form = new CommercehubCheckoutForm(extractInitializationData());
+    const placeOrderBtn = document.querySelector('button.btn.btn-primary.btn-block.submit-payment');
+    let placeOrderHandler = null;
+    if (placeOrderBtn) {
+        placeOrderHandler = new FiservPlaceOrderButtonHandler(placeOrderBtn);
+        window.fiservPlaceOrderHandler = placeOrderHandler;
+
+        placeOrderHandler.setFact('payment.activeMethod', 'card');
+        placeOrderHandler.setFact('payment.paymentMethodFormValid', false);
+
+        if ($('.payment-information').parent().hasClass('checkout-hidden')) {
+            placeOrderHandler.setFact('coverage.giftCoversAll', true);
+        }
+
+        placeOrderHandler.addBlocker(
+            'credit-card',
+            'payment-form-validity',
+            (facts) => facts['payment.required'] === true && facts['payment.paymentMethodFormValid'] === false,
+            () => 'Payment is required but the payment form is not valid',
+            'payment'
+        );
+    }
+
+    let form = new CommercehubCheckoutForm(extractInitializationData(), placeOrderHandler);
 
     let clearPaymentForm = function()
     {
