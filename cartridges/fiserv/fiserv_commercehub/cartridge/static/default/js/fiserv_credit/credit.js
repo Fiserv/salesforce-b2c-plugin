@@ -136,6 +136,26 @@ document.addEventListener("DOMContentLoaded", () => {
         initPaymentForm();
     });
 
+    $(document).on('ajaxSuccess', (ev, xhr) => {
+        if (typeof(xhr.responseJSON) === 'undefined' ||
+            typeof(xhr.responseJSON.paymentCovered) === 'undefined' ||
+            $(".payment-information").data("payment-method-id") !== "CREDIT_CARD")
+        {
+            return;
+        }
+
+        if (xhr.responseJSON.paymentCovered)
+        {
+            form.unwatchSubmitButton();
+        }
+        else
+        {
+            form.watchSubmitButton();
+            if (form.validForm) form.enableSubmitButton();
+            else form.disableSubmitButton();
+        }
+    });
+
     // if payment stage: instantiate payment form
     if($(".payment-information").data("payment-method-id") === "CREDIT_CARD")
     {
