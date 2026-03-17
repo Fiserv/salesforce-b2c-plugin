@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return $('.credit-card-form.checkout-hidden').length
     }
 
-    const placeOrderBtn = document.querySelector('button.btn.btn-primary.btn-block.submit-payment');
+    const placeOrderBtn = $('button.btn.btn-primary.btn-block.submit-payment')[0];
     if (placeOrderBtn && !window.fiservPlaceOrderHandler) {
         window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler(placeOrderBtn);
 
@@ -42,13 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
         window.fiservPlaceOrderHandler.addBlocker(
             'credit-card',
             'payment-form-validity',
-            (facts) => facts['payment.required'] === true && facts['payment.paymentMethodFormValid'] === false,
-            () => 'Payment is required but the payment form is not valid',
-            'payment'
+            (facts) => facts.get('payment.required') === true && facts.get('payment.paymentMethodFormValid') === false
         );
     }
 
-    let form = new CommercehubCheckoutForm(extractInitializationData(), window.fiservPlaceOrderHandler);
+    let form = new CommercehubCheckoutForm(extractInitializationData());
 
     let clearPaymentForm = function()
     {

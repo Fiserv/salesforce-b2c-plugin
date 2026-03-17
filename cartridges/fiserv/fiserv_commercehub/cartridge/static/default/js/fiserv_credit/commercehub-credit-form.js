@@ -2,13 +2,12 @@
 
 class CommercehubCheckoutForm
 {
-    constructor(initializationData, placeOrderHandler)
+    constructor(initializationData)
     {
         if (typeof(initializationData) === "undefined")
         {
             throw new Error("Initialization Data not found. Unable to initialize card form.");
         }
-        this.placeOrderHandler = placeOrderHandler || null;
         this.formConfig = initializationData.config;
         this.configDataPaymentCard = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
@@ -64,19 +63,11 @@ class CommercehubCheckoutForm
         let loadFailCallback = (error) => { this.sdkLoadFailure(error, "#fiserv-scc-fatal-notice"); };
         let formReadyCallback = () => { this.sdkInitialized() };
         let formValidCallback = () => {
-            if (this.placeOrderHandler) {
-                this.placeOrderHandler.setFact('payment.paymentMethodFormValid', true);
-            } else {
-                this.getSubmitButton().prop('disabled', false);
-            }
+            this.setSubmitButtonEnabled(true);
             this.validForm = true;
         };
         let formInvalidCallback = () => {
-            if (this.placeOrderHandler) {
-                this.placeOrderHandler.setFact('payment.paymentMethodFormValid', false);
-            } else {
-                this.getSubmitButton().prop('disabled', true);
-            }
+            this.setSubmitButtonEnabled(false);
             this.validForm = false;
         };
         let cardBrandHandler = (brand) => { this.cardBrandChangeHandler(brand) };
@@ -122,7 +113,10 @@ class CommercehubCheckoutForm
 
     clearValidation = function()
     {
-        this.disableSubmitButton();
+        if($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
+        {
+            this.disableSubmitButton();
+        }
         $('#sdc-card-brand-icon').removeClass().addClass('sdc-card-brand-icon');
         $('#sdc-card-number-frame, #sdc-card-name-frame, #sdc-security-code-frame, #sdc-exp-month-frame, #sdc-exp-year-frame')
             .removeClass('sdc-valid-field sdc-error-field sdc-focused-field');
@@ -353,9 +347,7 @@ class CommercehubCheckoutForm
 
     submitHandlerToken = (_e) =>
     {
-        if (this.placeOrderHandler
-            ? this.placeOrderHandler.getFact('coverage.giftCoversAll') === true
-            : $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'GIFT_CARD')
+        if ($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'GIFT_CARD')
         {
             return;
         }
@@ -494,12 +486,17 @@ class CommercehubCheckoutForm
 
     enableSubmitButton = function ()
     {
-        this.getSubmitButton().prop('disabled', false);
+        this.setSubmitButtonEnabled(true);
     }
 
     disableSubmitButton = function ()
     {
-        this.getSubmitButton().prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
+    }
+
+    setSubmitButtonEnabled = function (enabled)
+    {
+        window.fiservPlaceOrderHandler.setFact('payment.paymentMethodFormValid', enabled);
     }
 
     resetForm = function()
@@ -805,11 +802,7 @@ class CommercehubCheckoutForm
     handleTokenFormValidity = function(cardUUID, valid)
     {
         this.cvvAdapters[cardUUID]?.setValidity(valid);
-        if (this.placeOrderHandler) {
-            this.placeOrderHandler.setFact('payment.paymentMethodFormValid', valid);
-        } else {
-            this.getSubmitButton().prop('disabled', !valid);
-        }
+        this.setSubmitButtonEnabled(valid);
     }
 
     savedCardSelectionClickHandler = (clickedPayment) => {
@@ -819,12 +812,8 @@ class CommercehubCheckoutForm
         $(clickedPayment.currentTarget).find(".cvv-collector-container").show();
 
         this.currentSelectedPaymentUUID = paymentUUID;
-        const cvvValid = this.cvvAdapters[this.currentSelectedPaymentUUID]?.isValid() || false;
-        if (this.placeOrderHandler) {
-            this.placeOrderHandler.setFact('payment.paymentMethodFormValid', cvvValid);
-        } else {
-            this.getSubmitButton().prop('disabled', !cvvValid);
-        }
+        const cvvValid = this.cvvAdapters[this.currentSelectedPaymentUUID]?.isValid();
+        this.setSubmitButtonEnabled(cvvValid);
     }
 
     handleCVVTokenFormSubmit = function(error) 

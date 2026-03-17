@@ -5,35 +5,33 @@ class PlaceOrderButtonHandler
     constructor(buttonElement)
     {
         this.button = buttonElement;
-        this.facts = {};
+        this.facts = new Map();
         this.blockers = new Map();
         this.pending = false;
     }
 
     setFact = function(key, value)
     {
-        this.facts[key] = value;
+        this.facts.set(key, value);
         this.schedule();
     }
 
     deleteFact = function(key)
     {
-        delete this.facts[key];
+        this.facts.delete(key);
         this.schedule();
     }
 
     getFact = function(key)
     {
-        return this.facts[key];
+        return this.facts.get(key);
     }
 
-    addBlocker = function(ownerId, id, whenFn, reasonFn, category)
+    addBlocker = function(ownerId, id, shouldBlockFn)
     {
         this.blockers.set(id, {
             ownerId: ownerId,
-            whenFn: whenFn,
-            reasonFn: reasonFn || function() { return ''; },
-            category: category || null
+            shouldBlockFn: shouldBlockFn
         });
         this.schedule();
     }
@@ -57,21 +55,22 @@ class PlaceOrderButtonHandler
 
     buildDerivedFacts = function(facts)
     {
-        let grandTotal = typeof facts['totals.grandTotal'] === 'number' ? facts['totals.grandTotal'] : null;
-        let giftAmount = typeof facts['coverage.giftAmount'] === 'number' ? facts['coverage.giftAmount'] : 0;
+        let grandTotal = typeof facts.get('totals.grandTotal') === 'number' ? facts.get('totals.grandTotal') : null;
+        let giftAmount = typeof facts.get('coverage.giftAmount') === 'number' ? facts.get('coverage.giftAmount') : 0;
 
         if (grandTotal !== null)
         {
-            facts['totals.amountDue'] = Math.max(0, grandTotal - giftAmount);
-            facts['coverage.giftCoversAll'] = facts['totals.amountDue'] === 0;
+            const amountDue = Math.round(Math.max(0, grandTotal - giftAmount) * 100) / 100;
+            facts.set('totals.amountDue', amountDue);
+            facts.set('coverage.giftCoversAll', amountDue === 0);
         }
 
-        facts['payment.required'] = facts['coverage.giftCoversAll'] === true ? false : true;
+        facts.set('payment.required', !facts.get('coverage.giftCoversAll'));
     }
 
     recompute = function()
     {
-        let facts = Object.assign({}, this.facts);
+        let facts = new Map(this.facts);
         this.buildDerivedFacts(facts);
 
         let disabled = false;
@@ -79,7 +78,7 @@ class PlaceOrderButtonHandler
         {
             try
             {
-                if (blocker.whenFn(facts))
+                if (blocker.shouldBlockFn(facts))
                 {
                     disabled = true;
                     break;

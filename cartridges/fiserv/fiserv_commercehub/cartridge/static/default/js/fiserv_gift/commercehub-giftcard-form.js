@@ -385,9 +385,8 @@ class CommercehubGiftForm
         $('.payment-information').parent().addClass('checkout-hidden');
         $('.payment-details').addClass('checkout-hidden');
         $('.gift-details').children().last().addClass('checkout-hidden');
-        if (window.fiservPlaceOrderHandler) {
-            window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
-        }
+        window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
+     
     }
 
     showPaymentBlock = function()
@@ -396,9 +395,8 @@ class CommercehubGiftForm
         $('.payment-information').parent().removeClass('checkout-hidden');
         $('.payment-details').removeClass('checkout-hidden');
         $('.gift-details').children().last().removeClass('checkout-hidden');
-        if (window.fiservPlaceOrderHandler) {
-            window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', false);
-        }
+        window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', false);
+       
     }
 
     cardCaptureFailure = function(error)
