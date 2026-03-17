@@ -33,19 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const placeOrderBtn = document.querySelector('button.btn.btn-primary.btn-block.submit-payment');
-    let placeOrderHandler = null;
-    if (placeOrderBtn) {
-        placeOrderHandler = new PlaceOrderButtonHandler(placeOrderBtn);
-        window.fiservPlaceOrderHandler = placeOrderHandler;
+    if (placeOrderBtn && !window.fiservPlaceOrderHandler) {
+        window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler(placeOrderBtn);
 
-        placeOrderHandler.setFact('payment.activeMethod', 'card');
-        placeOrderHandler.setFact('payment.paymentMethodFormValid', false);
+        window.fiservPlaceOrderHandler.setFact('payment.activeMethod', 'card');
+        window.fiservPlaceOrderHandler.setFact('payment.paymentMethodFormValid', false);
 
-        if ($('.payment-information').parent().hasClass('checkout-hidden')) {
-            placeOrderHandler.setFact('coverage.giftCoversAll', true);
-        }
-
-        placeOrderHandler.addBlocker(
+        window.fiservPlaceOrderHandler.addBlocker(
             'credit-card',
             'payment-form-validity',
             (facts) => facts['payment.required'] === true && facts['payment.paymentMethodFormValid'] === false,
@@ -54,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    let form = new CommercehubCheckoutForm(extractInitializationData(), placeOrderHandler);
+    let form = new CommercehubCheckoutForm(extractInitializationData(), window.fiservPlaceOrderHandler);
 
     let clearPaymentForm = function()
     {

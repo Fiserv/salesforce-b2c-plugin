@@ -494,20 +494,12 @@ class CommercehubCheckoutForm
 
     enableSubmitButton = function ()
     {
-        if (this.placeOrderHandler) {
-            this.placeOrderHandler.setFact('payment.paymentMethodFormValid', true);
-        } else {
-            this.getSubmitButton().prop('disabled', false);
-        }
+        this.getSubmitButton().prop('disabled', false);
     }
 
     disableSubmitButton = function ()
     {
-        if (this.placeOrderHandler) {
-            this.placeOrderHandler.setFact('payment.paymentMethodFormValid', false);
-        } else {
-            this.getSubmitButton().prop('disabled', true);
-        }
+        this.getSubmitButton().prop('disabled', true);
     }
 
     resetForm = function()
