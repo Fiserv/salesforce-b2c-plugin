@@ -46,7 +46,7 @@ class CommercehubCheckoutForm
             }
             else if(!this.formAdapter.isValid())
             {
-                this.disableSubmitButton();
+                this.setSubmitButtonEnabled(false);
             }
             if($('.nav-link.credit-card-tab.active').length)
             {
@@ -115,7 +115,7 @@ class CommercehubCheckoutForm
     {
         if($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'CREDIT_CARD')
         {
-            this.disableSubmitButton();
+            this.setSubmitButtonEnabled(false);
         }
         $('#sdc-card-brand-icon').removeClass().addClass('sdc-card-brand-icon');
         $('#sdc-card-number-frame, #sdc-card-name-frame, #sdc-security-code-frame, #sdc-exp-month-frame, #sdc-exp-year-frame')
@@ -164,7 +164,7 @@ class CommercehubCheckoutForm
     sdkLoadFailure = function (err, noticeId) 
     {
         console.log(err);
-        this.disableSubmitButton();
+        this.setSubmitButtonEnabled(false);
         $(noticeId).show();
         $.spinner().stop(); 
         throw new Error("Unable to load CommerceHub SDK.")
@@ -294,19 +294,19 @@ class CommercehubCheckoutForm
             const tokenForm = this.cvvAdapters[this.currentSelectedPaymentUUID];
             if (!tokenForm.isValid()) 
             {
-                this.disableSubmitButton();
+                this.setSubmitButtonEnabled(false);
                 return;
             }
 
         }
         
-        this.enableSubmitButton();
+        this.setSubmitButtonEnabled(true);
     }
 
     handleNewPaymentCardMethodSelection = function()
     {
-        if (this.validForm)this.enableSubmitButton();
-        else this.disableSubmitButton();
+        if (this.validForm) this.setSubmitButtonEnabled(true);
+        else this.setSubmitButtonEnabled(false);
     }
 
     nonPaymentCardSelectedFromPaymentCard = function(target)
@@ -347,7 +347,7 @@ class CommercehubCheckoutForm
 
     submitHandlerToken = (_e) =>
     {
-        if ($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'GIFT_CARD')
+        if ($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() !== 'CREDIT_CARD')
         {
             return;
         }
@@ -482,16 +482,6 @@ class CommercehubCheckoutForm
             const tokenForm = this.cvvAdapters[this.currentSelectedPaymentUUID];
             return typeof(tokenForm) === "undefined" ? false : tokenForm.isValid();
         }
-    }
-
-    enableSubmitButton = function ()
-    {
-        this.setSubmitButtonEnabled(true);
-    }
-
-    disableSubmitButton = function ()
-    {
-        this.setSubmitButtonEnabled(false);
     }
 
     setSubmitButtonEnabled = function (enabled)

@@ -32,9 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return $('.credit-card-form.checkout-hidden').length
     }
 
-    const placeOrderBtn = $('button.btn.btn-primary.btn-block.submit-payment')[0];
-    if (placeOrderBtn && !window.fiservPlaceOrderHandler) {
-        window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler(placeOrderBtn);
+    if (!window.fiservPlaceOrderHandler) {
+        window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler();
 
         window.fiservPlaceOrderHandler.setFact('payment.activeMethod', 'card');
         window.fiservPlaceOrderHandler.setFact('payment.paymentMethodFormValid', false);
@@ -73,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (form.cvvEnabled)
             {
                 form.initializeTokenCVVForms();
-                form.disableSubmitButton();
+                form.setSubmitButtonEnabled(false);
             }
         }
     }
@@ -141,8 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $('.btn.cancel-new-payment').click(()=> {
         form.watchSubmitButtonToken();
-        if (form.shouldEnableSubmitButtonOnCancelNewPayment()) form.enableSubmitButton();
-        else form.disableSubmitButton();
+        form.setSubmitButtonEnabled(form.shouldEnableSubmitButtonOnCancelNewPayment());
     });
 
     $('.btn.add-payment').click(()=> {

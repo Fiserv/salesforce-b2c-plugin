@@ -2,9 +2,9 @@
 
 class PlaceOrderButtonHandler
 {
-    constructor(buttonElement)
+    constructor()
     {
-        this.button = buttonElement;
+        this.button = $('button.btn.btn-primary.btn-block.submit-payment')[0];
         this.facts = new Map();
         this.blockers = new Map();
         this.pending = false;
@@ -27,11 +27,11 @@ class PlaceOrderButtonHandler
         return this.facts.get(key);
     }
 
-    addBlocker = function(ownerId, id, shouldBlockFn)
+    addBlocker = function(ownerId, id, blockerCondition)
     {
         this.blockers.set(id, {
             ownerId: ownerId,
-            shouldBlockFn: shouldBlockFn
+            blockerCondition: blockerCondition
         });
         this.schedule();
     }
@@ -53,10 +53,12 @@ class PlaceOrderButtonHandler
         });
     }
 
-    buildDerivedFacts = function(facts)
+    recompute = function()
     {
-        let grandTotal = typeof facts.get('totals.grandTotal') === 'number' ? facts.get('totals.grandTotal') : null;
-        let giftAmount = typeof facts.get('coverage.giftAmount') === 'number' ? facts.get('coverage.giftAmount') : 0;
+        const facts = new Map(this.facts);
+
+        const grandTotal = typeof facts.get('totals.grandTotal') === 'number' ? facts.get('totals.grandTotal') : null;
+        const giftAmount = typeof facts.get('coverage.giftAmount') === 'number' ? facts.get('coverage.giftAmount') : 0;
 
         if (grandTotal !== null)
         {
@@ -66,31 +68,10 @@ class PlaceOrderButtonHandler
         }
 
         facts.set('payment.required', !facts.get('coverage.giftCoversAll'));
-    }
 
-    recompute = function()
-    {
-        let facts = new Map(this.facts);
-        this.buildDerivedFacts(facts);
-
-        let disabled = false;
-        for (const [, blocker] of this.blockers)
-        {
-            try
-            {
-                if (blocker.shouldBlockFn(facts))
-                {
-                    disabled = true;
-                    break;
-                }
-            }
-            catch (err)
-            {
-                disabled = true;
-                break;
-            }
-        }
-
-        this.button.disabled = disabled;
+        this.button.disabled = [...this.blockers.values()].some(blocker => {
+            try { return blocker.blockerCondition(facts); }
+            catch { return true; }
+        });
     }
 }
