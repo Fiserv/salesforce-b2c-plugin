@@ -4,7 +4,6 @@
     pdict.FiservConfig.getCommerceHubTokenization() &&
     pdict.FiservConfig.getForcedBasketTokenization()}" scope="pdict" />
 
-<isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
 
 <!--- applicable credit cards--->
 <div class="tab-pane active credit-card-content" id="credit-card-content" role="tabpanel">
@@ -17,7 +16,7 @@
         >
 
         <!--- register/authenticated user: only show saved payments when tokenization is enabled --->
-        <isif condition="${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled) && pdict.canTokenize}">
+        <isif condition="${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled)}">
             <div class="user-payment-instruments container ${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled) && pdict.customer.customerPaymentInstruments.length ? '' : 'checkout-hidden'}">
                 <!--- Stored user payments --->
                 <div class="stored-payments">
@@ -31,9 +30,9 @@
             </div>
         </isif>
 
-        <fieldset class="credit-card-form ${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled) && pdict.customer.customerPaymentInstruments.length && pdict.canTokenize ? 'checkout-hidden' : ''}">
+        <fieldset class="credit-card-form ${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled) && pdict.customer.customerPaymentInstruments.length ? 'checkout-hidden' : ''}">
             <isinclude template="checkout/billing/creditCardForm" />
-            <isif condition="${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled) && pdict.canTokenize}">
+            <isif condition="${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled)}">
                 <button class="btn btn-block cancel-new-payment btn-outline-primary ${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled) && pdict.customer.customerPaymentInstruments.length ? '' : 'checkout-hidden'}" type="button">${Resource.msg('button.back.to.stored.payments', 'checkout', null)}</button>
             </isif>
         </fieldset>

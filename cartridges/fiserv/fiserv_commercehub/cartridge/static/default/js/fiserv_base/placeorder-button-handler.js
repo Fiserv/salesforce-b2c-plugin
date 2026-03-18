@@ -7,19 +7,12 @@ class PlaceOrderButtonHandler
         this.button = $('button.btn.btn-primary.btn-block.submit-payment')[0];
         this.facts = new Map();
         this.blockers = new Map();
-        this.pending = false;
     }
 
     setFact = function(key, value)
     {
         this.facts.set(key, value);
-        this.schedule();
-    }
-
-    deleteFact = function(key)
-    {
-        this.facts.delete(key);
-        this.schedule();
+        this.recompute();
     }
 
     getFact = function(key)
@@ -33,25 +26,16 @@ class PlaceOrderButtonHandler
             ownerId: ownerId,
             blockerCondition: blockerCondition
         });
-        this.schedule();
+        this.recompute();
     }
 
     removeBlocker = function(id)
     {
         this.blockers.delete(id);
-        this.schedule();
+        this.recompute();
     }
 
-    schedule = function()
-    {
-        if (this.pending) return;
-        this.pending = true;
-        queueMicrotask(() =>
-        {
-            this.pending = false;
-            this.recompute();
-        });
-    }
+    
 
     recompute = function()
     {
