@@ -194,6 +194,7 @@ class CommercehubGiftForm
                     if(response.paymentCovered)
                     {
                         this.hidePaymentBlock();
+                        window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
                     }
                 }
             }).catch((err) => 
@@ -257,6 +258,7 @@ class CommercehubGiftForm
             if(giftCardsInfo.paymentCovered)
             {
                 this.hidePaymentBlock();
+                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
             }
         }
     }
@@ -315,9 +317,10 @@ class CommercehubGiftForm
             this.updateGiftCards(response.updatedGiftCards);
             $('.grand-total-sum').text(response.currencySymbol + response.amountRemaining);
 
-            if(!response.paymentCovered && $('.payment-information').parent().hasClass('checkout-hidden'))
+            if(!response.paymentCovered)
             {
                 this.showPaymentBlock();
+                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', false);
             }
 
             if($('.data-checkout-stage').attr('data-checkout-stage') === "placeOrder")
@@ -365,13 +368,15 @@ class CommercehubGiftForm
             this.updateGiftCards(response.updatedGiftCards);
             $('.grand-total-sum').text(response.currencySymbol + response.amountRemaining);
 
-            if(!response.paymentCovered && $('.payment-information').parent().hasClass('checkout-hidden'))
+            if(!response.paymentCovered)
             {
                 this.showPaymentBlock();
+                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', false);
             }
-            else if(response.paymentCovered && !$('.payment-information').parent().hasClass('checkout-hidden'))
+            else if(response.paymentCovered)
             {
                 this.hidePaymentBlock();
+                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
             }
 
         }).catch((error) => {
@@ -385,12 +390,6 @@ class CommercehubGiftForm
         $('.payment-information').parent().addClass('checkout-hidden');
         $('.payment-details').addClass('checkout-hidden');
         $('.gift-details').children().last().addClass('checkout-hidden');
-        let subitButtonQuery = $('.submit-payment');
-        if(subitButtonQuery.attr('disabled'))
-        {
-            subitButtonQuery.prop("disabled", false);
-            this.paymentBlockWasDisabled = true;
-        }
     }
 
     showPaymentBlock = function()
@@ -399,11 +398,6 @@ class CommercehubGiftForm
         $('.payment-information').parent().removeClass('checkout-hidden');
         $('.payment-details').removeClass('checkout-hidden');
         $('.gift-details').children().last().removeClass('checkout-hidden');
-        if(this.paymentBlockWasDisabled)
-        {
-            $('.submit-payment').prop("disabled", true);
-            this.paymentBlockWasDisabled = false;
-        }
     }
 
     cardCaptureFailure = function(error)
