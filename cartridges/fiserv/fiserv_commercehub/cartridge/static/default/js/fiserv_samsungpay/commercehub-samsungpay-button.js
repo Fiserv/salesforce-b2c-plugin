@@ -26,7 +26,6 @@ class CommercehubSamsungPay
         try {
             $.spinner().start();
             $('#fiserv-samsungpay-fatal-notice').hide();
-            this.setupPlaceOrderHandler();
             await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "SamsungPay");
             this.setSubmitButtonEnabled(false);
         } catch (_err) {
