@@ -18,6 +18,8 @@ class CommercehubPaze
         this.createAdapter();
         this.watchButtonLoadLag();
         this.watchPaymentMethod();
+        this.watchSubmitResponse();
+        this.setupPlaceOrderHandler();
     }
 
     initialize = async function()
@@ -28,7 +30,7 @@ class CommercehubPaze
 
             await this.sdkButton.initSdk(this.credentialsUrl, (sessionId) => this.setSessionIdInput(sessionId), "PAZE");
 
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.setSubmitButtonEnabled(false);
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -140,10 +142,9 @@ class CommercehubPaze
 
     triggerCheckoutSubmission = function()
     {
-        const submitButton = $('button.btn.btn-primary.btn-block.submit-payment');
-        submitButton.prop('disabled', false);
-        submitButton.trigger('click');
-        submitButton.prop('disabled', true);
+        this.setSubmitButtonEnabled(true);
+        $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+        this.setSubmitButtonEnabled(false);
     }
 
     handlePaymentError = function(error)
@@ -210,13 +211,45 @@ class CommercehubPaze
     {
         console.log(err);
         $('#fiserv-paze-fatal-notice').show();
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
         $.spinner().stop();
     }
 
     watchSubmitResponse = function()
     {
         $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
+    }
+
+    onSubmitResponse = function(ev, xhr)
+    {
+        if (typeof(xhr.responseJSON) !== 'undefined' &&
+            typeof(xhr.responseJSON.action) !== 'undefined' &&
+            xhr.responseJSON.action === "CheckoutServices-SubmitPayment" &&
+            $(".payment-information").data("payment-method-id") === "PAZE" &&
+            xhr.responseJSON.error
+        ) {
+            this.setSessionIdInput('');
+            this.setSubmitButtonEnabled(false);
+            this.pazeFailure();
+        }
+    }
+
+    setupPlaceOrderHandler = function()
+    {
+        if (!window.fiservPlaceOrderHandler) {
+            window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler();
+        }
+        this.setSubmitButtonEnabled(false);
+        window.fiservPlaceOrderHandler.addBlocker(
+            'paze',
+            'paze-approval',
+            (facts) => facts.get('payment.required') === true && facts.get('payment.pazeApproved') !== true
+        );
+    }
+
+    setSubmitButtonEnabled = function(enabled)
+    {
+        window.fiservPlaceOrderHandler.setFact('payment.pazeApproved', enabled);
     }
 
     pazeFailure = function(message)
@@ -243,7 +276,7 @@ class CommercehubPaze
     }
 
     paymentMethodHandler = (e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
     }
 
     watchButtonLoadLag = function()

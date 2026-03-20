@@ -43,10 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if ($('ul.payment-options li.nav-item[data-method-id=PAZE]').length > 0 && $('ul.payment-options li.nav-item.active').length === 0)
+    if ($('ul.payment-options li.nav-item').length > 0 && $('ul.payment-options li.nav-item.active').length === 0) 
     {
-         $('ul.payment-options li.nav-item:first').find('a').trigger('click');
-            if ($('ul.payment-options li.nav-item[data-method-id=PAZE]').hasClass('active'))
+            $('ul.payment-options li.nav-item:first').find('a').trigger('click');
+            if ($('ul.payment-options li.nav-item[data-method-id=PAZE] a.nav-link').hasClass('active'))
                 initPaze();
     }
 

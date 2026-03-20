@@ -6,6 +6,7 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_base/placeorder-button-handler.js');
     assets.addJs('/js/fiserv_paze/commercehub-paze-button.js');
     assets.addJs('/js/fiserv_paze/paze.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
