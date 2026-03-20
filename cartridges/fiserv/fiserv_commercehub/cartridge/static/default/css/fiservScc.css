@@ -80,24 +80,14 @@
 }
 
 /* Paze SVG Icon Color Styling - Direct button styling */
-#paze-payment-button.paze-blue .paze-icon,
-.paze-blue.paze-icon {
-    fill: #FFFFFF;
+#paze-payment-button.paze-blue::after,
+#paze-payment-button.paze-black::after {
+    filter: brightness(0) invert(1);
 }
 
-#paze-payment-button.paze-white .paze-icon,
-.paze-white.paze-icon {
-    fill: #0F42f8;
-}
-
-#paze-payment-button.paze-whitewithoutline .paze-icon,
-.paze-whitewithoutline.paze-icon {
-    fill: #0F42f8;
-}
-
-#paze-payment-button.paze-black .paze-icon,
-.paze-black.paze-icon {
-    fill: #FFFFFF;
+#paze-payment-button.paze-white::after,
+#paze-payment-button.paze-whitewithoutline::after {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(84%) saturate(5948%) hue-rotate(228deg) brightness(97%) contrast(103%);
 }
 
 /* SVG inside Paze button container */
@@ -107,14 +97,6 @@
 }
 
 /* Paze Button Logo Styles */
-.paze-button-logo {
-    height: 20px;
-    width: auto;
-    margin-right: 8px;
-    vertical-align: middle;
-    display: inline-block;
-}
-
 .paze-button-label {
     vertical-align: middle;
     display: inline-block;
@@ -126,6 +108,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#paze-payment-button::after {
+    content: '';
+    display: inline-block;
+    background-image: url('../images/paze.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 60px;
+    height: 20px;
+    margin-left: 8px;
+    order: 1;
+}
+
+#paze-payment-button .paze-button-label {
+    order: 0;
+}
+
+#paze-payment-button.paze-logo-first::after {
+    order: 0;
+    margin-left: 0;
+    margin-right: 8px;
+}
+
+#paze-payment-button.paze-logo-first .paze-button-label {
+    order: 1;
 }
 
 .cc-type-image {

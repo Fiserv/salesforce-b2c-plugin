@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let data = {
             config: $('#fiserv-commercehub-paze-form-init-container').data('commercehub-initialization-data'),
             credentialsUrl: $('#fiserv-commercehub-paze-form-init-container').attr('data-commercehub-credentials'),
+            orderDetailsUrl: $('#fiserv-commercehub-paze-form-init-container').attr('data-order-details-url'),
         }
         $('#fiserv-commercehub-paze-form-init-container').remove();
         return data;

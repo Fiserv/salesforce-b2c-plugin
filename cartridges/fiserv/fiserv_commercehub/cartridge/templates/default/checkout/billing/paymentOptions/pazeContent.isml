@@ -25,6 +25,7 @@
         <div id="fiserv-commercehub-paze-form-init-container"
             data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Paze'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+            data-order-details-url="${URLUtils.https('Fiserv-OrderDetails')}"
             data-locale="${pdict.locale}"
             data-initial-checkout-stage="${pdict.currentStage}"></div>
 

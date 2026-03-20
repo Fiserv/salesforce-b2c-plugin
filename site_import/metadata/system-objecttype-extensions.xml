@@ -665,6 +665,7 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
+
             <attribute-definition attribute-id="CommerceHubPazePaymentType">
                 <display-name xml:lang="x-default">CommerceHub Paze Charge Type</display-name>
                 <type>enum-of-string</type>
@@ -681,6 +682,7 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
+
             <attribute-definition attribute-id="CommerceHubPazeButtonColor">
                 <display-name xml:lang="x-default">CommerceHub Paze Button Color</display-name>
                 <type>enum-of-string</type>
@@ -705,6 +707,7 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
+
             <attribute-definition attribute-id="CommerceHubPazeButtonShape">
                 <display-name xml:lang="x-default">CommerceHub Paze Button Shape</display-name>
                 <type>enum-of-string</type>
@@ -725,6 +728,7 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
+
             <attribute-definition attribute-id="CommerceHubPazeButtonLabel">
                 <display-name xml:lang="x-default">CommerceHub Paze Button Label</display-name>
                 <type>enum-of-string</type>
