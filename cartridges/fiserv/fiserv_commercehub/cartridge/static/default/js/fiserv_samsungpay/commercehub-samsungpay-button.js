@@ -156,14 +156,14 @@ class CommercehubSamsungPay
     setupPlaceOrderHandler = function()
     {
         if (!window.fiservPlaceOrderHandler) {
-        window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler();
+            window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler();
+        }
         this.setSubmitButtonEnabled(false);
         window.fiservPlaceOrderHandler.addBlocker(
             'samsung-pay',
             'samsungpay-approval',
-            (facts) => facts.get('payment.required') === true && facts.get('payment.samsungpayApproved') !== true
+            (facts) => facts.get('payment.required') === true && facts.get('payment.samsungpayApproved') !== true && $(".payment-information").data("payment-method-id") === "SAMSUNGPAY"
         );
-        }
     }
 
     showError = function(message)

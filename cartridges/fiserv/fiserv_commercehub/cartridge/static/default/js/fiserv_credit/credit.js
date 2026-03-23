@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.fiservPlaceOrderHandler.addBlocker(
             'credit-card',
             'payment-form-validity',
-            (facts) => facts.get('payment.required') === true && facts.get('payment.paymentMethodFormValid') === false
+            (facts) => facts.get('payment.required') === true && facts.get('payment.paymentMethodFormValid') === false && $(".payment-information").data("payment-method-id") === "CREDIT_CARD"
         );
     }
 
