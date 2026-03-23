@@ -194,7 +194,7 @@ class CommercehubGiftForm
                     if(response.paymentCovered)
                     {
                         this.hidePaymentBlock();
-                        window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
+                        window.fiservSubmitButtonHandler.setFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED', true);
                     }
                 }
             }).catch((err) => 
@@ -258,7 +258,7 @@ class CommercehubGiftForm
             if(giftCardsInfo.paymentCovered)
             {
                 this.hidePaymentBlock();
-                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
+                window.fiservSubmitButtonHandler.setFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED', true);
             }
         }
     }
@@ -320,7 +320,7 @@ class CommercehubGiftForm
             if(!response.paymentCovered)
             {
                 this.showPaymentBlock();
-                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', false);
+                window.fiservSubmitButtonHandler.setFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED', false);
             }
 
             if($('.data-checkout-stage').attr('data-checkout-stage') === "placeOrder")
@@ -371,12 +371,12 @@ class CommercehubGiftForm
             if(!response.paymentCovered)
             {
                 this.showPaymentBlock();
-                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', false);
+                window.fiservSubmitButtonHandler.setFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED', false);
             }
             else if(response.paymentCovered)
             {
                 this.hidePaymentBlock();
-                window.fiservPlaceOrderHandler.setFact('coverage.giftCoversAll', true);
+                window.fiservSubmitButtonHandler.setFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED', true);
             }
 
         }).catch((error) => {

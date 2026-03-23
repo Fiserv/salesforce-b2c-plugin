@@ -32,19 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return $('.credit-card-form.checkout-hidden').length
     }
 
-    if (!window.fiservPlaceOrderHandler) {
-        window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler();
-
-        window.fiservPlaceOrderHandler.setFact('payment.activeMethod', 'card');
-        window.fiservPlaceOrderHandler.setFact('payment.paymentMethodFormValid', false);
-
-        window.fiservPlaceOrderHandler.addBlocker(
-            'credit-card',
-            'payment-form-validity',
-            (facts) => facts.get('payment.required') === true && facts.get('payment.paymentMethodFormValid') === false
-        );
-    }
-
     let form = new CommercehubCheckoutForm(extractInitializationData());
 
     let clearPaymentForm = function()

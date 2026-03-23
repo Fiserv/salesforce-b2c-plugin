@@ -9,6 +9,7 @@ class CommercehubAffirm
             throw new Error("Initialization Data not found. Unable to initialize Affirm button.");
         }
 
+        this.methodId = 'AFFIRM';
         this.formConfig = initializationData.config;
         this.configDataAffirm = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
@@ -18,6 +19,7 @@ class CommercehubAffirm
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
         this.watchPaymentMethod();
+        this.setupDisableHandlerValues();
     }
 
     initialize = async function()
@@ -26,7 +28,7 @@ class CommercehubAffirm
             $.spinner().start();
             $('#fiserv-affirm-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, null, "Affirm");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.setSubmitButtonEnabled(false);
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -88,8 +90,9 @@ class CommercehubAffirm
         $('.payment-details').addClass('checkout-hidden');
         $('<div class="payment-details-affirm">Affirm</div>').insertAfter('.payment-details');
         $('.edit-button').on('click', this.removeInsertedSummary);
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
+        this.setSubmitButtonEnabled(true);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+        this.setSubmitButtonEnabled(false);
     }
 
     removeInsertedSummary = () =>
@@ -112,7 +115,7 @@ class CommercehubAffirm
         }
         else
         {
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.setSubmitButtonEnabled(false);
             this.showError(this.configDataAffirm.affirmFailureMessage);
         }
     }
@@ -132,7 +135,6 @@ class CommercehubAffirm
         ) {
             this.setOrderIdInput('');
             this.removeInsertedSummary();
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
         }
     }
 
@@ -147,7 +149,7 @@ class CommercehubAffirm
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
     }
 
     watchButtonLoadLag = function()
@@ -170,5 +172,20 @@ class CommercehubAffirm
         $('.alert', form).remove();
         form.prepend('<div class="alert alert-danger" role="alert">' + message + '</div>');
         $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth'});
+    }
+
+    setupDisableHandlerValues = function()
+    {
+        this.setSubmitButtonEnabled(false);
+        window.fiservSubmitButtonHandler.addBlocker(
+            this.methodId,
+            'affirm-approval',
+            (buttonHandler) => buttonHandler.getFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED') === false && buttonHandler.getFact('APM_APPROVAL') !== true
+        );
+    }
+
+    setSubmitButtonEnabled = function(enabled)
+    {
+        window.fiservSubmitButtonHandler.setFact('APM_APPROVAL', enabled);
     }
 }

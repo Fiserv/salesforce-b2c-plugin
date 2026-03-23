@@ -9,6 +9,8 @@ class CommercehubSamsungPay
         {
             throw new Error("Initialization Data not found. Unable to initialize Samsung Pay button.");
         }
+
+        this.methodId = 'SAMSUNGPAY';
         this.formConfig = initializationData.config;
         this.configDataSamsungPay = initializationData.config.configData;
 
@@ -18,7 +20,7 @@ class CommercehubSamsungPay
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
         this.watchPaymentMethod();
-        this.setupPlaceOrderHandler();
+        this.setupDisableHandlerValues();
     }
 
     initialize = async function()
@@ -153,17 +155,14 @@ class CommercehubSamsungPay
         $('.samsungpay-option').off('click', this.waitForButtonLoad);
     }
 
-    setupPlaceOrderHandler = function()
+    setupDisableHandlerValues = function()
     {
-        if (!window.fiservPlaceOrderHandler) {
-        window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler();
         this.setSubmitButtonEnabled(false);
-        window.fiservPlaceOrderHandler.addBlocker(
-            'samsung-pay',
+        window.fiservSubmitButtonHandler.addBlocker(
+            this.methodId,
             'samsungpay-approval',
-            (facts) => facts.get('payment.required') === true && facts.get('payment.samsungpayApproved') !== true
+            (buttonHandler) => buttonHandler.getFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED') === false && buttonHandler.getFact('APM_APPROVAL') !== true
         );
-        }
     }
 
     showError = function(message)
@@ -176,6 +175,6 @@ class CommercehubSamsungPay
 
     setSubmitButtonEnabled = function (enabled)
     {
-        window.fiservPlaceOrderHandler.setFact('payment.samsungpayApproved', enabled);
+        window.fiservSubmitButtonHandler.setFact('APM_APPROVAL', enabled);
     }
 }
