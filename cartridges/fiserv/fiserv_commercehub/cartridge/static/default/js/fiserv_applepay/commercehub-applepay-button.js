@@ -10,6 +10,7 @@ class CommercehubApplePay
             throw new Error("Initialization Data not found. Unable to initialize PayPal button.");
         }
 
+        this.methodId = 'APPLEPAY';
         this.formConfig = initializationData.config;
         this.configDataApplePay = initializationData.config.configData;
         this.configDataApplePay.buttonConfig.button['locale'] = initializationData.locale.replace('_', '-');
@@ -20,6 +21,7 @@ class CommercehubApplePay
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
         this.watchPaymentMethod();
+        this.setupDisableHandlerValues();
     }
 
     initialize = async function()
@@ -28,7 +30,7 @@ class CommercehubApplePay
             $.spinner().start();
             $('#fiserv-applepay-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "ApplePay");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.setSubmitButtonEnabled(false);
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -99,9 +101,9 @@ class CommercehubApplePay
         let addressObject = this.createAddressObject(response.billingAddress);
         await FiservSDKHelper.populateAddress(addressObject, this.configDataApplePay.billingAddressFormNames, 'billing');
 
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
+        this.setSubmitButtonEnabled(true);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
     }
 
     watchSubmitResponse = function()
@@ -136,7 +138,7 @@ class CommercehubApplePay
             else
             {
                 this.setSessionIdInput('');
-                $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+                this.setSubmitButtonEnabled(false);
                 this.applepayFailure();
             }
         }
@@ -200,7 +202,7 @@ class CommercehubApplePay
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
     }
 
     watchButtonLoadLag = function()
@@ -223,5 +225,20 @@ class CommercehubApplePay
         $('.alert', form).remove();
         form.prepend('<div class="alert alert-danger" role="alert">' + message + '</div>');
         $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth'});
+    }
+
+    setupDisableHandlerValues = function()
+    {
+        this.setSubmitButtonEnabled(false);
+        window.fiservSubmitButtonHandler.addBlocker(
+            this.methodId,
+            'applepay-approval',
+            (buttonHandler) => buttonHandler.getFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED') === false && buttonHandler.getFact('APM_APPROVAL') !== true
+        );
+    }
+
+    setSubmitButtonEnabled = function(enabled)
+    {
+        window.fiservSubmitButtonHandler.setFact('APM_APPROVAL', enabled);
     }
 }
