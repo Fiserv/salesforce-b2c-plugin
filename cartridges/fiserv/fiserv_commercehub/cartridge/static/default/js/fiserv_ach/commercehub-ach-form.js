@@ -8,6 +8,8 @@ class CommercehubACH
         {
             throw new Error("Initialization Data not found. Unable to initialize ACH form.");
         }
+
+        this.methodId = 'ACH';
         this.formConfig = initializationData.config;
         this.configDataACH = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
@@ -21,6 +23,7 @@ class CommercehubACH
         this.watchSubmitResponse();
         this.watchPaymentMethods();
         this.watchBillingAddressFields();
+        this.setupDisableHandlerValues();
     }
 
     initialize = async function()
@@ -44,7 +47,7 @@ class CommercehubACH
         let loadFailCallback = (error) => { this.sdkLoadFailure(error, "#fiserv-ach-fatal-notice"); };
         let formReadyCallback = () => { this.sdkInitialized(); };
         let formValidCallback = () => { this.validForm = true; this.showConfirmFieldsButton(); };
-        let formInvalidCallback = () => { this.validForm = false; this.getSubmitButton().prop('disabled', true); this.hideConfirmFieldsButton(); this.hideLegalTextContainer(); };
+        let formInvalidCallback = () => { this.validForm = false; this.disableSubmitButton(); this.hideConfirmFieldsButton(); this.hideLegalTextContainer(); };
         let fieldValidityHandler = (data) => {
             let frame = this.getSdcFieldFrame(data["field"]);
             let mess = this.getSdcFieldInvalidMessageContainer(data["field"]);
@@ -86,9 +89,20 @@ class CommercehubACH
         }
     }
 
+    setupDisableHandlerValues = function()
+    {
+        window.fiservSubmitButtonHandler.setFact('ACH_FORM_VALID', false);
+
+        window.fiservSubmitButtonHandler.addBlocker(
+            this.methodId,
+            'ach-ready',
+            (buttonHandler) => buttonHandler.getFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED') === false && buttonHandler.getFact('ACH_FORM_VALID') === false
+        );
+    }
+
     fetchAndDisplayLegalText = async function()
     {
-        this.getSubmitButton().prop('disabled', true);
+        this.disableSubmitButton()
         $.spinner().start();
 
         try
@@ -99,7 +113,6 @@ class CommercehubACH
                 $('#fiserv-ach-legal-text').html(legalText.plainText);
                 $('#achConsentIndicator').prop('checked', false);
                 $('#fiserv-ach-legal-text-container').show().addClass('fiserv-ach-legal-populated');
-                this.getSubmitButton().prop('disabled', true);
                 this.hideConfirmFieldsButton();
             }
         }
@@ -131,7 +144,7 @@ class CommercehubACH
                 this.hideLegalTextContainer();
                 if ($(".payment-information").data("payment-method-id") === "ACH")
                 {
-                    this.getSubmitButton().prop('disabled', true);
+                    this.disableSubmitButton()
                 }
                 if (this.validForm)
                 {
@@ -153,8 +166,9 @@ class CommercehubACH
 
     legalTextCheckboxHandler = function()
     {
-        if (this.validForm) {
-            this.getSubmitButton().prop('disabled', !$('#achConsentIndicator').prop('checked'));
+        if (this.validForm)
+        {
+            window.fiservSubmitButtonHandler.setFact('ACH_FORM_VALID', $('#achConsentIndicator').prop('checked'));
         }
     }
 
@@ -162,7 +176,7 @@ class CommercehubACH
     {
         if ($('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === 'ACH')
         {
-            this.getSubmitButton().prop('disabled', true);
+            this.disableSubmitButton()
         }
         this.hideLegalTextContainer();
         this.hideConfirmFieldsButton();
@@ -233,7 +247,8 @@ class CommercehubACH
         $.spinner().stop();
     }
 
-    paymentMethodHandler = (_e) => {
+    paymentMethodHandler = (_e) =>
+    {
         if ($(_e.currentTarget).attr('data-method-id') !== 'ACH')
         {
             this.unwatchSubmitButton();
@@ -241,7 +256,7 @@ class CommercehubACH
         }
 
         this.watchSubmitButton();
-        this.getSubmitButton().prop('disabled', !$('#achConsentIndicator').prop('checked'));
+        window.fiservSubmitButtonHandler.setFact('ACH_FORM_VALID', $('#achConsentIndicator').prop('checked'));
     }
 
     watchPaymentMethods = function()
@@ -295,7 +310,7 @@ class CommercehubACH
 
     disableSubmitButton = function()
     {
-        this.getSubmitButton().prop('disabled', true);
+        window.fiservSubmitButtonHandler.setFact('ACH_FORM_VALID', false);
     }
 
     getSdcFieldFrame = function(name)
@@ -411,7 +426,7 @@ class CommercehubACH
                     this.hideLegalTextContainer();
                     if ($(".payment-information").data("payment-method-id") === "ACH")
                     {
-                        this.getSubmitButton().prop('disabled', true);
+                        this.disableSubmitButton();
                     }
                     if (this.validForm)
                     {
