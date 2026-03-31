@@ -683,6 +683,13 @@
                 </value-definitions>
             </attribute-definition>
 
+            <attribute-definition attribute-id="CommerceHubPazeDisplayName">
+                <display-name xml:lang="x-default">Display Name</display-name>
+                <type>string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+
             <attribute-definition attribute-id="CommerceHubPazeButtonColor">
                 <display-name xml:lang="x-default">CommerceHub Paze Button Color</display-name>
                 <type>enum-of-string</type>
@@ -745,14 +752,16 @@
                     </value-definition>
                     <value-definition>
                         <display>Checkout with</display>
-                        <value>checkoutwith</value>
+                        <value>checkout with</value>
                     </value-definition>
                     <value-definition>
                         <display>Donate with</display>
-                        <value>donatewith</value>
+                        <value>Donate with</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
+
+            
 
             <!--THIS IS WHERE THE PAYMENT CUSTOMIZATION FORM STARTS-->
 
@@ -1748,6 +1757,7 @@
                 <attribute attribute-id="CommerceHubPazeButtonColor"/>
                 <attribute attribute-id="CommerceHubPazeButtonShape"/>
                 <attribute attribute-id="CommerceHubPazeButtonLabel"/>
+                <attribute attribute-id="CommerceHubPazeDisplayName"/>
             </attribute-group>
 
         </group-definitions>

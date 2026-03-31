@@ -76,7 +76,7 @@ function getFrontendConfigData(formId)
             break;
         case 'Paze':
             configData = {
-                displayName: "PAZE",
+                displayName: fiservConfig.getCommerceHubPazeDisplayName(),
                 'buttonConfig': fiservConfig.buildPazeButtonsConfig(),
                 'pazeFailureMessage': Resource.msg('message.error.paze.failure', 'error', null),
             }

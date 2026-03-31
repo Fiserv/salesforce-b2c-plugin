@@ -104,6 +104,7 @@ module.exports = {
         ],
         'CommerceHubPazeEnable': [
             'CommerceHubPazePaymentType',
+            'CommerceHubPazeDisplayName',
             'PazeButton'
         ]
     },
@@ -118,7 +119,8 @@ module.exports = {
             'CommerceHubAPIKey',
             'CommerceHubAPISecret',
             'CommerceHubSessionLifetime',
-            'CommerceHubTimeout'
+            'CommerceHubTimeout',
+            'CommerceHubPazeDisplayName'
         ],
         INT_CONSTRAINTS : {
             'CommerceHubSessionLifetime': { min: 30, max: 240, message: 'Valid lifetime value required (240 ≥ value ≥ 30)' },

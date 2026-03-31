@@ -15,11 +15,12 @@ class CommercehubPaze
         this.credentialsUrl = initializationData.credentialsUrl;
         this.orderDetailsUrl = initializationData.orderDetailsUrl;
     
+        this.methodId = 'PAZE';
         this.createAdapter();
         this.watchButtonLoadLag();
         this.watchPaymentMethod();
         this.watchSubmitResponse();
-        this.setupPlaceOrderHandler();
+        this.setupDisableHandlerValues();
     }
 
     initialize = async function()
@@ -84,16 +85,7 @@ class CommercehubPaze
 
     buttonLabel = function()
     {
-        const buttonLabel = this.configDataPaze.buttonConfig.label;
-        if (buttonLabel === 'donatewith') {
-            return 'Donate with';
-        } else if (buttonLabel === 'checkout') {
-            return 'checkout';
-        } else if (buttonLabel === 'checkoutwith') {
-            return 'checkout with';
-        } else {
-            return '';
-        }
+        return this.configDataPaze.buttonConfig.label !== "paze" ? this.configDataPaze.buttonConfig.label : '';
     }
 
     createPazeButton = function()
@@ -101,23 +93,23 @@ class CommercehubPaze
         const pazeButtonClass = this.buttonClass();
         const pazeButtonShape = this.buttonShape();
         const pazeButtonLabel = this.buttonLabel();
-        const buttonElement = document.createElement('button');
-        buttonElement.id = 'paze-payment-button';
-        buttonElement.className = `${pazeButtonClass} ${pazeButtonShape}${this.configDataPaze.buttonConfig.label === 'checkout' ? ' paze-logo-first' : ''}`;
-        buttonElement.type = 'button';
+        const buttonElement = $('<button>', {
+            id: 'paze-payment-button',
+            class: `${pazeButtonClass} ${pazeButtonShape}${this.configDataPaze.buttonConfig.label === 'checkout' ? ' paze-logo-first' : ''}`,
+            type: 'button'
+        });
 
-        // Create label span element
-        const labelSpan = document.createElement('span');
-        labelSpan.className = 'paze-button-label';
-        labelSpan.textContent = pazeButtonLabel;
-        buttonElement.appendChild(labelSpan);
+        const labelSpan = $('<span>', {
+            class: 'paze-button-label',
+            text: pazeButtonLabel
+        });
+        buttonElement.append(labelSpan);
 
-        // Attach click handler
-        buttonElement.addEventListener('click', async () => {
+        buttonElement.on('click', async () => {
             await this.handlePaymentButtonClick();
         });
 
-        return buttonElement;
+        return buttonElement[0];
     }
 
     processPaymentSelection = async function(orderData)
@@ -234,22 +226,19 @@ class CommercehubPaze
         }
     }
 
-    setupPlaceOrderHandler = function()
+    setupDisableHandlerValues = function()
     {
-        if (!window.fiservPlaceOrderHandler) {
-            window.fiservPlaceOrderHandler = new PlaceOrderButtonHandler();
-        }
         this.setSubmitButtonEnabled(false);
-        window.fiservPlaceOrderHandler.addBlocker(
-            'paze',
+        window.fiservSubmitButtonHandler.addBlocker(
+            this.methodId,
             'paze-approval',
-            (facts) => facts.get('payment.required') === true && facts.get('payment.pazeApproved') !== true
+            (buttonHandler) => buttonHandler.getFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED') === false && buttonHandler.getFact('APM_APPROVAL') !== true
         );
     }
 
     setSubmitButtonEnabled = function(enabled)
     {
-        window.fiservPlaceOrderHandler.setFact('payment.pazeApproved', enabled);
+        window.fiservSubmitButtonHandler.setFact('APM_APPROVAL', enabled);
     }
 
     pazeFailure = function(message)

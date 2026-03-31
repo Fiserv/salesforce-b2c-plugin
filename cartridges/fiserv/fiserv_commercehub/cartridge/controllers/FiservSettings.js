@@ -390,7 +390,8 @@ function buildConfigList(chPreferenceDescriptions)
         'id': 'Paze',
         'items': [
             getPreferenceDescription('CommerceHubPazeEnable'),
-            getPreferenceDescription('CommerceHubPazePaymentType')
+            getPreferenceDescription('CommerceHubPazePaymentType'),
+            getPreferenceDescription('CommerceHubPazeDisplayName')
         ],
         'subform': {
             'label': 'Paze Button Customization',

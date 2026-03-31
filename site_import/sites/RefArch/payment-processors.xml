@@ -593,6 +593,9 @@
                 <preference preference-id="CommerceHubPazeButtonShape">
                     <value>rect</value>
                 </preference>
+                <preference preference-id="CommerceHubPazeDisplayName">
+                    <value>PAZE</value>
+                </preference>
             </all-instances>
             <development/>
             <staging/>

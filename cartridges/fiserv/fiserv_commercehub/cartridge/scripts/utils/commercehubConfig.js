@@ -229,6 +229,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPazeButtonLabel').value;
     },
 
+    getCommerceHubPazeDisplayName()
+    {
+        return getSitePreference('CommerceHubPazeDisplayName');
+    },
+
     // This is where frontend config object building start
 
     getFormConfig(formId)
