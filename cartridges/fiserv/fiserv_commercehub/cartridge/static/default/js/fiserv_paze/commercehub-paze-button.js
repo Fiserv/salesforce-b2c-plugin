@@ -112,21 +112,6 @@ class CommercehubPaze
         return buttonElement[0];
     }
 
-    processPaymentSelection = async function(orderData)
-    {
-       return await this.pazeComponent.selectPaymentMethod(orderData)
-            .then(result => {
-                return result;
-            })
-            .catch(error => {
-                if (error.responseText) {
-                    const parsedError = JSON.parse(error.responseText);
-                    console.error("Parsed error response:", parsedError);
-                }
-                throw error;
-            });
-    }
-
     submitPayment = async function(orderData)
     {
         return await this.pazeComponent.submit(orderData);
@@ -141,7 +126,6 @@ class CommercehubPaze
 
     handlePaymentError = function(error)
     {
-        console.error("Error during Paze payment selection:", error);
         this.pazeError();
         $.spinner().stop();
     }
@@ -151,8 +135,7 @@ class CommercehubPaze
         try {
             $.spinner().start();
             const orderData = await this.getOrderData();
-            console.log("Order data retrieved for Paze payment:", orderData);
-            await this.processPaymentSelection(orderData);
+            await this.pazeComponent.selectPaymentMethod(orderData); 
             await this.submitPayment(orderData);
             this.triggerCheckoutSubmission();
             $.spinner().stop();
@@ -201,7 +184,6 @@ class CommercehubPaze
 
     sdkLoadFailure = function (err)
     {
-        console.log(err);
         $('#fiserv-paze-fatal-notice').show();
         this.setSubmitButtonEnabled(false);
         $.spinner().stop();

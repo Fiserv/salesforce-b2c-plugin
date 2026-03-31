@@ -18,8 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let initPaze = async function()
     {
-        console.log("Initializing PAZE");
-       
         if(postInitPaymentChangeDetected)
         {
             location.reload();
