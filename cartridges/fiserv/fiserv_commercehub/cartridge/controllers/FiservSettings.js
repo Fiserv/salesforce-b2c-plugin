@@ -60,7 +60,7 @@ function retrieveCommerceHubPreferences()
         idConfigList[id]['mandatory'] = fiservConstants.CONFIG_VALIDATIONS.MANDATORY.includes(id);
 
         let displayName = configDefinition.displayName;
-        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay)|(Affirm)|(SamsungPay))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
+        displayName = displayName.replace(/^(((CommerceHub((Gift)|(PayPal)|(Venmo)|(ApplePay)|(Affirm)|(SamsungPay)|(Paze))?)|(((Payment)|(Tokenization)|(Gift)) Form)|(Card Number)|(Name On Card)|(Security Code)|(Expiration ((Month)|(Year)))|(Font)|(Field)) )*/, "");
         idConfigList[id]['displayName'] = displayName;
         if(fiservConstants.CONFIG_DESCRIPTIONS[id])
         {
@@ -381,6 +381,25 @@ function buildConfigList(chPreferenceDescriptions)
             'id': 'SamsungPayButton',
             'items': [
                 getPreferenceDescription('CommerceHubSamsungPayButtonColor')
+            ]
+        }
+    });
+
+    configList.push({
+        'label': 'Paze',
+        'id': 'Paze',
+        'items': [
+            getPreferenceDescription('CommerceHubPazeEnable'),
+            getPreferenceDescription('CommerceHubPazePaymentType'),
+            getPreferenceDescription('CommerceHubPazeDisplayName')
+        ],
+        'subform': {
+            'label': 'Paze Button Customization',
+            'id': 'PazeButton',
+            'items': [
+                getPreferenceDescription('CommerceHubPazeButtonLabel'),
+                getPreferenceDescription('CommerceHubPazeButtonShape'),
+                getPreferenceDescription('CommerceHubPazeButtonColor')
             ]
         }
     });

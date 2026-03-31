@@ -66,10 +66,27 @@ function buildRenderedBasketTokenField(basket)
     return renderedBasketPayment;
 }
 
+function getBasketOrderDetails()
+{
+    const BasketMgr = require('dw/order/BasketMgr');
+    const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
+
+    const basket = BasketMgr.getCurrentBasket();
+    if (!basket) {
+        return { error: true };
+    }
+
+    return {
+        total: fiservGiftHelper.retreiveNonGiftChargeAmount(basket),
+        currency: basket.getCurrencyCode()
+    };
+}
+
 module.exports =
 {
     isCreditCardFiserv : isCreditCardFiserv,
     isApplePayFiserv : isApplePayFiserv,
     secureTraversal : secureTraversal,
-    buildRenderedBasketTokenField : buildRenderedBasketTokenField
+    buildRenderedBasketTokenField : buildRenderedBasketTokenField,
+    getBasketOrderDetails : getBasketOrderDetails
 }

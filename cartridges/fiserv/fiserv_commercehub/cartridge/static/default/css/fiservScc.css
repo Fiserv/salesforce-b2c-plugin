@@ -2,7 +2,8 @@
 #fiserv-scc-gift-fatal-notice,
 #fiserv-paypal-fatal-notice,
 #fiserv-applepay-fatal-notice,
-#fiserv-samsungpay-fatal-notice {
+#fiserv-samsungpay-fatal-notice,
+#fiserv-paze-fatal-notice {
     display: none;
 }
 
@@ -27,10 +28,113 @@
 }
 
 #fiserv_commercehub-applepay-button,
-#fiserv_commercehub-samsungpay-button {
+#fiserv_commercehub-samsungpay-button,
+#fiserv_commercehub-paze-button {
     margin-bottom: 0.5rem;
     display: flex;
     justify-content: center;
+}
+
+/* Paze Button Color Styles - Direct button styling */
+#paze-payment-button.paze-blue {
+    background-color: #0F42f8;
+    color: #FFFFFF;
+    width: 100%;
+    height: 50px;
+    border: none;
+}
+#paze-payment-button.paze-whitewithoutline {
+    background-color: #FFFFFF;
+    border: 7px solid #151B33;
+    color: #0F42f8;
+    width: 100%;
+    height: 50px;
+}
+#paze-payment-button.paze-white {
+    background-color: #FFFFFF;
+    color: #0F42f8;
+    border: 1px solid #7c7c7d;
+    width: 100%;
+    height: 50px;
+}
+#paze-payment-button.paze-black {
+    background-color: #151B33;
+    color: #FFFFFF;
+    width: 100%;
+    height: 50px;
+    border: none;
+}
+
+/* Paze Button Shape Styles */
+#paze-payment-button.paze-rect {
+    border-radius: 0px;
+    gap: 5px;
+}
+#paze-payment-button.paze-default-shape {
+    border-radius: 5px;
+    gap:5px;
+}
+#paze-payment-button.paze-pill {
+    border-radius: 50px;
+    gap:5px;
+}
+
+/* Paze SVG Icon Color Styling - Direct button styling */
+#paze-payment-button.paze-blue::after,
+#paze-payment-button.paze-black::after {
+    filter: brightness(0) invert(1);
+}
+
+#paze-payment-button.paze-white::after,
+#paze-payment-button.paze-whitewithoutline::after {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(84%) saturate(5948%) hue-rotate(228deg) brightness(97%) contrast(103%);
+}
+
+/* SVG inside Paze button container */
+#fiserv_commercehub-paze-button .paze-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Paze Button Logo Styles */
+.paze-button-label {
+    vertical-align: middle;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+/* Paze button flex layout for logo and label alignment */
+#paze-payment-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#paze-payment-button::after {
+    content: '';
+    display: inline-block;
+    background-image: url('../images/paze.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 60px;
+    height: 20px;
+    margin-left: 8px;
+    order: 1;
+}
+
+#paze-payment-button .paze-button-label {
+    order: 0;
+}
+
+#paze-payment-button.paze-logo-first::after {
+    order: 0;
+    margin-left: 0;
+    margin-right: 8px;
+}
+
+#paze-payment-button.paze-logo-first .paze-button-label {
+    order: 1;
 }
 
 .cc-type-image {

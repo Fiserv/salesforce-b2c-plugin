@@ -74,6 +74,13 @@ function getFrontendConfigData(formId)
                 'samsungpayFailureMessage': Resource.msg('message.error.samsungpay.failure', 'error', null),
             }
             break;
+        case 'Paze':
+            configData = {
+                displayName: fiservConfig.getCommerceHubPazeDisplayName(),
+                'buttonConfig': fiservConfig.buildPazeButtonsConfig(),
+                'pazeFailureMessage': Resource.msg('message.error.paze.failure', 'error', null),
+            }
+            break;
         default:
             configData = {};
             break;

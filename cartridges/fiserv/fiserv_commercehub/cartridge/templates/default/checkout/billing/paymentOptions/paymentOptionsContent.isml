@@ -13,5 +13,7 @@
         <isinclude template="checkout/billing/paymentOptions/affirmContent" />
     <iselseif condition="${paymentOption.ID === 'SAMSUNGPAY' && pdict.FiservConfig.getCommerceHubSamsungPayEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/samsungpayContent" />
+    <iselseif condition="${paymentOption.ID === 'PAZE' && pdict.FiservConfig.getCommerceHubPazeEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/pazeContent" />
     </isif>
 </isloop>
