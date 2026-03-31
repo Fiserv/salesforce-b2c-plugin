@@ -119,8 +119,7 @@ module.exports = {
             'CommerceHubAPIKey',
             'CommerceHubAPISecret',
             'CommerceHubSessionLifetime',
-            'CommerceHubTimeout',
-            'CommerceHubPazeDisplayName'
+            'CommerceHubTimeout'
         ],
         INT_CONSTRAINTS : {
             'CommerceHubSessionLifetime': { min: 30, max: 240, message: 'Valid lifetime value required (240 ≥ value ≥ 30)' },

@@ -231,7 +231,7 @@ const commerceHubExport =
 
     getCommerceHubPazeDisplayName()
     {
-        return getSitePreference('CommerceHubPazeDisplayName');
+        return getSitePreference('CommerceHubPazeDisplayName') || "PAZE";
     },
 
     // This is where frontend config object building start

@@ -57,42 +57,11 @@ class CommercehubPaze
         };
     }
 
-    buttonClass = function()
-    {
-        const buttonColor = this.configDataPaze.buttonConfig.color;
-        if (buttonColor === 'blue') {
-            return 'paze-blue';
-        } else if (buttonColor === 'white') {
-            return 'paze-white';
-        } else if (buttonColor === 'whitewithoutline') {
-            return 'paze-whitewithoutline';
-        } else {
-            return 'paze-black';
-        }
-    }
-
-    buttonShape = function()
-    {
-        const buttonShape = this.configDataPaze.buttonConfig.shape;
-        if (buttonShape === 'rectangle') {
-            return 'paze-rect';
-        } else if (buttonShape === 'pill') {
-            return 'paze-pill';
-        } else {
-            return 'paze-default-shape';
-        }
-    }
-
-    buttonLabel = function()
-    {
-        return this.configDataPaze.buttonConfig.label !== "paze" ? this.configDataPaze.buttonConfig.label : '';
-    }
-
     createPazeButton = function()
     {
-        const pazeButtonClass = this.buttonClass();
-        const pazeButtonShape = this.buttonShape();
-        const pazeButtonLabel = this.buttonLabel();
+        const pazeButtonClass = 'paze-' + this.configDataPaze.buttonConfig.color;
+        const pazeButtonShape = 'paze-' + this.configDataPaze.buttonConfig.shape;
+        const pazeButtonLabel = this.configDataPaze.buttonConfig.label !== "pay" ? this.configDataPaze.buttonConfig.label : '';
         const buttonElement = $('<button>', {
             id: 'paze-payment-button',
             class: `${pazeButtonClass} ${pazeButtonShape}${this.configDataPaze.buttonConfig.label === 'checkout' ? ' paze-logo-first' : ''}`,
@@ -126,7 +95,7 @@ class CommercehubPaze
 
     handlePaymentError = function(error)
     {
-        this.pazeError();
+        this.pazeFailure(this.configDataPaze.pazeFailureMessage);
         $.spinner().stop();
     }
 
@@ -153,10 +122,9 @@ class CommercehubPaze
             this.pazeComponent = await window.fiserv.components.paze(pazeLoadConfig);
 
             const pazeButtonContainer = $('#fiserv_commercehub-paze-button');
-            if (pazeButtonContainer.length) {
-                const buttonElement = this.createPazeButton();
-                pazeButtonContainer.empty().append(buttonElement);
-            }
+           
+            const buttonElement = this.createPazeButton();
+            pazeButtonContainer.empty().append(buttonElement);
 
             $.spinner().stop();
         }
@@ -164,8 +132,6 @@ class CommercehubPaze
         {
             $('#fiserv-paze-fatal-notice').show();
             $.spinner().stop();
-
-            throw e;
         }
     }
 
@@ -229,11 +195,6 @@ class CommercehubPaze
         if(message)
             this.showError(message);
         this.initialize();
-    }
-
-    pazeError = function()
-    {
-        this.pazeFailure(this.configDataPaze.pazeFailureMessage);
     }
 
     setSessionIdInput = function(sessionId)

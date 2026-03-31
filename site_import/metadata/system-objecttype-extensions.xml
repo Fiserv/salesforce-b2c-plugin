@@ -684,9 +684,9 @@
             </attribute-definition>
 
             <attribute-definition attribute-id="CommerceHubPazeDisplayName">
-                <display-name xml:lang="x-default">Display Name</display-name>
+                <display-name xml:lang="x-default">Paze UI Store Name</display-name>
                 <type>string</type>
-                <mandatory-flag>true</mandatory-flag>
+                <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
 
@@ -723,11 +723,11 @@
                 <value-definitions>
                     <value-definition default="true">
                         <display>Default</display>
-                        <value>default</value>
+                        <value>default-shape</value>
                     </value-definition>
                     <value-definition>
                         <display>Rectangle</display>
-                        <value>rectangle</value>
+                        <value>rect</value>
                     </value-definition>
                     <value-definition>
                         <display>Pill</display>
