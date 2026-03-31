@@ -8,13 +8,15 @@ class CommercehubCheckoutForm
         {
             throw new Error("Initialization Data not found. Unable to initialize card form.");
         }
+
+        this.methodId = 'CREDIT_CARD';
         this.formConfig = initializationData.config;
         this.configDataPaymentCard = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
         this.tokenizationUrl = initializationData.tokenizationUrl;
         this.isGuest = !initializationData.userLoggedIn;
         this.cvvEnabled = this.configDataPaymentCard.cvvEnabled;
-        
+
         this.createAdapter();
         
         $('#sdc-mask-cardNumber, #sdc-mask-securityCode').on('click', (element) => {this.mask(element, this.formAdapter);});
@@ -25,6 +27,7 @@ class CommercehubCheckoutForm
             FiservFastlaneInitializer.initFastlane(this.credentialsUrl, this.formAdapter, this.formConfig);
         }
         
+        this.setupDisableHandlerValues();
         this.watchSubmitResponse();
         this.watchPaymentMethods();
     }
@@ -109,6 +112,17 @@ class CommercehubCheckoutForm
             console.log(err);
             throw new Error(err);
         };
+    }
+
+    setupDisableHandlerValues = function()
+    {
+        window.fiservSubmitButtonHandler.setFact('CREDIT_FORM_VALID', false);
+
+        window.fiservSubmitButtonHandler.addBlocker(
+            this.methodId,
+            'credit-card-ready',
+            (buttonHandler) => buttonHandler.getFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED') === false && buttonHandler.getFact('CREDIT_FORM_VALID') === false
+        );
     }
 
     clearValidation = function()
@@ -276,6 +290,7 @@ class CommercehubCheckoutForm
             return;
         }
         
+        window.fiservSubmitButtonHandler.setFact('ACTIVE_PAYMENT_METHOD', 'CREDIT_CARD');
         this.activateCommercehubForm();
             
         if (this.isSavedPaymentMethodSelected())
@@ -486,7 +501,7 @@ class CommercehubCheckoutForm
 
     setSubmitButtonEnabled = function (enabled)
     {
-        window.fiservPlaceOrderHandler.setFact('payment.paymentMethodFormValid', enabled);
+        window.fiservSubmitButtonHandler.setFact('CREDIT_FORM_VALID', enabled);
     }
 
     resetForm = function()
