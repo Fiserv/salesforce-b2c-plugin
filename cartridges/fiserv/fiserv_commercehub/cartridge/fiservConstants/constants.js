@@ -23,12 +23,21 @@ module.exports = {
         COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
         COMMERCEHUB_AFFIRM_PROCESSOR : "FISERV_COMMERCEHUB_AFFIRM",
         COMMERCEHUB_SAMSUNGPAY_PROCESSOR : "FISERV_COMMERCEHUB_SAMSUNGPAY",
+        COMMERCEHUB_PAZE_PROCESSOR : "FISERV_COMMERCEHUB_PAZE",
     },
     PAYMENT_METHOD_LIST : {
+        COMMERCEHUB_CREDIT_PAYMENT_METHOD : "CREDIT_CARD",
         COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
         COMMERCEHUB_APPLEPAY_PAYMENT_METHOD : "APPLEPAY",
         COMMERCEHUB_SAMSUNGPAY_PAYMENT_METHOD : "SAMSUNGPAY",
+        COMMERCEHUB_PAZE_PAYMENT_METHOD : "PAZE",
     },
+    PRIMARY_PAYMENT_METHODS : [
+        "CREDIT_CARD",
+        "APPLEPAY",
+        "SAMSUNGPAY",
+        "PAZE"
+    ],
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",
@@ -92,6 +101,11 @@ module.exports = {
         'CommerceHubSamsungPayEnable': [
             'CommerceHubSamsungPayPaymentType',
             'SamsungPayButton'
+        ],
+        'CommerceHubPazeEnable': [
+            'CommerceHubPazePaymentType',
+            'CommerceHubPazeDisplayName',
+            'PazeButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {

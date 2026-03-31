@@ -37,5 +37,9 @@
         <div class="affirm-item">
             <span>Affirm</span>
         </div>
+    <iselseif condition="${payment.paymentMethod === 'PAZE'}" />
+        <div class="paze-item">
+            <span>Paze</span>
+        </div>
     </isif>
 </isloop>

@@ -201,6 +201,39 @@ const commerceHubExport =
         return getSitePreference('CommerceHubSamsungPayPaymentType').value;
     },
 
+
+    // This is where the Paze settings start
+
+    getCommerceHubPazeEnabled()
+    {
+        return getSitePreference('CommerceHubPazeEnable');
+    },
+
+    getCommerceHubPazePaymentType()
+    {
+        return getSitePreference('CommerceHubPazePaymentType').value;
+    },
+
+    getCommerceHubPazeButtonColor()
+    {
+        return getSitePreference('CommerceHubPazeButtonColor').value;
+    },
+
+    getCommerceHubPazeButtonShape()
+    {
+        return getSitePreference('CommerceHubPazeButtonShape').value;
+    },
+
+    getCommerceHubPazeButtonLabel()
+    {
+        return getSitePreference('CommerceHubPazeButtonLabel').value;
+    },
+
+    getCommerceHubPazeDisplayName()
+    {
+        return getSitePreference('CommerceHubPazeDisplayName') || "PAZE";
+    },
+
     // This is where frontend config object building start
 
     getFormConfig(formId)
@@ -389,6 +422,22 @@ const commerceHubExport =
 
         return { 'button': buttonConfig };
      },
+
+      buildPazeButtonsConfig()
+    {
+        let buttonConfig;
+        if(this.getCommerceHubPazeEnabled())
+        {
+            buttonConfig = {
+                'parentElementId': 'fiserv_commercehub-paze-button',
+                'color': this.getCommerceHubPazeButtonColor(),
+                'shape': this.getCommerceHubPazeButtonShape(),
+                'label': this.getCommerceHubPazeButtonLabel()
+            }
+        }
+
+        return buttonConfig;
+    },
 
     buildAddressFormNamesObject()
     {

@@ -11,4 +11,10 @@ server.post('Credentials', function(req, res, next) {
     return next();
 });
 
+server.post('OrderDetails', function(req, res, next) {
+    const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+    res.json(fiservHelper.getBasketOrderDetails());
+    return next();
+});
+
 module.exports = server.exports();
