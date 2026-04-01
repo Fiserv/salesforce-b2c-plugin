@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
-    //const checkoutStage = $('#fiserv-commercehub-ach-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubACH(extractInitializationData());
     let initialized = false;
 

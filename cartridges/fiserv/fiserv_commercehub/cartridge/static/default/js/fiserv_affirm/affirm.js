@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
-    //const checkoutStage = $('#fiserv-commercehub-affirm-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubAffirm(extractInitializationData());
     let initialized = false;
     let postInitPaymentChangeDetected = false;
