@@ -261,7 +261,7 @@ function buildChargesRequest(orderNumber, paymentInstrument)
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
     if(paymentAction === fiservConstants.COMMERCEHUB_AUTH_ACTION || paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION)
     {
-        if(fiservConstants.PRIMARY_PAYMENT_METHODS.includes(paymentInstrument.paymentMethod))
+        if(fiservConstants.CHARGES_PAYMENT_METHODS.includes(paymentInstrument.paymentMethod))
             return buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction);
         else if(paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             return buildGiftChargesRequest(paymentInstrument, paymentAction);
