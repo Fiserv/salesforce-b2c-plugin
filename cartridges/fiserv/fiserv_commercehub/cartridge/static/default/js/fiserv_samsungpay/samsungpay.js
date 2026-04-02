@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
-    //const checkoutStage = $('#fiserv-commercehub-samsungpay-form-init-container').attr('data-initial-checkout-stage');
     let form = new CommercehubSamsungPay(extractInitializationData());
     let initialized = false;
     let postInitPaymentChangeDetected = false;

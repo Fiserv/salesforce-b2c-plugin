@@ -1,4 +1,5 @@
 #fiserv-scc-fatal-notice,
+#fiserv-ach-fatal-notice,
 #fiserv-scc-gift-fatal-notice,
 #fiserv-paypal-fatal-notice,
 #fiserv-applepay-fatal-notice,
@@ -25,6 +26,25 @@
 
 #fastlane-re-enable-form-button {
     margin-bottom: 1rem;
+}
+
+#fiserv-ach-confirm-fields-container {
+    margin-bottom: 1rem;
+}
+
+#fiserv-ach-legal-text-container {
+    margin-bottom: 1rem;
+}
+
+.fiserv-ach-legal-text-box {
+    border: 1px solid #ccc;
+    border-radius: 0.1875rem;
+    padding: 0.75rem;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 12px;
+    margin-bottom: 0.75rem;
+    background-color: #f9f9f9;
 }
 
 #fiserv_commercehub-applepay-button,
