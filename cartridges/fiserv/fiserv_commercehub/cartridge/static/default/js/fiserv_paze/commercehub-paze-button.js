@@ -59,18 +59,14 @@ class CommercehubPaze
 
     createPazeButton = function()
     {
-        const pazeButtonClass = 'paze-' + this.configDataPaze.buttonConfig.color;
-        const pazeButtonShape = 'paze-' + this.configDataPaze.buttonConfig.shape;
-        const pazeButtonLabel = this.configDataPaze.buttonConfig.label !== "pay" ? this.configDataPaze.buttonConfig.label : '';
         const buttonElement = $('<button>', {
             id: 'paze-payment-button',
-            class: `${pazeButtonClass} ${pazeButtonShape}${this.configDataPaze.buttonConfig.label === 'checkout' ? ' paze-logo-first' : ''}`,
+            class: 'paze-blue',
             type: 'button'
         });
 
         const labelSpan = $('<span>', {
-            class: 'paze-button-label',
-            text: pazeButtonLabel
+            class: 'paze-button-label'
         });
         buttonElement.append(labelSpan);
 

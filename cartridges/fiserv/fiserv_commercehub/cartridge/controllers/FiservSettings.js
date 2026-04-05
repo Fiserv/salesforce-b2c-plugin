@@ -464,16 +464,7 @@ function buildConfigList(chPreferenceDescriptions)
             getPreferenceDescription('CommerceHubPazeEnable'),
             getPreferenceDescription('CommerceHubPazePaymentType'),
             getPreferenceDescription('CommerceHubPazeDisplayName')
-        ],
-        'subform': {
-            'label': 'Paze Button Customization',
-            'id': 'PazeButton',
-            'items': [
-                getPreferenceDescription('CommerceHubPazeButtonLabel'),
-                getPreferenceDescription('CommerceHubPazeButtonShape'),
-                getPreferenceDescription('CommerceHubPazeButtonColor')
-            ]
-        }
+        ]
     });
 
     let formList = []
