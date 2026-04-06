@@ -43,6 +43,11 @@ module.exports = {
     ],
     EXPRESS_PAYMENT_METHODS : [
         "APPLEPAY",
+        "PAYPAL",
+        "VENMO",
+        "SAMSUNGPAY",
+        "AFFIRM",
+        "PAZE",
     ],
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",

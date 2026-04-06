@@ -1,0 +1,30 @@
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_venmo/commercehub-venmo-handler-template.js');
+    assets.addJs('/js/fiserv_venmo/commercehub-venmo-button-base.js');
+    assets.addJs('/js/fiserv_venmo/venmo.js');
+    assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+
+<div class="tab-pane venmo-content" id="venmo-content">
+    <div id="fiserv-commercehub-venmo-form-init-container"
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Venmo'))}"
+        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+        data-payment-amount-block=".grand-total"></div>
+
+    <div id="fiserv_commercehub-venmo-button" class="sdc-button"></div>
+
+    <div id="fiserv-venmo-fatal-notice" class="alert alert-danger">
+        <p>${Resource.msg('message.error.venmo.fatal','error',null)}</p>            
+    </div>
+
+    <!--- Hidden input for order ID --->
+    <input id="commercehubOrderIdInputVenmo" type="hidden" name="<<< ADD IN FORM ITEM ROUTING HERE >>>"/>
+</div>

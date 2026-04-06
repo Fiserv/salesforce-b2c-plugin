@@ -25,10 +25,4 @@ class CommercehubPazeEventHandler
         console.log("Payment button clicked");
         // Overwrite this to handle the paze payment button click event
     }
-
-    handlePaymentError = function(error)
-    {
-        console.log("Error");
-        // Overwrite this to handle the paze error event
-    }
 }

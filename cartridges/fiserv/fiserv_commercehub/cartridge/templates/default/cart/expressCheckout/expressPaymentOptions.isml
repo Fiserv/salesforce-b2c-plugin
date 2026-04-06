@@ -1,5 +1,15 @@
 <isloop items="${pdict.availableCommerceHubExpressMethods}" var="paymentMethod">
-    <isif condition="${paymentMethod.ID === 'APPLEPAY'}">
+    <isif condition="${paymentMethod.ID === 'PAYPAL'}">
+        <isinclude template="cart/expressCheckout/paypalExpressContent" />
+    <iselseif condition="${paymentMethod.ID === 'VENMO'}">
+        <isinclude template="cart/expressCheckout/venmoExpressContent" />
+    <iselseif condition="${paymentMethod.ID === 'APPLEPAY'}">
         <isinclude template="cart/expressCheckout/applepayExpressContent" />
+    <iselseif condition="${paymentMethod.ID === 'AFFIRM'}">
+        <isinclude template="cart/expressCheckout/affirmExpressContent" />
+    <iselseif condition="${paymentMethod.ID === 'SAMSUNGPAY'}">
+        <isinclude template="cart/expressCheckout/samsungpayExpressContent" />
+    <iselseif condition="${paymentMethod.ID === 'PAZE'}">
+        <isinclude template="cart/expressCheckout/pazeExpressContent" />
     </isif>
 </isloop>

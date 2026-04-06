@@ -1,0 +1,30 @@
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_paypal/commercehub-paypal-handler-template.js');
+    assets.addJs('/js/fiserv_paypal/commercehub-paypal-button-base.js');
+    assets.addJs('/js/fiserv_paypal/paypal.js');
+    assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+
+<div class="tab-pane paypal-content" id="paypal-content">
+    <div id="fiserv-commercehub-paypal-form-init-container"
+        data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('PayPal'))}"
+        data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+        data-payment-amount-block=".grand-total"></div>
+
+    <div id="fiserv_commercehub-paypal-button" class="sdc-button"></div>
+
+    <div id="fiserv-paypal-fatal-notice" class="alert alert-danger">
+        <p>${Resource.msg('message.error.paypal.fatal','error',null)}</p>            
+    </div>
+
+    <!--- Hidden input for order ID --->
+    <input id="commercehubOrderIdInputPayPal" type="hidden" name="<<< ADD IN FORM ITEM ROUTING HERE >>>"/>
+</div>
