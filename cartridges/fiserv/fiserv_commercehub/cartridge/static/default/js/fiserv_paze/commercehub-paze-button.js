@@ -28,6 +28,7 @@ class CommercehubPaze
         try {
             $.spinner().start();
             $('#fiserv-paze-fatal-notice').hide();
+            
 
             await this.sdkButton.initSdk(this.credentialsUrl, (sessionId) => this.setSessionIdInput(sessionId), "PAZE");
 
@@ -91,7 +92,18 @@ class CommercehubPaze
 
     handlePaymentError = function(error)
     {
+        if (error?.message === 'INCOMPLETE' && error?.description === 'Paze operation cancelled') {
+            this.pazeCancel();
+            return;
+        }
+
         this.pazeFailure(this.configDataPaze.pazeFailureMessage);
+        $.spinner().stop();
+    }
+
+    pazeCancel = function()
+    {
+        console.log("Paze flow cancelled");
         $.spinner().stop();
     }
 
@@ -100,7 +112,7 @@ class CommercehubPaze
         try {
             $.spinner().start();
             const orderData = await this.getOrderData();
-            await this.pazeComponent.selectPaymentMethod(orderData); 
+            await this.pazeComponent.selectPaymentMethod(orderData);
             await this.submitPayment(orderData);
             this.triggerCheckoutSubmission();
             $.spinner().stop();
