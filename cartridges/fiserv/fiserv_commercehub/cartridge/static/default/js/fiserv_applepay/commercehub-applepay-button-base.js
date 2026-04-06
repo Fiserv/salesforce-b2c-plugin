@@ -2,7 +2,6 @@
 
 class CommercehubApplePay
 {
-
     constructor(initializationData)
     {
         if (typeof(initializationData) === "undefined")

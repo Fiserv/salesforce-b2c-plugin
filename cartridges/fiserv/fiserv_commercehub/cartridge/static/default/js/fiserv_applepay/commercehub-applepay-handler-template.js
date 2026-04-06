@@ -2,7 +2,6 @@
 
 class CommercehubApplePayEventHandler
 {
-
     constructor(initializationData, sdkButton, applepayBase)
     {
         if (typeof(initializationData) === "undefined")
@@ -12,7 +11,6 @@ class CommercehubApplePayEventHandler
 
         this.sdkButton = sdkButton;
         this.applepayBase = applepayBase;
-        this.formConfig = initializationData.config;
         this.configDataApplePay = initializationData.config.configData;
     }
 

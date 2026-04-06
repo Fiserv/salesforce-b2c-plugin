@@ -1,9 +1,8 @@
 'use strict';
 
-class CommercehubVenmo
+class CommercehubVenmoEventHandler
 {
-
-    constructor(initializationData)
+    constructor(initializationData, sdkButton, venmoBase)
     {
         if (typeof(initializationData) === "undefined")
         {
@@ -11,11 +10,9 @@ class CommercehubVenmo
         }
 
         this.methodId = 'VENMO';
-        this.formConfig = initializationData.config;
+        this.sdkButton = sdkButton;
+        this.venmoBase = venmoBase;
         this.configDataVenmo = initializationData.config.configData;
-        this.credentialsUrl = initializationData.credentialsUrl;
-
-        this.createAdapter();
 
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
@@ -23,73 +20,31 @@ class CommercehubVenmo
         this.setupDisableHandlerValues();
     }
 
-    initialize = async function()
+    initialize = function()
     {
-        try {
-            $.spinner().start();
-            $('#fiserv-venmo-fatal-notice').hide();
-            await this.sdkButton.initSdk(this.credentialsUrl, null, "Venmo");
-            this.setSubmitButtonEnabled(false);
-        } catch (_err) {
-            this.sdkLoadFailure(_err);
-        }
+        this.setSubmitButtonEnabled(false);
     }
 
-    createAdapter = function()
+    handleApproval = function(response)
     {
-        let loadSuccessCallback = () => { console.log("CommerceHub Venmo SDK has loaded."); };
-        let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
-        let sdkReadyCallback = () => { this.sdkInitialized() };
-
-        this.sdkButton = new FiservSDKButton(
-            loadSuccessCallback,
-            loadFailCallback,
-            sdkReadyCallback
-        );
-    }
-
-    createCallbacksObject = function()
-    {
-        return {
-            onApprove: (response) => { this.venmoApproval(response); },
-            onCancel: (response) => { this.venmoCancel(response); },
-            onError: (response) => { this.venmoError(response); }
-        };
-    }
-
-    sdkInitialized = async function() 
-    {
-        try
-        {
-            let venmoLoadConfig = {};
-            venmoLoadConfig['intent'] = this.configDataVenmo.chargeType === 'AUTH' ? 'AUTHORIZE' : 'CAPTURE';
-            venmoLoadConfig['shippingAddress'] = await FiservSDKHelper.retrieveAddress(this.configDataVenmo.shippingAddressFormNames, 'shipping');
-            const venmo = await window.fiserv.components.paypal(venmoLoadConfig);
-            await venmo.buttons({ data: this.configDataVenmo.buttonsConfig, hooks: this.createCallbacksObject() });
-        }
-        catch(e)
-        {
-            $('#fiserv-venmo-fatal-notice').show();
-        }
-        $.spinner().stop();
-    }
-
-    sdkLoadFailure = function (err) 
-    {
-        console.log(err);
-        $('#fiserv-venmo-fatal-notice').show();
-        $.spinner().stop(); 
-        throw new Error("Unable to load CommerceHub SDK.")
-    }
-
-    venmoApproval = function(response)
-    {
-        this.setOrderIdInput(response.orderId);
+        this.venmoBase.setOrderIdInput(response.orderId);
         $('.payment-details').addClass('checkout-hidden');
         $('<div class="payment-details-venmo">Venmo</div>').insertAfter('.payment-details');
         $('.edit-button').on('click', this.removeInsertedSummary);
         this.setSubmitButtonEnabled(true);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+        this.setSubmitButtonEnabled(false);
+    }
+
+    handleCancel = function(response)
+    {
+        console.log("Venmo flow cancelled");
+    }
+
+    handleError = function(response)
+    {
+        this.setSubmitButtonEnabled(false);
+        this.showError(this.configDataVenmo.venmoFailureMessage);
     }
 
     removeInsertedSummary = () =>
@@ -97,17 +52,6 @@ class CommercehubVenmo
         $('.payment-details').removeClass('checkout-hidden');
         $('.payment-details-venmo').remove();
         $('.edit-button').off('click', this.removeInsertedSummary);
-    }
-
-    venmoCancel = function()
-    {
-        console.log("Venmo flow cancelled");
-    }
-
-    venmoError = function()
-    {
-        this.setSubmitButtonEnabled(false);
-        this.showError(this.configDataVenmo.venmoFailureMessage);
     }
 
     watchSubmitResponse = function()
@@ -123,15 +67,10 @@ class CommercehubVenmo
             $(".payment-information").data("payment-method-id") === "VENMO" &&
             xhr.responseJSON.error
         ) {
-            this.setOrderIdInput('');
+            this.venmoBase.setOrderIdInput('');
             this.removeInsertedSummary();
             this.setSubmitButtonEnabled(false);
         }
-    }
-
-    setOrderIdInput = function(orderId)
-    {
-        $('input#commercehubOrderIdInputVenmo').val(orderId);
     }
 
     watchPaymentMethod = function()

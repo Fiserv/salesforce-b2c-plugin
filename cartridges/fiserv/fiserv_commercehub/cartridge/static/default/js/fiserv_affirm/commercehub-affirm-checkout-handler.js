@@ -1,8 +1,8 @@
 'use strict';
 
-class CommercehubAffirm
+class CommercehubAffirmEventHandler
 {
-    constructor(initializationData)
+    constructor(initializationData, sdkButton, affirmBase)
     {
         if (typeof(initializationData) === "undefined")
         {
@@ -10,11 +10,9 @@ class CommercehubAffirm
         }
 
         this.methodId = 'AFFIRM';
-        this.formConfig = initializationData.config;
+        this.sdkButton = sdkButton;
+        this.affirmBase = affirmBase;
         this.configDataAffirm = initializationData.config.configData;
-        this.credentialsUrl = initializationData.credentialsUrl;
-
-        this.createAdapter();
 
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
@@ -22,71 +20,14 @@ class CommercehubAffirm
         this.setupDisableHandlerValues();
     }
 
-    initialize = async function()
+    initialize = function()
     {
-        try {
-            $.spinner().start();
-            $('#fiserv-affirm-fatal-notice').hide();
-            await this.sdkButton.initSdk(this.credentialsUrl, null, "Affirm");
-            this.setSubmitButtonEnabled(false);
-        } catch (_err) {
-            this.sdkLoadFailure(_err);
-        }
+        this.setSubmitButtonEnabled(false);
     }
 
-    createAdapter = function()
+    handleApproval = function(response)
     {
-        let loadSuccessCallback = () => { console.log("CommerceHub Affirm SDK has loaded."); };
-        let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
-        let sdkReadyCallback = () => { this.sdkInitialized() };
-
-        this.sdkButton = new FiservSDKButton(
-            loadSuccessCallback,
-            loadFailCallback,
-            sdkReadyCallback
-        );
-    }
-
-    createCallbacksObject = function()
-    {
-        return {
-            onApprove: (response) => { this.affirmApproval(response); },
-            onCancel: (response) => { this.affirmCancel(response); },
-            onError: (response) => { this.affirmError(response); }
-        };
-    }
-
-    sdkInitialized = async function() 
-    {
-        try
-        {
-            let affirmLoadConfig = {};
-            affirmLoadConfig['intent'] = this.configDataAffirm.chargeType === 'AUTH' ? 'AUTHORIZE' : 'CAPTURE';
-            affirmLoadConfig['button'] = this.configDataAffirm.buttonConfig;
-
-            await window.fiserv.components.affirm({
-                data: affirmLoadConfig,
-                hooks: this.createCallbacksObject()
-            });
-        }
-        catch(e)
-        {
-            $('#fiserv-affirm-fatal-notice').show();
-        }
-        $.spinner().stop();
-    }
-
-    sdkLoadFailure = function (err) 
-    {
-        console.log(err);
-        $('#fiserv-affirm-fatal-notice').show();
-        $.spinner().stop(); 
-        throw new Error("Unable to load CommerceHub SDK.")
-    }
-
-    affirmApproval = function(response)
-    {
-        this.setOrderIdInput(response.orderId);
+        this.affirmBase.setOrderIdInput(response.orderId);
         $('.payment-details').addClass('checkout-hidden');
         $('<div class="payment-details-affirm">Affirm</div>').insertAfter('.payment-details');
         $('.edit-button').on('click', this.removeInsertedSummary);
@@ -95,29 +36,29 @@ class CommercehubAffirm
         this.setSubmitButtonEnabled(false);
     }
 
-    removeInsertedSummary = () =>
-    {
-        $('.payment-details').removeClass('checkout-hidden');
-        $('.payment-details-affirm').remove();
-        $('.edit-button').off('click', this.removeInsertedSummary);
-    }
-
-    affirmCancel = function()
+    handleCancel = function(response)
     {
         console.log("Affirm flow cancelled");
     }
 
-    affirmError = function(response)
+    handleError = function(response)
     {
         if(response.providerData?.error?.reason === 'canceled')
         {
-            this.affirmCancel(response);
+            this.handleCancel(response);
         }
         else
         {
             this.setSubmitButtonEnabled(false);
             this.showError(this.configDataAffirm.affirmFailureMessage);
         }
+    }
+
+    removeInsertedSummary = () =>
+    {
+        $('.payment-details').removeClass('checkout-hidden');
+        $('.payment-details-affirm').remove();
+        $('.edit-button').off('click', this.removeInsertedSummary);
     }
 
     watchSubmitResponse = function()
@@ -133,14 +74,9 @@ class CommercehubAffirm
             $(".payment-information").data("payment-method-id") === "AFFIRM" &&
             xhr.responseJSON.error
         ) {
-            this.setOrderIdInput('');
+            this.affirmBase.setOrderIdInput('');
             this.removeInsertedSummary();
         }
-    }
-
-    setOrderIdInput = function(orderId)
-    {
-        $('input#commercehubOrderIdInputAffirm').val(orderId);
     }
 
     watchPaymentMethod = function()

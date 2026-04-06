@@ -1,9 +1,8 @@
 'use strict';
 
-class CommercehubPayPal
+class CommercehubPayPalEventHandler
 {
-
-    constructor(initializationData)
+    constructor(initializationData, sdkButton, paypalBase)
     {
         if (typeof(initializationData) === "undefined")
         {
@@ -11,11 +10,9 @@ class CommercehubPayPal
         }
 
         this.methodId = 'PAYPAL';
-        this.formConfig = initializationData.config;
+        this.sdkButton = sdkButton;
+        this.paypalBase = paypalBase;
         this.configDataPayPal = initializationData.config.configData;
-        this.credentialsUrl = initializationData.credentialsUrl;
-
-        this.createAdapter();
 
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
@@ -23,74 +20,31 @@ class CommercehubPayPal
         this.setupDisableHandlerValues();
     }
 
-    initialize = async function()
+    initialize = function()
     {
-        try {
-            $.spinner().start();
-            $('#fiserv-paypal-fatal-notice').hide();
-            await this.sdkButton.initSdk(this.credentialsUrl, null, "PayPal");
-            this.setSubmitButtonEnabled(false);
-        } catch (_err) {
-            this.sdkLoadFailure(_err);
-        }
+        this.setSubmitButtonEnabled(false);
     }
 
-    createAdapter = function()
+    handleApproval = function(response)
     {
-        let loadSuccessCallback = () => { console.log("CommerceHub PayPal SDK has loaded."); };
-        let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
-        let sdkReadyCallback = () => { this.sdkInitialized() };
-
-        this.sdkButton = new FiservSDKButton(
-            loadSuccessCallback,
-            loadFailCallback,
-            sdkReadyCallback
-        );
-    }
-
-    createCallbacksObject = function()
-    {
-        return {
-            onApprove: (response) => { this.paypalApproval(response); },
-            onCancel: (response) => { this.paypalCancel(response); },
-            onError: (response) => { this.paypalError(response); }
-        };
-    }
-
-    sdkInitialized = async function() 
-    {
-        try
-        {
-            let paypalLoadConfig = {};
-            paypalLoadConfig['intent'] = this.configDataPayPal.chargeType === 'AUTH' ? 'AUTHORIZE' : 'CAPTURE';
-            paypalLoadConfig['shippingAddress'] = await FiservSDKHelper.retrieveAddress(this.configDataPayPal.shippingAddressFormNames, 'shipping');
-            const paypal = await window.fiserv.components.paypal(paypalLoadConfig);
-
-            await paypal.buttons({ data: this.configDataPayPal.buttonsConfig, hooks: this.createCallbacksObject() });
-        }
-        catch(e)
-        {
-            $('#fiserv-paypal-fatal-notice').show();
-        }
-        $.spinner().stop();
-    }
-
-    sdkLoadFailure = function (err) 
-    {
-        console.log(err);
-        $('#fiserv-paypal-fatal-notice').show();
-        $.spinner().stop(); 
-        throw new Error("Unable to load CommerceHub SDK.")
-    }
-
-    paypalApproval = function(response)
-    {
-        this.setOrderIdInput(response.orderId);
+        this.paypalBase.setOrderIdInput(response.orderId);
         $('.payment-details').addClass('checkout-hidden');
         $('<div class="payment-details-paypal">PayPal</div>').insertAfter('.payment-details');
         $('.edit-button').on('click', this.removeInsertedSummary);
         this.setSubmitButtonEnabled(true);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+        this.setSubmitButtonEnabled(false);
+    }
+
+    handleCancel = function(response)
+    {
+        console.log("PayPal flow cancelled");
+    }
+
+    handleError = function(response)
+    {
+        this.setSubmitButtonEnabled(false);
+        this.showError(this.configDataPayPal.paypalFailureMessage);
     }
 
     removeInsertedSummary = () =>
@@ -98,17 +52,6 @@ class CommercehubPayPal
         $('.payment-details').removeClass('checkout-hidden');
         $('.payment-details-paypal').remove();
         $('.edit-button').off('click', this.removeInsertedSummary);
-    }
-
-    paypalCancel = function()
-    {
-        console.log("PayPal flow cancelled");
-    }
-
-    paypalError = function()
-    {
-        this.setSubmitButtonEnabled(false);
-        this.showError(this.configDataPayPal.paypalFailureMessage);
     }
 
     watchSubmitResponse = function()
@@ -124,15 +67,10 @@ class CommercehubPayPal
             $(".payment-information").data("payment-method-id") === "PAYPAL" &&
             xhr.responseJSON.error
         ) {
-            this.setOrderIdInput('');
+            this.paypalBase.setOrderIdInput('');
             this.removeInsertedSummary();
             this.setSubmitButtonEnabled(false);
         }
-    }
-
-    setOrderIdInput = function(orderId)
-    {
-        $('input#commercehubOrderIdInputPayPal').val(orderId);
     }
 
     watchPaymentMethod = function()

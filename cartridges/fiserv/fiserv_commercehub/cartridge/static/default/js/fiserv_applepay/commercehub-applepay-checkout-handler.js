@@ -2,7 +2,6 @@
 
 class CommercehubApplePayEventHandler
 {
-
     constructor(initializationData, sdkButton, applepayBase)
     {
         if (typeof(initializationData) === "undefined")
@@ -13,7 +12,6 @@ class CommercehubApplePayEventHandler
         this.methodId = 'APPLEPAY';
         this.sdkButton = sdkButton;
         this.applepayBase = applepayBase;
-        this.formConfig = initializationData.config;
         this.configDataApplePay = initializationData.config.configData;
 
         this.watchButtonLoadLag();
@@ -65,7 +63,7 @@ class CommercehubApplePayEventHandler
 
     watchSubmitResponse = function()
     {
-        $(document).on("ajaxSuccess", $.proxy(this.onSubmitResponse, this));
+        this.setSubmitButtonEnabled(false);
     }
 
     onSubmitResponse = function(ev, xhr)

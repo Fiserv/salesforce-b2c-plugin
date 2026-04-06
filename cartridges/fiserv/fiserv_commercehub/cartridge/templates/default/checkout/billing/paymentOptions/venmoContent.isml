@@ -6,7 +6,8 @@
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
     assets.addJs('/js/fiserv_base/commercehub-dom-disable-handler.js');
-    assets.addJs('/js/fiserv_venmo/commercehub-venmo-button.js');
+    assets.addJs('/js/fiserv_venmo/commercehub-venmo-checkout-handler.js');
+    assets.addJs('/js/fiserv_venmo/commercehub-venmo-button-base.js');
     assets.addJs('/js/fiserv_venmo/venmo.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
     assets.addCss('css/fiservScc.css');
@@ -25,7 +26,8 @@
         <div id="fiserv-commercehub-venmo-form-init-container" 
             data-commercehub-initialization-data="${JSON.stringify(pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('Venmo'))}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
-            data-initial-checkout-stage="${pdict.currentStage}"></div>
+            data-initial-checkout-stage="${pdict.currentStage}"
+            data-payment-amount-block=".grand-total-sum"></div>
     
         <div id="fiserv-commercehub-venmo-form-container">
             <div id="fiserv_commercehub-venmo-button" class="sdc-button"></div>
