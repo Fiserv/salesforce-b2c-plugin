@@ -222,21 +222,6 @@ const commerceHubExport =
         return getSitePreference('CommerceHubPazePaymentType').value;
     },
 
-    getCommerceHubPazeButtonColor()
-    {
-        return getSitePreference('CommerceHubPazeButtonColor').value;
-    },
-
-    getCommerceHubPazeButtonShape()
-    {
-        return getSitePreference('CommerceHubPazeButtonShape').value;
-    },
-
-    getCommerceHubPazeButtonLabel()
-    {
-        return getSitePreference('CommerceHubPazeButtonLabel').value;
-    },
-
     getCommerceHubPazeDisplayName()
     {
         return getSitePreference('CommerceHubPazeDisplayName') || "PAZE";
@@ -512,10 +497,7 @@ const commerceHubExport =
         if(this.getCommerceHubPazeEnabled())
         {
             buttonConfig = {
-                'parentElementId': 'fiserv_commercehub-paze-button',
-                'color': this.getCommerceHubPazeButtonColor(),
-                'shape': this.getCommerceHubPazeButtonShape(),
-                'label': this.getCommerceHubPazeButtonLabel()
+                'parentElementId': 'fiserv_commercehub-paze-button'
             }
         }
 

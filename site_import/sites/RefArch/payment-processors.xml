@@ -702,15 +702,6 @@
                 <preference preference-id="CommerceHubPazePaymentType">
                     <value>AUTH</value>
                 </preference>
-                <preference preference-id="CommerceHubPazeButtonColor">
-                    <value>blue</value>
-                </preference>
-                <preference preference-id="CommerceHubPazeButtonLabel">
-                    <value>paze</value>
-                </preference>
-                <preference preference-id="CommerceHubPazeButtonShape">
-                    <value>rect</value>
-                </preference>
                 <preference preference-id="CommerceHubPazeDisplayName">
                     <value>PAZE</value>
                 </preference>
