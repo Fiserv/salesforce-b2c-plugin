@@ -20,9 +20,21 @@ class CommercehubPazeEventHandler
         // Run any post-initialization functionality within this call
     }
 
-    handlePaymentButtonClick = async function()
+    handleApproval = function(response)
     {
-        console.log("Payment button clicked");
-        // Overwrite this to handle the paze payment button click event
+        console.log("Approved");
+        // Overwrite this to handle the samsung pay approval event
+    }
+
+    handleCancel = function(response)
+    {
+        console.log("Canceled");
+        // Overwrite this to handle the samsung pay cancel event
+    }
+
+    handleError = function(response)
+    {
+        console.log("Error");
+        // Overwrite this to handle the samsung pay error event
     }
 }

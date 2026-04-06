@@ -62,8 +62,8 @@ class CommercehubPaze
         });
         buttonElement.append(labelSpan);
 
-        buttonElement.on('click', async () => {
-            await this.CommercehubPazeEventHandler.handlePaymentButtonClick();
+        buttonElement.on('click', () => {
+            this.handlePaymentButtonClick();
         });
 
         return buttonElement[0];
@@ -74,7 +74,7 @@ class CommercehubPaze
         try
         {
             const pazeLoadConfig = this.buildPazeConfig();
-            this.CommercehubPazeEventHandler.pazeComponent = await window.fiserv.components.paze(pazeLoadConfig);
+            this.pazeComponent = await window.fiserv.components.paze(pazeLoadConfig);
 
             const pazeButtonContainer = $('#fiserv_commercehub-paze-button');
            
@@ -87,6 +87,29 @@ class CommercehubPaze
         {
             $('#fiserv-paze-fatal-notice').show();
             $.spinner().stop();
+        }
+    }
+
+    handlePaymentButtonClick = async function()
+    {
+        try {
+            $.spinner().start();
+            const orderData = await this.getOrderData();
+            await this.pazeComponent.selectPaymentMethod(orderData);
+            await this.pazeComponent.submit(orderData);
+
+            this.CommercehubPazeEventHandler.handleApproval();
+
+            $.spinner().stop();
+        } catch (error) {
+            if(error?.description === 'Paze operation cancelled')
+            {
+                this.CommercehubPazeEventHandler.handleCancel();
+            }
+            else
+            {
+                this.CommercehubPazeEventHandler.handleError(error);
+            }
         }
     }
 

@@ -20,7 +20,7 @@ class CommercehubSamsungPayEventHandler
         // Run any post-initialization functionality within this call
     }
 
-    handleApproval = async function(response)
+    handleApproval = function(response)
     {
         console.log("Approved");
         // Overwrite this to handle the samsung pay approval event

@@ -29,8 +29,7 @@
             data-commercehub-initialization-data="${JSON.stringify(samsungpayInitData)}"
             data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
             data-initial-checkout-stage="${pdict.currentStage}"
-            data-payment-amount-block=".grand-total-sum"
-            data-locale="${pdict.locale}"></div>
+            data-payment-amount-block=".grand-total-sum"></div>
 
         <div id="fiserv-commercehub-samsungpay-form-container">
             <div id="fiserv_commercehub-samsungpay-button" class="sdc-button"></div>

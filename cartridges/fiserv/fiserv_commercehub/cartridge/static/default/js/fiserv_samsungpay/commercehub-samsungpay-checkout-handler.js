@@ -25,7 +25,7 @@ class CommercehubSamsungPayEventHandler
         this.setSubmitButtonEnabled(false);
     }
 
-    handleApproval = async function(response)
+    handleApproval = function(response)
     {
         this.setSubmitButtonEnabled(true);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');

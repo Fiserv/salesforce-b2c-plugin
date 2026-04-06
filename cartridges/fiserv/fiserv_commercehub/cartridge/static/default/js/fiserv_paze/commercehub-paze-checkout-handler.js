@@ -25,25 +25,20 @@ class CommercehubPazeEventHandler
         this.setSubmitButtonEnabled(false);
     }
 
-    handlePaymentButtonClick = async function()
+    handleApproval = function()
     {
-        try {
-            $.spinner().start();
-            const orderData = await this.pazeBase.getOrderData();
-            await this.pazeComponent.selectPaymentMethod(orderData); 
-            await this.pazeComponent.submit(orderData);
-
-            this.setSubmitButtonEnabled(true);
-            $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
-            this.setSubmitButtonEnabled(false);
-
-            $.spinner().stop();
-        } catch (error) {
-            this.handlePaymentError(error);
-        }
+        this.setSubmitButtonEnabled(true);
+        $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+        this.setSubmitButtonEnabled(false);
     }
 
-    handlePaymentError = function(error)
+    handleCancel = function()
+    {
+        console.log("Paze flow cancelled");
+        $.spinner().stop();
+    }
+
+    handleError = function(error)
     {
         this.pazeFailure(this.configDataPaze.pazeFailureMessage);
         $.spinner().stop();
