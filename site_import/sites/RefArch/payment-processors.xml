@@ -703,7 +703,7 @@
                     <value>AUTH</value>
                 </preference>
                 <preference preference-id="CommerceHubPazeDisplayName">
-                    <value>PAZE</value>
+                    <value></value>
                 </preference>
             </all-instances>
             <development/>
