@@ -77,7 +77,7 @@ function getBasketOrderDetails()
     }
 
     return {
-        total: fiservGiftHelper.retreiveNonGiftChargeAmount(basket),
+        total: fiservGiftHelper.retreiveNonGiftChargeAmount(basket).toFixed(2),
         currency: basket.getCurrencyCode()
     };
 }
