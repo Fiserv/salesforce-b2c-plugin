@@ -492,6 +492,8 @@ class CommercehubCheckoutForm
     {
         if (!this.cvvEnabled) return true;
 
+        if (!this.cvvAdapters) return false;
+
         const selectedPayment = $('.saved-payment-instrument.selected-payment');
         if (selectedPayment.length > 0) 
         {
