@@ -123,7 +123,7 @@ function buildAmountObjectFromBasket(basketObject) {
     const fiservGiftHelper = require('*/cartridge/scripts/utils/fiservHelpers/giftHelper');
     
     let amount = {}
-    amount['total'] = fiservGiftHelper.retreiveNonGiftChargeAmount(basketObject);
+    amount['total'] = Number(fiservGiftHelper.retreiveNonGiftChargeAmount(basketObject));
     amount['currency'] = basketObject.getCurrencyCode();
 
     if(showBuilders)
