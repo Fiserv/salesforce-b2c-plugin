@@ -115,7 +115,7 @@ function retreiveNonGiftChargeAmount(currentBasket) {
         });
     }
 
-    return Number(paymentAmount).toFixed(2);
+    return Number(paymentAmount);
 }
 
 module.exports =
