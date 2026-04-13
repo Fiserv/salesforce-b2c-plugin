@@ -52,7 +52,8 @@ class CommercehubApplePay
             onPaymentMethodChange: (response) => { this.CommercehubApplePayEventHandler.handlePaymentMethodChange(response); },
             onShippingAddressChange: (response) => { this.CommercehubApplePayEventHandler.handleShippingAddressChange(response); },
             onShippingOptionsChange: (response) => { this.CommercehubApplePayEventHandler.handleShippingOptionsChange(response); },
-            onCouponCodeChange: (response) => { this.CommercehubApplePayEventHandler.handleCouponCodeChange(response); }
+            onCouponCodeChange: (response) => { this.CommercehubApplePayEventHandler.handleCouponCodeChange(response); },
+            getConfig: () => { return this.CommercehubApplePayEventHandler.getAppleOrderConfig(); }
         };
     }
 
@@ -60,10 +61,7 @@ class CommercehubApplePay
     {
         try
         {
-            const componentConfig = { data: this.configDataApplePay.buttonConfig, hooks: this.createCallbacksObject() };
-            const component = await window.fiserv.components.applePay(componentConfig);
-            // const applePayComponent = await window.fiserv.ApplePayComponent.loadUntrusted(window.fiserv.context(), );
-            // applePayComponent.mount(undefined, () => { return {} });
+            await window.fiserv.components.applePay({ data: this.configDataApplePay.buttonConfig, hooks: this.createCallbacksObject() });
         }
         catch(e)
         {

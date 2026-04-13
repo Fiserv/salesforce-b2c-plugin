@@ -19,32 +19,28 @@ class CommercehubApplePayEventHandler
         // Run any post-initialization functionality within this call
     }
 
-    getAppleOrderConfig = async function()
+    getAppleOrderConfig = function()
     {
         return {
             includeShipping: true,
             shippingMethods: [
                 {
                     label: "Standard",
-                    amount: {
-                        "currency": "USD",
-                        "total": 5.00
-                    },
+                    amountTotal: 5.00,
+                    detail: "Arrives in 5-7 business days",
                     identifier: "standard"
                 },
                 {
                     label: "Expedited",
-                    amount: {
-                        "currency": "USD",
-                        "total": 15.00
-                    },
+                    amountTotal: 15.00,
+                    detail: "Arrives in 2-3 business days",
                     identifier: "expedited"
                 }
             ]
         };
     }
 
-    handleApproval = async function(response)
+    handleApproval = function(response)
     {
         console.log("Approved");
         // Overwrite this to handle the apple pay approval event
@@ -66,13 +62,13 @@ class CommercehubApplePayEventHandler
         $('#fiserv-applepay-fatal-notice').show();
     }
 
-    handlePaymentMethodChange = async function(response)
+    handlePaymentMethodChange = function(response)
     {
         console.log("Payment Method changed");
         // Overwrite this to handle the apple pay payment method change event
     }
 
-    handleShippingAddressChange = async function(data)
+    handleShippingAddressChange = function(data)
     {        
         if (data.shippingMethod.stateOrProvince == "MO")
         {
@@ -85,26 +81,26 @@ class CommercehubApplePayEventHandler
                 shippingMethods: [
                     {
                         label: "Standard",
-                        amount: {
-                            "currency": "USD",
-                            "total": 5.00
-                        },
+                        amountTotal: 5.00,
+                        detail: "Arrives in 5-7 business days",
                         identifier: "standard"
                     },
                     {
                         label: "Expedited",
-                        amount: {
-                            "currency": "USD",
-                            "total": 15.00
-                        },
+                        amountTotal: 15.00,
+                        detail: "Arrives in 2-3 business days",
                         identifier: "expedited"
                     },
                     {
                         label: "Drone Delivery",
-                        amount: {
-                            "currency": "USD",
-                            "total": 250.00
-                        },
+                        amountTotal: 250.00,
+                        detail: "Arrives in 1 business day",
+                        identifier: "expedited"
+                    },
+                    {
+                        label: "Drone Delivery",
+                        amountTotal: 250.00,
+                        detail: "TOO FAST!!",
                         identifier: "drone"
                     }
                 ]
@@ -112,13 +108,13 @@ class CommercehubApplePayEventHandler
         }
     }
 
-    handleShippingOptionsChange = async function(response)
+    handleShippingOptionsChange = function(response)
     {
         console.log("Shipping Options changed");
         // Overwrite this to handle the apple pay shipping options change event
     }
 
-    handleCouponCodeChange = async function(response)
+    handleCouponCodeChange = function(response)
     {
         console.log("Coupon Code changed");
         // Overwrite this to handle the apple pay coupon code change event

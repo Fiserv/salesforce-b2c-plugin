@@ -513,6 +513,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                 orderData['itemCount'] = itemCount;
                 orderData['itemDetails'] = itemDetails;
                 orderData['orderDate'] = basket.getCreationDate().toISOString().substring(0,10);
+                orderData['orderDescription'] = site.name;
             }
             payload['orderData'] = orderData;
 
