@@ -5,7 +5,8 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
-    assets.addJs('/js/fiserv_applepay/commercehub-applepay-checkout-handler.js');
+    const handlerPrefix = pdict.applePayHandlerPrefix ? `${ pdict.applePayHandlerPrefix }-` : '';
+    assets.addJs(`/js/fiserv_applepay/${ handlerPrefix }commercehub-applepay-checkout-handler.js`);
     assets.addJs('/js/fiserv_applepay/commercehub-applepay-button-base.js');
     assets.addJs('/js/fiserv_applepay/applepay.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);

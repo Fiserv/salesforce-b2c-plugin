@@ -24,7 +24,7 @@ class CommercehubApplePay
             $.spinner().start();
             $('#fiserv-applepay-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "ApplePay");
-            this.CommercehubApplePayEventHandler.initialize();
+            this.CommercehubApplePayEventHandler.initializedHook();
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -48,7 +48,11 @@ class CommercehubApplePay
         return {
             onApprove: (response) => { this.CommercehubApplePayEventHandler.handleApproval(response); },
             onCancel: (response) => { this.CommercehubApplePayEventHandler.handleCancel(response); },
-            onError: (response) => { this.CommercehubApplePayEventHandler.handleError(response); }
+            onError: (response) => { this.CommercehubApplePayEventHandler.handleError(response); },
+            onPaymentMethodChange: (response) => { this.CommercehubApplePayEventHandler.handlePaymentMethodChange(response); },
+            onShippingAddressChange: (response) => { this.CommercehubApplePayEventHandler.handleShippingAddressChange(response); },
+            onShippingOptionsChange: (response) => { this.CommercehubApplePayEventHandler.handleShippingOptionsChange(response); },
+            onCouponCodeChange: (response) => { this.CommercehubApplePayEventHandler.handleCouponCodeChange(response); }
         };
     }
 
@@ -56,12 +60,15 @@ class CommercehubApplePay
     {
         try
         {
-            await window.fiserv.components.applePay({ data: this.configDataApplePay.buttonConfig, hooks: this.createCallbacksObject() });
+            const componentConfig = { data: this.configDataApplePay.buttonConfig, hooks: this.createCallbacksObject() };
+            const component = await window.fiserv.components.applePay(componentConfig);
+            // const applePayComponent = await window.fiserv.ApplePayComponent.loadUntrusted(window.fiserv.context(), );
+            // applePayComponent.mount(undefined, () => { return {} });
         }
         catch(e)
         {
             console.log(e);
-            $('#fiserv-applepay-fatal-notice').show();
+            this.CommercehubApplePayEventHandler.showError(e.message);
         }
         $.spinner().stop();
     }
@@ -69,7 +76,7 @@ class CommercehubApplePay
     sdkLoadFailure = function (err) 
     {
         console.log(err);
-        $('#fiserv-applepay-fatal-notice').show();
+        this.CommercehubApplePayEventHandler.showError(err);
         $.spinner().stop();
         throw new Error("Unable to load CommerceHub SDK.")
     }

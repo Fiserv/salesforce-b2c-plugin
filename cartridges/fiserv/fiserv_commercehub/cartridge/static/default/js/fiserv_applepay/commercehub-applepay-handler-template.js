@@ -16,10 +16,15 @@ class CommercehubApplePayEventHandler
         this.configDataApplePay = initializationData.config.configData;
     }
 
-    initialize = function()
+    initializedHook = function()
     {
         console.log("Initialized");
         // Run any post-initialization functionality within this call
+    }
+
+    getAppleOrderConfig = async function()
+    {
+        return {};
     }
 
     handleApproval = async function(response)
@@ -38,5 +43,35 @@ class CommercehubApplePayEventHandler
     {
         console.log("Error");
         // Overwrite this to handle the apple pay error event
+    }
+
+    showError = function(message)
+    {
+        console.log("Show Error");
+        // Overwrite this show errors as needed
+    }
+
+    handlePaymentMethodChange = async function(response)
+    {
+        console.log("Payment Method Changed");
+        // Overwrite this to handle the apple pay payment method change event
+    }
+
+    handleShippingAddressChange = async function(response)
+    {
+        console.log("Shipping Address Changed");
+        // Overwrite this to handle the apple pay shipping address change event
+    }
+
+    handleShippingOptionsChange = async function(response)
+    {
+        console.log("Shipping Options Changed");
+        // Overwrite this to handle the apple pay shipping options change event
+    }
+
+    handleCouponCodeChange = async function(response)
+    {
+        console.log("Coupon Code Changed");
+        // Overwrite this to handle the apple pay coupon code change event
     }
 }

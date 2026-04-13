@@ -5,11 +5,8 @@ class CommercehubApplePayEventHandler
 
     constructor(initializationData, sdkButton, applepayBase)
     {
-        if (typeof(initializationData) === "undefined")
-        {
-            throw new Error("Initialization Data not found. Unable to initialize Apple Pay button.");
-        }
-
+        if (typeof(initializationData) === "undefined") throw new Error("Initialization Data not found. Unable to initialize Apple Pay button.");
+    
         this.methodId = 'APPLEPAY';
         this.sdkButton = sdkButton;
         this.applepayBase = applepayBase;
@@ -21,9 +18,16 @@ class CommercehubApplePayEventHandler
         this.watchPaymentMethod();
     }
 
-    initialize = function()
+    initializedHook = function()
     {
         $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+    }
+
+    getAppleOrderConfig = async function()
+    {
+        // Do not include shipping or shipping methods by default. Override this handler if needed.
+        // perhaps try to get total amount due here in case it has been updated by something like a gift card or promo code
+        return {};
     }
 
     handleApproval = async function(response)
@@ -166,5 +170,29 @@ class CommercehubApplePayEventHandler
         $('.alert', form).remove();
         form.prepend('<div class="alert alert-danger" role="alert">' + message + '</div>');
         $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth'});
+    }
+
+    handlePaymentMethodChange = async function(response)
+    {
+        console.log("Payment Method changed");
+        // Overwrite this to handle the apple pay payment method change event
+    }
+
+    handleShippingAddressChange = async function(response)
+    {
+        console.log("Shipping Address changed");
+        // Overwrite this to handle the apple pay shipping address change event
+    }
+
+    handleShippingOptionsChange = async function(response)
+    {
+        console.log("Shipping Options changed");
+        // Overwrite this to handle the apple pay shipping options change event
+    }
+
+    handleCouponCodeChange = async function(response)
+    {
+        console.log("Coupon Code changed");
+        // Overwrite this to handle the apple pay coupon code change event
     }
 }
