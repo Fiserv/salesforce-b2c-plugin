@@ -5,7 +5,11 @@ class DomElementDisableHandler
     constructor()
     {
         this.button = $('button.btn.btn-primary.btn-block.submit-payment')[0];
-        this.categoryIdentifier = () => $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val();
+        this.categoryIdentifier = () => {
+            return $('.tab-pane.active').find('input[name=dwfrm_billing_paymentMethod]').val() === "GIFT_CARD" ?
+                "GIFT_CARD" :
+                $(".payment-information").data("payment-method-id")
+        }
         this.facts = new Map();
         this.blockers = new Map();
     }
