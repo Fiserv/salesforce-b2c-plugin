@@ -2,7 +2,7 @@
     <a class="nav-link paze-tab" data-toggle="tab" href="#paze-content" role="tab">
         <img class="paze-option"
                 src="${URLUtils.staticURL('/images/paze.svg')}"
-                height="32"
+                height="24"
                 alt="${paymentOption.name}"
                 title="${paymentOption.name}"
         >
