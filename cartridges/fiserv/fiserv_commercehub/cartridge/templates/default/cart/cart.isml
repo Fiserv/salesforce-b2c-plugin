@@ -79,7 +79,9 @@
                     <div class="row">
                         <div class="col-12 checkout-continue">
                             <isinclude template="cart/checkoutButtons" />
-                            <isinclude template="cart/applepayExpressContent" />
+                            <isif condition="${pdict.fiservApplePay}">
+                                <isinclude template="cart/applepayExpressContent" />
+                            </isif>
                         </div>
                     </div>
                 </div>
