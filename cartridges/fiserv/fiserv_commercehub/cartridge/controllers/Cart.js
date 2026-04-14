@@ -65,4 +65,10 @@ server.append('UpdateQuantity', function (req, res, next) {
     return next();
 });
 
+server.prepend('Show', function (req, res, next) {
+    if (fiservConfig.getCommerceHubApplePayEnabled()) res.viewData.applePayHandlerPrefix = "demo";
+
+    return next();
+});
+
 module.exports = server.exports();

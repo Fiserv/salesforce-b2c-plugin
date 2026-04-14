@@ -2,7 +2,7 @@
 <isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
 
 <isscript>
-    const assets = require('*/cartridge/scripts/assets.js');
+    let assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
     const handlerPrefix = pdict.applePayHandlerPrefix ? `${ pdict.applePayHandlerPrefix }-` : '';
@@ -11,7 +11,7 @@
     assets.addJs('/js/fiserv_applepay/applepay.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
     assets.addCss('css/fiservScc.css');
-</isscript>
+</isscript> 
 
 
 <div class="tab-pane applepay-content" id="applepay-content">
