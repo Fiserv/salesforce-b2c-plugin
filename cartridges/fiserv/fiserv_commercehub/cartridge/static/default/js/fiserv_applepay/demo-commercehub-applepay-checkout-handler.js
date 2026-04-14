@@ -40,20 +40,21 @@ class CommercehubApplePayEventHandler
         };
     }
 
-    handleApproval = function(response)
+    handleApproval = async function(response)
     {
-        console.log("Approved");
         // Overwrite this to handle the apple pay approval event
+        console.log("Approved");
     }
 
     handleCancel = function (response) 
     {
-        console.log("Canceled");
         // Overwrite this to handle the apple pay cancel event
+        console.log("Apple Pay flow canceled");
     }
 
     handleError = function(response)
     {
+        // Overwrite this to handle the apple pay error event
         this.showError(response);
     }
 
@@ -64,59 +65,57 @@ class CommercehubApplePayEventHandler
 
     handlePaymentMethodChange = function(response)
     {
-        console.log("Payment Method changed");
         // Overwrite this to handle the apple pay payment method change event
+        console.log("Payment Method changed");
+        response.respond({});
     }
 
-    handleShippingAddressChange = function(data)
-    {        
-        if (data.shippingMethod.stateOrProvince == "MO")
+    handleShippingAddressChange = async function(data)
+    {
+        if (data.shippingAddress.address.stateOrProvince == "MO")
         {
-            data.respond({
-                errors : [ { message: "We don't ship to Missouri. Yuck!" } ]
+            return data.respond({
+                errors : [ { code: "addressUnserviceable", message: "We don't ship to Missouri. Yuck!" } ]
             });
-        } else if (data.shippingMethod.stateOrProvince == "WA")
+        } 
+        const shippingMethods = [
+            {
+                label: "Standard",
+                amountTotal: 5.00,
+                detail: "Arrives in 5-7 business days",
+                identifier: "standard"
+            },
+            {
+                label: "Expedited",
+                amountTotal: 15.00,
+                detail: "Arrives in 2-3 business days",
+                identifier: "expedited"
+            }
+        ];
+
+        if (data.shippingAddress.address.stateOrProvince == "WA")
         {
-            data.respond({
-                shippingMethods: [
-                    {
-                        label: "Standard",
-                        amountTotal: 5.00,
-                        detail: "Arrives in 5-7 business days",
-                        identifier: "standard"
-                    },
-                    {
-                        label: "Expedited",
-                        amountTotal: 15.00,
-                        detail: "Arrives in 2-3 business days",
-                        identifier: "expedited"
-                    },
-                    {
-                        label: "Drone Delivery",
-                        amountTotal: 250.00,
-                        detail: "Arrives in 1 business day",
-                        identifier: "expedited"
-                    },
-                    {
-                        label: "Drone Delivery",
-                        amountTotal: 250.00,
-                        detail: "TOO FAST!!",
-                        identifier: "drone"
-                    }
-                ]
+            shippingMethods.push({
+                label: "Drone Delivery",
+                amountTotal: 250.00,
+                detail: "Really fast delivery! TOO FAST!!",
+                identifier: "drone"
             });
         }
+        return data.respond({shippingMethods: shippingMethods});
     }
 
-    handleShippingOptionsChange = function(response)
+    handleShippingOptionsChange = async function(response)
     {
-        console.log("Shipping Options changed");
         // Overwrite this to handle the apple pay shipping options change event
+        console.log("Shipping Options changed");
+        response.respond({});
     }
 
     handleCouponCodeChange = function(response)
     {
-        console.log("Coupon Code changed");
         // Overwrite this to handle the apple pay coupon code change event
+        console.log("Coupon Code changed");
+        response.respond({});
     }
 }

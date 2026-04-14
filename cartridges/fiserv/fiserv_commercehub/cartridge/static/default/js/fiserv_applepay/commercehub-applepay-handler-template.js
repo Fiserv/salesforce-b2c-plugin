@@ -22,7 +22,7 @@ class CommercehubApplePayEventHandler
         // Run any post-initialization functionality within this call
     }
 
-    getAppleOrderConfig = async function()
+    getAppleOrderConfig = function()
     {
         return {};
     }
@@ -41,8 +41,8 @@ class CommercehubApplePayEventHandler
 
     handleError = function(response)
     {
-        console.log("Error");
         // Overwrite this to handle the apple pay error event
+        console.log("Error");
     }
 
     showError = function(message)
@@ -53,25 +53,29 @@ class CommercehubApplePayEventHandler
 
     handlePaymentMethodChange = async function(response)
     {
-        console.log("Payment Method Changed");
         // Overwrite this to handle the apple pay payment method change event
+        console.log("Payment Method Changed");
+        response.respond({});
     }
 
     handleShippingAddressChange = async function(response)
     {
-        console.log("Shipping Address Changed");
         // Overwrite this to handle the apple pay shipping address change event
+        console.log("Shipping Address Changed");
+        response.respond({});
     }
 
     handleShippingOptionsChange = async function(response)
     {
-        console.log("Shipping Options Changed");
         // Overwrite this to handle the apple pay shipping options change event
+        console.log("Shipping Options Changed");
+        response.respond({});
     }
 
     handleCouponCodeChange = async function(response)
     {
-        console.log("Coupon Code Changed");
         // Overwrite this to handle the apple pay coupon code change event
+        console.log("Coupon Code Changed");
+        response.respond({});
     }
 }

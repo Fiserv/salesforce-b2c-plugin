@@ -46,13 +46,13 @@ class CommercehubApplePay
     createCallbacksObject = function()
     {
         return {
-            onApprove: (response) => { this.CommercehubApplePayEventHandler.handleApproval(response); },
+            onApprove: async (response) => { await this.CommercehubApplePayEventHandler.handleApproval(response); },
             onCancel: (response) => { this.CommercehubApplePayEventHandler.handleCancel(response); },
             onError: (response) => { this.CommercehubApplePayEventHandler.handleError(response); },
-            onPaymentMethodChange: (response) => { this.CommercehubApplePayEventHandler.handlePaymentMethodChange(response); },
-            onShippingAddressChange: (response) => { this.CommercehubApplePayEventHandler.handleShippingAddressChange(response); },
-            onShippingOptionsChange: (response) => { this.CommercehubApplePayEventHandler.handleShippingOptionsChange(response); },
-            onCouponCodeChange: (response) => { this.CommercehubApplePayEventHandler.handleCouponCodeChange(response); },
+            onPaymentMethodChange: async (response) => { await this.CommercehubApplePayEventHandler.handlePaymentMethodChange(response); },
+            onShippingAddressChange: async (response) => { await this.CommercehubApplePayEventHandler.handleShippingAddressChange(response); },
+            onShippingOptionsChange: async (response) => { await this.CommercehubApplePayEventHandler.handleShippingOptionsChange(response); },
+            onCouponCodeChange: async (response) => { await this.CommercehubApplePayEventHandler.handleCouponCodeChange(response); },
             getConfig: () => { return this.CommercehubApplePayEventHandler.getAppleOrderConfig(); }
         };
     }

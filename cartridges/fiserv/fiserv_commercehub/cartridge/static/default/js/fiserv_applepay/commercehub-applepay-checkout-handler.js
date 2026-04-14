@@ -25,8 +25,6 @@ class CommercehubApplePayEventHandler
 
     getAppleOrderConfig = async function()
     {
-        // Do not include shipping or shipping methods by default. Override this handler if needed.
-        // perhaps try to get total amount due here in case it has been updated by something like a gift card or promo code
         return {};
     }
 
@@ -174,25 +172,29 @@ class CommercehubApplePayEventHandler
 
     handlePaymentMethodChange = async function(response)
     {
-        console.log("Payment Method changed");
         // Overwrite this to handle the apple pay payment method change event
+        console.log("Payment Method changed");
+        response.respond({});
     }
 
     handleShippingAddressChange = async function(response)
     {
-        console.log("Shipping Address changed");
         // Overwrite this to handle the apple pay shipping address change event
+        console.log("Shipping Address changed");
+        response.respond({});
     }
 
     handleShippingOptionsChange = async function(response)
     {
-        console.log("Shipping Options changed");
         // Overwrite this to handle the apple pay shipping options change event
+        console.log("Shipping Options changed");
+        response.respond({});
     }
 
     handleCouponCodeChange = async function(response)
     {
-        console.log("Coupon Code changed");
         // Overwrite this to handle the apple pay coupon code change event
+        console.log("Coupon Code changed");
+        response.respond({});
     }
 }

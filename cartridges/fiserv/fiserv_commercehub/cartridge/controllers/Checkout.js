@@ -70,10 +70,9 @@ server.append('Begin', function (req, res, next) {
         }
     }
 
-    if(basket)
-    {
-        basket.custom.commercehubEarlyTokenUUID = null;
-    }
+    if (fiservConfig.getCommerceHubApplePayEnabled()) res.viewData.applePayHandlerPrefix = "demo";
+
+    if(basket) basket.custom.commercehubEarlyTokenUUID = null;
 
     return next();
 });
