@@ -69,7 +69,7 @@
     </isif>
     <div class="privacyPolicy">
         <span></span>
-        Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+        Payments Powered by Fiserv.&nbsp; <a target="_blank" href="https://www.fiserv.com/privacy">Privacy Notice</a>.
     </div>
     <isif condition="${!pdict.customer.registeredUser && pdict.fastlaneEnabled}">
         <div id="paypal-fastlane-payment-form-watermark"></div>
