@@ -58,12 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
             initPayPal();
     })
 
-    if ($(".payment-information").data("payment-method-id") === "PAYPAL") {
-        switch (checkoutStage) {
-            case 'payment':
-                initPayPal();
-                break;
-        }
+    if ($(".payment-information").data("payment-method-id") === "PAYPAL" && checkoutStage === 'payment') {
+        initPayPal();
     }
 
     let grandTotalUpdated = function()
