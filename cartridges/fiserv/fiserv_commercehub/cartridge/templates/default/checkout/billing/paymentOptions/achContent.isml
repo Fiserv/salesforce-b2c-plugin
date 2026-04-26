@@ -5,6 +5,7 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-iframe-adapter.js');
+    assets.addJs('/js/fiserv_base/commercehub-dom-disable-handler.js');
     assets.addJs('/js/fiserv_ach/commercehub-ach-form.js');
     assets.addJs('/js/fiserv_ach/ach.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
