@@ -1,6 +1,7 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", () => {
+    const checkoutStage = $('#fiserv-commercehub-paze-form-init-container').attr('data-initial-checkout-stage');
     const extractInitializationData = function()
     {
         let data = {
@@ -46,6 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
             $('ul.payment-options li.nav-item:first').find('a').trigger('click');
             if ($('ul.payment-options li.nav-item[data-method-id=PAZE] a.nav-link').hasClass('active'))
                 initPaze();
+    }
+
+    if($(".payment-information").data("payment-method-id") === "PAZE" && checkoutStage === 'payment')
+    {
+        initPaze();
     }
 
     $('ul.payment-options li.nav-item[data-method-id=PAZE]').on('click', () => {
