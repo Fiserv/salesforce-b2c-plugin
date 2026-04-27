@@ -1,6 +1,7 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", () => {
+    const checkoutStage = $('#fiserv-commercehub-ach-form-init-container').attr('data-initial-checkout-stage');
     let extractInitializationData = function()
     {
         let data = {
@@ -40,6 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
          $('ul.payment-options li.nav-item:first').find('a').trigger('click');
             if ($('ul.payment-options li.nav-item[data-method-id=ACH]').hasClass('active'))
                 initACH();
+    }
+
+    if($(".payment-information").data("payment-method-id") === "ACH" && checkoutStage === 'payment')
+    {
+        initACH();
     }
 
     $('ul.payment-options li.nav-item[data-method-id=ACH]').on('click', () => {

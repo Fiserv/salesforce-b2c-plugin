@@ -1,6 +1,8 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", () => {
+    const checkoutStage = $('#fiserv-commercehub-paypal-form-init-container').attr('data-initial-checkout-stage');
+
     let extractInitializationData = function()
     {
         let data = {
@@ -55,6 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if($(".payment-information").data("payment-method-id") === "PAYPAL")
             initPayPal();
     })
+
+    if ($(".payment-information").data("payment-method-id") === "PAYPAL" && checkoutStage === 'payment') {
+        initPayPal();
+    }
 
     let grandTotalUpdated = function()
     {
