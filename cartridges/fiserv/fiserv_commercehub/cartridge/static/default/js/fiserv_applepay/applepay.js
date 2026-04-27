@@ -1,6 +1,7 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", () => {
+    const checkoutStage = $('#fiserv-commercehub-applepay-form-init-container').attr('data-initial-checkout-stage');
     let extractInitializationData = function()
     {
         let data = {
@@ -49,6 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
          $('ul.payment-options li.nav-item:first').find('a').trigger('click');
             if ($('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').hasClass('active'))
                 initApplePay();
+    }
+
+    if($(".payment-information").data("payment-method-id") === "APPLEPAY" && checkoutStage === 'payment')
+    {
+        initApplePay();
     }
 
     $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').on('click', () => {

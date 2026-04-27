@@ -1,6 +1,7 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", () => {
+    const checkoutStage = $('#fiserv-commercehub-venmo-form-init-container').attr('data-initial-checkout-stage');
     let extractInitializationData = function()
     {
         let data = {
@@ -46,6 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
         $('ul.payment-options li.nav-item:first').find('a').trigger('click');
         if ($('ul.payment-options li.nav-item[data-method-id=VENMO]').hasClass('active')) 
             initVenmo();
+    }
+
+    if($(".payment-information").data("payment-method-id") === "VENMO" && checkoutStage === 'payment')
+    {
+        initVenmo();
     }
 
     $('ul.payment-options li.nav-item[data-method-id=VENMO]').on('click', () => {
