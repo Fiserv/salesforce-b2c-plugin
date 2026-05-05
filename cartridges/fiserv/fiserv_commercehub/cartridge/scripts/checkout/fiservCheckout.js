@@ -38,7 +38,7 @@ function executeCommercehubChargesTransaction(orderNo, paymentInstrument)
         let chargesResult = sendChargesRequest(order, transactionPayload, orderNo);
 
         //Check PIN_ONLY status
-        if(fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.CARD_TYPE) === 'PIN_ONLY')
+        if(fiservHelper.secureTraversal(chargesResult, fiservConstants.RESPONSE_PATHS.CARD_PRODUCT) === 'PIN_ONLY')
         {
             let transactionId = chargesResult.gatewayResponse.transactionProcessingDetails.transactionId;
             let cancelPayload = fiservRequestBuilder.buildCancelPayload(orderNo, transactionId);

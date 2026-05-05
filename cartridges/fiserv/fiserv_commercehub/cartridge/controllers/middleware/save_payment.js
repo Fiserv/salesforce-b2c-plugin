@@ -94,14 +94,14 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
 
         let tokenRequest = fiservRequestBuilder.buildTokenRequest(sessionId);
         tokenResponse = sendTokenizationRequest(tokenRequest);
-        let cardProduct = fiservHelper.secureTraversal(tokenResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
-        if(cardProduct === 'PIN_ONLY')
+        if(fiservHelper.secureTraversal(tokenResponse, fiservConstants.RESPONSE_PATHS.CARD_PRODUCT_TOKEN) === 'PIN_ONLY')
         {
             throw new Error(Resource.msg('message.error.payment.pinonly', 'error', null));
         }
-
+        
         // We are retrieving the card type either from the form or the request body in the case of early tokens, but we still prefer the value from CH if possible
-        cardType = cardProduct ? cardProduct : cardType;
+        let responceCardType = fiservHelper.secureTraversal(tokenResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
+        cardType = responceCardType ? responceCardType : cardType;
 
         const fiservCreditCardModel = require('*/cartridge/models/fiservCreditCardModel')
         let savedCard;
