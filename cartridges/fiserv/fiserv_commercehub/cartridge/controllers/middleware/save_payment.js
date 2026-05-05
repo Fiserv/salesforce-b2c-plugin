@@ -100,8 +100,8 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
         }
         
         // We are retrieving the card type either from the form or the request body in the case of early tokens, but we still prefer the value from CH if possible
-        let responceCardType = fiservHelper.secureTraversal(tokenResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
-        cardType = responceCardType ? responceCardType : cardType;
+        let responseCardType = fiservHelper.secureTraversal(tokenResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
+        cardType = responseCardType ? responseCardType : cardType;
 
         const fiservCreditCardModel = require('*/cartridge/models/fiservCreditCardModel')
         let savedCard;
