@@ -877,6 +877,8 @@ class CommercehubCheckoutForm
                 return 'maestro';
             case 'JCB':
                 return 'jcb';
+            case 'UnionPay':
+                return 'unionpay';
             case 'Discover':
                 return 'discover';
             default:

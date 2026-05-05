@@ -63,7 +63,7 @@
         <enabled-flag>true</enabled-flag>
     </payment-card>
     <payment-card card-type="UnionPay">
-        <name xml:lang="x-default">UnionPay</name>
+        <name xml:lang="x-default">Union Pay</name>
         <enabled-flag>true</enabled-flag>
     </payment-card>
 </payment-settings>

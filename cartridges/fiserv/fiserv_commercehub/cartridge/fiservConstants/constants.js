@@ -51,7 +51,7 @@ module.exports = {
         TRANSACTION_ID: ['gatewayResponse', 'transactionProcessingDetails', 'transactionId'],
         TRANSACTION_STATE: ['gatewayResponse', 'transactionState'],
         CARD_TYPE: ['cardDetails', 'detailedCardProduct'],
-        CARD_TYPE_TOKEN: ['cardDetails', 0, 'detailedCardProduct'],
+        CARD_TYPE_TOKEN: ['cardDetails', 0, 'issuingNetwork'],
         CARD_INDICATOR: ['cardDetails', 'detailedCardIndicator'],
         CARD_INDICATOR_TOKEN: ['cardDetails', 0, 'detailedCardIndicator'],
         CARD_SOURCE: ['source', 'card'],
