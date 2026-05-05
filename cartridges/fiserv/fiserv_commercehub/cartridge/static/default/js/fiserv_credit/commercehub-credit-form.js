@@ -875,6 +875,8 @@ class CommercehubCheckoutForm
                 return 'american-express';
             case 'Maestro':
                 return 'maestro';
+            case 'JCB':
+                return 'jcb';
             case 'Discover':
                 return 'discover';
             default:

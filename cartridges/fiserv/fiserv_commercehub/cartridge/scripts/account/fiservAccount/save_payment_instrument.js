@@ -116,8 +116,7 @@ function createCustomerPaymentInstrument(profile, cardType, chResponse, isBasket
     storedPaymentInstrument.setCreditCardToken(chResponse.paymentTokens[0].tokenData);
 
     // custom attributes
-    storedPaymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE) ||
-        fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
+    storedPaymentInstrument.custom.commercehubCardType = cardType;
     storedPaymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR) ||
         fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR_TOKEN);
     storedPaymentInstrument.custom.commercehubTokenSource = chResponse.paymentTokens[0].tokenSource;
@@ -151,8 +150,7 @@ function attachBasketTokenToBasket(chResponse, cardType, orderNo)
         name: chResponse.source.card.nameOnCard ? chResponse.source.card.nameOnCard : Resource.msg('display.html.token.guest.default', 'display', null),
         cardNumber: createMaskedCardNumber(chResponse.source.card.last4),
         cardType: cardType,
-        commercehubCardType: fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE) ||
-            fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN),
+        commercehubCardType: cardType,
         expirationMonth: parseInt(chResponse.source.card.expirationMonth),
         expirationYear: parseInt(chResponse.source.card.expirationYear),
         cardIndicator: fiservHelper.secureTraversal(chResponse, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR) ||

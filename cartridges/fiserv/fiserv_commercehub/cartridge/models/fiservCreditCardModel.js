@@ -62,7 +62,10 @@ function postTransactionDataProcessing(res, paymentInstrument)
     const fiservConstants = require('*/cartridge/fiservConstants/constants');
     const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
 
-    paymentInstrument.custom.commercehubCardType = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.CARD_TYPE);
+    // Use the already-set creditCardType (frontend-detected) rather than gateway's detailedCardProduct
+    // which may return incorrect network brand (e.g. DISCOVER for JCB/UnionPay/Maestro)
+    paymentInstrument.custom.commercehubCardType = paymentInstrument.getCreditCardType() ||
+        fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.CARD_TYPE);
     paymentInstrument.custom.commercehubCardIndicator = fiservHelper.secureTraversal(res, fiservConstants.RESPONSE_PATHS.CARD_INDICATOR);
 }
 
@@ -84,9 +87,16 @@ function getB2cCardType(cardType)
         case 'maestro':
         case 'maestrouk':
             return 'Maestro';
-        case 'diners':
         case 'jcb':
+            return 'JCB';
+        case 'cup':
         case 'union':
+        case 'unionpay':
+            return 'UnionPay';
+        case 'diners':
+        case 'diners-club':
+        case 'diners club':
+            return 'Diners';
         case 'discover':
             return 'Discover';
     }

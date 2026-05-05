@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50" width="80" height="50">
+  <rect width="80" height="50" rx="4" fill="#fff" stroke="#ddd" stroke-width="1"/>
+  <rect x="5" y="5" width="35" height="40" rx="3" fill="#e21836"/>
+  <rect x="40" y="5" width="35" height="40" rx="3" fill="#00447c"/>
+  <text x="40" y="30" font-family="Arial,sans-serif" font-size="8" fill="#fff" font-weight="bold" text-anchor="middle">UnionPay</text>
+</svg>

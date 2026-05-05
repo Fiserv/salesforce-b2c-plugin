@@ -54,4 +54,16 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>FISERV_COMMERCEHUB_PAZE</processor-id>
     </payment-method>
+    <payment-card card-type="Maestro">
+        <name xml:lang="x-default">Maestro</name>
+        <enabled-flag>true</enabled-flag>
+    </payment-card>
+    <payment-card card-type="JCB">
+        <name xml:lang="x-default">JCB</name>
+        <enabled-flag>true</enabled-flag>
+    </payment-card>
+    <payment-card card-type="UnionPay">
+        <name xml:lang="x-default">UnionPay</name>
+        <enabled-flag>true</enabled-flag>
+    </payment-card>
 </payment-settings>
