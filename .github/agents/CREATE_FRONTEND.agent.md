@@ -235,11 +235,12 @@ Example fields input:
 </div>
 ```
 
-### 1d — Extend paymentOptions isml files
+### 1d — Extend paymentOptions isml files and confirmationPaymentInfo file
 
 - Extend `cartridges/fiserv/fiserv_commercehub/cartridge/templates/default/checkout/billing/paymentOptions/paymentOptionsTabs.isml` adding in the new tab template file at the bottom of the isif block using another iselseif block. Check for condition `getCommerceHub{apm_pascal}Enabled()` and `paymentOption.ID === '{apm_id}'`
 - Extend `cartridges/fiserv/fiserv_commercehub/cartridge/templates/default/checkout/billing/paymentOptions/paymentOptionsSummary.isml` adding in the new summary template file at the bottom of the isif block using another iselseif block. Check for condition `payment.paymentMethod === '{apm_id}'`
 - Extend `cartridges/fiserv/fiserv_commercehub/cartridge/templates/default/checkout/billing/paymentOptions/paymentOptionsContent.isml` adding in the new content template file at the bottom of the isif block using another iselseif block. Check for condition `getCommerceHub{apm_pascal}Enabled()` and `paymentOption.ID === '{apm_id}'`
+- Extend `cartridges/fiserv/fiserv_commercehub/cartridge/templates/default/checkout/confirmation/confirmationPaymentInfo.isml` adding in a new ifelseif block at the bottom of the isif block. Check for condition `payment.paymentMethod === '{apm_id}'` and have the block's content be identical to the summary block built out in step 1b
 
 ---
 

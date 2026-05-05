@@ -29,7 +29,7 @@ Before starting work, read this file for architecture
 | Parameter | Values | Default | Description |
 |-----------|--------|---------|-------------|
 | **config_option** | config name (ie `CommerceHubCreditEnable`, `CommerceHubApplePayPaymentType`) | required | The backend id used to set and retrieve the config option |
-| **apm_id** | `string`, `null` (ie `APPLEPAY`, `PAYPAL`, `PAZE`) must be uppercase | inferred | The id of the apm associated with this config option, if value is null, asume it is for all apms and place the config option in the general settings of ALL apm |
+| **apm_id** | `string`, `null` (ie `APPLEPAY`, `PAYPAL`, `PAZE`) must be uppercase | required | The id of the apm associated with this config option, if value is null, asume it is for all apms and place the config option in the general settings of ALL apm |
 | **config_type** | `string`, `enum-of-string`, `text`, `int`, `boolean` | required | The type of the config option |
 | **display_name** | display name (ie `Enable Credit/Debit Cards`, `CommerceHubApplePay Charge Type`) | required | The text displayed to the user for the config option |
 | **values** | JSON object for values `{ display: value }` | required fpr config_type of `enum-of-string` | The Key Value Pair object representing the possible values for an enum-of-string config option |
