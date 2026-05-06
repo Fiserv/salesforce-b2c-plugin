@@ -1,22 +1,17 @@
 'use strict';
 
-class CommercehubApplePay
+class CommercehubApplePayEventHandler
 {
 
-    constructor(initializationData)
+    constructor(initializationData, sdkButton, applepayBase)
     {
-        if (typeof(initializationData) === "undefined")
-        {
-            throw new Error("Initialization Data not found. Unable to initialize PayPal button.");
-        }
-
+        if (typeof(initializationData) === "undefined") throw new Error("Initialization Data not found. Unable to initialize Apple Pay button.");
+    
         this.methodId = 'APPLEPAY';
+        this.sdkButton = sdkButton;
+        this.applepayBase = applepayBase;
         this.formConfig = initializationData.config;
         this.configDataApplePay = initializationData.config.configData;
-        this.configDataApplePay.buttonConfig.button['locale'] = initializationData.locale.replace('_', '-');
-        this.credentialsUrl = initializationData.credentialsUrl;
-
-        this.createAdapter();
 
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
@@ -24,38 +19,36 @@ class CommercehubApplePay
         this.setupDisableHandlerValues();
     }
 
-    initialize = async function()
+    initializedHook = function()
     {
-        try {
-            $.spinner().start();
-            $('#fiserv-applepay-fatal-notice').hide();
-            await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "ApplePay");
-            this.setSubmitButtonEnabled(false);
-        } catch (_err) {
-            this.sdkLoadFailure(_err);
-        }
+        this.setSubmitButtonEnabled(true);
     }
 
-    createAdapter = function()
+    getAppleOrderConfig = async function()
     {
-        let loadSuccessCallback = () => { console.log("CommerceHub Apple Pay SDK has loaded."); };
-        let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
-        let sdkReadyCallback = () => { this.sdkInitialized() };
-
-        this.sdkButton = new FiservSDKButton(
-            loadSuccessCallback,
-            loadFailCallback,
-            sdkReadyCallback
-        );
+        return {};
     }
 
-    createCallbacksObject = function()
+    handleApproval = async function(response)
     {
-        return {
-            onApprove: (response) => { this.applepayApproval(response); },
-            onCancel: (response) => { this.applepayCancel(response); },
-            onError: (response) => { this.applepayError(response); }
-        };
+        this.completePayment = response.completePayment;
+        $('.address-selector-block').find('.btn-show-details').trigger('click');
+        let addressObject = this.createAddressObject(response.billingAddress);
+        await FiservSDKHelper.populateAddress(addressObject, this.configDataApplePay.billingAddressFormNames, 'billing');
+
+        this.setSubmitButtonEnabled(false);
+        $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+        this.setSubmitButtonEnabled(true);
+    }
+
+    handleCancel = function (response) 
+    {
+        console.log("Apple Pay flow cancelled");
+    }
+
+    handleError = function(response)
+    {
+        this.applepayFailure(this.configDataApplePay.applepayFailureMessage);
     }
 
     createAddressObject = function(responseAddress)
@@ -70,40 +63,6 @@ class CommercehubApplePay
             postalCode: responseAddress.address.postalCode,
             country: responseAddress.address.country
         };
-    }
-
-    sdkInitialized = async function()
-    {
-        try
-        {
-            await window.fiserv.components.applePay({ data: this.configDataApplePay.buttonConfig, hooks: this.createCallbacksObject() });
-        }
-        catch(e)
-        {
-            console.log(e);
-            $('#fiserv-applepay-fatal-notice').show();
-        }
-        $.spinner().stop();
-    }
-
-    sdkLoadFailure = function (err) 
-    {
-        console.log(err);
-        $('#fiserv-applepay-fatal-notice').show();
-        $.spinner().stop(); 
-        throw new Error("Unable to load CommerceHub SDK.")
-    }
-
-    applepayApproval = async function(response)
-    {
-        this.completePayment = response.completePayment;
-        $('.address-selector-block').find('.btn-show-details').trigger('click');
-        let addressObject = this.createAddressObject(response.billingAddress);
-        await FiservSDKHelper.populateAddress(addressObject, this.configDataApplePay.billingAddressFormNames, 'billing');
-
-        this.setSubmitButtonEnabled(true);
-        $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
-        this.setSubmitButtonEnabled(false);
     }
 
     watchSubmitResponse = function()
@@ -137,8 +96,8 @@ class CommercehubApplePay
             }
             else
             {
-                this.setSessionIdInput('');
-                this.setSubmitButtonEnabled(false);
+                this.applepayBase.setSessionIdInput('');
+                this.setSubmitButtonEnabled(true);
                 this.applepayFailure();
             }
         }
@@ -150,7 +109,7 @@ class CommercehubApplePay
         if(message)
             this.showError(message);
         this.completePayment('FAILURE');
-        this.initialize();
+        this.applepayBase.initialize();
     }
 
     applepaySuccess = function(data)
@@ -181,28 +140,13 @@ class CommercehubApplePay
         redirect.submit();
     }
 
-    applepayCancel = function()
-    {
-        console.log("Apple Pay flow cancelled");
-    }
-
-    applepayError = function()
-    {
-        this.applepayFailure(this.configDataApplePay.applepayFailureMessage);
-    }
-
-    setSessionIdInput = function(sessionId)
-    {
-        $('input#commercehubSessionIdInputApplePay').val(sessionId);
-    }
-
     watchPaymentMethod = function()
     {
         $('ul.payment-options li.nav-item[data-method-id=APPLEPAY]').on('click', this.paymentMethodHandler);
     }
 
     paymentMethodHandler = (_e) => {
-        this.setSubmitButtonEnabled(false);
+        this.setSubmitButtonEnabled(true);
     }
 
     watchButtonLoadLag = function()
@@ -225,6 +169,34 @@ class CommercehubApplePay
         $('.alert', form).remove();
         form.prepend('<div class="alert alert-danger" role="alert">' + message + '</div>');
         $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth'});
+    }
+
+    handlePaymentMethodChange = async function(response)
+    {
+        // Overwrite this to handle the apple pay payment method change event
+        console.log("Payment Method changed");
+        response.respond({});
+    }
+
+    handleShippingAddressChange = async function(response)
+    {
+        // Overwrite this to handle the apple pay shipping address change event
+        console.log("Shipping Address changed");
+        response.respond({});
+    }
+
+    handleShippingOptionsChange = async function(response)
+    {
+        // Overwrite this to handle the apple pay shipping options change event
+        console.log("Shipping Options changed");
+        response.respond({});
+    }
+
+    handleCouponCodeChange = async function(response)
+    {
+        // Overwrite this to handle the apple pay coupon code change event
+        console.log("Coupon Code changed");
+        response.respond({});
     }
 
     setupDisableHandlerValues = function()
