@@ -3,6 +3,7 @@
 const BasketMgr = require('dw/order/BasketMgr');
 const Resource = require('dw/web/Resource');
 
+const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
 
 function getCustomer(customerNo)
 {
@@ -111,9 +112,8 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, sto
     viewData.paymentInformation.commercehubCardType = { value : paymentInstrument.custom.commercehubCardType };
     viewData.paymentInformation.commercehubCardIndicator = { value : paymentInstrument.custom.commercehubCardIndicator };
     
-    const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
-    let basket;
-    if(fiservConfig.getTokenSecurityEnabled() && (basket = BasketMgr.getCurrentBasket()) && basket.custom.commercehubEarlyTokenUUID !== storedPaymentUUID)
+    let basket = BasketMgr.getCurrentBasket();
+    if(fiservConfig.getTokenSecurityEnabled() && basket && basket.custom.commercehubEarlyTokenUUID !== storedPaymentUUID)
     {
         let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
         if(!sessionId)
@@ -132,6 +132,17 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, sto
         viewData.paymentInformation.authenitcationId3DS = authenticationId3DS.value;
     }
 
+    if(fiservConfig.getVerificationEnabled() && basket && basket.custom.commercehubEarlyTokenUUID !== storedPaymentUUID)
+    {
+        const fiservRawRequestExcutor = require('*/cartridge/scripts/requests/rawRequestExecutions');
+        const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(true, { paymentInstrument: paymentInstrument, sessionId: viewData.paymentInformation.sessionId });
+
+        if(verificationResponse.error)
+        {
+            return cardError();
+        }
+    }
+
     return viewData;
 }
 
@@ -148,6 +159,17 @@ function getNewCardViewData(viewFormData, paymentForm)
     viewData.paymentInformation.maskedCardNumber = paymentForm.creditCardFields.cardNumber.value;
     viewData.paymentInformation.tokenizeCard = paymentForm.creditCardFields.saveCard.selected
     viewData.saveCard = paymentForm.creditCardFields.saveCard.selected;
+
+    if(fiservConfig.getVerificationEnabled())
+    {
+        const fiservRawRequestExcutor = require('*/cartridge/scripts/requests/rawRequestExecutions');
+        const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(false, { sessionId: viewData.paymentInformation.sessionId });
+
+        if(verificationResponse.error)
+        {
+            return cardError();
+        }
+    }
 
     return viewData;
 }

@@ -35,6 +35,11 @@
         <user-id></user-id>
         <password/>
     </service-credential>
+    <service-credential service-credential-id="CommercehubAccountVerification">
+        <url>https://[CH_ENVIRONMENT_BASE]/ch/payments-vas/v1/accounts/verification</url>
+        <user-id></user-id>
+        <password/>
+    </service-credential>
     <service-credential service-credential-id="CommercehubTransactionInquiry">
         <url>https://[CH_ENVIRONMENT_BASE]/ch/payments/v1/transaction-inquiry</url>
         <user-id></user-id>
@@ -108,6 +113,15 @@
         <mock-mode-enabled>false</mock-mode-enabled>
         <profile-id>Fiserv</profile-id>
         <credential-id>CommercehubBalanceInquiry</credential-id>
+    </service>
+    <service service-id="CommercehubAccountVerification">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>fiserv</log-prefix>
+        <comm-log-enabled>true</comm-log-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Fiserv</profile-id>
+        <credential-id>CommercehubAccountVerification</credential-id>
     </service>
     <service service-id="CommercehubTransactionInquiry">
         <service-type>HTTP</service-type>

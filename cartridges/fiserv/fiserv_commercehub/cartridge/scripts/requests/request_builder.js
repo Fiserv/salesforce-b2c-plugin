@@ -277,8 +277,31 @@ function buildChargesRequest(orderNumber, paymentInstrument)
 function buildTokenRequest(sessionId)
 {
     fiservLogs.logInfo(1, 'Initiating Card Tokenization', orderNo);
+    return buildBasicSessionRequestPayload(sessionId);
+}
+
+function buildVerificationRequest(isToken, sourceData)
+{
+    fiservLogs.logInfo(1, 'Initiating Acount Verification Request', orderNo);
+    if(isToken)
+        return buildBasicTokenRequestPayload(sourceData.paymentInstrument, sourceData.sessionId);
+    else
+        return buildBasicSessionRequestPayload(sourceData.sessionId);
+}
+
+function buildBasicSessionRequestPayload(sessionId)
+{
     let req = {};
     req['source'] = buildSessionSourceObject(sessionId);
+    req["merchantDetails"] = buildMerchantDetailsObject();
+
+    return req;
+}
+
+function buildBasicTokenRequestPayload(paymentInstrument, sessionId)
+{
+    let req = {};
+    req['source'] = buildTokenSourceObject(paymentInstrument, sessionId);
     req["merchantDetails"] = buildMerchantDetailsObject();
 
     return req;
@@ -551,6 +574,7 @@ module.exports =
     buildCredentialsRequest : buildCredentialsRequest,
     buildChargesRequest : buildChargesRequest,
     buildTokenRequest : buildTokenRequest,
+    buildVerificationRequest : buildVerificationRequest,
     buildBalanceInquiryRequest : buildBalanceInquiryRequest,
     buildCancelPayload : buildCancelPayload,
     buildRecoveryPayload : buildRecoveryPayload,

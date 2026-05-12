@@ -92,6 +92,17 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
             cardType = paymentForm.cardType.value;
         }
 
+        if(fiservConfig.getVerificationEnabled())
+        {
+            const fiservRawRequestExcutor = require('*/cartridge/scripts/requests/rawRequestExecutions');
+            const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(false, { sessionId: sessionId });
+
+            if(verificationResponse.error)
+            {
+                throw new Error(Resource.msg('message.error.payment.validation', 'error', null));
+            }
+        }
+
         let tokenRequest = fiservRequestBuilder.buildTokenRequest(sessionId);
         tokenResponse = sendTokenizationRequest(tokenRequest);
         let cardProduct = fiservHelper.secureTraversal(tokenResponse, fiservConstants.RESPONSE_PATHS.CARD_TYPE_TOKEN);
