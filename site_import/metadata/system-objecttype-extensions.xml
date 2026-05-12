@@ -149,6 +149,13 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>false</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="CommerceHubVerificationEnable">
+                <display-name xml:lang="x-default">Enable Account Verification</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
 
             <!--THIS IS WHERE THE TOKENIZATION SETTINGS START-->
 
@@ -1778,6 +1785,7 @@
                 <attribute attribute-id="CommerceHubCreditEnable"/>
                 <attribute attribute-id="CommerceHubCreditPaymentType"/>
                 <attribute attribute-id="CommerceHub3DSEnable"/>
+                <attribute attribute-id="CommerceHubVerificationEnable"/>
 
                 <!--THIS IS WHERE THE TOKENIZATION SETTINGS START-->
                 <attribute attribute-id="CommerceHubTokenization"/>

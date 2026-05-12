@@ -336,7 +336,8 @@ function buildConfigList(chPreferenceDescriptions)
         'items': [
             getPreferenceDescription('CommerceHubCreditEnable'),
             getPreferenceDescription('CommerceHubCreditPaymentType'),
-            getPreferenceDescription('CommerceHub3DSEnable')
+            getPreferenceDescription('CommerceHub3DSEnable'),
+            getPreferenceDescription('CommerceHubVerificationEnable')
         ]
     });
 

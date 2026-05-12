@@ -82,6 +82,11 @@ const commerceHubExport =
         return getSitePreference('CommerceHub3DSEnable');
     },
 
+    getVerificationEnabled()
+    {
+        return getSitePreference('CommerceHubVerificationEnable');
+    },
+
     // This is where the Tokenization settings start
 
     getCommerceHubTokenization()

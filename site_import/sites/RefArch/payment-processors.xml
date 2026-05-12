@@ -37,6 +37,9 @@
                 <preference preference-id="CommerceHub3DSEnable">
                     <value>false</value>
                 </preference>
+                <preference preference-id="CommerceHubVerificationEnable">
+                    <value>false</value>
+                </preference>
 
                 <!--THIS IS WHERE THE TOKENIZATION SETTINGS START-->
 
