@@ -152,6 +152,11 @@ class CommercehubCheckoutForm
         $('input#commercehubSessionIdInput').val(sessionId);
     }
 
+    setVerificationSessionIdInput = function(sessionId)
+    {
+        $('input#verificationSessionIdInput').val(sessionId);
+    }
+
     setTokenUUIDInput = function(uuid)
     {
         $('input#commercehubTokenUUIDInput').val(uuid);
@@ -202,11 +207,22 @@ class CommercehubCheckoutForm
             this.configDataPaymentCard.basketTokenization)
         {
             try {
+                if(this.configDataPaymentCard.verificationEnabled)
+                {
+                    if(!(await this.performVerificationCapture()))
+                        return;
+                }
+
                 await new Promise((resolve, reject) => {
                     let tokenizationPayload = {
                         sessionId : $('input#commercehubSessionIdInput')[0].value,
                         cardType: $('#cardType')[0].value
                     };
+
+                    if(this.configDataPaymentCard.verificationEnabled)
+                    {
+                        tokenizationPayload['verificationSessionID'] = $('input#verificationSessionIdInput')[0].value;
+                    }
 
                     let saveCardCheckbox = $('input#saveCreditCard');
                     if(saveCardCheckbox.length)
@@ -227,6 +243,7 @@ class CommercehubCheckoutForm
                     $('#earlyTokenizeInjectedForm').data('uuid', response.uuid);
                     $('#earlyTokenizeInjectedForm').addClass('selected-payment');
                     this.setSessionIdInput(null);
+                    this.setVerificationSessionIdInput(null);
                     this.setTokenUUIDInput(response.uuid);
 
                     $('.cancel-new-payment').removeClass('checkout-hidden');
@@ -240,6 +257,12 @@ class CommercehubCheckoutForm
                 this.paymentProceedFailure(e.message);
                 return;
             }
+        }
+
+        if(!earlyFlowExecuted && this.configDataPaymentCard.verificationEnabled)
+        {
+            if(!(await this.performVerificationCapture()))
+                return;
         }
         
         if(this.configDataPaymentCard.use3DS)
@@ -373,6 +396,7 @@ class CommercehubCheckoutForm
         }
 
         this.setSessionIdInput(null);
+        this.setVerificationSessionIdInput(null);
         this.setTokenUUIDInput($('.saved-payment-instrument.selected-payment').data('uuid'));
 
         if (this.cvvEnabled)
@@ -394,6 +418,21 @@ class CommercehubCheckoutForm
         this.unwatchSubmitButtonToken();
         this.perform3DSToken();
         return false;
+    }
+
+    performVerificationCaptureToken = async function()
+    {
+        let successStatus;
+        await this.cvvAdapters[this.currentSelectedPaymentUUID].submitForm(
+            this.credentialsUrl,
+            {
+                storeSessionCallback: this.setVerificationSessionIdInput,
+                runSuccessCallback: () => { successStatus = true; },
+                runFailureCallback: () => { successStatus = false; this.paymentProceedFailure(this.configDataPaymentCard.verificationFailureMessage); }
+            }
+        );
+
+        return successStatus;
     }
 
     perform3DSToken = function()
@@ -447,6 +486,7 @@ class CommercehubCheckoutForm
             xhr.responseJSON.error
         ) {
             this.setSessionIdInput('');
+            this.setVerificationSessionIdInput('');
             this.watchSubmitButton();
         }
     }
@@ -517,6 +557,21 @@ class CommercehubCheckoutForm
         if(!this.formAdapter.getFastlaneStatus() && !this.formAdapter.getFastlaneInitStatus())
             this.formAdapter.destroyIframe('card');
         $('#fiserv-scc-fatal-notice').hide();
+    }
+
+    performVerificationCapture = async function()
+    {
+        let successStatus;
+        await this.formAdapter.submitForm(
+            this.credentialsUrl,
+            {
+                storeSessionCallback: this.setVerificationSessionIdInput,
+                runSuccessCallback: () => { successStatus = true; },
+                runFailureCallback: () => { successStatus = false; this.paymentProceedFailure(); }
+            }
+        );
+
+        return successStatus;
     }
 
     execute3DS = async function(isToken = false)
@@ -825,7 +880,7 @@ class CommercehubCheckoutForm
         this.setSubmitButtonEnabled(cvvValid);
     }
 
-    handleCVVTokenFormSubmit = function(error) 
+    handleCVVTokenFormSubmit = async function(error) 
     {
         if (!this.configDataPaymentCard.use3DS) $.spinner().stop();
         
@@ -834,6 +889,19 @@ class CommercehubCheckoutForm
             this.showError(error);
             this.watchSubmitButtonToken();
             return;
+        }
+
+        if(this.configDataPaymentCard.verificationEnabled)
+        {
+            $.spinner().start();
+            if(!(await this.performVerificationCaptureToken()))
+            {
+                this.watchSubmitButtonToken();
+                this.showError(this.configDataPaymentCard.verificationFailureMessage);
+                $.spinner().stop();
+                return;
+            }
+            $.spinner().stop();
         }
 
         if (this.configDataPaymentCard.use3DS) this.perform3DSToken();

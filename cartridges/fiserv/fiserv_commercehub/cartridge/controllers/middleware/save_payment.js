@@ -75,10 +75,12 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
     let tokenResponse = null;
     try {
         let sessionId;
+        let verificationSessionID;
         let cardType;
         if(earlyTokenPayload)
         {
             sessionId = earlyTokenPayload.sessionId;
+            verificationSessionID = earlyTokenPayload.verificationSessionID;
             cardType = earlyTokenPayload.cardType;
         }
         else
@@ -89,18 +91,31 @@ function executeSavePaymentTransaction(req, res, next, earlyTokenPayload)
                 throw new Error(Resource.msg('message.error.tokenization.invalidForm', 'error', null));
             }
             sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
+            verificationSessionID = paymentForm.fiservCommercehubPaymentFields.verificationSessionId.value;
             cardType = paymentForm.cardType.value;
         }
 
         if(fiservConfig.getVerificationEnabled())
         {
+            if(!verificationSessionID || !fiservHelper.validateSessionId(verificationSessionID))
+            {
+                fiservLogs.logError(2, "Invalid verification session ID");
+                throw new Error(Resource.msg('message.error.payment.validation', 'error', null));
+            }
+
             const fiservRawRequestExcutor = require('*/cartridge/scripts/requests/rawRequestExecutions');
-            const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(false, { sessionId: sessionId });
+            const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(false, { sessionId: verificationSessionID });
 
             if(verificationResponse.error)
             {
                 throw new Error(Resource.msg('message.error.payment.validation', 'error', null));
             }
+        }
+
+        if(!sessionId || !fiservHelper.validateSessionId(sessionId))
+        {
+            fiservLogs.logError(2, "Invalid session ID");
+            throw new Error(Resource.msg('message.error.payment.validation', 'error', null));
         }
 
         let tokenRequest = fiservRequestBuilder.buildTokenRequest(sessionId);

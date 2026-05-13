@@ -98,7 +98,7 @@ class FiservSDKIframe
             window.fiservPluginSDKInitRan = true;
         }
 
-        this.form.submit(this.credentialsResponse['submitConfig'])
+        await this.form.submit(this.credentialsResponse['submitConfig'])
             .then((response) => {
                 callbacks.runSuccessCallback(response);
             })
@@ -117,22 +117,20 @@ class FiservSDKIframe
         window.fiservPluginSDKInitRan = true;
     }
 
-    submitForm = function(credentialsUrl, callbacks, requestPurpose = null)
+    submitForm = async function(credentialsUrl, callbacks, requestPurpose = null)
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
             if (requestPurpose === "ACH") {
-                this.credentialsReponseFormSubmission(callbacks, requestPurpose);
+                await this.credentialsReponseFormSubmission(callbacks, requestPurpose);
                 return;
             }
 
-            let promise = new Promise((resolve, reject) => {
+            let promise = await new Promise((resolve, reject) => {
                 FiservSDKHelper.backendCall(credentialsUrl, resolve, reject, { requestPurpose: requestPurpose });
-            });
-
-            promise.then(async (credentialsResponse) => {
+            }).then(async (credentialsResponse) => {
                 this.credentialsResponse = credentialsResponse;
-                this.credentialsReponseFormSubmission(callbacks, requestPurpose);
+                await this.credentialsReponseFormSubmission(callbacks, requestPurpose);
             })
             .catch((error) => {
                 callbacks.runFailureCallback();

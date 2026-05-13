@@ -77,6 +77,11 @@ class CommercehubTokenizationForm
     {
         $('input#commercehubSessionIdInput').val(sessionId);
     }
+    
+    setVerificationSessionIdInput = function(sessionId)
+    {
+        $('input#verificationSessionIdInput').val(sessionId);
+    }
 
     getSubmitButton = function() 
     {
@@ -107,10 +112,15 @@ class CommercehubTokenizationForm
         throw new Error("Unable to load CommerceHub SDK.")
     }
 
-    cardCaptureSuccess = function()
+    cardCaptureSuccess = async function()
     {
+        if(this.configDataTokenization.verificationEnabled)
+        {
+            if(!(await this.performVerificationCapture()))
+                return;
+        }
+
         $.spinner().stop();
-        
         this.getSubmitButton().trigger('click');
         // Re-watch submit button in case of error further down the line
         this.watchSubmitButton();
@@ -140,12 +150,28 @@ class CommercehubTokenizationForm
             this.credentialsUrl,
             {
                 storeSessionCallback: this.setSessionIdInput,
-                runSuccessCallback: (responseBody) => { this.cardCaptureSuccess(responseBody); },
+                runSuccessCallback: () => { this.cardCaptureSuccess(); },
                 runFailureCallback: () => { this.cardCaptureFailure(); }
             },
             "STANDALONE"
         );
         return false; 
+    }
+
+    performVerificationCapture = async function()
+    {
+        let successStatus;
+        await this.formAdapter.submitForm(
+            this.credentialsUrl,
+            {
+                storeSessionCallback: this.setVerificationSessionIdInput,
+                runSuccessCallback: () => { successStatus = true; },
+                runFailureCallback: () => { successStatus = false; this.cardCaptureFailure(); }
+            },
+            "STANDALONE"
+        );
+
+        return successStatus;
     }
 
     watchSubmitButton = function() 

@@ -15,16 +15,23 @@ function getFrontendConfigData(formId)
             configData = {
                 'basketTokenization': (fiservConfig.getCommerceHubTokenization() && fiservConfig.getForcedBasketTokenization()),
                 'use3DS': fiservConfig.get3DSEnabled(),
-                'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'verificationEnabled': fiservConfig.getVerificationEnabled(),
                 'cvvEnabled': fiservConfig.getTokenSecurityEnabled(),
+                'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
-                'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
                 'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
             };
             if(configData.fastlaneEnabled)
             {
                 configData['fastlaneAddressFormNames'] = fiservConfig.buildAddressFormNamesObject();
+            }
+            if(configData.use3DS)
+            {
+                configData['threeDSFailureMessage'] = Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null);
+            }
+            if(configData.verificationEnabled)
+            {
+                configData['verificationFailureMessage'] = Resource.msg('message.error.payment.validation', 'error', null);
             }
             if(configData.cvvEnabled)
             {
@@ -35,6 +42,10 @@ function getFrontendConfigData(formId)
             configData = {
                 'verificationEnabled': fiservConfig.getVerificationEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailTokenization', 'error', null)
+            }
+            if(configData.verificationEnabled)
+            {
+                configData['verificationFailureMessage'] = Resource.msg('message.error.payment.validation', 'error', null);
             }
             break;
         case 'ACH':

@@ -4,6 +4,8 @@ const BasketMgr = require('dw/order/BasketMgr');
 const Resource = require('dw/web/Resource');
 
 const fiservConfig = require("*/cartridge/scripts/utils/commercehubConfig");
+const fiservHelper = require('*/cartridge/scripts/utils/fiservHelpers/primaryHelper');
+const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
 
 function getCustomer(customerNo)
 {
@@ -118,7 +120,6 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, sto
         let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
         if(!sessionId)
         {
-            const fiservLogs = require("*/cartridge/scripts/utils/commercehubLogs");
             fiservLogs.logError(2, "CVV missing for token payment instrument creation");
             throw new Error(Resource.msg('message.error.cvv.missing', 'error', null));
         }
@@ -134,8 +135,15 @@ function getStoredCardViewData(paymentInstrument, viewFormData, paymentForm, sto
 
     if(fiservConfig.getVerificationEnabled() && basket && basket.custom.commercehubEarlyTokenUUID !== storedPaymentUUID)
     {
+        let verificationSessionID = paymentForm.fiservCommercehubPaymentFields.verificationSessionId.value;
+        if(fiservConfig.getTokenSecurityEnabled() && (!verificationSessionID || !fiservHelper.validateSessionId(verificationSessionID)))
+        {
+            fiservLogs.logError(2, "Invalid verification session ID");
+            throw new Error(Resource.msg('message.error.payment.validation', 'error', null));
+        }
+
         const fiservRawRequestExcutor = require('*/cartridge/scripts/requests/rawRequestExecutions');
-        const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(true, { paymentInstrument: paymentInstrument, sessionId: viewData.paymentInformation.sessionId });
+        const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(true, { paymentInstrument: paymentInstrument, sessionId: verificationSessionID });
 
         if(verificationResponse.error)
         {
@@ -162,8 +170,15 @@ function getNewCardViewData(viewFormData, paymentForm)
 
     if(fiservConfig.getVerificationEnabled())
     {
+        let verificationSessionID = paymentForm.fiservCommercehubPaymentFields.verificationSessionId.value;
+        if(!verificationSessionID || !fiservHelper.validateSessionId(verificationSessionID))
+        {
+            fiservLogs.logError(2, "Invalid verification session ID");
+            throw new Error(Resource.msg('message.error.payment.validation', 'error', null));
+        }
+
         const fiservRawRequestExcutor = require('*/cartridge/scripts/requests/rawRequestExecutions');
-        const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(false, { sessionId: viewData.paymentInformation.sessionId });
+        const verificationResponse = fiservRawRequestExcutor.executeAccountVerification(false, { sessionId: verificationSessionID });
 
         if(verificationResponse.error)
         {
@@ -177,8 +192,7 @@ function getNewCardViewData(viewFormData, paymentForm)
 function getNewCardFormResult(paymentForm, viewFormData)
 {
     let sessionId = paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.value;
-    let guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
-    if(sessionId === undefined || !sessionId.match(guidRegex))
+    if(!fiservHelper.validateSessionId(sessionId))
     {
         return cardError();
     }
