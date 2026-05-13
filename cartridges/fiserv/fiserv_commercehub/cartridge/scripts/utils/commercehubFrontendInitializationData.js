@@ -16,6 +16,7 @@ function getFrontendConfigData(formId)
                 'basketTokenization': (fiservConfig.getCommerceHubTokenization() && fiservConfig.getForcedBasketTokenization()),
                 'use3DS': fiservConfig.get3DSEnabled(),
                 'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
+                'verificationEnabled': fiservConfig.getVerificationEnabled(),
                 'cvvEnabled': fiservConfig.getTokenSecurityEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailCheckout', 'error', null),
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
@@ -25,9 +26,14 @@ function getFrontendConfigData(formId)
             {
                 configData['fastlaneAddressFormNames'] = fiservConfig.buildAddressFormNamesObject();
             }
+            if(configData.cvvEnabled)
+            {
+                configData['cvvValidationFailureMessage'] = Resource.msg('message.error.cvv.failure', 'error', null);
+            }
             break;
         case 'Tokenization':
             configData = {
+                'verificationEnabled': fiservConfig.getVerificationEnabled(),
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailTokenization', 'error', null)
             }
             break;

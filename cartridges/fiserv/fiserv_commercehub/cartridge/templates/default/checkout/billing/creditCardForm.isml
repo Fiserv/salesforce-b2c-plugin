@@ -4,6 +4,7 @@
 <isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
 <isset name="fastlaneEnabled" value="${pdict.FiservConfig.getCommerceHubPayPalFastlaneEnabled()}" scope="pdict" />
+<isset name="verificationEnabled" value="${pdict.FiservConfig.getVerificationEnabled()}" scope="pdict" />
 
 <isscript>
     var assets = require('*/cartridge/scripts/assets.js');
@@ -94,6 +95,9 @@
 <input id="commercehubSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
 <input id="authenticationId3DSInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.authenticationId3DS.htmlName}"/>
 <input id="commercehubTokenUUIDInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubTokenUUID.htmlName}"/>
+<isif condition="${pdict.verificationEnabled}">
+    <input id="verificationSessionIdInput" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.verificationSessionId.htmlName}"/>
+</isif>
 <isif condition="${pdict.canTokenize}">
     <div style="display:none;" id="earlyTokenizeInjectedForm" class="saved-payment-instrument" data-uuid=""></div>
 </isif>

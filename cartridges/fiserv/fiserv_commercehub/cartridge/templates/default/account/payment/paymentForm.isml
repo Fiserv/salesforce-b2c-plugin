@@ -5,6 +5,7 @@
 <isset name="canTokenize" value="${pdict.FiservConfig.getCommerceHubTokenization()}" scope="pdict" />
 <isset name="canTokenizeStandalone" value="${pdict.FiservConfig.getCommerceHubStandaloneTokenization()}" scope="pdict" />
 <isset name="creditEnabled" value="${pdict.FiservConfig.getCommerceHubCreditEnabled()}" scope="pdict" />
+<isset name="verificationEnabled" value="${pdict.FiservConfig.getVerificationEnabled()}" scope="pdict" />
 
 <isif condition="${pdict.creditEnabled && pdict.canTokenize && pdict.canTokenizeStandalone}">
     <isscript>
@@ -77,6 +78,9 @@
         <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
         <input type="hidden" id="commercehubSessionIdInput" name="${pdict.paymentForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
         <input type="hidden" id="cardType" name="${pdict.paymentForm.cardType.htmlName}"/>
+        <isif condition="${pdict.verificationEnabled}">
+            <input id="verificationSessionIdInput" type="hidden" name="${pdict.paymentForm.fiservCommercehubPaymentFields.verificationSessionId.htmlName}"/>
+        </isif>
         
         <!-- Cancel and Save Buttons -->
         <div class="row">

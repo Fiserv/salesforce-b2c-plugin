@@ -18,9 +18,7 @@ class FiservSDKIframe
         formInvalidCallback,
         cardBrandHandler,
         fieldValidityHandler,
-        fieldFocusHandler,
-        runSuccessCallback,
-        runFailureCallback
+        fieldFocusHandler
     ) {
         // CommerceHub SDK loaded separately by B2C SFRA assets.js
         if (typeof(window.fiserv) === "undefined")
@@ -36,8 +34,6 @@ class FiservSDKIframe
         this.cardBrandHandler = cardBrandHandler;
         this.fieldValidityHandler = fieldValidityHandler;
         this.fieldFocusHandler = fieldFocusHandler;
-        this.runSuccessCallback = runSuccessCallback;
-        this.runFailureCallback = runFailureCallback;
 
         this.validity = false;
         this.fastlaneStatus = false;
@@ -93,9 +89,9 @@ class FiservSDKIframe
         return formConfig;
     }
 
-    credentialsReponseFormSubmission = async function(storeSessionCallback, requestPurpose = null)
+    credentialsReponseFormSubmission = async function(callbacks, requestPurpose = null)
     {
-        storeSessionCallback(this.credentialsResponse['sessionId']);
+        callbacks.storeSessionCallback(this.credentialsResponse['sessionId']);
 
         if(requestPurpose === "3DS") {
             await window.fiserv.init(FiservSDKHelper.buildInitConfig(this.credentialsResponse));
@@ -104,10 +100,10 @@ class FiservSDKIframe
 
         this.form.submit(this.credentialsResponse['submitConfig'])
             .then((response) => {
-                this.runSuccessCallback(response);
+                callbacks.runSuccessCallback(response);
             })
             .catch((error) => {
-                this.runFailureCallback();
+                callbacks.runFailureCallback();
             });
     }
 
@@ -121,12 +117,12 @@ class FiservSDKIframe
         window.fiservPluginSDKInitRan = true;
     }
 
-    submitForm = function(credentialsUrl, storeSessionCallback, requestPurpose = null)
+    submitForm = function(credentialsUrl, callbacks, requestPurpose = null)
     {
         if (this.form !== "undefined" && this.iframeActive === true)
         {
             if (requestPurpose === "ACH") {
-                this.credentialsReponseFormSubmission(storeSessionCallback, requestPurpose);
+                this.credentialsReponseFormSubmission(callbacks, requestPurpose);
                 return;
             }
 
@@ -136,10 +132,10 @@ class FiservSDKIframe
 
             promise.then(async (credentialsResponse) => {
                 this.credentialsResponse = credentialsResponse;
-                this.credentialsReponseFormSubmission(storeSessionCallback, requestPurpose);
+                this.credentialsReponseFormSubmission(callbacks, requestPurpose);
             })
             .catch((error) => {
-                this.runFailureCallback();
+                callbacks.runFailureCallback();
             });
         }
     }

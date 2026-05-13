@@ -55,8 +55,6 @@ class CommercehubGiftForm
         let cardBrandHandler = () => { null };
         let fieldValidityHandler = (data) => { this.fieldValidityHandler(data); };
         let fieldFocusHandler = (data) => { this.fieldFocusHandler(data) };
-        let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
-        let runFailureCallback = (error) => { this.cardCaptureFailure(error); };
 
         this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
@@ -66,9 +64,8 @@ class CommercehubGiftForm
             formInvalidCallback,
             cardBrandHandler,
             fieldValidityHandler,
-            fieldFocusHandler,
-            runSuccessCallback,
-            runFailureCallback);
+            fieldFocusHandler
+        );
     }
 
     initializeAdapter = function()
@@ -153,22 +150,54 @@ class CommercehubGiftForm
         throw new Error("Unable to load CommerceHub SDK.")
     }
 
-    cardCaptureSuccess = async function()
+    balanceCardCaptureSuccess = async function()
     {
-        if(this.getSubmitButton().length && this.buttonClicked === 'applyPrimary')
-        {
-            this.buttonClicked = 'applySecondary';
-            this.formAdapter.submitForm(this.credentialsUrl, this.setSecondarySessionIdInput);
+        try {
+            await new Promise((resolve, reject) => {
+                FiservSDKHelper.backendCall(this.balanceUrl, resolve, reject, { sessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value });
+            }).then((response) => 
+            {
+                $('#fiserv-scc-gift-balance-amount').text(response.currencySymbol + response.balance);
+                this.getBalanceBlock().removeClass('sdc-hidden');
+            }).catch((err) => 
+            {
+                $('#fiserv-scc-gift-balance-amount').text('');
+                this.getBalanceBlock().addClass('sdc-hidden');
+                throw new Error(err.responseJSON.error );
+            });
+        } catch (e) {
+            this.watchFormButtons();
+            this.showError(e.message);
+            $.spinner().stop();
             return;
         }
 
+        this.clearSessionIds();
+        this.watchFormButtons();
+        $.spinner().stop();
+    }
+
+    primaryCardCaptureSuccess = async function()
+    {
+        if(this.getSubmitButton().length)
+        {
+            this.formAdapter.submitForm(
+                this.credentialsUrl,
+                {
+                    storeSessionCallback: this.setSecondarySessionIdInput,
+                    runSuccessCallback: () => { this.secondaryCardCaptureSuccess(); },
+                    runFailureCallback: () => { this.cardCaptureFailure(); }
+                }
+            );
+            return;
+        }
+    }
+
+    secondaryCardCaptureSuccess = async function()
+    {
         try {
             await new Promise((resolve, reject) => {
-                if(this.buttonClicked === 'balance')
-                {
-                    FiservSDKHelper.backendCall(this.balanceUrl, resolve, reject, { sessionId : $('input#commercehubGiftPrimarySessionIdInput')[0].value });
-                }
-                else if(this.getSubmitButton().length && this.buttonClicked === 'applySecondary')
+                if(this.getSubmitButton().length)
                 {
                     // Run in a timeout to avoid velocity
                     setTimeout(() => {
@@ -180,12 +209,7 @@ class CommercehubGiftForm
                 }
             }).then((response) => 
             {
-                if(this.buttonClicked === 'balance')
-                {
-                    $('#fiserv-scc-gift-balance-amount').text(response.currencySymbol + response.balance);
-                    this.getBalanceBlock().removeClass('sdc-hidden');
-                }
-                else if(this.buttonClicked === 'applySecondary')
+                if(this.getSubmitButton().length)
                 {
                     this.addGiftCardRow(response, response.amountRemaining);
                     this.showSuccess(response.successMessage);
@@ -199,23 +223,16 @@ class CommercehubGiftForm
                 }
             }).catch((err) => 
             {
-                if(this.buttonClicked === 'balance')
-                {
-                    $('#fiserv-scc-gift-balance-amount').text('');
-                    this.getBalanceBlock().addClass('sdc-hidden');
-                }
-                throw new Error(err.responseJSON.error );
+                throw new Error(err.responseJSON.error);
             });
         } catch (e) {
-            this.buttonClicked = null;
             this.watchFormButtons();
             this.showError(e.message);
             $.spinner().stop();
             return;
         }
 
-        this.clearSessionIds
-        this.buttonClicked = null;
+        this.clearSessionIds();
         this.watchFormButtons();
         $.spinner().stop();
     }
@@ -400,7 +417,7 @@ class CommercehubGiftForm
         $('.gift-details').children().last().removeClass('checkout-hidden');
     }
 
-    cardCaptureFailure = function(error)
+    cardCaptureFailure = function()
     {
         this.formAdapter.destroyIframe('gift');
         this.initializeAdapter();
@@ -415,8 +432,14 @@ class CommercehubGiftForm
         this.clearAlerts();
         this.getBalanceBlock().addClass('sdc-hidden');
         this.unwatchFormButtons();
-        this.buttonClicked = "applyPrimary";
-        this.formAdapter.submitForm(this.credentialsUrl, this.setPrimarySessionIdInput);
+        this.formAdapter.submitForm(
+            this.credentialsUrl,
+            {
+                storeSessionCallback: this.setPrimarySessionIdInput,
+                runSuccessCallback: () => { this.primaryCardCaptureSuccess(); },
+                runFailureCallback: () => { this.cardCaptureFailure(); }
+            }
+        );
         return false;
     }
 
@@ -426,8 +449,14 @@ class CommercehubGiftForm
         $.spinner().start();
         this.clearAlerts();
         this.unwatchFormButtons();
-        this.buttonClicked = "balance";
-        this.formAdapter.submitForm(this.credentialsUrl, this.setPrimarySessionIdInput);
+        this.formAdapter.submitForm(
+            this.credentialsUrl,
+            {
+                storeSessionCallback: this.setPrimarySessionIdInput,
+                runSuccessCallback: () => { this.balanceCardCaptureSuccess(); },
+                runFailureCallback: () => { this.cardCaptureFailure(); }
+            }
+        );
         return false;
     }
 

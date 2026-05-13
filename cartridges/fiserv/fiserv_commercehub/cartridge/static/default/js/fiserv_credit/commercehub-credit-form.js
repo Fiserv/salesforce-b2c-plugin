@@ -84,8 +84,6 @@ class CommercehubCheckoutForm
             let frame = this.getSdcFieldFrame(data);
             this.fieldFocusHandler(frame) 
         };
-        let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
-        let runFailureCallback = (error) => { this.paymentProceedFailure(error); };
 
         this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
@@ -95,9 +93,8 @@ class CommercehubCheckoutForm
             formInvalidCallback,
             cardBrandHandler,
             fieldValidityHandler,
-            fieldFocusHandler,
-            runSuccessCallback,
-            runFailureCallback);
+            fieldFocusHandler
+        );
     }
 
     initializeAdapter = function()
@@ -355,7 +352,15 @@ class CommercehubCheckoutForm
             $.spinner().start();
             this.unwatchSubmitButton();
             this.setTokenUUIDInput(null);
-            this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput, this.configDataPaymentCard.use3DS ? "3DS" : null);
+            this.formAdapter.submitForm(
+                this.credentialsUrl,
+                {
+                    storeSessionCallback: this.setSessionIdInput,
+                    runSuccessCallback: (responseBody) => { this.cardCaptureSuccess(responseBody); },
+                    runFailureCallback: () => { this.paymentProceedFailure(); }
+                },
+                this.configDataPaymentCard.use3DS ? "3DS" : null
+            );
             return false;
         }
     }
@@ -775,8 +780,6 @@ class CommercehubCheckoutForm
                 let frame = $(`#cvv-security-code-frame-${ cardUUID }`);
                 this.fieldFocusHandler(frame);
             };
-            const runSuccessCallback = (response) => { this.handleCVVTokenFormSubmit(null); };
-            const runFailureCallback = (error) => { this.handleCVVTokenFormSubmit(error || 'CVV validation failed'); };
 
             const adapter = new FiservSDKIframe(
                 loadSuccessCallback,
@@ -787,8 +790,6 @@ class CommercehubCheckoutForm
                 null, // cardBrandHandler - not needed for Token Forms
                 fieldValidityHandler,
                 fieldFocusHandler,
-                runSuccessCallback,
-                runFailureCallback
             );
 
             const updatedFormConfig = structuredClone(this.formConfig);
@@ -845,7 +846,11 @@ class CommercehubCheckoutForm
 
         this.cvvAdapters[this.currentSelectedPaymentUUID].submitForm(
             this.credentialsUrl,
-            (sessionId) => { this.setSessionIdInput(sessionId);}, 
+            {
+                storeSessionCallback: (sessionId) => { this.setSessionIdInput(sessionId); },
+                runSuccessCallback: () => { this.handleCVVTokenFormSubmit(); },
+                runFailureCallback: () => { this.handleCVVTokenFormSubmit(this.configDataPaymentCard.cvvValidationFailureMessage); }
+            },
             "CVV"
         );
     }

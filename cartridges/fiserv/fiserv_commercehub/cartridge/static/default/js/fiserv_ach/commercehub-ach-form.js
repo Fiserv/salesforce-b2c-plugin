@@ -57,8 +57,6 @@ class CommercehubACH
             let frame = this.getSdcFieldFrame(data);
             this.fieldFocusHandler(frame);
         };
-        let runSuccessCallback = (responseBody) => { this.achCaptureSuccess(responseBody); };
-        let runFailureCallback = (error) => { this.paymentProceedFailure(error); };
 
         this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
@@ -69,8 +67,7 @@ class CommercehubACH
             null,
             fieldValidityHandler,
             fieldFocusHandler,
-            runSuccessCallback,
-            runFailureCallback);
+        );
     }
 
     initializeAdapter = async function()
@@ -238,12 +235,12 @@ class CommercehubACH
         $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
     }
 
-    paymentProceedFailure = function(msg)
+    paymentProceedFailure = function()
     {
         this.formAdapter.destroyIframe('ach');
         this.initializeAdapter();
         this.watchSubmitButton();
-        this.showError(msg ? msg : this.configDataACH.captureFailureMessage);
+        this.showError(this.configDataACH.captureFailureMessage);
         $.spinner().stop();
     }
 
@@ -272,7 +269,15 @@ class CommercehubACH
             $.spinner().start();
             this.unwatchSubmitButton();
             this.setSessionIdInput(null);
-            this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput.bind(this), null);
+            this.formAdapter.submitForm(
+                this.credentialsUrl,
+                {
+                    storeSessionCallback: this.setSessionIdInput,
+                    runSuccessCallback: (responseBody) => { this.achCaptureSuccess(responseBody); },
+                    runFailureCallback: () => { this.paymentProceedFailure(); }
+                },
+                null
+            );
             return false;
         }
     }

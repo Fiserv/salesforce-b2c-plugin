@@ -36,8 +36,6 @@ class CommercehubTokenizationForm
         let cardBrandHandler = (brand) => { this.cardBrandChangeHandler(brand) };
         let fieldValidityHandler = (data) => { this.fieldValidityHandler(data); };
         let fieldFocusHandler = (data) => { this.fieldFocusHandler(data) };
-        let runSuccessCallback = (responseBody) => { this.cardCaptureSuccess(responseBody); };
-        let runFailureCallback = (error) => { this.cardCaptureFailure(error); };
 
         this.formAdapter = new FiservSDKIframe(
             loadSuccessCallback,
@@ -47,9 +45,8 @@ class CommercehubTokenizationForm
             formInvalidCallback,
             cardBrandHandler,
             fieldValidityHandler,
-            fieldFocusHandler,
-            runSuccessCallback,
-            runFailureCallback);
+            fieldFocusHandler
+        );
     }
 
     initializeAdapter = function()
@@ -126,7 +123,7 @@ class CommercehubTokenizationForm
         form.prepend('<div class="alert alert-danger" role="alert">' + message + '</div>');
     }
 
-    cardCaptureFailure = function(error)
+    cardCaptureFailure = function()
     {
         this.formAdapter.destroyIframe('tokenize');
         this.initializeAdapter();
@@ -139,7 +136,15 @@ class CommercehubTokenizationForm
         _e.preventDefault();
         $.spinner().start();
         this.unwatchSubmitButton();
-        this.formAdapter.submitForm(this.credentialsUrl, this.setSessionIdInput, "STANDALONE");
+        this.formAdapter.submitForm(
+            this.credentialsUrl,
+            {
+                storeSessionCallback: this.setSessionIdInput,
+                runSuccessCallback: (responseBody) => { this.cardCaptureSuccess(responseBody); },
+                runFailureCallback: () => { this.cardCaptureFailure(); }
+            },
+            "STANDALONE"
+        );
         return false; 
     }
 
