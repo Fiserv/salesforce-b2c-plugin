@@ -57,7 +57,7 @@ server.append('Begin', function (req, res, next) {
             res.viewData.customer.customerPaymentInstruments = displayedPayments.filter((pi) => !UUIDRemoveList.includes(pi.UUID));
         }
     }
-    if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getBasketTokenization())
+    if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getForcedBasketTokenization())
     {
         if(!req.currentCustomer.profile)
         {

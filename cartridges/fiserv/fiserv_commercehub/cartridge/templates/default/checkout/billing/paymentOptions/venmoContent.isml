@@ -5,6 +5,7 @@
     var assets = require('*/cartridge/scripts/assets.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
     assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_base/commercehub-dom-disable-handler.js');
     assets.addJs('/js/fiserv_venmo/commercehub-venmo-button.js');
     assets.addJs('/js/fiserv_venmo/venmo.js');
     assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
@@ -31,7 +32,7 @@
 
             <div class="privacyPolicy">
                 <span></span>
-                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="http://www.fiserv.com/privacy">Privacy Notice</a>.
+                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="https://www.fiserv.com/privacy">Privacy Notice</a>.
             </div>
             <div id="fiserv-venmo-fatal-notice" class="alert alert-danger">
                 <p>${Resource.msg('message.error.venmo.fatal','error',null)}</p>            

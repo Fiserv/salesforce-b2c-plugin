@@ -34,25 +34,22 @@
                 <preference preference-id="CommerceHubCreditPaymentType">
                     <value>AUTH</value>
                 </preference>
-                <preference preference-id="CommerceHubTokenization">
-                    <value>true</value>
-                </preference>
-                <preference preference-id="CommerceHubTokenizationStrategy">
-                    <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHubStandaloneSPA">
-                    <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHubEarlyTokenization">
-                    <value>false</value>
-                </preference>
-                <preference preference-id="CommerceHubBasketTokenization">
-                    <value>false</value>
-                </preference>
                 <preference preference-id="CommerceHub3DSEnable">
                     <value>false</value>
                 </preference>
+
+                <!--THIS IS WHERE THE TOKENIZATION SETTINGS START-->
+
+                <preference preference-id="CommerceHubTokenization">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubStandaloneTokenization">
+                    <value>false</value>
+                </preference>
                 <preference preference-id="CommerceHubTokenSecurityEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubForcedBasketTokenization">
                     <value>false</value>
                 </preference>
 
@@ -243,6 +240,124 @@
                     <value></value>
                 </preference>
                 <preference preference-id="CommerceHubTokenizationFormFontIntegrity">
+                    <value></value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_ACH">
+        <description>Fiserv Commerce Hub ACH processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE ACH SETTINGS START-->
+
+                <preference preference-id="CommerceHubACHEnable">
+                    <value>false</value>
+                </preference>
+
+                <!--THIS IS WHERE THE ACH FORM CUSTOMIZATION STARTS-->
+
+                <preference preference-id="CommerceHubACHFormAccountNumberPlaceholder">
+                    <value>Account Number</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberPlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMaskingCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMaskingMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberMaskLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountNumberInvalidFieldMessage">
+                    <value>Invalid Account Number</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberPlaceholder">
+                    <value>Routing Number</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberPlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMask">
+                    <value>true</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMaskingCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMaskingMode">
+                    <value>ALWAYS_MASK_EXCEPT_LAST_4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberMaskLength">
+                    <value>4</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormRoutingNumberInvalidFieldMessage">
+                    <value>Invalid Routing Number</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValuePlaceholder">
+                    <value>ID Value</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValuePlaceholderCharacter">
+                    <value>•</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdValueInvalidFieldMessage">
+                    <value>Invalid ID Value</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormBusinessNamePlaceholder">
+                    <value>Business Name</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormBusinessNameInvalidFieldMessage">
+                    <value>Invalid Business Name</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormIdTypeInvalidFieldMessage">
+                    <value>Invalid ID Type</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormDriverLicenseStateInvalidFieldMessage">
+                    <value>Invalid Driver License State</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormAccountTypeInvalidFieldMessage">
+                    <value>Invalid Account Type</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormCheckTypeInvalidFieldMessage">
+                    <value>Invalid Check Type</value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormCSS">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontData">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontFamily">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontFormat">
+                    <value></value>
+                </preference>
+                <preference preference-id="CommerceHubACHFormFontIntegrity">
                     <value></value>
                 </preference>
             </all-instances>
@@ -483,4 +598,118 @@
             <production/>
         </preferences>
     </payment-processor>
+    <payment-processor processor-id="FISERV_COMMERCEHUB_AFFIRM">
+        <description>Fiserv Commerce Hub Affirm processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE AFFIRM SETTINGS START-->
+
+                <preference preference-id="CommerceHubAffirmEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubAffirmPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubAffirmButtonColor">
+                    <value>default</value>
+                </preference>
+           </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+
+    <payment-processor processor-id="FISERV_COMMERCEHUB_SAMSUNGPAY">
+        <description>Fiserv Commerce Hub Samsung Pay processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+               <!--THIS IS WHERE THE SAMSUNG PAY SETTINGS START-->
+
+                <preference preference-id="CommerceHubSamsungPayEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubSamsungPayPaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubSamsungPayButtonColor">
+                    <value>black</value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+
+    <payment-processor processor-id="FISERV_COMMERCEHUB_PAZE">
+        <description>Fiserv Commerce Hub Paze processor</description>
+        <preferences>
+            <all-instances>
+
+                <!--THIS IS WHERE THE GENERAL SETTINGS START-->
+
+                <preference preference-id="CommerceHubAPIEnvironment">
+                    <value>CERT</value>
+                </preference>
+                <preference preference-id="CommerceHubLogLevel">
+                    <value>L2</value>
+                </preference>
+                <preference preference-id="CommerceHubSessionLifetime">
+                    <value>30</value>
+                </preference>
+                <preference preference-id="CommerceHubTimeout">
+                    <value>30</value>
+                </preference>
+
+                <!--THIS IS WHERE THE PAZE SETTINGS START-->
+
+                <preference preference-id="CommerceHubPazeEnable">
+                    <value>false</value>
+                </preference>
+                <preference preference-id="CommerceHubPazePaymentType">
+                    <value>AUTH</value>
+                </preference>
+                <preference preference-id="CommerceHubPazeDisplayName">
+                    <value></value>
+                </preference>
+            </all-instances>
+            <development/>
+            <staging/>
+            <production/>
+        </preferences>
+    </payment-processor>
+
 </payment-processors>

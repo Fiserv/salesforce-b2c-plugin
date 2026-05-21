@@ -10,6 +10,7 @@ class CommercehubVenmo
             throw new Error("Initialization Data not found. Unable to initialize Venmo button.");
         }
 
+        this.methodId = 'VENMO';
         this.formConfig = initializationData.config;
         this.configDataVenmo = initializationData.config.configData;
         this.credentialsUrl = initializationData.credentialsUrl;
@@ -19,6 +20,7 @@ class CommercehubVenmo
         this.watchButtonLoadLag();
         this.watchSubmitResponse();
         this.watchPaymentMethod();
+        this.setupDisableHandlerValues();
     }
 
     initialize = async function()
@@ -27,7 +29,7 @@ class CommercehubVenmo
             $.spinner().start();
             $('#fiserv-venmo-fatal-notice').hide();
             await this.sdkButton.initSdk(this.credentialsUrl, null, "Venmo");
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.setSubmitButtonEnabled(false);
         } catch (_err) {
             this.sdkLoadFailure(_err);
         }
@@ -86,7 +88,7 @@ class CommercehubVenmo
         $('.payment-details').addClass('checkout-hidden');
         $('<div class="payment-details-venmo">Venmo</div>').insertAfter('.payment-details');
         $('.edit-button').on('click', this.removeInsertedSummary);
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', false);
+        this.setSubmitButtonEnabled(true);
         $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
     }
 
@@ -104,7 +106,7 @@ class CommercehubVenmo
 
     venmoError = function()
     {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
         this.showError(this.configDataVenmo.venmoFailureMessage);
     }
 
@@ -123,7 +125,7 @@ class CommercehubVenmo
         ) {
             this.setOrderIdInput('');
             this.removeInsertedSummary();
-            $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+            this.setSubmitButtonEnabled(false);
         }
     }
 
@@ -138,7 +140,7 @@ class CommercehubVenmo
     }
 
     paymentMethodHandler = (_e) => {
-        $('button.btn.btn-primary.btn-block.submit-payment').prop('disabled', true);
+        this.setSubmitButtonEnabled(false);
     }
 
     watchButtonLoadLag = function()
@@ -161,5 +163,20 @@ class CommercehubVenmo
         $('.alert', form).remove();
         form.prepend('<div class="alert alert-danger" role="alert">' + message + '</div>');
         $('.alert', form)[0].scrollIntoView({ block: 'center', behavior: 'smooth'});
+    }
+
+    setupDisableHandlerValues = function()
+    {
+        this.setSubmitButtonEnabled(false);
+        window.fiservSubmitButtonHandler.addBlocker(
+            this.methodId,
+            'venmo-approval',
+            (buttonHandler) => buttonHandler.getFact('PRIMARY_PAYMENT_METHOD_NOT_REQURED') === false && buttonHandler.getFact('APM_APPROVAL') !== true
+        );
+    }
+
+    setSubmitButtonEnabled = function(enabled)
+    {
+        window.fiservSubmitButtonHandler.setFact('APM_APPROVAL', enabled);
     }
 }

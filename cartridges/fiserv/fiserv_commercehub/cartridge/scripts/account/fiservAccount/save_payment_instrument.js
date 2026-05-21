@@ -22,7 +22,7 @@ function isValidCustomer(customer)
 
 function shouldSavePaymentInstrument(customerNo, paymentInstrument)
 {
-    return (fiservConfig.getCommerceHubTokenizationStrategy() || paymentInstrument.paymentTransaction.custom.tokenizeCard) &&
+    return (fiservConfig.getForcedBasketTokenization() || paymentInstrument.paymentTransaction.custom.tokenizeCard) &&
         customerNo &&
         canTokenize(CustomerMgr.getCustomerByCustomerNumber(customerNo));
 }
@@ -217,6 +217,12 @@ function saveTokenizedCardBasket(customerNo, cardType, chResponse)
 // A null profile indicates that we are in a guest early tokenization flow
 function saveCard(profile, cardType, chResponse, isBasket, forcedTokenization, orderNo)
 {
+    if(!cardType)
+    {
+        fiservLogs.logError(2, "No card type passed in for the saved payment", orderNo);
+        throw new Error(Resource.msg('message.error.tokenization.failed', 'error', null));
+    }
+
     if (!wasTokenizationSuccessful(chResponse))
     {
         fiservLogs.logError(2, "Failed tokenization by Commerce Hub", orderNo);

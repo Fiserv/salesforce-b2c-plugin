@@ -9,6 +9,14 @@
 			"script": "./hooks/payment/processor/form/fiserv_commercehub_credit_form_processor"
 		},
 		{
+			"name": "app.payment.processor.fiserv_commercehub_ach",
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_ach"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub_ach",
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_ach_form_processor"
+		},
+		{
 			"name": "app.payment.processor.fiserv_commercehub_gift",
 			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_gift"
 		},
@@ -39,6 +47,30 @@
 		{
 			"name": "app.payment.form.processor.fiserv_commercehub_applepay",
 			"script": "./hooks/payment/processor/form/fiserv_commercehub_applepay_form_processor"
+		},
+		{
+			"name": "app.payment.processor.fiserv_commercehub_affirm",
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_affirm"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub_affirm",
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_affirm_form_processor"
+		},
+		{
+			"name": "app.payment.processor.fiserv_commercehub_samsungpay",
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_samsungpay"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub_samsungpay",
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_samsungpay_form_processor"
+		},
+		{
+			"name": "app.payment.processor.fiserv_commercehub_paze",
+			"script": "./hooks/payment/processor/auth-handle/fiserv_commercehub_paze"
+		},
+		{
+			"name": "app.payment.form.processor.fiserv_commercehub_paze",
+			"script": "./hooks/payment/processor/form/fiserv_commercehub_paze_form_processor"
 		}
 	]
 }

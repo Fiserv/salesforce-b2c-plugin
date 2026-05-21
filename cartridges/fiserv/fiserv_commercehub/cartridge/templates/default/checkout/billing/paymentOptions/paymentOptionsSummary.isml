@@ -2,6 +2,8 @@
     <isloop items="${pdict.order.billing.payment.selectedPaymentInstruments}" var="payment" status="status">
         <isif condition="${payment.paymentMethod === 'CREDIT_CARD'}">
             <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
+        <iselseif condition="${payment.paymentMethod === 'ACH'}" />
+            <isinclude template="checkout/billing/paymentOptions/achSummary" />
         <iselseif condition="${payment.paymentMethod === 'GIFT_CARD'}" />
             <isinclude template="checkout/billing/paymentOptions/giftCardSummary" />
         <iselseif condition="${payment.paymentMethod === 'PAYPAL'}" />
@@ -10,6 +12,12 @@
             <isinclude template="checkout/billing/paymentOptions/venmoSummary" />
         <iselseif condition="${payment.paymentMethod === 'APPLEPAY'}" />
             <isinclude template="checkout/billing/paymentOptions/applepaySummary" />
+        <iselseif condition="${payment.paymentMethod === 'AFFIRM'}" />
+            <isinclude template="checkout/billing/paymentOptions/affirmSummary" />
+        <iselseif condition="${payment.paymentMethod === 'SAMSUNGPAY'}" />
+            <isinclude template="checkout/billing/paymentOptions/samsungpaySummary" />
+        <iselseif condition="${payment.paymentMethod === 'PAZE'}" />
+            <isinclude template="checkout/billing/paymentOptions/pazeSummary" />
         </isif>
         <isif condition="${!status.last}">
             <br/>

@@ -1,0 +1,86 @@
+'use strict';
+
+class CommercehubApplePay
+{
+
+    constructor(initializationData)
+    {
+        if (typeof(initializationData) === "undefined")
+        {
+            throw new Error("Initialization Data not found. Unable to initialize Apple Pay button.");
+        }
+
+        this.configDataApplePay = initializationData.config.configData;
+        this.configDataApplePay.buttonConfig.button['locale'] = initializationData.locale.replace('_', '-');
+        this.credentialsUrl = initializationData.credentialsUrl;
+
+        this.createAdapter();
+        this.CommercehubApplePayEventHandler = new CommercehubApplePayEventHandler(initializationData, this.sdkButton, this);
+    }
+
+    initialize = async function()
+    {
+        try {
+            $.spinner().start();
+            $('#fiserv-applepay-fatal-notice').hide();
+            await this.sdkButton.initSdk(this.credentialsUrl, this.setSessionIdInput, "ApplePay");
+            this.CommercehubApplePayEventHandler.initializedHook();
+        } catch (_err) {
+            this.sdkLoadFailure(_err);
+        }
+    }
+
+    createAdapter = function()
+    {
+        let loadSuccessCallback = () => { console.log("CommerceHub Apple Pay SDK has loaded."); };
+        let loadFailCallback = (error) => { this.sdkLoadFailure(error); };
+        let sdkReadyCallback = () => { this.sdkInitialized() };
+
+        this.sdkButton = new FiservSDKButton(
+            loadSuccessCallback,
+            loadFailCallback,
+            sdkReadyCallback
+        );
+    }
+
+    createCallbacksObject = function()
+    {
+        return {
+            onApprove: async (response) => { await this.CommercehubApplePayEventHandler.handleApproval(response); },
+            onCancel: (response) => { this.CommercehubApplePayEventHandler.handleCancel(response); },
+            onError: (response) => { this.CommercehubApplePayEventHandler.handleError(response); },
+            onPaymentMethodChange: async (response) => { await this.CommercehubApplePayEventHandler.handlePaymentMethodChange(response); },
+            onShippingAddressChange: async (response) => { await this.CommercehubApplePayEventHandler.handleShippingAddressChange(response); },
+            onShippingOptionsChange: async (response) => { await this.CommercehubApplePayEventHandler.handleShippingOptionsChange(response); },
+            onCouponCodeChange: async (response) => { await this.CommercehubApplePayEventHandler.handleCouponCodeChange(response); },
+            getConfig: () => { return this.CommercehubApplePayEventHandler.getAppleOrderConfig(); }
+        };
+    }
+
+    sdkInitialized = async function()
+    {
+        try
+        {
+            await window.fiserv.components.applePay({ data: this.configDataApplePay.buttonConfig, hooks: this.createCallbacksObject() });
+        }
+        catch(e)
+        {
+            console.log(e);
+            this.CommercehubApplePayEventHandler.showError(e.message);
+        }
+        $.spinner().stop();
+    }
+
+    sdkLoadFailure = function (err) 
+    {
+        console.log(err);
+        this.CommercehubApplePayEventHandler.showError(err);
+        $.spinner().stop();
+        throw new Error("Unable to load CommerceHub SDK.")
+    }
+
+    setSessionIdInput = function(sessionId)
+    {
+        $('input#commercehubSessionIdInputApplePay').val(sessionId);
+    }
+}

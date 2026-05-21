@@ -1,13 +1,13 @@
 'use strict';
 
 module.exports = {
-    VERSION : '1.1.3',
+    VERSION : '1.2.0',
     COMMERCEHUB_CERT_ENV : 'CERT',
     COMMERCEHUB_LIVE_ENV : 'PROD',
     ENVIRONMENT_URL_PLACEHOLDER : '[CH_ENVIRONMENT_BASE]',
     COMMERCEHUB_LIVE_BASE : "connect.fiservapis.com",
     COMMERCEHUB_CERT_BASE : "connect-cert.fiservapis.com",
-    COMMERCEHUB_SDK_URL : "https://commercehub-checkout.fiservapps.com/sdk/3.8.1/checkout.js",
+    COMMERCEHUB_SDK_URL : "https://commercehub-checkout.fiservapps.com/sdk/3.8.13/checkout.js",
     COMMERCEHUB_SALE_ACTION : "SALE",
     COMMERCEHUB_AUTH_ACTION : "AUTH",
     ECOM_ORIGIN : "ECOM",
@@ -17,18 +17,34 @@ module.exports = {
     TOKEN_SOURCE_TYPE : "PaymentToken",
     PROCESSOR_ID_LIST : {
         COMMERCEHUB_PROCESSOR : "FISERV_COMMERCEHUB",
+        COMMERCEHUB_ACH_PROCESSOR : "FISERV_COMMERCEHUB_ACH",
         COMMERCEHUB_GIFT_PROCESSOR : "FISERV_COMMERCEHUB_GIFT",
         COMMERCEHUB_PAYPAL_PROCESSOR : "FISERV_COMMERCEHUB_PAYPAL",
         COMMERCEHUB_VENMO_PROCESSOR : "FISERV_COMMERCEHUB_VENMO",
         COMMERCEHUB_APPLEPAY_PROCESSOR : "FISERV_COMMERCEHUB_APPLEPAY",
+        COMMERCEHUB_AFFIRM_PROCESSOR : "FISERV_COMMERCEHUB_AFFIRM",
+        COMMERCEHUB_SAMSUNGPAY_PROCESSOR : "FISERV_COMMERCEHUB_SAMSUNGPAY",
+        COMMERCEHUB_PAZE_PROCESSOR : "FISERV_COMMERCEHUB_PAZE",
     },
     PAYMENT_METHOD_LIST : {
+        COMMERCEHUB_CREDIT_PAYMENT_METHOD : "CREDIT_CARD",
+        COMMERCEHUB_ACH_PAYMENT_METHOD : "ACH",
         COMMERCEHUB_GIFT_PAYMENT_METHOD : "GIFT_CARD",
         COMMERCEHUB_APPLEPAY_PAYMENT_METHOD : "APPLEPAY",
+        COMMERCEHUB_SAMSUNGPAY_PAYMENT_METHOD : "SAMSUNGPAY",
+        COMMERCEHUB_PAZE_PAYMENT_METHOD : "PAZE",
     },
+    CHARGES_PAYMENT_METHODS : [
+        "CREDIT_CARD",
+        "ACH",
+        "APPLEPAY",
+        "SAMSUNGPAY",
+        "PAZE"
+    ],
     TXN_STATES : {
         AUTHORIZED : "AUTHORIZED",
         CAPTURED: "CAPTURED",
+        PROCESSING: "PROCESSING",
         DECLINED: "DECLINED"
     },
     RESPONSE_PATHS : {
@@ -42,6 +58,7 @@ module.exports = {
         LAST_FOUR: ['source', 'card', 'last4'],
         EXP_MONTH: ['source', 'card', 'expirationMonth'],
         EXP_YEAR: ['source', 'card', 'expirationYear'],
+        ACH_ACCOUNT_NUMBER: ['source', 'check', 'accountNumber'],
         PAYMENT_TOKEN: ['paymentTokens', 0],
         RESPONSE_MESSAGE: ['paymentReceipt', 'processorResponseDetails', 'responseMessage'],
         SOURCE_TYPE: ['source', 'sourceType'],
@@ -50,23 +67,17 @@ module.exports = {
         ERROR_MESSAGE: ['error', [0], 'message']
     },
     ICON_LIST : ['card', 'gear', 'gift', 'money', 'sign', 'token'],
-    FORM_ID_LIST : [ 'Payment', 'Tokenization', 'Gift' ],
-    DEPENDENCY_LIST : { 
+    FORM_ID_LIST : [ 'Payment', 'Tokenization', 'ACH', 'Gift' ],
+    DEPENDENCY_LIST : {
         'CommerceHubCreditEnable': [
             'CommerceHubCreditPaymentType',
             'CommerceHub3DSEnable',
             'CommerceHubPayPalFastlaneEnable', // Fastlane is depentdent on Credit/Debit, not PayPal...
-            'Tokenization'
         ],
         'CommerceHubTokenization': [
-            'CommerceHubTokenizationStrategy',
-            'CommerceHubStandaloneSPA',
-            'CommerceHubEarlyTokenization',
+            'CommerceHubStandaloneTokenization',
             'CommerceHubTokenSecurityEnable',
-            'CommerceHubBasketTokenization'
-        ],
-        'CommerceHubEarlyTokenization': [
-            'CommerceHubBasketTokenization'
+            'CommerceHubForcedBasketTokenization'
         ],
         'CommerceHubGiftEnable': [
             'CommerceHubGiftPaymentMethodTitle',
@@ -86,11 +97,27 @@ module.exports = {
         'CommerceHubApplePayEnable': [
             'CommerceHubApplePayPaymentType',
             'ApplePayButton'
+        ],
+        'CommerceHubAffirmEnable': [
+            'CommerceHubAffirmPaymentType',
+            'AffirmButton'
+		],
+        'CommerceHubSamsungPayEnable': [
+            'CommerceHubSamsungPayPaymentType',
+            'SamsungPayButton'
+        ],
+        'CommerceHubPazeEnable': [
+            'CommerceHubPazePaymentType',
+            'CommerceHubPazeDisplayName',
+            'PazeButton'
         ]
     },
     FORM_DEPENDENCY_LIST : {
         'CardNumberMask': ['CardNumberMaskCharacter', 'CardNumberMaskMode', 'CardNumberMaskLength'],
-        'SecurityCodeMask': ['SecurityCodeMaskCharacter', 'SecurityCodeMaskMode']
+        'SecurityCodeMask': ['SecurityCodeMaskCharacter', 'SecurityCodeMaskMode'],
+        'AccountNumberMask': ['AccountNumberMaskingCharacter', 'AccountNumberMaskingMode', 'AccountNumberMaskLength'],
+        'RoutingNumberMask': ['RoutingNumberMaskingCharacter', 'RoutingNumberMaskingMode', 'RoutingNumberMaskLength'],
+        'IdValueMask': ['IdValueMaskingCharacter', 'IdValueMaskingMode', 'IdValueMaskLength']
     },
     CONFIG_VALIDATIONS : {
         MANDATORY: [ // A list of absolutely mandatory fields (Excluding select dropdowns...)
@@ -108,8 +135,8 @@ module.exports = {
             'CommerceHubTokenizationFormCardNumberMaskLength': { min: 0, message: 'Valid mask length required (value ≥ 4)' }
         },
         CONFIG_REGEX : {
-            'CommerceHubMerchantID': { regex: /^\d{15}$/, message: 'Merchant ID must be 15 digits' },
-            'CommerceHubTerminalID': { regex: /^\d{8}$/, message: 'Terminal ID must be 8 digits' },
+            'CommerceHubMerchantID': { regex: /^[a-zA-Z0-9]{15}$/, message: 'Merchant ID must be 15 alphanumeric characters' },
+            'CommerceHubTerminalID': { regex: /^[a-zA-Z0-9]{8}$/, message: 'Terminal ID must be 8 alphanumeric characters' },
             'CommerceHubAPIKey': { regex: /^[a-zA-Z0-9]{1,2048}$/,message: 'API Key must contain a max length of 2048 alphanumeric characters' },
             'CommerceHubAPISecret': { regex: /^[a-zA-Z0-9]{1,2048}$/, message: 'API Secret must contain a max length of 2048 alphanumeric characters' },
             'CommerceHubMerchantPartnerIntegrator': { regex: /^[ a-zA-Z0-9]{1,64}$/, message: 'Merchant Partner Integrator must contain a max length of 64 alphanumeric characters'}
@@ -118,15 +145,15 @@ module.exports = {
             'CommerceHubPaymentFormExpirationMonthOptionLabels',
             'CommerceHubTokenizationFormExpirationMonthOptionLabels',
             'CommerceHubPaymentFormCSS',
-            'CommerceHubTokenizationFormCSS'
+            'CommerceHubTokenizationFormCSS',
+            'CommerceHubACHFormCSS'
         ]
     },
     CONFIG_DESCRIPTIONS : {
         'CommerceHubSessionLifetime': 'This field identifies the lifetime of applied payment instruments to the basket (Default: 30 minutes)',
         'CommerceHubTimeout': "Default: 30 seconds",
         'CommerceHubMerchantPartnerIntegrator': "This field identifies the integrator of this Salesforce module. It is typically a 3rd party systems integrator or the merchant themselves. This field is referenced for support purposes.",
-        'CommerceHubTokenizationStrategy': "Enable this option to tokenize all payment cards submitted at checkout, regardless of consumer choice.",
-        'CommerceHubStandaloneSPA': "Enable this toggle to allow customer to tokenize a card outside of the checkout flow",
-        'CommerceHubBasketTokenization': "Stores payment tokens on the basket when customer chooses not to save the token to their wallet or always for guests",
+        'CommerceHubStandaloneTokenization': "Disables the ability for customers to add payment methods from their account page",
+        'CommerceHubForcedBasketTokenization': "Creates a useable payment method associated with the basket and order when a customer chooses not to store their card",
     }
 };

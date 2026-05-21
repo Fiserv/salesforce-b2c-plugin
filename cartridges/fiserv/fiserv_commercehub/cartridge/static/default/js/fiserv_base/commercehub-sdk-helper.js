@@ -43,10 +43,16 @@ class FiservSDKHelper
 
     static async retrieveAddress(addressFormNames, purpose)
     {
+        let stateQuery = $('[name=' + ((purpose === 'shipping' ? 'dwfrm_shipping_shippingAddress' : 'dwfrm_billing') + addressFormNames['stateOrProvince']) + ']'); // Temp release workaround for an SDK issue
+        let stateVal = stateQuery.val();
+
         let addressForm = FiservSDKHelper.addressFormList[purpose] ?
             FiservSDKHelper.addressFormList[purpose] :
             await window.fiserv.components.address(FiservSDKHelper.createAddressFormFields(addressFormNames, purpose));
         
+        stateQuery.val(stateVal); // Temp release workaround for an SDK issue
+        addressForm.validate();
+
         FiservSDKHelper.addressFormList[purpose] = addressForm;
         return addressForm.getData();
     }

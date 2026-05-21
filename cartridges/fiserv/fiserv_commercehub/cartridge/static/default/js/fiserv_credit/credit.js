@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (form.cvvEnabled)
             {
                 form.initializeTokenCVVForms();
-                form.disableSubmitButton();
+                form.setSubmitButtonEnabled(false);
             }
         }
     }
@@ -127,8 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $('.btn.cancel-new-payment').click(()=> {
         form.watchSubmitButtonToken();
-        if (form.shouldEnableSubmitButtonOnCancelNewPayment()) form.enableSubmitButton();
-        else form.disableSubmitButton();
+        form.setSubmitButtonEnabled(form.shouldEnableSubmitButtonOnCancelNewPayment());
     });
 
     $('.btn.add-payment').click(()=> {
