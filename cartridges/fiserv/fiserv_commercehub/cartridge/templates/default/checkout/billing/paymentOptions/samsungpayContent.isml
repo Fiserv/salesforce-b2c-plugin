@@ -1,0 +1,54 @@
+<isset name="FiservConstants" value="${require('*/cartridge/fiservConstants/constants')}" scope="pdict" />
+<isset name="FiservFrontendConfigRetriever" value="${require('*/cartridge/scripts/utils/commercehubFrontendInitializationData')}" scope="pdict" />
+
+<isscript>
+    var samsungpayInitData = pdict.FiservFrontendConfigRetriever.retrieveFrontendInitializationData('SamsungPay');
+
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-helper.js');
+    assets.addJs('/js/fiserv_base/commercehub-sdk-button-adapter.js');
+    assets.addJs('/js/fiserv_base/commercehub-dom-disable-handler.js');
+    assets.addJs('/js/fiserv_samsungpay/commercehub-samsungpay-button.js');
+    assets.addJs('/js/fiserv_samsungpay/samsungpay.js');
+    assets.addJs(pdict.FiservConstants.COMMERCEHUB_SDK_URL);
+    assets.addCss('css/fiservScc.css');
+</isscript>
+
+<div class="tab-pane samsungpay-content" id="samsungpay-content" role="tabpanel">
+
+    <fieldset class="payment-form-fields">
+
+        <!--- payment method is Samsung Pay --->
+        <input type="hidden" class="form-control"
+               name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+               value="SAMSUNGPAY"
+        >
+
+        <div id="fiserv-commercehub-samsungpay-form-init-container"
+            data-commercehub-initialization-data="${JSON.stringify(samsungpayInitData)}"
+            data-commercehub-credentials="${URLUtils.https('Fiserv-Credentials')}"
+            data-initial-checkout-stage="${pdict.currentStage}"
+            data-locale="${pdict.locale}"></div>
+
+        <div id="fiserv-commercehub-samsungpay-form-container">
+            <div id="fiserv_commercehub-samsungpay-button" class="sdc-button"></div>
+
+            <div class="privacyPolicy">
+                <span></span>
+                Payments Powered by Fiserv.&nbsp; <a target="_blank" href="https://www.fiserv.com/privacy">Privacy Notice</a>.
+            </div>
+            <div id="fiserv-samsungpay-fatal-notice" class="alert alert-danger">
+                <p>${Resource.msg('message.error.samsungpay.fatal','error',null)}</p>
+            </div>
+        </div>
+
+
+        <!--- Hidden input for session ID --->
+        <input id="commercehubSessionIdInputSamsungPay" type="hidden" name="${pdict.forms.billingForm.fiservCommercehubPaymentFields.commercehubSessionId.htmlName}"/>
+
+        <iscomment> This field needs to be here when Credit Card is not enabled </iscomment>
+        <isif condition="${!pdict.FiservConfig.getCommerceHubCreditEnabled()}">
+            <input type="hidden" class="form-control cardNumber" id="cardNumber" value="" <isprint value=${pdict.forms.billingForm.creditCardFields.cardNumber.attributes} encoding="off"/>/>
+        </isif>
+    </fieldset>
+</div>

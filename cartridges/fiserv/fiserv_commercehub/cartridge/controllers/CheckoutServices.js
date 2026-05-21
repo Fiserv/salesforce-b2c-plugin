@@ -84,7 +84,7 @@ server.append('SubmitPayment', function (req, res, next) {
                 res.viewData.renderedPaymentInstruments = RenderTemplateHelper.getRenderedHtml(context, 'checkout/billing/storedPaymentInstruments') || null;
             }
         }
-        if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization() && fiservConfig.getBasketTokenization())
+        if(fiservConfig.getCommerceHubTokenization() && fiservConfig.getForcedBasketTokenization())
         {
             const BasketMgr = require('dw/order/BasketMgr');
             const RenderTemplateHelperBasket = require('*/cartridge/scripts/renderTemplateHelper');

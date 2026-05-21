@@ -72,7 +72,7 @@ function handleTransaction(orderNo, paymentInstrument, paymentProcessor, payment
         paymentInstrument.paymentTransaction.transactionID = transactionId;
     }
 
-    paymentMethodModel.associateDataPostTransaction(res, paymentInstrument);
+    paymentMethodModel.postTransactionDataProcessing(res, paymentInstrument);
 
 
     Transaction.commit();

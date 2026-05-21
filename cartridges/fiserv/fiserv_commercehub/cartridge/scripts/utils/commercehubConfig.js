@@ -77,40 +77,40 @@ const commerceHubExport =
         return getSitePreference('CommerceHubCreditPaymentType').value;
     },
 
+    get3DSEnabled()
+    {
+        return getSitePreference('CommerceHub3DSEnable');
+    },
+
+    // This is where the Tokenization settings start
+
     getCommerceHubTokenization()
     {
         return getSitePreference('CommerceHubTokenization');
     },
 
-    getCommerceHubTokenizationStrategy()
+    getCommerceHubStandaloneTokenization()
     {
-        return getSitePreference('CommerceHubTokenizationStrategy').value === 'true';
-    },
-
-    getCommerceHubStandaloneSpa()
-    {
-        return getSitePreference('CommerceHubStandaloneSPA');
-    },
-
-    getEarlyTokenization()
-    {
-        return getSitePreference('CommerceHubEarlyTokenization');
-    },
-
-    getBasketTokenization()
-    {
-        return getSitePreference('CommerceHubBasketTokenization');
-    },
-
-    get3DSEnabled()
-    {
-        return getSitePreference('CommerceHub3DSEnable');
+        return !getSitePreference('CommerceHubStandaloneTokenization'); // To align with the display in the config page, this value is negated
     },
 
     getTokenSecurityEnabled()
     {
         return getSitePreference('CommerceHubTokenSecurityEnable');
     },
+
+    getForcedBasketTokenization()
+    {
+        return getSitePreference('CommerceHubForcedBasketTokenization');
+    },
+
+    // This is where the ACH settings start
+
+    getCommerceHubACHEnabled()
+    {
+        return getSitePreference('CommerceHubACHEnable');
+    },
+
 
     // This is where the Gift Card settings start
 
@@ -185,13 +185,57 @@ const commerceHubExport =
         return getSitePreference('CommerceHubApplePayPaymentType').value;
     },
 
+    // This is where the Affirm settngs start
+
+    getCommerceHubAffirmEnabled()
+    {
+        return getSitePreference('CommerceHubAffirmEnable');
+    },
+
+    getCommerceHubAffirmPaymentType()
+    {
+        return getSitePreference('CommerceHubAffirmPaymentType').value;
+    },
+
+    // This is where the Samsung Pay settings start
+    
+    getCommerceHubSamsungPayEnabled()
+    {
+        return getSitePreference('CommerceHubSamsungPayEnable');
+    },
+
+    getCommerceHubSamsungPayPaymentType()
+    {
+        return getSitePreference('CommerceHubSamsungPayPaymentType').value;
+    },
+
+
+    // This is where the Paze settings start
+
+    getCommerceHubPazeEnabled()
+    {
+        return getSitePreference('CommerceHubPazeEnable');
+    },
+
+    getCommerceHubPazePaymentType()
+    {
+        return getSitePreference('CommerceHubPazePaymentType').value;
+    },
+
+    getCommerceHubPazeDisplayName()
+    {
+        return getSitePreference('CommerceHubPazeDisplayName') || "PAZE";
+    },
+
+    // This is where frontend config object building start
+
     getFormConfig(formId)
     {
         if(!fiservConstants.FORM_ID_LIST.includes(formId))
             return;
 
         let config = {};
-        config['fields'] = this.buildFormFieldsConfig(formId);
+        config['fields'] = formId !== "ACH" ? this.buildFormFieldsConfig(formId) : this.buildACHFormFieldsConfig();
         config['css'] = JSON.parse(getSitePreference('CommerceHub' + formId + 'FormCSS') || '{}');
         config['font'] = this.buildFormFontConfig(formId);
         config['contextualCssClassNames'] = {
@@ -259,6 +303,65 @@ const commerceHubExport =
         return fieldsConfig;
     },
 
+    buildACHFormFieldsConfig()
+    {
+        let fieldsConfig = {};
+        let elementIdPrefix = 'fiserv_commercehub-ach';
+
+        fieldsConfig['accountNumber'] = {
+            'parentElementId': elementIdPrefix + '-account-number',
+            'placeholder': getSitePreference('CommerceHubACHFormAccountNumberPlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormAccountNumberPlaceholderCharacter').value,
+            'masking': {
+                'character': getSitePreference('CommerceHubACHFormAccountNumberMaskingCharacter').value,
+                'mode': (getSitePreference('CommerceHubACHFormAccountNumberMask') 
+                        ? getSitePreference('CommerceHubACHFormAccountNumberMaskingMode').value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubACHFormAccountNumberMaskLength')
+            }
+        };
+    
+        fieldsConfig['routingNumber'] = {
+            'parentElementId': elementIdPrefix + '-routing-number',
+            'placeholder': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormRoutingNumberPlaceholderCharacter').value,
+            'masking': {
+                'character': getSitePreference('CommerceHubACHFormRoutingNumberMaskingCharacter').value,
+                'mode': (getSitePreference('CommerceHubACHFormRoutingNumberMask') 
+                        ? getSitePreference('CommerceHubACHFormRoutingNumberMaskingMode').value : NO_MASKING),
+                'shrunkLength': getSitePreference('CommerceHubACHFormRoutingNumberMaskLength')
+            }
+        };
+    
+        fieldsConfig['idValue'] = {
+            'parentElementId': elementIdPrefix + '-id-value',
+            'placeholder': getSitePreference('CommerceHubACHFormIdValuePlaceholder'),
+            'dynamicPlaceholderCharacter': getSitePreference('CommerceHubACHFormIdValuePlaceholderCharacter').value
+        };
+    
+        fieldsConfig['businessName'] = {
+            'parentElementId': elementIdPrefix + '-business-name',
+            'placeholder': getSitePreference('CommerceHubACHFormBusinessNamePlaceholder')
+        };
+    
+        fieldsConfig['idType'] = {
+            'parentElementId': elementIdPrefix + '-id-type'
+        };
+    
+        fieldsConfig['driverLicenseState'] = {
+            'parentElementId': elementIdPrefix + '-driver-license-state'
+        };
+    
+        fieldsConfig['accountType'] = {
+            'parentElementId': elementIdPrefix + '-account-type'
+        };
+    
+        fieldsConfig['checkType'] = {
+            'parentElementId': elementIdPrefix + '-check-type'
+        };
+    
+        return fieldsConfig;
+    },
+
     buildFormFontConfig(formId)
     {
         let formFontConfig = {
@@ -291,6 +394,22 @@ const commerceHubExport =
         return invalidFields;
     },
 
+    getACHInvalidFields()
+    {
+        let invalidFields = {
+            'accountNumber': getSitePreference('CommerceHubACHFormAccountNumberInvalidFieldMessage'),
+            'routingNumber': getSitePreference('CommerceHubACHFormRoutingNumberInvalidFieldMessage'),
+            'idValue': getSitePreference('CommerceHubACHFormIdValueInvalidFieldMessage'),
+            'businessName': getSitePreference('CommerceHubACHFormBusinessNameInvalidFieldMessage'),
+            'idType': getSitePreference('CommerceHubACHFormIdTypeInvalidFieldMessage'),
+            'driverLicenseState': getSitePreference('CommerceHubACHFormDriverLicenseStateInvalidFieldMessage'),
+            'accountType': getSitePreference('CommerceHubACHFormAccountTypeInvalidFieldMessage'),
+            'checkType': getSitePreference('CommerceHubACHFormCheckTypeInvalidFieldMessage')
+        };
+
+        return invalidFields;
+    },
+
     buildPayPalButtonsConfig()
     {
         let buttonsConfig = {};
@@ -315,7 +434,6 @@ const commerceHubExport =
 
     buildVenmoButtonsConfig()
     {
-    
         let buttonsConfig = {};
         if(this.getCommerceHubVenmoEnabled())
         {
@@ -344,6 +462,46 @@ const commerceHubExport =
         }
 
         return { 'button': buttonConfig };
+    },
+
+    buildAffirmButtonConfig()
+    {
+        let buttonConfig;
+        if(this.getCommerceHubAffirmEnabled())
+        {
+            buttonConfig = {
+                'parentElementId': 'fiserv_commercehub-affirm-button',
+                'color': getSitePreference('CommerceHubAffirmButtonColor').value
+            }
+        }
+
+        return buttonConfig;
+    },
+
+     buildSamsungPayButtonConfig()
+     {
+        if(!this.getCommerceHubSamsungPayEnabled())
+            return null;
+
+        let buttonConfig = {
+            'parentElementId': 'fiserv_commercehub-samsungpay-button',
+            'color': getSitePreference('CommerceHubSamsungPayButtonColor').value
+        }
+
+        return { 'button': buttonConfig };
+     },
+
+      buildPazeButtonsConfig()
+    {
+        let buttonConfig;
+        if(this.getCommerceHubPazeEnabled())
+        {
+            buttonConfig = {
+                'parentElementId': 'fiserv_commercehub-paze-button'
+            }
+        }
+
+        return buttonConfig;
     },
 
     buildAddressFormNamesObject()

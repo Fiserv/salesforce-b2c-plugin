@@ -13,7 +13,7 @@ function getFrontendConfigData(formId)
     {
         case 'Payment':
             configData = {
-                'tokenizeEarly': fiservConfig.getCommerceHubTokenization() ? fiservConfig.getEarlyTokenization() : false,
+                'basketTokenization': (fiservConfig.getCommerceHubTokenization() && fiservConfig.getForcedBasketTokenization()),
                 'use3DS': fiservConfig.get3DSEnabled(),
                 'fastlaneEnabled': fiservConfig.getCommerceHubPayPalFastlaneEnabled(),
                 'cvvEnabled': fiservConfig.getTokenSecurityEnabled(),
@@ -21,10 +21,6 @@ function getFrontendConfigData(formId)
                 'threeDSFailureMessage': Resource.msg('message.error.scc.threeDSFailCheckout', 'error', null),
                 'credentialsFailureMessage': Resource.msg('message.error.generic.credentialsFailure', 'error', null)
             };
-            if(configData.tokenizeEarly)
-            {
-                configData['basketTokenization'] = fiservConfig.getBasketTokenization();
-            }
             if(configData.fastlaneEnabled)
             {
                 configData['fastlaneAddressFormNames'] = fiservConfig.buildAddressFormNamesObject();
@@ -33,6 +29,13 @@ function getFrontendConfigData(formId)
         case 'Tokenization':
             configData = {
                 'captureFailureMessage': Resource.msg('message.error.scc.captureFailTokenization', 'error', null)
+            }
+            break;
+        case 'ACH':
+            configData = {
+                'captureFailureMessage': Resource.msg('message.error.ach.captureFailCheckout', 'error', null),
+                'legalFetchFailureMessage': Resource.msg('message.error.ach.legalFetchFailure', 'error', null),
+                'billingAddressFormNames': fiservConfig.buildAddressFormNamesObject()
             }
             break;
         case 'Gift':
@@ -65,6 +68,26 @@ function getFrontendConfigData(formId)
                 'applepayFailureMessage': Resource.msg('message.error.applepay.failure', 'error', null),
             }
             break;
+        case 'Affirm':
+            configData = {
+                'buttonConfig': fiservConfig.buildAffirmButtonConfig(),
+                'chargeType': fiservConfig.getCommerceHubAffirmPaymentType(),
+                'affirmFailureMessage': Resource.msg('message.error.affirm.failure', 'error', null),
+            }
+            break;
+        case 'SamsungPay':
+            configData = {
+                'buttonConfig': fiservConfig.buildSamsungPayButtonConfig(),
+                'samsungpayFailureMessage': Resource.msg('message.error.samsungpay.failure', 'error', null),
+            }
+            break;
+        case 'Paze':
+            configData = {
+                displayName: fiservConfig.getCommerceHubPazeDisplayName(),
+                'buttonConfig': fiservConfig.buildPazeButtonsConfig(),
+                'pazeFailureMessage': Resource.msg('message.error.paze.failure', 'error', null),
+            }
+            break;
         default:
             configData = {};
             break;
@@ -77,7 +100,7 @@ function retrieveFrontendInitializationData(formId)
     return {
         'environment': fiservConfig.getCommerceHubApiEnvironment(),
         'formCustomization': fiservConfig.getFormConfig(formId),
-        'invalidFields': fiservConfig.getInvalidFields(formId),
+        'invalidFields': formId !== 'ACH' ? fiservConfig.getInvalidFields(formId) : fiservConfig.getACHInvalidFields(),
         'configData': getFrontendConfigData(formId)
     }
 }

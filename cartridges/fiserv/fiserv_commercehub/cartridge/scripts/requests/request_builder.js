@@ -131,30 +131,29 @@ function buildAmountObjectFromBasket(basketObject) {
     return amount;
 }
 
-function buildBillingAddressObject(billingAddressObject)
+function buildAddressObject(addressObject)
 {
-    if(!billingAddressObject)
+    if(!addressObject)
         return;
 
     let address = {};
-    address["street"] = billingAddressObject.address1;
-    address["city"] = billingAddressObject.city;
-    address["stateOrProvince"] = billingAddressObject.stateCode;
-    address["postalCode"] = billingAddressObject.postalCode;
-    address["stateOrProvince"] = billingAddressObject.stateCode;
-    address["country"] = billingAddressObject.countryCode.value;
+    address["street"] = addressObject.address1;
+    address["city"] = addressObject.city;
+    address["stateOrProvince"] = addressObject.stateCode;
+    address["postalCode"] = addressObject.postalCode;
+    address["country"] = addressObject.countryCode.value;
 
-    let billingAddress = {};
-    billingAddress["firstName"] = billingAddressObject.firstName;
-    billingAddress["lastName"] = billingAddressObject.lastName;
-    billingAddress["address"] = address;
-    billingAddress["phone"] = {
-        "phoneNumber": billingAddressObject.phone
+    let payloadAddressObject = {};
+    payloadAddressObject["firstName"] = addressObject.firstName;
+    payloadAddressObject["lastName"] = addressObject.lastName;
+    payloadAddressObject["address"] = address;
+    payloadAddressObject["phone"] = {
+        "phoneNumber": addressObject.phone
     };
 
     if(showBuilders)
-        fiservLogs.logDebug(3, "Billing Address Data Builder:\n" + JSON.stringify(billingAddress,null,2), orderNo);
-    return billingAddress;
+        fiservLogs.logDebug(3, "Address Data Builder:\n" + JSON.stringify(payloadAddressObject,null,2), orderNo);
+    return payloadAddressObject;
 }
 
 function buildCustomerObject(cartInfoContainer)
@@ -211,11 +210,11 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
     let tokenize = false;
     if(fiservConfig.getCommerceHubTokenization())
     {
-        if(fiservConfig.getCommerceHubTokenizationStrategy())
+        if(fiservConfig.getForcedBasketTokenization())
         {
             tokenize = true;
         }
-        else if(!paymentInstrument.creditCardToken && !fiservConfig.getEarlyTokenization())
+        else if(!paymentInstrument.creditCardToken)
         {
             tokenize = paymentInstrument.paymentTransaction.custom.tokenizeCard;
         }
@@ -227,7 +226,7 @@ function buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction)
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
-    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["billingAddress"] = buildAddressObject(order.getBillingAddress());
     req["customer"] = buildCustomerObject(order);
 
     if(fiservConfig.get3DSEnabled())
@@ -250,7 +249,7 @@ function buildGiftChargesRequest(paymentInstrument, paymentAction)
     req["transactionInteraction"] = buildTransactionInteractionObject();
     req["merchantDetails"] = buildMerchantDetailsObject();
     let order = OrderMgr.getOrder(orderNo)
-    req["billingAddress"] = buildBillingAddressObject(order.getBillingAddress());
+    req["billingAddress"] = buildAddressObject(order.getBillingAddress());
     req["customer"] = buildCustomerObject(order);
 
     return req;
@@ -262,7 +261,7 @@ function buildChargesRequest(orderNumber, paymentInstrument)
     let paymentAction = paymentInstrument.paymentTransaction.custom.paymentAction;
     if(paymentAction === fiservConstants.COMMERCEHUB_AUTH_ACTION || paymentAction === fiservConstants.COMMERCEHUB_SALE_ACTION)
     {
-        if(paymentInstrument.paymentMethod === paymentInstrument.METHOD_CREDIT_CARD || paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_APPLEPAY_PAYMENT_METHOD)
+        if(fiservConstants.CHARGES_PAYMENT_METHODS.includes(paymentInstrument.paymentMethod))
             return buildPrimaryPaymentChargesRequest(paymentInstrument, paymentAction);
         else if(paymentInstrument.paymentMethod === fiservConstants.PAYMENT_METHOD_LIST.COMMERCEHUB_GIFT_PAYMENT_METHOD)
             return buildGiftChargesRequest(paymentInstrument, paymentAction);
@@ -404,8 +403,15 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
             throw new Error(Resource.msg('message.error.generic.credentialsFailure', 'error', null));
         }
         payload['amount'] = buildAmountObjectFromBasket(basket);
-        payload['billingAddress'] = buildBillingAddressObject(basket.getBillingAddress());
+        payload['billingAddress'] = buildAddressObject(basket.getBillingAddress());
         payload['customer'] = buildCustomerObject(basket);
+        
+        let shipment = basket.getDefaultShipment();
+        if(shipment)
+        {
+            payload['shippingAddress'] = buildAddressObject(shipment.getShippingAddress());
+        }
+
         if(fiservConfig.get3DSEnabled() && fiservConfig.getCommerceHubTokenization() && credentialsForm.threeDSToken)
         {
             let pi;
@@ -422,7 +428,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     }
                 }
             }
-            if(!pi && fiservConfig.getEarlyTokenization() && fiservConfig.getBasketTokenization() && basket.custom.commercehubBasketToken)
+            if(!pi && fiservConfig.getForcedBasketTokenization() && basket.custom.commercehubBasketToken)
             {
                 let basketPI = JSON.parse(basket.custom.commercehubBasketToken);
                 if(basketPI.UUID === credentialsForm.threeDSToken)
@@ -459,7 +465,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                 }
             ]
         }
-        if(fiservConfig.getCommerceHubApplePayEnabled())
+        if(fiservConfig.getCommerceHubApplePayEnabled() || fiservConfig.getCommerceHubAffirmEnabled())
         {
             let orderData = {};
             let basket = BasketMgr.getCurrentBasket();
@@ -477,6 +483,7 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                         itemName: item.productName,
                         itemDescription: item.lineItemText,
                         quantity: item.quantityValue,
+                        productSKU: item.productID,
                         amountComponents: {
                             unitPrice: item.basePrice.value,
                             shippingAmount: 0,
@@ -491,28 +498,33 @@ function buildCredentialsRequest(hostURL, baseUrl, credentialsForm)
                     itemDetails.push(itemData)
                 });
 
-                let shippingData = {
-                    itemNumber: basket.getAllProductLineItems().toArray().length + 1,
-                    itemType: "SHIPPING",
-                    itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
-                    itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
-                    quantity: 1,
-                    amountComponents: {
-                        unitPrice: basket.shippingTotalPrice.value,
-                        shippingAmount: 0,
-                        taxAmounts: [
-                            {
-                                taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
-                                taxAmount: basket.shippingTotalTax.value
-                            }
-                        ],
-                    }
-                };
-                itemDetails.push(shippingData);
+                if(basket.shippingTotalPrice.value > 0)
+                {
+                    let shippingData = {
+                        itemNumber: basket.getAllProductLineItems().toArray().length + 1,
+                        itemType: "SHIPPING",
+                        itemName: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                        itemDescription: Resource.msg('label.order.shipping.cost', 'confirmation', null),
+                        quantity: 1,
+                        productSKU: basket.getDefaultShipment().getShippingMethodID(),
+                        amountComponents: {
+                            unitPrice: basket.shippingTotalPrice.value,
+                            shippingAmount: 0,
+                            taxAmounts: [
+                                {
+                                    taxType: Resource.msg('label.order.sales.tax', 'confirmation', null),
+                                    taxAmount: basket.shippingTotalTax.value
+                                }
+                            ],
+                        }
+                    };
+                    itemDetails.push(shippingData);
+                }
 
                 orderData['itemCount'] = itemCount;
                 orderData['itemDetails'] = itemDetails;
                 orderData['orderDate'] = basket.getCreationDate().toISOString().substring(0,10);
+                orderData['orderDescription'] = site.name;
             }
             payload['orderData'] = orderData;
 

@@ -3,11 +3,19 @@
 <isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
     <isif condition="${paymentOption.ID === 'CREDIT_CARD' && pdict.FiservConfig.getCommerceHubCreditEnabled()}">
         <isinclude template="checkout/billing/paymentOptions/creditCardContent" />
+    <iselseif condition="${paymentOption.ID === 'ACH' && pdict.FiservConfig.getCommerceHubACHEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/achContent" />
     <iselseif condition="${paymentOption.ID === 'PAYPAL' && pdict.FiservConfig.getCommerceHubPayPalEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/paypalContent" />
     <iselseif condition="${paymentOption.ID === 'VENMO' && pdict.FiservConfig.getCommerceHubVenmoEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/venmoContent" />
     <iselseif condition="${paymentOption.ID === 'APPLEPAY' && pdict.FiservConfig.getCommerceHubApplePayEnabled()}" />
         <isinclude template="checkout/billing/paymentOptions/applepayContent" />
+    <iselseif condition="${paymentOption.ID === 'AFFIRM' && pdict.FiservConfig.getCommerceHubAffirmEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/affirmContent" />
+    <iselseif condition="${paymentOption.ID === 'SAMSUNGPAY' && pdict.FiservConfig.getCommerceHubSamsungPayEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/samsungpayContent" />
+    <iselseif condition="${paymentOption.ID === 'PAZE' && pdict.FiservConfig.getCommerceHubPazeEnabled()}" />
+        <isinclude template="checkout/billing/paymentOptions/pazeContent" />
     </isif>
 </isloop>

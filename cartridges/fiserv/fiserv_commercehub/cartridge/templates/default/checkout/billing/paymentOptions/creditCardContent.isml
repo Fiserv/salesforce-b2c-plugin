@@ -2,8 +2,8 @@
 
 <isset name="basketTokenFlowEnabled" value="${!pdict.customer.registeredUser &&
     pdict.FiservConfig.getCommerceHubTokenization() &&
-    pdict.FiservConfig.getEarlyTokenization() &&
-    pdict.FiservConfig.getBasketTokenization()}" scope="pdict" />
+    pdict.FiservConfig.getForcedBasketTokenization()}" scope="pdict" />
+
 
 <!--- applicable credit cards--->
 <div class="tab-pane active credit-card-content" id="credit-card-content" role="tabpanel">
@@ -15,8 +15,8 @@
                value="CREDIT_CARD"
         >
 
-        <!--- register/authenticated user --->
-        <isif condition="${pdict.customer.registeredUser || pdict.basketTokenFlowEnabled}">
+        <!--- register/authenticated user: only show saved payments when tokenization is enabled --->
+        <isif condition="${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled)}">
             <div class="user-payment-instruments container ${(pdict.customer.registeredUser || pdict.basketTokenFlowEnabled) && pdict.customer.customerPaymentInstruments.length ? '' : 'checkout-hidden'}">
                 <!--- Stored user payments --->
                 <div class="stored-payments">

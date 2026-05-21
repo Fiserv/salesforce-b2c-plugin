@@ -35,8 +35,7 @@ function sendTokenizationRequest(tokenizationRequest)
 function savePaymentEarly(req, res, next)
 {
     let earlyTokenPayload = req.form;
-    let sessionId = earlyTokenPayload.sessionId;
-    if(sessionId !== null && fiservConfig.getCommerceHubTokenization() && fiservConfig.getEarlyTokenization())
+    if(earlyTokenPayload.sessionId !== null && fiservConfig.getCommerceHubTokenization())
     {
         fiservLogs.logInfo(1, 'Initiating Early Tokenization call');
         return executeSavePaymentTransaction.call(this, req, res, next, earlyTokenPayload);
@@ -45,7 +44,7 @@ function savePaymentEarly(req, res, next)
 }
 
 function savePayment(req, res, next) {
-    if (fiservConfig.getCommerceHubStandaloneSpa())
+    if (fiservConfig.getCommerceHubStandaloneTokenization())
     {
         fiservLogs.logInfo(1, 'Initiating Standalone Tokenization call');
         return executeSavePaymentTransaction.call(this, req, res, next);
