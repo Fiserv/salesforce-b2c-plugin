@@ -36,9 +36,9 @@ class CommercehubApplePayEventHandler
         let addressObject = this.createAddressObject(response.billingAddress);
         await FiservSDKHelper.populateAddress(addressObject, this.configDataApplePay.billingAddressFormNames, 'billing');
 
-        this.setSubmitButtonEnabled(false);
-        $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
         this.setSubmitButtonEnabled(true);
+        $('button.btn.btn-primary.btn-block.submit-payment').trigger('click');
+        this.setSubmitButtonEnabled(false);
     }
 
     handleCancel = function (response) 
