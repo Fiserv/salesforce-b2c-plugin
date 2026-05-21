@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    VERSION : '1.2.0',
+    VERSION : '1.2.1',
     COMMERCEHUB_CERT_ENV : 'CERT',
     COMMERCEHUB_LIVE_ENV : 'PROD',
     ENVIRONMENT_URL_PLACEHOLDER : '[CH_ENVIRONMENT_BASE]',

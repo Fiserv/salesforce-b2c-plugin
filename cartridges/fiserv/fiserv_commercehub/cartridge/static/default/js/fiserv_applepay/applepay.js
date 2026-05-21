@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return data;
     }
 
-    const checkoutStage = $('#fiserv-commercehub-applepay-form-init-container').attr('data-initial-checkout-stage');
     const paymentAmountBlockId = $('#fiserv-commercehub-applepay-form-init-container').attr('data-payment-amount-block');
     let form = new CommercehubApplePay(extractInitializationData());
     let initialized = false;
